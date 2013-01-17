@@ -3,7 +3,7 @@ Browser Capabilities PHP Project
 
 _Hacking around with PHP to have a better solution than `get_browser()`_
 
-[![Build Status](https://secure.travis-ci.org/GaretJax/phpbrowscap.png?branch=master)](http://travis-ci.org/GaretJax/phpbrowscap)
+[![Build Status](https://secure.travis-ci.org/browscap/browscap-php.png?branch=master)](http://travis-ci.org/browsecap/browscap-php)
 
 Introduction
 ------------
