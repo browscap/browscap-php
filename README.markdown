@@ -8,8 +8,11 @@ _Hacking around with PHP to have a better solution than `get_browser()`_
 Introduction
 ------------
 
-The [browscap.ini](http://browsers.garykeith.com/downloads.asp) file is a
-database maintained by [Gary Keith](http://browsers.garykeith.com/) which
+The [browscap.ini](http://tempdownloads.browserscap.com/) file is a
+database was maintained by [Gary Keith](https://github.com/GaretJax/) and is 
+now maintained by [RAD Moose](https://plus.google.com/u/0/114247395634091389252/).
+More information about the transfer of owners can be found here: https://groups.google.com/forum/#!topic/browscap/pk_dkkqdXzg
+The [browscap.ini](http://tempdownloads.browserscap.com/), which, 
 provides a lot of details about browsers and their capabilities, such as name,
 versions, Javascript support and so on.
 
@@ -28,14 +31,18 @@ Browscap is a standalone class for PHP >=5.3 that gets around the limitations of
 It offers methods to update, cache, adapt and get details about every supplied
 user agent on a standalone basis.
 
-Browscap is a [Composer](http://packagist.org/about-composer) package.
+Browscap is a [Composer](https://packagist.org/packages/browscap/browscap-php) package.
 
+
+Browscap is currently running on a temporary site (http://tempdownloads.browserscap.com/)
+while some things are sorted out and redone after a change of owners. For more
+information, look here: https://groups.google.com/d/msg/browscap/pk_dkkqdXzg/5ij0kxjCfocJ 
 
 Quick start
 -----------
 
 A quick start guide is available on the GitHub wiki, at the following address:
-https://github.com/GaretJax/phpbrowscap/wiki/QuickStart
+https://github.com/GaretJax/phpbrowscap/wiki/QuickStart (the Wiki is on the original project page)
 
 
 Features
@@ -64,9 +71,12 @@ Issues and feature requests
 ---------------------------
 
 Please report your issues and ask for new features on the GitHub Issue Tracker
-at https://github.com/GaretJax/phpbrowscap/issues
+at https://github.com/browscap/browscap-php/issues
+
+Please report incorrectly identified User Agents and browser detect in the browscap.ini
+file on Google Groups here: https://groups.google.com/forum/#!forum/browscap
 
 Please note that the browscap class only parses and queries the browscap.ini
-database provided by Gary Keith. If a browser is wrongly identified or a results
-presents erroneous properties, please refer directly to the browscap project
-homepage at: http://browsers.garykeith.com/
+database provided by RAD Moose (previously by Gary Keith). If a browser is wrongly identified or a results
+presents erroneous properties, please refer directly to the temporary browscap project
+homepage at: http://tempdownloads.browserscap.com/
