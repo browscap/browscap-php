@@ -16,7 +16,10 @@ Introduction
 ------------
 
 The [browscap.ini](http://tempdownloads.browserscap.com/) file is a
-database was maintained by [Gary Keith](https://github.com/GaryKeith) and is 
+database which provides a lot of details about browsers and their capabilities, such as name,
+versions, Javascript support and so on.
+
+It was maintained by [Gary Keith](https://github.com/GaryKeith) and is 
 now maintained by [RAD Moose](https://github.com/radmoose).
 More information about the transfer of owners can be found here: https://groups.google.com/forum/#!topic/browscap/pk_dkkqdXzg
 The [browscap.ini](http://tempdownloads.browserscap.com/), which
@@ -47,15 +50,14 @@ It's also much faster than `get_browser()` while still returning the same result
 Browscap is a [Composer](https://packagist.org/packages/browscap/browscap-php) package.
 
 
-Browscap is currently running on a temporary site (http://tempdownloads.browserscap.com/)
+Browscap.ini database is currently running on a temporary site (http://tempdownloads.browserscap.com/)
 while some things are sorted out and redone after a change of owners. For more
 information, look here: https://groups.google.com/d/msg/browscap/pk_dkkqdXzg/5ij0kxjCfocJ 
 
 Quick start
 -----------
 
-A quick start guide is available on the GitHub wiki at the original repostitory for this project
-(not updated anymore), at the following address:
+A quick start guide is available on the GitHub wiki at the original repostitory for this project, at the following address:
 https://github.com/GaretJax/phpbrowscap/wiki/QuickStart (the Wiki is on the original project page)
 
 
