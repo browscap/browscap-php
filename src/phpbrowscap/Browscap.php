@@ -53,10 +53,10 @@ class Browscap
      * UPDATE_CURL: Uses the cURL extension.
      * UPDATE_LOCAL: Updates from a local file (file_get_contents).
      */
-    const UPDATE_FOPEN     = 'URL-wrapper';
+    const UPDATE_FOPEN = 'URL-wrapper';
     const UPDATE_FSOCKOPEN = 'socket';
-    const UPDATE_CURL      = 'cURL';
-    const UPDATE_LOCAL     = 'local';
+    const UPDATE_CURL = 'cURL';
+    const UPDATE_LOCAL = 'local';
 
     /**
      * Options for regex patterns.
@@ -66,8 +66,7 @@ class Browscap
      */
     const REGEX_DELIMITER = '@';
     const REGEX_MODIFIERS = 'i';
-
-    const COMPRESSION_PATTERN_START     = '@';
+    const COMPRESSION_PATTERN_START = '@';
     const COMPRESSION_PATTERN_DELIMITER = '|';
 
     /**
@@ -331,10 +330,8 @@ class Browscap
                     // match with numeric replacements
                     array_shift($matches);
 
-                    $match_string = self::COMPRESSION_PATTERN_START . implode(
-                            self::COMPRESSION_PATTERN_DELIMITER,
-                            $matches
-                        );
+                    $match_string = self::COMPRESSION_PATTERN_START
+                        . implode(self::COMPRESSION_PATTERN_DELIMITER, $matches);
 
                     if (!isset($pattern_data[$match_string])) {
                         // partial match - numbers are not present, but everything else is ok
@@ -393,9 +390,9 @@ class Browscap
             if (!empty($url)) {
                 $params = array_merge(
                     array(
-                         'port' => null,
-                         'user' => null,
-                         'pass' => null,
+                        'port' => null,
+                        'user' => null,
+                        'pass' => null,
                     ),
                     parse_url($url)
                 );
@@ -540,10 +537,9 @@ class Browscap
 
         foreach ($tmp_user_agents as $i => $user_agent) {
 
-            if (empty($browsers[$user_agent]['Comment']) || strpos($user_agent, '*') !== false || strpos(
-                    $user_agent,
-                    '?'
-                ) !== false
+            if (empty($browsers[$user_agent]['Comment'])
+                || false !== strpos($user_agent, '*')
+                || false !== strpos($user_agent, '?')
             ) {
                 $pattern = $this->_pregQuote($user_agent);
 
@@ -563,8 +559,10 @@ class Browscap
             }
 
             if (!empty($browsers[$user_agent]['Parent'])) {
-                $parent                                = $browsers[$user_agent]['Parent'];
-                $parent_key                            = $user_agents_keys[$parent];
+                $parent = $browsers[$user_agent]['Parent'];
+
+                $parent_key = $user_agents_keys[$parent];
+
                 $browsers[$user_agent]['Parent']       = $parent_key;
                 $this->_userAgents[$parent_key . '.0'] = $tmp_user_agents[$parent_key];
             };
@@ -623,16 +621,21 @@ class Browscap
         if ($a_len > $b_len) {
             return -1;
         }
-        if ($a_len < $b_len)
+
+        if ($a_len < $b_len) {
             return 1;
+        }
 
         $a_len = strlen(str_replace(array('*', '?'), '', $a));
         $b_len = strlen(str_replace(array('*', '?'), '', $b));
 
-        if ($a_len > $b_len)
+        if ($a_len > $b_len) {
             return -1;
-        if ($a_len < $b_len)
+        }
+
+        if ($a_len < $b_len) {
             return 1;
+        }
 
         return 0;
     }
@@ -652,9 +655,7 @@ class Browscap
     protected function deduplicateCompressionPattern($matches, &$pattern)
     {
         $tmp_matches = $matches;
-
         $first_match = array_shift($tmp_matches);
-
         $differences = array();
 
         foreach ($tmp_matches as $some_match) {
@@ -666,10 +667,10 @@ class Browscap
         $prepared_matches = array();
 
         foreach ($matches as $i => $some_match) {
-            $prepared_matches[self::COMPRESSION_PATTERN_START . implode(
-                self::COMPRESSION_PATTERN_DELIMITER,
-                array_diff_assoc($some_match, $identical)
-            )] = $i;
+            $key = self::COMPRESSION_PATTERN_START
+                . implode(self::COMPRESSION_PATTERN_DELIMITER, array_diff_assoc($some_match, $identical));
+
+            $prepared_matches[$key] = $i;
         }
 
         $pattern_parts = explode('(\d)', $pattern);
@@ -697,18 +698,18 @@ class Browscap
 
         // the \\x replacement is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
 
-        return self::REGEX_DELIMITER . '^' . str_replace(
-            array('\*', '\?', '\\x'),
-            array('.*', '.', '\\\\x'),
-            $pattern
-        ) . '$' . self::REGEX_DELIMITER;
+        return self::REGEX_DELIMITER
+            . '^'
+            . str_replace(array('\*', '\?', '\\x'), array('.*', '.', '\\\\x'), $pattern)
+            . '$'
+            . self::REGEX_DELIMITER;
     }
 
     /**
      * Converts preg match patterns back to browscap match patterns.
      *
-     * @param string $pattern
-     * @param array  $matches
+     * @param string        $pattern
+     * @param array|boolean $matches
      *
      * @return string
      */
@@ -845,10 +846,8 @@ class Browscap
 
         // Get updated .ini file
         $browscap = $this->_getRemoteData($url);
-
         $browscap = explode("\n", $browscap);
-
-        $pattern = self::REGEX_DELIMITER . '(' . self::VALUES_TO_QUOTE . ')="?([^"]*)"?$' . self::REGEX_DELIMITER;
+        $pattern  = self::REGEX_DELIMITER . '(' . self::VALUES_TO_QUOTE . ')="?([^"]*)"?$' . self::REGEX_DELIMITER;
 
         // Ok, lets read the file
         $content = '';
@@ -893,7 +892,7 @@ class Browscap
     protected function _getLocalMTime()
     {
         if (!is_readable($this->localFile) || !is_file($this->localFile)) {
-            throw new Exception("Local file is not readable");
+            throw new Exception('Local file is not readable');
         }
 
         return filemtime($this->localFile);
