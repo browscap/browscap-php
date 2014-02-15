@@ -2,8 +2,6 @@
 
 namespace phpbrowscap;
 
-use Exception as BaseException;
-
 /**
  * Browscap.ini parsing class with caching and update capabilities
  *
@@ -245,6 +243,9 @@ class Browscap
         $this->cacheDir .= DIRECTORY_SEPARATOR;
     }
 
+    /**
+     * @return mixed
+     */
     public function getSourceVersion()
     {
         return $this->_source_version;
@@ -259,7 +260,7 @@ class Browscap
      * @param bool   $return_array whether return an array or an object
      *
      * @throws Exception
-     * @return stdClass|array  the object containing the browsers details. Array if
+     * @return \stdClass|array  the object containing the browsers details. Array if
      *                    $return_array is set to true.
      */
     public function getBrowser($user_agent = null, $return_array = false)
@@ -302,7 +303,7 @@ class Browscap
                 }
 
                 if (!$this->_loadCache($cache_file)) {
-                    throw new Exception("Cannot load this cache version - the cache format is not compatible.");
+                    throw new Exception('Cannot load this cache version - the cache format is not compatible.');
                 }
             }
         }
@@ -608,6 +609,12 @@ class Browscap
         return (bool) file_put_contents($cache_path, $cache, LOCK_EX);
     }
 
+    /**
+     * @param string $a
+     * @param string $b
+     *
+     * @return int
+     */
     protected function compareBcStrings($a, $b)
     {
         $a_len = strlen($a);
@@ -733,12 +740,21 @@ class Browscap
     /**
      * Loads the cache into object's properties
      *
-     * @param $cache_file
+     * @param string $cache_file
      *
      * @return boolean
      */
     protected function _loadCache($cache_file)
     {
+        $cache_version  = null;
+        $source_version = null;
+        $browsers       = array();
+        $userAgents     = array();
+        $patterns       = array();
+        $properties     = array();
+
+        $this->_cacheLoaded = false;
+
         require $cache_file;
 
         if (!isset($cache_version) || $cache_version != self::CACHE_FILE_VERSION) {
@@ -1059,7 +1075,7 @@ class Browscap
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/GaretJax/phpbrowscap/
  */
-class Exception
-    extends BaseException
+class Exception extends \Exception
 {
+    // nothing to do here
 }
