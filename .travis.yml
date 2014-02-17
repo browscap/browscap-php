@@ -1,5 +1,21 @@
 language: php
 
 php:
-    - 5.3
-    - 5.4
+  - 5.3.3
+  - 5.3
+  - 5.4
+  - 5.5
+  - 5.6
+  - hhvm
+
+before_script:
+  - composer self-update
+  - composer install --dev --prefer-source
+
+script:
+  - phpunit --coverage-text --coverage-clover=coverage.clover --colors --verbose
+
+after_script:
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+

@@ -1,6 +1,6 @@
 <?php
 
-namespace phpbrowscap;
+namespace phpbrowscapTest;
 
 use phpbrowscap\Browscap;
 
