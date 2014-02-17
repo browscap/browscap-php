@@ -15,21 +15,13 @@ Please see [changelog](CHANGELOG.md) for a list of recent changes. (huge perform
 Introduction
 ------------
 
-The [browscap.ini](http://tempdownloads.browserscap.com/) file is a
+The [browscap.ini](http://browscap.org/) file is a
 database which provides a lot of details about browsers and their capabilities, such as name,
 versions, Javascript support and so on.
 
-It was maintained by [Gary Keith](https://github.com/GaryKeith) and is 
-now maintained by [RAD Moose](https://github.com/radmoose).
-More information about the transfer of owners can be found here: https://groups.google.com/forum/#!topic/browscap/pk_dkkqdXzg
-The [browscap.ini](http://tempdownloads.browserscap.com/), which
+The [browscap.ini](http://browscap.org/), which
 provides a lot of details about browsers and their capabilities, such as name,
 versions, Javascript support and so on.
-
-_Please note: [browscap.ini](http://tempdownloads.browserscap.com/) was maintained by [Gary Keith](https://github.com/GaryKeith) and is 
-now maintained by [RAD Moose](https://github.com/radmoose). More information about the transfer of owners can be found [here](https://groups.google.com/forum/#!topic/browscap/pk_dkkqdXzg).
-Browscap.ini source files are currently available at a temporary location (http://tempdownloads.browserscap.com/).
-All the links in `Browscap` class are updated, but if you use custom links remember to change them!_
 
 PHP's native [get_browser()](http://php.net/get_browser) function parses this
 file and provides you with a complete set of information about every browser's
@@ -48,7 +40,6 @@ user agent on a standalone basis.
 It's also much faster than `get_browser()` while still returning the same results.
 
 Browscap is a [Composer](https://packagist.org/packages/browscap/browscap-php) package.
-
 
 Browscap.ini database is currently running on a temporary site (http://tempdownloads.browserscap.com/)
 while some things are sorted out and redone after a change of owners. For more
@@ -88,10 +79,4 @@ Please report your issues and ask for new features on the GitHub Issue Tracker
 at https://github.com/browscap/browscap-php/issues
 
 Please report incorrectly identified User Agents and browser detect in the browscap.ini
-file on Google Groups here: https://groups.google.com/forum/#!forum/browscap
-
-Please note that the Browscap class only parses and queries the browscap.ini
-database provided by RAD Moose (previously by Gary Keith). If a browser is wrongly identified or a results
-presents erroneous properties, please refer directly to the temporary browscap project
-homepage at: http://tempdownloads.browserscap.com/ or post your misidentified browser and User Agent at
-the Browscap Google Groups page: https://groups.google.com/forum/#!forum/browscap
+file here: https://github.com/browscap/browscap/issues
