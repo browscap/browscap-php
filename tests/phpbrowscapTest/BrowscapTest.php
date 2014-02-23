@@ -299,40 +299,4 @@ class BrowscapTest extends TestCase
 
         self::assertSame($expected, $method->invoke($browscap));
     }
-
-    /**
-     *
-     */
-    public function testPregQuote()
-    {
-        $cacheDir = $this->createCacheDir();
-
-        $class = new ReflectionClass('\\phpbrowscap\\Browscap');
-        $method = $class->getMethod('_pregQuote');
-        $method->setAccessible(true);
-
-        $browscap = new Browscap($cacheDir);
-
-        $expected = '@^Mozilla/.\.0 \(compatible; Ask Jeeves/Teoma.*\)$@';
-
-        self::assertSame($expected, $method->invoke($browscap, 'Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)'));
-    }
-
-    /**
-     *
-     */
-    public function testPregUnQuote()
-    {
-        $cacheDir = $this->createCacheDir();
-
-        $class = new ReflectionClass('\\phpbrowscap\\Browscap');
-        $method = $class->getMethod('_pregUnQuote');
-        $method->setAccessible(true);
-
-        $browscap = new Browscap($cacheDir);
-
-        $expected = 'Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)';
-
-        self::assertSame($expected, $method->invoke($browscap, '@^Mozilla/.\.0 \(compatible; Ask Jeeves/Teoma.*\)$@', array()));
-    }
 }
