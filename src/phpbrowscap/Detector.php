@@ -570,7 +570,7 @@ class Detector
 
         // Save the keys lowercased if needed
         if ($this->lowercase) {
-            $this->_properties = array_map('strtolower', $this->_properties);
+            $this->_properties = array_map('strtolower', $this->properties);
         }
 
         $cache = array(
