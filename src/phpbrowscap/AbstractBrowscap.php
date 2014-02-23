@@ -140,39 +140,6 @@ abstract class AbstractBrowscap
     }
 
     /**
-     * Converts preg match patterns back to browscap match patterns.
-     *
-     * @param string        $pattern
-     * @param array|boolean $matches
-     *
-     * @return string
-     */
-    protected function _pregUnQuote($pattern, $matches)
-    {
-        // list of escaped characters: http://www.php.net/manual/en/function.preg-quote.php
-        // to properly unescape '?' which was changed to '.', I replace '\.' (real dot) with '\?', then change '.' to '?' and then '\?' to '.'.
-        $search  = array(
-            '\\' . self::REGEX_DELIMITER, '\\.', '\\\\', '\\+', '\\[', '\\^', '\\]', '\\$', '\\(', '\\)', '\\{', '\\}',
-            '\\=', '\\!', '\\<', '\\>', '\\|', '\\:', '\\-', '.*', '.', '\\?'
-        );
-        $replace = array(
-            self::REGEX_DELIMITER, '\\?', '\\', '+', '[', '^', ']', '$', '(', ')', '{', '}', '=', '!', '<', '>', '|',
-            ':', '-', '*', '?', '.'
-        );
-
-        $result = substr(str_replace($search, $replace, $pattern), 2, -2);
-
-        if ($matches) {
-            foreach ($matches as $one_match) {
-                $num_pos = strpos($result, '(\d)');
-                $result  = substr_replace($result, $one_match, $num_pos, 4);
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * Converts the given array to the PHP string which represent it.
      * This method optimizes the PHP code and the output differs form the
      * var_export one as the internal PHP function does not strip whitespace or
