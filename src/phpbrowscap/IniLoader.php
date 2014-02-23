@@ -63,8 +63,8 @@ class IniLoader
      * is MINIMAL, so there is no reason to use the standard file whatsoever. Either go for light,
      * which is blazing fast, or get the full one. (note: light version doesn't work, a fix is on its way)
      */
-    private $remoteIniUrl = 'http://tempdownloads.browserscap.com/stream.php?Full_PHP_BrowscapINI';
-    private $remoteVerUrl = 'http://tempdownloads.browserscap.com/versions/version-date.php';
+    private $remoteIniUrl = 'http://browscap.org/stream?q=Full_PHP_BrowsCapINI';
+    private $remoteVerUrl = 'http://browscap.org/version';
     private $timeout = 5;
 
     /**
