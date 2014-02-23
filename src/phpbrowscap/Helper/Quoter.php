@@ -83,7 +83,7 @@ class Quoter
 
         $result = substr(str_replace($search, $replace, $pattern), 2, -2);
 
-        if ($matches) {
+        if (is_array($matches)) {
             foreach ($matches as $one_match) {
                 $num_pos = strpos($result, '(\d)');
                 $result  = substr_replace($result, $one_match, $num_pos, 4);

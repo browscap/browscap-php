@@ -247,7 +247,7 @@ class Detector extends AbstractBrowscap
      *
      * @param AdapterInterface $cache
      *
-     * @return Browscap
+     * @return Detector
      */
     public function setCache(AdapterInterface $cache)
     {
@@ -275,7 +275,7 @@ class Detector extends AbstractBrowscap
      *
      * @param \Psr\Log\LoggerInterface $logger
      *
-     * @return Browscap
+     * @return Detector
      */
     public function setLogger(LoggerInterface $logger)
     {
@@ -290,7 +290,7 @@ class Detector extends AbstractBrowscap
      * @param string $prefix the new prefix
      *
      * @throws \UnexpectedValueException
-     * @return Browscap
+     * @return Detector
      */
     public function setCachePrefix($prefix)
     {
@@ -312,7 +312,7 @@ class Detector extends AbstractBrowscap
      * @param string $filename the file name
      *
      * @throws Exception
-     * @return Browscap
+     * @return Detector
      */
     public function setLocaleFile($filename)
     {
@@ -375,6 +375,8 @@ class Detector extends AbstractBrowscap
             if (!$pattern) {
                 continue;
             }
+
+            $matches = array();
 
             if (!preg_match($pattern . 'i', $userAgent, $matches)) {
                 continue;
@@ -557,7 +559,7 @@ class Detector extends AbstractBrowscap
 
         // Save the keys lowercased if needed
         if ($this->lowercase) {
-            $this->_properties = array_map('strtolower', $this->properties);
+            $this->properties = array_map('strtolower', $this->properties);
         }
 
         $cache = array(

@@ -132,8 +132,7 @@ class IniLoader
 
         // Is the cache dir really the directory or is it directly the file?
         if (is_file($cacheDir) && substr($cacheDir, -4) === '.php') {
-            $this->cacheFilename = basename($cacheDir);
-            $this->cacheDir      = dirname($cacheDir);
+            $this->cacheDir = dirname($cacheDir);
         } elseif (is_dir($cacheDir)) {
             $this->cacheDir = $cacheDir;
         } else {

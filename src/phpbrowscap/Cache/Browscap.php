@@ -107,6 +107,7 @@ class Browscap implements AdapterInterface
             return null;
         }
 
+        $cache_version  = null;
         $source_version = null;
         $browsers       = array();
         $patterns       = array();
