@@ -36,13 +36,11 @@ namespace phpbrowscap;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/GaretJax/phpbrowscap/
  */
-class Browscap
+class Browscap extends AbstractBrowscap
 {
     /**
-     * Current version of the class.
+     * Current cache version
      */
-    const VERSION = '2.0b';
-
     const CACHE_FILE_VERSION = '2.0b';
 
     /**
@@ -57,29 +55,6 @@ class Browscap
     const UPDATE_FSOCKOPEN = 'socket';
     const UPDATE_CURL = 'cURL';
     const UPDATE_LOCAL = 'local';
-
-    /**
-     * Options for regex patterns.
-     *
-     * REGEX_DELIMITER: Delimiter of all the regex patterns in the whole class.
-     * REGEX_MODIFIERS: Regex modifiers.
-     */
-    const REGEX_DELIMITER = '@';
-    const REGEX_MODIFIERS = 'i';
-    const COMPRESSION_PATTERN_START = '@';
-    const COMPRESSION_PATTERN_DELIMITER = '|';
-
-    /**
-     * The values to quote in the ini file
-     */
-    const VALUES_TO_QUOTE = 'Browser|Parent';
-
-    const BROWSCAP_VERSION_KEY = 'GJK_Browscap_Version';
-
-    /**
-     * The headers to be sent for checking the version and requesting the file.
-     */
-    const REQUEST_HEADERS = "GET %s HTTP/1.0\r\nHost: %s\r\nUser-Agent: %s\r\nConnection: Close\r\n\r\n";
 
     /**
      * Options for auto update capabilities
@@ -316,7 +291,9 @@ class Browscap
             }
         }
 
-        $browser = array();
+        $quoterHelper = new Helper\Quoter();
+        $browser      = array();
+
         foreach ($this->_patterns as $pattern => $pattern_data) {
             if (preg_match($pattern . 'i', $user_agent, $matches)) {
                 if (1 == count($matches)) {
@@ -346,7 +323,7 @@ class Browscap
                 $browser = array(
                     $user_agent, // Original useragent
                     trim(strtolower($pattern), self::REGEX_DELIMITER),
-                    $this->_pregUnQuote($pattern, $simple_match ? false : $matches)
+                    $quoterHelper->pregUnQuote($pattern, $simple_match ? false : $matches)
                 );
 
                 $browser = $value = $browser + unserialize($this->_browsers[$key]);
@@ -528,7 +505,9 @@ class Browscap
 
         $tmp_user_agents = array_keys($browsers);
 
-        usort($tmp_user_agents, array($this, 'compareBcStrings'));
+        $sorterHelper = new Helper\Sorter();
+
+        usort($tmp_user_agents, array($sorterHelper, 'compareBcStrings'));
 
         $user_agents_keys = array_flip($tmp_user_agents);
         $properties_keys  = array_flip($this->_properties);
@@ -541,7 +520,8 @@ class Browscap
                 || false !== strpos($user_agent, '*')
                 || false !== strpos($user_agent, '?')
             ) {
-                $pattern = $this->_pregQuote($user_agent);
+                $quoterHelper = new Helper\Quoter();
+                $pattern = $quoterHelper->pregQuote($user_agent);
 
                 $matches_count = preg_match_all('@\d@', $pattern, $matches);
 
@@ -605,137 +585,6 @@ class Browscap
 
         // Save and return
         return (bool) file_put_contents($cache_path, $cache, LOCK_EX);
-    }
-
-    /**
-     * @param string $a
-     * @param string $b
-     *
-     * @return int
-     */
-    protected function compareBcStrings($a, $b)
-    {
-        $a_len = strlen($a);
-        $b_len = strlen($b);
-
-        if ($a_len > $b_len) {
-            return -1;
-        }
-
-        if ($a_len < $b_len) {
-            return 1;
-        }
-
-        $a_len = strlen(str_replace(array('*', '?'), '', $a));
-        $b_len = strlen(str_replace(array('*', '?'), '', $b));
-
-        if ($a_len > $b_len) {
-            return -1;
-        }
-
-        if ($a_len < $b_len) {
-            return 1;
-        }
-
-        return 0;
-    }
-
-    /**
-     * That looks complicated...
-     *
-     * All numbers are taken out into $matches, so we check if any of those numbers are identical
-     * in all the $matches and if they are we restore them to the $pattern, removing from the $matches.
-     * This gives us patterns with "(\d)" only in places that differ for some matches.
-     *
-     * @param array  $matches
-     * @param string $pattern
-     *
-     * @return array of $matches
-     */
-    protected function deduplicateCompressionPattern($matches, &$pattern)
-    {
-        $tmp_matches = $matches;
-        $first_match = array_shift($tmp_matches);
-        $differences = array();
-
-        foreach ($tmp_matches as $some_match) {
-            $differences += array_diff_assoc($first_match, $some_match);
-        }
-
-        $identical = array_diff_key($first_match, $differences);
-
-        $prepared_matches = array();
-
-        foreach ($matches as $i => $some_match) {
-            $key = self::COMPRESSION_PATTERN_START
-                . implode(self::COMPRESSION_PATTERN_DELIMITER, array_diff_assoc($some_match, $identical));
-
-            $prepared_matches[$key] = $i;
-        }
-
-        $pattern_parts = explode('(\d)', $pattern);
-
-        foreach ($identical as $position => $value) {
-            $pattern_parts[$position + 1] = $pattern_parts[$position] . $value . $pattern_parts[$position + 1];
-            unset($pattern_parts[$position]);
-        }
-
-        $pattern = implode('(\d)', $pattern_parts);
-
-        return $prepared_matches;
-    }
-
-    /**
-     * Converts browscap match patterns into preg match patterns.
-     *
-     * @param string $user_agent
-     *
-     * @return string
-     */
-    protected function _pregQuote($user_agent)
-    {
-        $pattern = preg_quote($user_agent, self::REGEX_DELIMITER);
-
-        // the \\x replacement is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
-
-        return self::REGEX_DELIMITER
-            . '^'
-            . str_replace(array('\*', '\?', '\\x'), array('.*', '.', '\\\\x'), $pattern)
-            . '$'
-            . self::REGEX_DELIMITER;
-    }
-
-    /**
-     * Converts preg match patterns back to browscap match patterns.
-     *
-     * @param string        $pattern
-     * @param array|boolean $matches
-     *
-     * @return string
-     */
-    protected function _pregUnQuote($pattern, $matches)
-    {
-        // list of escaped characters: http://www.php.net/manual/en/function.preg-quote.php
-        // to properly unescape '?' which was changed to '.', I replace '\.' (real dot) with '\?', then change '.' to '?' and then '\?' to '.'.
-        $search  = array(
-            '\\' . self::REGEX_DELIMITER, '\\.', '\\\\', '\\+', '\\[', '\\^', '\\]', '\\$', '\\(', '\\)', '\\{', '\\}',
-            '\\=', '\\!', '\\<', '\\>', '\\|', '\\:', '\\-', '.*', '.', '\\?'
-        );
-        $replace = array(
-            self::REGEX_DELIMITER, '\\?', '\\', '+', '[', '^', ']', '$', '(', ')', '{', '}', '=', '!', '<', '>', '|',
-            ':', '-', '*', '?', '.'
-        );
-
-        $result = substr(str_replace($search, $replace, $pattern), 2, -2);
-
-        if ($matches) {
-            foreach ($matches as $one_match) {
-                $num_pos = strpos($result, '(\d)');
-                $result  = substr_replace($result, $one_match, $num_pos, 4);
-            }
-        }
-
-        return $result;
     }
 
     /**
@@ -896,43 +745,6 @@ class Browscap
         }
 
         return filemtime($this->localFile);
-    }
-
-    /**
-     * Converts the given array to the PHP string which represent it.
-     * This method optimizes the PHP code and the output differs form the
-     * var_export one as the internal PHP function does not strip whitespace or
-     * convert strings to numbers.
-     *
-     * @param array $array the array to parse and convert
-     *
-     * @return string the array parsed into a PHP string
-     */
-    protected function _array2string($array)
-    {
-        $strings = array();
-
-        foreach ($array as $key => $value) {
-            if (is_int($key)) {
-                $key = '';
-            } elseif (ctype_digit((string) $key) || '.0' === substr($key, -2)) {
-                $key = intval($key) . '=>';
-            } else {
-                $key = "'" . str_replace("'", "\'", $key) . "'=>";
-            }
-
-            if (is_array($value)) {
-                $value = "'" . addcslashes(serialize($value), "'") . "'";
-            } elseif (ctype_digit((string) $value)) {
-                $value = intval($value);
-            } else {
-                $value = "'" . str_replace("'", "\'", $value) . "'";
-            }
-
-            $strings[] = $key . $value;
-        }
-
-        return "array(\n" . implode(",\n", $strings) . "\n)";
     }
 
     /**

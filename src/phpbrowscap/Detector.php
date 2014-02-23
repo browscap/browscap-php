@@ -40,37 +40,8 @@ use WurflCache\Adapter\File;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/GaretJax/phpbrowscap/
  */
-class Detector
+class Detector extends AbstractBrowscap
 {
-    /**
-     * Current version of the class.
-     */
-    const VERSION = '2.0b';
-
-    /**
-     * Options for regex patterns.
-     *
-     * REGEX_DELIMITER: Delimiter of all the regex patterns in the whole class.
-     * REGEX_MODIFIERS: Regex modifiers.
-     */
-    const REGEX_DELIMITER = '@';
-    const REGEX_MODIFIERS = 'i';
-
-    const COMPRESSION_PATTERN_START     = '@';
-    const COMPRESSION_PATTERN_DELIMITER = '|';
-
-    /**
-     * The values to quote in the ini file
-     */
-    const VALUES_TO_QUOTE = 'Browser|Parent';
-
-    const BROWSCAP_VERSION_KEY = 'GJK_Browscap_Version';
-
-    /**
-     * The headers to be sent for checking the version and requesting the file.
-     */
-    const REQUEST_HEADERS = "GET %s HTTP/1.0\r\nHost: %s\r\nUser-Agent: %s\r\nConnection: Close\r\n\r\n";
-
     /**
      * The path of the local version of the browscap.ini file from which to
      * update (to be set only if used).
@@ -120,10 +91,10 @@ class Detector
      *
      * @var array
      */
+    private $userAgents = array();
     private $browsers = array();
     private $patterns = array();
     private $properties = array();
-    private $userAgents = array();
     private $sourceVersion = null;
 
     /**
@@ -179,7 +150,7 @@ class Detector
         if (false === realpath($cacheDir)) {
             /*
              * the cach path is mostly invalid
-             * -> check if its really a filename
+             * -> check if its really a filename of a not existing file
              */
             if (substr($cacheDir, -4) === '.php'
                 || substr($cacheDir, -4) === '.ini'
@@ -202,8 +173,18 @@ class Detector
             );
         }
 
-        // Is the cache dir really the directory or is it directly the file?
-        if (is_file($cacheDir)) {
+        if ('' !== $filename) {
+            // The cache dir is a name of an not existing file
+            if ($filename && substr($filename, -4) === '.php') {
+                $this->cacheFilename = $filename;
+            } elseif ($filename && substr($filename, -4) === '.ini') {
+                $this->iniFilename   = $filename;
+                $this->cacheFilename = $filename;
+            }
+
+            $this->cacheDir = $cacheDir;
+        } elseif (is_file($cacheDir)) {
+            // Is the cache dir really the directory or is it directly the file?
             $filename = basename($cacheDir);
 
             if ($filename && substr($filename, -4) === '.php') {
@@ -253,6 +234,9 @@ class Detector
         $this->parsedCache = new Cache\Browscap($this->cacheDir);
     }
 
+    /**
+     * @return mixed
+     */
     public function getSourceVersion()
     {
         return $this->sourceVersion;
@@ -371,7 +355,6 @@ class Detector
             }
 
             if (!$this->loadCache()) {
-                // do not throw an exception, if the cache is not set
                 throw new Exception(
                     'Cannot load this cache version - the cache format is not compatible.',
                     Exception::CACHE_INCOMPATIBLE
@@ -384,6 +367,8 @@ class Detector
             $support   = new Support($_SERVER);
             $userAgent = $support->getUserAgent();
         }
+
+        $quoterHelper = new Helper\Quoter();
 
         $browser = array();
         foreach ($this->patterns as $pattern => $patternData) {
@@ -424,7 +409,7 @@ class Detector
             $browser = array(
                 $userAgent, // Original useragent
                 trim(strtolower($pattern), self::REGEX_DELIMITER),
-                $this->pregUnQuote($pattern, $simpleMatch ? false : $matches)
+                $quoterHelper->pregUnQuote($pattern, $simpleMatch ? false : $matches)
             );
 
             $browser = $value = $browser + unserialize($this->browsers[$key]);
@@ -466,7 +451,7 @@ class Detector
     public function updateCache()
     {
         // load parsed ini file from cache
-        $success  = true;
+        $success  = false;
         $cacheId  = $this->cachePrefix . $this->iniFilename . '.loaded';
         $browsers = $this->getCache()->getItem($cacheId, $success);
 
@@ -498,8 +483,9 @@ class Detector
         );
 
         $tmpUserAgents = array_keys($browsers);
+        $sorterHelper  = new Helper\Sorter();
 
-        usort($tmpUserAgents, array($this, 'compareBcStrings'));
+        usort($tmp_user_agents, array($sorterHelper, 'compareBcStrings'));
 
         $user_agents_keys = array_flip($tmpUserAgents);
         $properties_keys  = array_flip($this->properties);
@@ -508,7 +494,8 @@ class Detector
 
         foreach ($tmpUserAgents as $i => $user_agent) {
             if (strpos($user_agent, '*') !== false || strpos($user_agent, '?') !== false) {
-                $pattern = $this->pregQuote($user_agent);
+                $quoterHelper = new Helper\Quoter();
+                $pattern      = $quoterHelper->pregQuote($user_agent);
 
                 $matchesCount = preg_match_all(
                     self::COMPRESSION_PATTERN_START . '\d' . self::COMPRESSION_PATTERN_START,
@@ -586,116 +573,14 @@ class Detector
     }
 
     /**
-     * compares two user agent rules and sorts the by their length
-     *
-     * @param string $a
-     * @param string $b
-     *
-     * @return integer
-     */
-    private function compareBcStrings($a, $b)
-    {
-        $lengthA = strlen($a);
-        $lengthB = strlen($b);
-
-        if ($lengthA > $lengthB) {
-            return -1;
-        }
-        if ($lengthA < $lengthB) {
-            return 1;
-        }
-
-        $lengthA = strlen(str_replace(array('*', '?'), '', $a));
-        $lengthB = strlen(str_replace(array('*', '?'), '', $b));
-
-        if ($lengthA > $lengthB) {
-            return -1;
-        }
-        if ($lengthA < $lengthB) {
-            return 1;
-        }
-
-        return 0;
-    }
-
-    /**
-     * That looks complicated...
-     *
-     * All numbers are taken out into $matches, so we check if any of those numbers are identical
-     * in all the $matches and if they are we restore them to the $pattern, removing from the $matches.
-     * This gives us patterns with "(\d)" only in places that differ for some matches.
-     *
-     * @param array  $matches
-     * @param string $pattern
-     *
-     * @return array of $matches
-     */
-    private function deduplicateCompressionPattern($matches, &$pattern)
-    {
-        $prepared_matches = array();
-
-        foreach ($matches as $i => $someMatch) {
-            $prepared_matches[self::COMPRESSION_PATTERN_START . implode(self::COMPRESSION_PATTERN_DELIMITER, $someMatch)] = $i;
-        }
-
-        return $prepared_matches;
-    }
-
-    /**
-     * Converts browscap match patterns into preg match patterns.
-     *
-     * @param string $userAgent
-     *
-     * @return string
-     */
-    private function pregQuote($userAgent)
-    {
-        $pattern = preg_quote($userAgent, self::REGEX_DELIMITER);
-
-        // the \\x replacement is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
-        return self::REGEX_DELIMITER
-        . '^'
-        . str_replace(array('\*', '\?', '\\x'), array('.*', '.', '\\\\x'), $pattern)
-        . '$'
-        . self::REGEX_DELIMITER;
-    }
-
-    /**
-     * Converts preg match patterns back to browscap match patterns.
-     *
-     * @param string        $pattern
-     * @param array|boolean $matches
-     *
-     * @return string
-     */
-    private function pregUnQuote($pattern, $matches)
-    {
-        // list of escaped characters: http://www.php.net/manual/en/function.preg-quote.php
-        // to properly unescape '?' which was changed to '.', I replace '\.' (real dot) with '\?', then change '.' to '?' and then '\?' to '.'.
-        $search  = array('\\' . self::REGEX_DELIMITER, '\\.', '\\\\', '\\+', '\\[', '\\^', '\\]', '\\$', '\\(', '\\)',
-                         '\\{', '\\}', '\\=', '\\!', '\\<', '\\>', '\\|', '\\:', '\\-', '.*', '.', '\\?');
-        $replace = array(self::REGEX_DELIMITER, '\\?', '\\', '+', '[', '^', ']', '$', '(', ')', '{', '}', '=', '!', '<',
-                         '>', '|', ':', '-', '*', '?', '.');
-
-        $result = substr(str_replace($search, $replace, $pattern), 2, -2);
-
-        if ($matches) {
-            foreach ($matches as $oneMatch) {
-                $numPos = strpos($result, '(\d)');
-                $result = substr_replace($result, $oneMatch, $numPos, 4);
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * Loads the cache into object's properties
      *
      * @return boolean
      */
     private function loadCache()
     {
+        $this->cacheLoaded = false;
+
         $success = false;
         $content = $this->parsedCache->getItem($this->cachePrefix . $this->cacheFilename, $success);
 
