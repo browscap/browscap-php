@@ -296,7 +296,7 @@ class Browscap extends AbstractBrowscap
 
         foreach ($this->_patterns as $pattern => $pattern_data) {
             $matches = array();
-            
+
             if (preg_match($pattern . 'i', $user_agent, $matches)) {
                 if (1 == count($matches)) {
                     // standard match

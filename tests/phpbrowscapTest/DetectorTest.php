@@ -3,6 +3,7 @@
 namespace phpbrowscapTest;
 
 use phpbrowscap\Detector;
+use WurflCache\Adapter\NullStorage;
 
 /**
  * Detector.ini parsing class with caching and update capabilities
@@ -90,6 +91,38 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
 
         parent::tearDown();
     }
+    /**
+     * @expectedException PHPUnit_Framework_Error_Warning
+     */
+    public function testConstructorFails()
+    {
+        new Detector();
+    }
+
+    /**
+     * @expectedException \phpbrowscap\Exception
+     * @expectedExceptionMessage You have to provide a path to read/store the browscap cache file
+     */
+    public function testConstructorFails2()
+    {
+        new Detector(null);
+    }
+
+    /**
+     *
+     */
+    public function testConstructorFails3()
+    {
+        $path = '/abc/test';
+
+        $this->setExpectedException(
+            '\\phpbrowscap\\Exception',
+            'The cache path ' . $path . ' is invalid. Are you sure that it exists and that you have permission to access it?'
+        );
+
+        new Detector($path);
+    }
+
 
     /**
      * tests the auto detection of the proxy settings from the envirionment
@@ -97,5 +130,68 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
     public function testProxyAutoDetection()
     {
         self::markTestSkipped('not finished yet');
+    }
+
+    /**
+     * tests the setting of a cache instance
+     */
+    public function testSetGetCache()
+    {
+        $cache = $this->getMock('\\WurflCache\\Adapter\\NullStorage', array(), array(), '', false);
+
+        self::assertSame($this->object, $this->object->setCache($cache));
+        self::assertSame($cache, $this->object->getCache());
+    }
+
+    /**
+     * tests the setting of a cache instance
+     */
+    public function testSetLogger()
+    {
+        $logger = $this->getMock('\\Psr\\Log\\NullLogger', array(), array(), '', false);
+
+        self::assertSame($this->object, $this->object->setLogger($logger));
+    }
+
+    /**
+     * tests the setting of a cache instance
+     */
+    public function testSetCachePrefix()
+    {
+        self::assertSame($this->object, $this->object->setCachePrefix('abc'));
+    }
+
+    /**
+     * tests the setting of a cache instance
+     */
+    public function testSetLocaleFileFails()
+    {
+        $this->setExpectedException(
+            '\\phpbrowscap\\Exception',
+            'missing'
+        );
+
+        $this->object->setLocaleFile();
+    }
+
+    /**
+     * tests the setting of a cache instance
+     */
+    public function testSetLocaleFileException()
+    {
+        $this->setExpectedException(
+            '\\phpbrowscap\\Exception',
+            'missing'
+        );
+
+        $this->object->setLocaleFile(null);
+    }
+
+    /**
+     * tests the setting of a cache instance
+     */
+    public function testSetLocaleFile()
+    {
+        self::assertSame($this->object, $this->object->setLocaleFile('test.ini'));
     }
 }
