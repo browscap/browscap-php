@@ -625,7 +625,7 @@ class Detector extends AbstractBrowscap
      *
      * @param Loader $loader
      *
-     * @return IniLoader
+     * @return Detector
      */
     public function setLoader(Loader $loader)
     {

@@ -7,7 +7,7 @@ use phpbrowscap\Browscap;
  * Compares get_browser results for all matches in browscap.ini with results from Browscap class.
  * Also compares the execution times.
  */
-class CompareWithOriginalTest extends \PHPUnit_Framework_TestCase
+class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Browscap
@@ -2655,4 +2655,3 @@ class CompareWithOriginalTest extends \PHPUnit_Framework_TestCase
         );
     }
 }
-

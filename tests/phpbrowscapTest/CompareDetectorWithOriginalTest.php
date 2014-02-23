@@ -2662,4 +2662,3 @@ class CompareDetectorWithOriginalTest extends \PHPUnit_Framework_TestCase
         );
     }
 }
-
