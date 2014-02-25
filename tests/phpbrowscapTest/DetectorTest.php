@@ -3,7 +3,6 @@
 namespace phpbrowscapTest;
 
 use phpbrowscap\Detector;
-use WurflCache\Adapter\NullStorage;
 
 /**
  * Detector.ini parsing class with caching and update capabilities
@@ -91,6 +90,7 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
 
         parent::tearDown();
     }
+
     /**
      * @expectedException PHPUnit_Framework_Error_Warning
      */
