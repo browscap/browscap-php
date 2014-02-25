@@ -545,6 +545,10 @@ class compareWithOriginal
     $this->printReport($i, $errors_count, $warnings_count, $lib_time, $lib_max_time, $bc_time, $bc_max_time);
   }
   
+  /**
+   * @param integer $errors_count
+   * @param integer $warnings_count
+   */
   protected function printReport($i, $errors_count, $warnings_count, $lib_time, $lib_max_time, $bc_time, $bc_max_time)
   {
     $lt = number_format($lib_time, 2) . ' sec';
