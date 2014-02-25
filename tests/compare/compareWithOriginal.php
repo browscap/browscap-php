@@ -498,8 +498,8 @@ class compareWithOriginal
 
             if ($user_agent == Browscap::BROWSCAP_VERSION_KEY) {
                 if ($this->browscap->getSourceVersion() != $lib_result->version) {
-                    $errors[] = "Source file version incorrect: {$lib_result->version} != {$this->browscap->getSourceVersion(
-                    )}";
+                    $errors[] = 'Source file version incorrect: ' . $lib_result->version . ' != '
+                        . $this->browscap->getSourceVersion();
                 }
             } else {
                 foreach ($this->properties as $bc_prop => $lib_prop) {
