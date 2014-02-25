@@ -395,8 +395,9 @@ class Browscap extends AbstractBrowscap
     {
         $settings = array(
             $wrapper => array(
-                'proxy'           => sprintf('tcp://%s:%d', $server, $port),
-                'request_fulluri' => true,
+                'proxy'             => sprintf('tcp://%s:%d', $server, $port),
+                'request_fulluri'   => true,
+                'timeout'           => $this->timeout,
             )
         );
 
@@ -460,7 +461,18 @@ class Browscap extends AbstractBrowscap
      */
     public function getStreamContextOptions()
     {
-        return $this->_streamContextOptions;
+        $streamContextOptions = $this->_streamContextOptions;
+
+        if (empty($streamContextOptions)) {
+            // set default context, including timeout
+            $streamContextOptions = array(
+                'http' => array(
+                    'timeout' => $this->timeout,
+                )
+            );
+        }
+
+        return $streamContextOptions;
     }
 
     /**
@@ -659,7 +671,7 @@ class Browscap extends AbstractBrowscap
     protected function _getStreamContext($recreate = false)
     {
         if (!isset($this->_streamContext) || true === $recreate) {
-            $this->_streamContext = stream_context_create($this->_streamContextOptions);
+            $this->_streamContext = stream_context_create($this->getStreamContextOptions());
         }
 
         return $this->_streamContext;

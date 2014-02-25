@@ -128,7 +128,13 @@ class BrowscapTest extends TestCase
         $clearedWrappers = $browscap->clearProxySettings();
         $options = $browscap->getStreamContextOptions();
 
-        self::assertEmpty($options);
+        $defaultStreamContextOptions = array(
+            'http' => array(
+                'timeout' => $browscap->timeout,
+            )
+        );
+
+        $this->assertEquals($defaultStreamContextOptions, $options);
         self::assertEquals($clearedWrappers, array('http'));
     }
 
