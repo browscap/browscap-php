@@ -83,16 +83,20 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        $this->object->getCache()->flush();
-        $this->object->getLoader()->getLoader()->getCache()->flush();
+        if (null !== $this->object) {
+            $this->object->getCache()->flush();
+            $this->object->getLoader()->getLoader()->getCache()->flush();
+        }
 
         unset($this->object);
+
+        $this->object = null;
 
         parent::tearDown();
     }
 
     /**
-     * @expectedException PHPUnit_Framework_Error_Warning
+     * @expectedException \PHPUnit_Framework_Error_Warning
      */
     public function testConstructorFails()
     {
