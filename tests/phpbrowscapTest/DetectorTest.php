@@ -63,7 +63,7 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
             }
         }
 
-        self::$cacheDir = $cacheDir;
+        self::$cacheDir = realpath($cacheDir);
     }
 
     /**
