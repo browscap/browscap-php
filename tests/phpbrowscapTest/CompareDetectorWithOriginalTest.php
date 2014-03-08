@@ -31,7 +31,7 @@ class CompareDetectorWithOriginalTest extends \PHPUnit_Framework_TestCase
      */
     public static function setUpBeforeClass()
     {
-        $cacheDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'browscap_testing';
+        $cacheDir = 'tests/browscap_testing';
 
         if (!is_dir($cacheDir)) {
             if (false === @mkdir($cacheDir, 0777, true)) {

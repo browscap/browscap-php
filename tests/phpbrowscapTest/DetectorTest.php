@@ -49,14 +49,13 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
     private static $cacheDir = null;
 
     /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
+     * This method is called before the first test of this test class is run.
+     *
+     * @since Method available since Release 3.4.0
      */
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
-        parent::setUp();
-
-        $cacheDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'browscap_testing';
+        $cacheDir = 'tests/browscap_testing';
 
         if (!is_dir($cacheDir)) {
             if (false === @mkdir($cacheDir, 0777, true)) {
@@ -64,7 +63,18 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
             }
         }
 
-        $this->object = new Detector($cacheDir);
+        self::$cacheDir = $cacheDir;
+    }
+
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->object = new Detector(self::$cacheDir);
     }
 
     /**
@@ -110,8 +120,8 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
         $path = '/abc/test';
 
         $this->setExpectedException(
-            '\\phpbrowscap\\Exception',
-            'The cache path ' . $path . ' is invalid. Are you sure that it exists and that you have permission to access it?'
+            '\phpbrowscap\Exception',
+            'The cache path "' . $path . '" is invalid. Are you sure that it exists and that you have permission to access it?'
         );
 
         new Detector($path);
@@ -131,7 +141,7 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetCache()
     {
-        $cache = $this->getMock('\\WurflCache\\Adapter\\NullStorage', array(), array(), '', false);
+        $cache = $this->getMock('\WurflCache\Adapter\NullStorage', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setCache($cache));
         self::assertSame($cache, $this->object->getCache());
@@ -142,7 +152,7 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetLogger()
     {
-        $logger = $this->getMock('\\Psr\\Log\\NullLogger', array(), array(), '', false);
+        $logger = $this->getMock('\Psr\Log\NullLogger', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setLogger($logger));
     }
@@ -161,8 +171,8 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
     public function testSetLocaleFileFails()
     {
         $this->setExpectedException(
-            '\\phpbrowscap\\Exception',
-            'missing'
+            '\PHPUnit_Framework_Error_Warning',
+            'Missing argument 1 for phpbrowscap\Detector::setLocaleFile(), called in /home/travis/build/mimmi20/browscap-php/tests/phpbrowscapTest/DetectorTest.php on line 168 and defined'
         );
 
         $this->object->setLocaleFile();
@@ -174,8 +184,8 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
     public function testSetLocaleFileException()
     {
         $this->setExpectedException(
-            '\\phpbrowscap\\Exception',
-            'missing'
+            '\phpbrowscap\Exception',
+            'the filename can not be empty'
         );
 
         $this->object->setLocaleFile(null);
