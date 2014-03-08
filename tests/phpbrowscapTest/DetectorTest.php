@@ -49,12 +49,13 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
     private static $cacheDir = null;
 
     /**
-     * This method is called before the first test of this test class is run.
-     *
-     * @since Method available since Release 3.4.0
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
      */
-    public static function setUpBeforeClass()
+    protected function setUp()
     {
+        parent::setUp();
+
         $cacheDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'browscap_testing';
 
         if (!is_dir($cacheDir)) {
@@ -63,18 +64,7 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
             }
         }
 
-        self::$cacheDir = $cacheDir;
-    }
-
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->object = new Detector(self::$cacheDir);
+        $this->object = new Detector($cacheDir);
     }
 
     /**
