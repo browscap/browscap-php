@@ -149,7 +149,7 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             '\PHPUnit_Framework_Error_Warning',
-            'Missing argument 1 for phpbrowscap\Detector::setLocaleFile(), called in /home/travis/build/mimmi20/browscap-php/tests/phpbrowscapTest/DetectorTest.php on line 168 and defined'
+            'Missing argument 1 for phpbrowscap\Detector::setLocaleFile(), called in /home/travis/build/mimmi20/browscap-php/tests/phpbrowscapTest/DetectorTest.php on line 157 and defined'
         );
 
         $object = new Detector(self::$cacheDir);
