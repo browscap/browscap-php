@@ -67,35 +67,6 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->object = new Detector(self::$cacheDir);
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-        if (null !== $this->object) {
-            $this->object->getCache()->flush();
-            $this->object->getLoader()->getLoader()->getCache()->flush();
-        }
-
-        unset($this->object);
-
-        $this->object = null;
-
-        parent::tearDown();
-    }
-
-    /**
      * @expectedException \PHPUnit_Framework_Error_Warning
      */
     public function testConstructorFails()
@@ -143,8 +114,10 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
     {
         $cache = $this->getMock('\WurflCache\Adapter\NullStorage', array(), array(), '', false);
 
-        self::assertSame($this->object, $this->object->setCache($cache));
-        self::assertSame($cache, $this->object->getCache());
+        $object = new Detector(self::$cacheDir);
+
+        self::assertSame($object, $object->setCache($cache));
+        self::assertSame($cache, $object->getCache());
     }
 
     /**
@@ -154,7 +127,9 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
     {
         $logger = $this->getMock('\Psr\Log\NullLogger', array(), array(), '', false);
 
-        self::assertSame($this->object, $this->object->setLogger($logger));
+        $object = new Detector(self::$cacheDir);
+
+        self::assertSame($object, $object->setLogger($logger));
     }
 
     /**
@@ -162,7 +137,9 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetCachePrefix()
     {
-        self::assertSame($this->object, $this->object->setCachePrefix('abc'));
+        $object = new Detector(self::$cacheDir);
+
+        self::assertSame($object, $object->setCachePrefix('abc'));
     }
 
     /**
@@ -175,7 +152,9 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
             'Missing argument 1 for phpbrowscap\Detector::setLocaleFile(), called in /home/travis/build/mimmi20/browscap-php/tests/phpbrowscapTest/DetectorTest.php on line 168 and defined'
         );
 
-        $this->object->setLocaleFile();
+        $object = new Detector(self::$cacheDir);
+
+        $object->setLocaleFile();
     }
 
     /**
@@ -188,7 +167,9 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
             'the filename can not be empty'
         );
 
-        $this->object->setLocaleFile(null);
+        $object = new Detector(self::$cacheDir);
+
+        $object->setLocaleFile(null);
     }
 
     /**
@@ -196,6 +177,8 @@ class DetectorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetLocaleFile()
     {
-        self::assertSame($this->object, $this->object->setLocaleFile('test.ini'));
+        $object = new Detector(self::$cacheDir);
+
+        self::assertSame($object, $object->setLocaleFile('test.ini'));
     }
 }
