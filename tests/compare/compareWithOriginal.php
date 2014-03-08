@@ -637,4 +637,3 @@ class compareWithOriginal
         echo number_format(count($this->user_agents)) . " possible user agents\n";
     }
 }
-
