@@ -818,7 +818,21 @@ class Browscap extends AbstractBrowscap
                 } // else try with the next possibility (break omitted)
             case self::UPDATE_FSOCKOPEN:
                 $remote_url     = parse_url($url);
-                $remote_handler = fsockopen($remote_url['host'], 80, $c, $e, $this->timeout);
+                $contextOptions = $this->getStreamContextOptions();
+
+                $errno   = 0;
+                $errstr  = '';
+
+                if (empty($contextOptions)) {
+                    $port           = (empty($remote_url['port']) ? 80 : $remote_url['port']);
+                    $remote_handler = fsockopen($remote_url['host'], $port, $errno, $errstr, $this->timeout);
+                } else {
+                    $context = $this->_getStreamContext();
+
+                    $remote_handler = stream_socket_client(
+                        $url, $errno, $errstr, $this->timeout, STREAM_CLIENT_CONNECT, $context
+                    );
+                }
 
                 if ($remote_handler) {
                     stream_set_timeout($remote_handler, $this->timeout);
