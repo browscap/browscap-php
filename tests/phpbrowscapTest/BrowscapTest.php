@@ -305,4 +305,67 @@ class BrowscapTest extends TestCase
 
         self::assertSame($expected, $method->invoke($browscap));
     }
+
+    /**
+     *
+     */
+    public function testPregQuote()
+    {
+        $cacheDir = $this->createCacheDir();
+
+        $class = new ReflectionClass('\\phpbrowscap\\Browscap');
+        $method = $class->getMethod('_pregQuote');
+        $method->setAccessible(true);
+
+        $browscap = new Browscap($cacheDir);
+
+        $expected = '@^Mozilla/.\.0 \(compatible; Ask Jeeves/Teoma.*\)$@';
+
+        self::assertSame($expected, $method->invoke($browscap, 'Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)'));
+    }
+
+    /**
+     *
+     */
+    public function testPregUnQuote()
+    {
+        $cacheDir = $this->createCacheDir();
+
+        $class = new ReflectionClass('\\phpbrowscap\\Browscap');
+        $method = $class->getMethod('_pregUnQuote');
+        $method->setAccessible(true);
+
+        $browscap = new Browscap($cacheDir);
+
+        $expected = 'Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)';
+
+        self::assertSame($expected, $method->invoke($browscap, '@^Mozilla/.\.0 \(compatible; Ask Jeeves/Teoma.*\)$@', array()));
+    }
+
+    /**
+     * @dataProvider dataCompareBcStrings
+     */
+    public function testCompareBcStrings($a, $b, $expected)
+    {
+        $cacheDir = $this->createCacheDir();
+
+        $class = new ReflectionClass('\\phpbrowscap\\Browscap');
+        $method = $class->getMethod('compareBcStrings');
+        $method->setAccessible(true);
+
+        $browscap = new Browscap($cacheDir);
+
+        self::assertSame($expected, $method->invoke($browscap, $a, $b));
+    }
+
+    public function dataCompareBcStrings()
+    {
+        return array(
+            array('Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)', 'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)', 1),
+            array('Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)', 'Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)', -1),
+            array('Mozilla/5.0 (Danger hiptop 3.*; U; rv:1.7.*) Gecko/*', 'Mozilla/5.0 (Danger hiptop 3.0; U; rv:1.7.*) Gecko/*', 1),
+            array('Mozilla/5.0 (Danger hiptop 3.0; U; rv:1.7.*) Gecko/*', 'Mozilla/5.0 (Danger hiptop 3.*; U; rv:1.7.*) Gecko/*', -1),
+            array('Mozilla/5.0 (Danger hiptop 3.0; U; rv:1.7.*) Gecko/*', 'Mozilla/5.0 (Danger hiptop 3.0; U; rv:1.7.*) Gecko/*', 0)
+        );
+    }
 }

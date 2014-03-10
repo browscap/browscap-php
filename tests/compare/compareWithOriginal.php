@@ -1,8 +1,6 @@
 <?php
 
-compareWithOriginal::$base_dir = dirname(__FILE__) . '/../../';
-
-require_once compareWithOriginal::$base_dir . 'src/phpbrowscap/Browscap.php';
+chdir(dirname(dirname(__DIR__)));
 
 use phpbrowscap\Browscap;
 
@@ -460,7 +458,7 @@ class compareWithOriginal
 
     public function __construct()
     {
-        $this->browscap = new Browscap(self::$base_dir . 'cache/');
+        $this->browscap = new Browscap('cache/');
 
         $this->browscap_ini_path = ini_get('browscap');
 
@@ -503,9 +501,8 @@ class compareWithOriginal
 
             if ($user_agent == Browscap::BROWSCAP_VERSION_KEY) {
                 if ($this->browscap->getSourceVersion() != $lib_result->version) {
-                    $errors[]
-                        = "Source file version incorrect: {$lib_result->version} != {$this->browscap->getSourceVersion(
-                    )}";
+                    $errors[] = 'Source file version incorrect: ' . $lib_result->version . ' != '
+                        . $this->browscap->getSourceVersion();
                 }
             } else {
                 foreach ($this->properties as $bc_prop => $lib_prop) {
@@ -599,8 +596,10 @@ class compareWithOriginal
         unset($lib_properties['renderingengine_description']);
 
         if (!empty($lib_properties)) {
-            throw new Exception('There are ' . count($lib_properties) . '(' . implode(', ', array_keys($lib_properties))
-            . ') properties in get_browser that do not match those in Browscap.');
+            throw new Exception('There are ' . count($lib_properties) . '(' . implode(
+                    ', ',
+                    array_keys($lib_properties)
+                ) . ') properties in get_browser that do not match those in Browscap.');
         }
     }
 
