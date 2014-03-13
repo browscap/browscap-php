@@ -63,9 +63,6 @@ class Browscap implements AdapterInterface
      */
     public function __construct($cache_dir)
     {
-        // has to be set to reach E_STRICT compatibility, does not affect system/app settings
-        date_default_timezone_set(date_default_timezone_get());
-
         if (!isset($cache_dir)) {
             throw new Exception('You have to provide a path to read/store the browscap cache file');
         }
