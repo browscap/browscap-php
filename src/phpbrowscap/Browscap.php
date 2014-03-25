@@ -592,6 +592,9 @@ class Browscap
             $this->_browsers[] = $browser;
         }
 
+        // reducing memory usage by unsetting $tmp_user_agents
+        unset($tmp_user_agents);
+
         foreach ($tmp_patterns as $pattern => $pattern_data) {
             if (is_int($pattern_data)) {
                 $this->_patterns[$pattern] = $pattern_data;
