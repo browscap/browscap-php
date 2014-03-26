@@ -574,6 +574,9 @@ class Browscap extends AbstractBrowscap
             $this->_browsers[] = $browser;
         }
 
+        // reducing memory usage by unsetting $tmp_user_agents
+        unset($tmp_user_agents);
+
         foreach ($tmp_patterns as $pattern => $pattern_data) {
             if (is_int($pattern_data)) {
                 $this->_patterns[$pattern] = $pattern_data;
@@ -809,79 +812,85 @@ class Browscap extends AbstractBrowscap
                     throw new Exception('Cannot open the local file');
                 }
             case self::UPDATE_FOPEN:
-                // include proxy settings in the file_get_contents() call
-                $context = $this->_getStreamContext();
-                $file    = file_get_contents($url, false, $context);
-
-                if ($file !== false) {
-                    return $file;
-                } // else try with the next possibility (break omitted)
-            case self::UPDATE_FSOCKOPEN:
-                $remote_url     = parse_url($url);
-                $contextOptions = $this->getStreamContextOptions();
-
-                $errno   = 0;
-                $errstr  = '';
-
-                if (empty($contextOptions)) {
-                    $port           = (empty($remote_url['port']) ? 80 : $remote_url['port']);
-                    $remote_handler = fsockopen($remote_url['host'], $port, $errno, $errstr, $this->timeout);
-                } else {
+                if (ini_get('allow_url_fopen') && function_exists('file_get_contents')) {
+                    // include proxy settings in the file_get_contents() call
                     $context = $this->_getStreamContext();
+                    $file    = file_get_contents($url, false, $context);
 
-                    $remote_handler = stream_socket_client(
-                        $url, $errno, $errstr, $this->timeout, STREAM_CLIENT_CONNECT, $context
-                    );
-                }
-
-                if ($remote_handler) {
-                    stream_set_timeout($remote_handler, $this->timeout);
-
-                    if (isset($remote_url['query'])) {
-                        $remote_url['path'] .= '?' . $remote_url['query'];
-                    }
-
-                    $out = sprintf(
-                        self::REQUEST_HEADERS,
-                        $remote_url['path'],
-                        $remote_url['host'],
-                        $this->_getUserAgent()
-                    );
-
-                    fwrite($remote_handler, $out);
-
-                    $response = fgets($remote_handler);
-                    if (strpos($response, '200 OK') !== false) {
-                        $file = '';
-                        while (!feof($remote_handler)) {
-                            $file .= fgets($remote_handler);
-                        }
-
-                        $file = str_replace("\r\n", "\n", $file);
-                        $file = explode("\n\n", $file);
-                        array_shift($file);
-
-                        $file = implode("\n\n", $file);
-
-                        fclose($remote_handler);
-
+                    if ($file !== false) {
                         return $file;
                     }
-                } // else try with the next possibility
+                }// else try with the next possibility (break omitted)
+            case self::UPDATE_FSOCKOPEN:
+                if (function_exists('fsockopen')) {
+                    $remote_url     = parse_url($url);
+                    $contextOptions = $this->getStreamContextOptions();
+
+                    $errno   = 0;
+                    $errstr  = '';
+
+                    if (empty($contextOptions)) {
+                        $port           = (empty($remote_url['port']) ? 80 : $remote_url['port']);
+                        $remote_handler = fsockopen($remote_url['host'], $port, $errno, $errstr, $this->timeout);
+                    } else {
+                        $context = $this->_getStreamContext();
+
+                        $remote_handler = stream_socket_client(
+                            $url, $errno, $errstr, $this->timeout, STREAM_CLIENT_CONNECT, $context
+                        );
+                    }
+
+                    if ($remote_handler) {
+                        stream_set_timeout($remote_handler, $this->timeout);
+
+                        if (isset($remote_url['query'])) {
+                            $remote_url['path'] .= '?' . $remote_url['query'];
+                        }
+
+                        $out = sprintf(
+                            self::REQUEST_HEADERS,
+                            $remote_url['path'],
+                            $remote_url['host'],
+                            $this->_getUserAgent()
+                        );
+
+                        fwrite($remote_handler, $out);
+
+                        $response = fgets($remote_handler);
+                        if (strpos($response, '200 OK') !== false) {
+                            $file = '';
+                            while (!feof($remote_handler)) {
+                                $file .= fgets($remote_handler);
+                            }
+
+                            $file = str_replace("\r\n", "\n", $file);
+                            $file = explode("\n\n", $file);
+                            array_shift($file);
+
+                            $file = implode("\n\n", $file);
+
+                            fclose($remote_handler);
+
+                            return $file;
+                        }
+                    }
+                }// else try with the next possibility
             case self::UPDATE_CURL:
-                $ch = curl_init($url);
+                if (extension_loaded('curl')) { // make sure curl is loaded
+                    $ch = curl_init($url);
 
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $this->timeout);
-                curl_setopt($ch, CURLOPT_USERAGENT, $this->_getUserAgent());
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $this->timeout);
+                    curl_setopt($ch, CURLOPT_USERAGENT, $this->_getUserAgent());
 
-                $file = curl_exec($ch);
+                    $file = curl_exec($ch);
+    
+                    curl_close($ch);
 
-                curl_close($ch);
-
-                if ($file !== false) {
-                    return $file;
-                } // else try with the next possibility
+                    if ($file !== false) {
+                        return $file;
+                    }
+                }// else try with the next possibility
             case false:
                 throw new Exception('Your server can\'t connect to external resources. Please update the file manually.');
         }
