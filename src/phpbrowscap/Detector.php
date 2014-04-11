@@ -487,7 +487,7 @@ class Detector extends AbstractBrowscap
         $tmpUserAgents = array_keys($browsers);
         $sorterHelper  = new Helper\Sorter();
 
-        usort($tmp_user_agents, array($sorterHelper, 'compareBcStrings'));
+        usort($tmpUserAgents, array($sorterHelper, 'compareBcStrings'));
 
         $user_agents_keys = array_flip($tmpUserAgents);
         $properties_keys  = array_flip($this->properties);
