@@ -9,7 +9,9 @@ php:
   - hhvm
 
 before_script:
-  - if [ "`phpenv version-name`" != "hhvm" ]; then echo "browscap = `echo $(TRAVIS_BUILD_DIR)`" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
+  - echo $TRAVIS_BUILD_DIR
+  - echo $TRAVIS_REPO_SLUG
+  - if [ "`phpenv version-name`" != "hhvm" ]; then echo "browscap = `echo $TRAVIS_BUILD_DIR`" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
   - composer self-update
   - composer install --dev --prefer-source
 
