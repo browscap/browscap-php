@@ -9,7 +9,7 @@ php:
   - hhvm
 
 before_script:
-  - echo "browscap = $(phpenv TRAVIS_BUILD_DIR)" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "browscap = $(TRAVIS_BUILD_DIR)" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer self-update
   - composer install --dev --prefer-source
 
