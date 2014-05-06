@@ -74,7 +74,7 @@ class Browscap extends AbstractBrowscap
      * is MINIMAL, so there is no reason to use the standard file whatsoever. Either go for light,
      * which is blazing fast, or get the full one. (note: light version doesn't work, a fix is on its way)
      */
-    public $remoteIniUrl = 'http://browscap.org/stream?q=Full_PHP_BrowsCapINI';
+    public $remoteIniUrl = 'http://browscap.org/stream?q=PHP_BrowscapINI';
     public $remoteVerUrl = 'http://browscap.org/version';
     public $timeout = 5;
     public $updateInterval = 432000; // 5 days
@@ -884,7 +884,7 @@ class Browscap extends AbstractBrowscap
                     curl_setopt($ch, CURLOPT_USERAGENT, $this->_getUserAgent());
 
                     $file = curl_exec($ch);
-    
+
                     curl_close($ch);
 
                     if ($file !== false) {
