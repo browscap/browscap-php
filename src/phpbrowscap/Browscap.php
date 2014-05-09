@@ -372,7 +372,12 @@ class Browscap
             } elseif ($value === 'false') {
                 $value = false;
             }
-            $array[$this->_properties[$key]] = $value;
+            
+            $tmp_key = $this->_properties[$key];
+            if ($this->lowercase) {
+                $tmp_key = strtolower($this->_properties[$key]);
+            }
+            $array[$tmp_key] = $value;
         }
 
         return $return_array ? $array : (object) $array;
@@ -608,11 +613,6 @@ class Browscap
 
                 $this->_patterns[$pattern] = $pattern_data;
             }
-        }
-
-        // Save the keys lowercased if needed
-        if ($this->lowercase) {
-            $this->_properties = array_map('strtolower', $this->_properties);
         }
 
         // Get the whole PHP code
