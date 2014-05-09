@@ -9,6 +9,8 @@ php:
   - hhvm
 
 before_script:
+  - wget http://browscap.org/stream?q=Full_PHP_BrowsCapINI -O /tmp/browscap.ini
+  - echo 'browscap = "/tmp/browscap.ini"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - composer self-update
   - composer install --dev --prefer-source
 
