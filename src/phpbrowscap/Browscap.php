@@ -714,9 +714,23 @@ class Browscap
 
         // Get the whole PHP code
         $cache = $this->_buildCache();
+        $dir   = dirname($cache_path);
 
-        // Save and return
-        return (bool) file_put_contents($cache_path, $cache, LOCK_EX);
+        // "tempnam" did not work with VFSStream for tests
+        $tmpFile = $dir . '/temp_' . md5(time() . basename($cache_path));
+
+        if (false === file_put_contents($tmpFile, $cache)) {
+            // writing to the temparary file failed
+            return false;
+        }
+
+        if (false === rename($tmpFile, $cache_path)) {
+            // renaming file failed, remove temp file
+            @unlink($tmpFile);
+            return false;
+        }
+
+        return true;
     }
 
     /**
