@@ -555,10 +555,10 @@ class Browscap
     {
         $ini_path              = $this->cacheDir . $this->iniFilename;
         $cache_path            = $this->cacheDir . $this->cacheFilename;
-        $cache_path_properties = $this->cacheDir . $this->cachePropertiesFilename;
-        $cache_path_browsers   = $this->cacheDir . $this->cacheBrowserFilename;
-        $cache_path_useragent  = $this->cacheDir . $this->cacheUseragentsFilename;
-        $cache_path_patterns   = $this->cacheDir . $this->cachePatternsFilename;
+        $cache_path_properties = $this->cacheDir . 'temp_' . md5(time() . $this->cachePropertiesFilename);
+        $cache_path_browsers   = $this->cacheDir . 'temp_' . md5(time() . $this->cacheBrowserFilename);
+        $cache_path_useragent  = $this->cacheDir . 'temp_' . md5(time() . $this->cacheUseragentsFilename);
+        $cache_path_patterns   = $this->cacheDir . 'temp_' . md5(time() . $this->cachePatternsFilename);
 
         // Choose the right url
         if ($this->_getUpdateMethod() == self::UPDATE_LOCAL) {
@@ -713,7 +713,7 @@ class Browscap
         unset($data_patterns);
 
         // Get the whole PHP code
-        $cache = $this->_buildCache();
+        $cache = $this->_buildCache($cache_path_properties, $cache_path_browsers, $cache_path_useragent, $cache_path_patterns);
         $dir   = dirname($cache_path);
 
         // "tempnam" did not work with VFSStream for tests
@@ -904,14 +904,9 @@ class Browscap
      *
      * @return string the PHP string to save into the cache file
      */
-    protected function _buildCache()
+    protected function _buildCache($cache_path_properties, $cache_path_browsers, $cache_path_useragent, $cache_path_patterns)
     {
         $cacheTpl = "<?php\n\$source_version=%s;\n\$cache_version=%s;\n\$properties=%s;\n\$browsers=%s;\n\$userAgents=%s;\n\$patterns=%s;\n";
-
-        $cache_path_properties = $this->cacheDir . $this->cachePropertiesFilename;
-        $cache_path_browsers   = $this->cacheDir . $this->cacheBrowserFilename;
-        $cache_path_useragent  = $this->cacheDir . $this->cacheUseragentsFilename;
-        $cache_path_patterns   = $this->cacheDir . $this->cachePatternsFilename;
 
         // get prepared data
         $propertiesArray = file_get_contents($cache_path_properties);
