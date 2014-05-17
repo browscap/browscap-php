@@ -368,7 +368,7 @@ class Browscap
 
                     $simple_match = true;
                 } else {
-                    $pattern_data = unserialize($pattern_data);
+                    $pattern_data = json_decode($pattern_data, true);
 
                     // match with numeric replacements
                     array_shift($matches);
@@ -392,10 +392,10 @@ class Browscap
                     $this->_pregUnQuote($pattern, $simple_match ? false : $matches)
                 );
 
-                $browser = $value = $browser + unserialize($this->_browsers[$key]);
+                $browser = $value = $browser + json_decode($this->_browsers[$key], true);
 
                 while (array_key_exists(3, $value)) {
-                    $value = unserialize($this->_browsers[$value[3]]);
+                    $value = json_decode($this->_browsers[$value[3]], true);
                     $browser += $value;
                 }
 
@@ -1047,7 +1047,7 @@ class Browscap
             }
 
             if (is_array($value)) {
-                $value = "'" . addcslashes(serialize($value), "'") . "'";
+                $value = "'" . addcslashes(json_encode($value, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP), "'") . "'";
             } elseif (ctype_digit((string) $value)) {
                 $value = intval($value);
             } else {
