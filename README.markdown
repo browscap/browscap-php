@@ -41,9 +41,7 @@ It's also much faster than `get_browser()` while still returning the same result
 
 Browscap is a [Composer](https://packagist.org/packages/browscap/browscap-php) package.
 
-Browscap.ini database is currently running on a temporary site (http://tempdownloads.browserscap.com/)
-while some things are sorted out and redone after a change of owners. For more
-information, look here: https://groups.google.com/d/msg/browscap/pk_dkkqdXzg/5ij0kxjCfocJ 
+The Browscap.ini database now has an official site at http://browscap.org/.
 
 Quick start
 -----------
