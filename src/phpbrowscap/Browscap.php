@@ -553,6 +553,12 @@ class Browscap
      */
     public function updateCache()
     {
+        $lockfile = $this->cacheDir . 'cache.lock';
+
+        if (file_exists($lockfile) || !touch($lockfile)) {
+            return false;
+        }
+
         $ini_path              = $this->cacheDir . $this->iniFilename;
         $cache_path            = $this->cacheDir . $this->cacheFilename;
         $cache_path_properties = $this->cacheDir . 'temp_' . md5(microtime() . $this->cachePropertiesFilename);
@@ -719,18 +725,23 @@ class Browscap
         // "tempnam" did not work with VFSStream for tests
         $tmpFile = $dir . '/temp_' . md5(microtime() . basename($cache_path));
 
+        // asume that all will be ok
+        $success = true;
+
         if (false === file_put_contents($tmpFile, $cache)) {
             // writing to the temparary file failed
-            return false;
+            $success = false;
         }
 
         if (false === rename($tmpFile, $cache_path)) {
             // renaming file failed, remove temp file
             @unlink($tmpFile);
-            return false;
+            $success = false;
         }
 
-        return true;
+        @unlink($lockfile);
+
+        return $success;
     }
 
     /**
