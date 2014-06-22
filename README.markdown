@@ -26,7 +26,7 @@ versions, Javascript support and so on.
 PHP's native [get_browser()](http://php.net/get_browser) function parses this
 file and provides you with a complete set of information about every browser's
 details, But it requires the path to the browscap.ini file to be specified in
-the php.ini [browscap](http://ch2.php.net/manual/en/ref.misc.php#ini.browscap)
+the php.ini [browscap](http://php.net/manual/en/ref.misc.php#ini.browscap)
 directive which is flagged as `PHP_INI_SYSTEM`.
 
 Since in most shared hosting environments you have not access to the php.ini
@@ -38,6 +38,14 @@ Browscap is a standalone class for PHP >=5.3 that gets around the limitations of
 It offers methods to update, cache, adapt and get details about every supplied
 user agent on a standalone basis.
 It's also much faster than `get_browser()` while still returning the same results.
+
+If you can switch away from `get_browser()` then you definitely should. This implementation is very inferior
+when compared to browscap-php. Not only the pure PHP implementation is way faster, especially with opcache,
+as you can see here: https://github.com/browscap/browscap-php#features but also it is actually being updated,
+in contrary to `get_browser()`.
+
+So if there are some RAM, speed issues, or problems with ini parsing, they will most likely be fixed in browscap-php
+and WON'T in `get_browser()`.
 
 Browscap is a [Composer](https://packagist.org/packages/browscap/browscap-php) package.
 
