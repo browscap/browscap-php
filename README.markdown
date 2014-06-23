@@ -6,10 +6,10 @@ _Hacking around with PHP to have a better solution than `get_browser()`_
 [![Build Status](https://secure.travis-ci.org/browscap/browscap-php.png?branch=master)](http://travis-ci.org/browsecap/browscap-php) [![Code Coverage](https://scrutinizer-ci.com/g/browscap/browscap-php/badges/coverage.png?s=61cb32ca83d2053ed9b140690b6e18dfa00e4639)](https://scrutinizer-ci.com/g/browscap/browscap-php/) [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/browscap/browscap-php/badges/quality-score.png?s=db1cc1699b1cb6ac6ae46754ef9612217eba5526)](https://scrutinizer-ci.com/g/browscap/browscap-php/)
 
 
-Changes (new version - 2.0)
+Changes
 -------
 
-Please see [changelog](CHANGELOG.md) for a list of recent changes. (huge performance improvements!)
+Please see [changelog](CHANGELOG.md) for a list of recent changes.
 
 
 Introduction
