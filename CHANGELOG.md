@@ -1,7 +1,7 @@
 Changelog
 -------
 
-### Version 2.0.0 
+### Version 2.0.0 - June 23, 2014
 - #25 for caching error
 - #14 reducing memory consumption slightly
 - #22 use the "normal" version instead of "full" version
@@ -11,7 +11,7 @@ Changelog
 - #9 default timeout settings fix
 - #11, #27 improved tests
 
-### Version 2.0b (beta) - August 25, 2013
+### Version 2.0.0-beta - August 25, 2013
 - Added a new method to retrieve the source file version `$browscap->getSourceVersion()`.
 - Added a safety feature to regenerate the cache file always when `Browscap::CACHE_FILE_VERSION` changes.
 - Updated source file download URLs to new temporary URLs.
@@ -51,5 +51,5 @@ Changelog
   and checks if there are any differences in parsing. It also compares the parsing speed (in a simplistic way,
   more advanced tests are available at https://github.com/quentin389/ua-speed-tests).
 
-### version 1.0
+### Version 1.0.0 - July 22, 2012
 - Initial version
