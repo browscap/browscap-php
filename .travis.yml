@@ -1,7 +1,6 @@
 language: php
 
 php:
-  - 5.3.3
   - 5.3
   - 5.4
   - 5.5
@@ -10,7 +9,7 @@ php:
 
 before_script:
   - wget http://browscap.org/stream?q=Full_PHP_BrowsCapINI -O /tmp/browscap.ini
-  - echo 'browscap = "/tmp/browscap.ini"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - if [ "`phpenv version-name`" != "hhvm" ]; then echo 'browscap = "/tmp/browscap.ini"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
   - composer self-update
   - composer install --dev --prefer-source
 
