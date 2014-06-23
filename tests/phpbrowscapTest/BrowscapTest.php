@@ -40,14 +40,6 @@ use ReflectionClass;
 class BrowscapTest extends TestCase
 {
     /**
-     * @expectedException PHPUnit_Framework_Error_Warning
-     */
-    public function testConstructorFails()
-    {
-        new Browscap();
-    }
-
-    /**
      * @expectedException \phpbrowscap\Exception
      * @expectedExceptionMessage You have to provide a path to read/store the browscap cache file
      */
