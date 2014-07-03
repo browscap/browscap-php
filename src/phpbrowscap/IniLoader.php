@@ -241,7 +241,7 @@ class IniLoader
     public function getRemoteIniUrl()
     {
         $iniUrl = $this->remoteIniUrl;
-        $prefix = 'http://tempdownloads.browserscap.com/stream.php?';
+        $prefix = 'http://browscap.org/stream?';
 
         switch ($this->iniFilename) {
             case 'lite_php_browscap.ini':
