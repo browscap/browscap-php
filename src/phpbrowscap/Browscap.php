@@ -506,6 +506,7 @@ class Browscap
      *
      * Parses the ini file and updates the cache files
      *
+     * @throws Exception
      * @return bool whether the file was correctly written to the disk
      */
     public function updateCache()
@@ -513,7 +514,7 @@ class Browscap
         $lockfile = $this->cacheDir . 'cache.lock';
 
         if (file_exists($lockfile) || !touch($lockfile)) {
-            return false;
+            throw new Exception('temporary file already exists');
         }
 
         $ini_path   = $this->cacheDir . $this->iniFilename;
@@ -629,22 +630,21 @@ class Browscap
         $tmpFile = $dir . '/temp_' . md5(time() . basename($cache_path));
 
         // asume that all will be ok
-        $success = true;
-
         if (false === file_put_contents($tmpFile, $cache)) {
             // writing to the temparary file failed
-            $success = false;
+            throw new Exception('wrting to temporary file failed');
         }
 
         if (false === rename($tmpFile, $cache_path)) {
             // renaming file failed, remove temp file
             @unlink($tmpFile);
-            $success = false;
+
+            throw new Exception('could not rename temporary file to the cache file');
         }
 
         @unlink($lockfile);
 
-        return $success;
+        return true;
     }
 
     /**
