@@ -330,7 +330,8 @@ class Ini extends AbstractParser
      * @param string $string
      * @return string
      */
-    protected function getIniPartCacheSubkey($string) {
+    protected function getIniPartCacheSubkey($string)
+    {
         return $string[0] . $string[1];
     }
 
