@@ -5,6 +5,7 @@ use phpbrowscap\Cache\CacheInterface;
 use phpbrowscap\Cache\File;
 use phpbrowscap\Formatter\FormatterInterface;
 use phpbrowscap\Formatter\PhpGetBrowser;
+use phpbrowscap\Helper\Quoter;
 
 /**
  * Ini parser class (compatible with PHP 5.3+)
@@ -190,15 +191,17 @@ class Ini extends AbstractParser
      */
     public function getBrowser($user_agent)
     {
-        $formatter = null;
+        $formatter    = null;
+        $quoterHelper = new Quoter();
 
         foreach ($this->getHelper()->getPatterns($user_agent) as $patterns) {
-            if (preg_match("/^(?:" . str_replace("\t", ")|(?:", $this->pregQuote($patterns)) . ")$/", $user_agent)) {
+            if (preg_match("/^(?:" . str_replace("\t", ")|(?:", $quoterHelper->pregQuote($patterns)) . ")$/", $user_agent)) {
                 // strtok() requires less memory than explode()
-                $pattern = strtok($patterns, "\t");
+                $pattern      = strtok($patterns, "\t");
+                $quoterHelper = new Quoter();
 
                 while ($pattern !== false) {
-                    if (preg_match("/^" . $this->pregQuote($pattern) . "$/", $user_agent)) {
+                    if (preg_match("/^" . $quoterHelper->pregQuote($pattern) . "$/", $user_agent)) {
                         $formatter = $this->getFormatter();
                         $formatter->setData($this->getSettings($pattern));
                         break 2;
@@ -234,7 +237,9 @@ class Ini extends AbstractParser
     {
         // set some additional data
         if (count($settings) === 0) {
-            $settings['browser_name_regex']   = '/^' . $this->pregQuote($pattern) . '$/';
+            $quoterHelper = new Quoter();
+
+            $settings['browser_name_regex']   = '/^' . $quoterHelper->pregQuote($pattern) . '$/';
             $settings['browser_name_pattern'] = $pattern;
         }
 
@@ -357,20 +362,5 @@ class Ini extends AbstractParser
     protected static function getPatternLength($pattern)
     {
         return strlen(str_replace('*', '', $pattern));
-    }
-
-    /**
-     * Quotes a pattern from the browscap.ini file, so that it can be used in regular expressions
-     *
-     * @param string $pattern
-     * @return string
-     */
-    protected static function pregQuote($pattern)
-    {
-        $pattern = preg_quote($pattern, "/");
-
-        // The \\x replacement is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
-        // @source https://github.com/browscap/browscap-php
-        return str_replace(array('\*', '\?', '\\x'), array('.*', '.', '\\\\x'), $pattern);
     }
 }

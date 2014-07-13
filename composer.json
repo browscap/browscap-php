@@ -24,7 +24,8 @@
         "source": "https://github.com/browscap/browscap-php"
     },
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
+        "mimmi20/wurflcache": "1.2.*"
     },
     "require-dev": {
         "phpunit/phpunit": "*"
