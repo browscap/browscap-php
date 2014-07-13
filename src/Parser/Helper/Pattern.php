@@ -123,7 +123,8 @@ class Pattern
      * @param string $string
      * @return string
      */
-    public static function getPatternCacheSubkey($string) {
+    public static function getPatternCacheSubkey($string)
+    {
         return $string[0] . $string[1];
     }
 

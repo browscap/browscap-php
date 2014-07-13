@@ -44,13 +44,14 @@ interface FormatterInterface
      * Sets the data (done by the parser)
      *
      * @param array $settings
+     * @return void
      */
     public function setData(array $settings);
 
     /**
      * Gets the data (in the preferred format)
      *
-     * @return \stdClass|array
+     * @return \stdClass
      */
     public function getData();
 }

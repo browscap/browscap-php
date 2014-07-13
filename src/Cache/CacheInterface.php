@@ -53,7 +53,7 @@ interface CacheInterface
      * @param string $key
      * @param string $content
      * @param boolean $with_version
-     * @return int|false
+     * @return integer
      */
     public function set ($key, $content, $with_version = true);
 
