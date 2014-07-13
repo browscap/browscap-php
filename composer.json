@@ -30,9 +30,13 @@
         "phpunit/phpunit": "*"
     },
     "autoload": {
-        "psr-0": {
-            "phpbrowscap": "src/",
-            "phpbrowscapTest": "tests/"
+        "psr-4": {
+            "phpbrowscap\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "phpbrowscapTest\\": "tests/"
         }
     }
 }
