@@ -2,8 +2,8 @@
 
 namespace phpbrowscap;
 
-use phpbrowscap\Cache\CacheInterface;
-use phpbrowscap\Cache\File;
+use phpbrowscap\Cache\BrowscapCache;
+use WurflCache\Adapter\NullStorage;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -63,7 +63,7 @@ class Browscap
     /**
      * The cache instance
      *
-     * @var \phpbrowscap\Cache\\phpbrowscap\Cache\CacheInterface
+     * @var \phpbrowscap\Cache\BrowscapCache
      */
     private $cache = null;
 
@@ -71,10 +71,14 @@ class Browscap
      * Set theformatter instance to use for the getBrowser() result
      *
      * @param \phpbrowscap\Formatter\FormatterInterface $formatter
+     *
+     * @return \phpbrowscap\Browscap
      */
     public function setFormatter(Formatter\FormatterInterface $formatter)
     {
         $this->formatter = $formatter;
+
+        return $this;
     }
 
     /**
@@ -82,7 +86,7 @@ class Browscap
      */
     public function getFormatter()
     {
-        if ($this->formatter === null) {
+        if (null === $this->formatter) {
             $this->setFormatter(new Formatter\PhpGetBrowser());
         }
 
@@ -92,42 +96,52 @@ class Browscap
     /**
      * Gets a cache instance
      *
-     * @return \phpbrowscap\Cache\CacheInterface
+     * @return \phpbrowscap\Cache\BrowscapCache
      */
     public function getCache()
     {
-        if ($this->cache === null) {
-            $this->cache = new File();
+        if (null === $this->cache) {
+            $adapter     = new NullStorage();
+            $this->cache = new BrowscapCache($adapter);
         }
+
         return $this->cache;
     }
 
     /**
      * Sets a cache instance
      *
-     * @param \phpbrowscap\Cache\CacheInterface $cache
+     * @param \phpbrowscap\Cache\BrowscapCache $cache
+     *
+     * @return \phpbrowscap\Browscap
      */
-    public function setCache(CacheInterface $cache)
+    public function setCache(BrowscapCache $cache)
     {
         $this->cache = $cache;
+
+        return $this;
     }
 
     /**
      * Sets the parser instance to use
      *
-     * @param \phpbrowscap\Parser\Ini $parser
+     * @param \phpbrowscap\Parser\ParserInterface $parser
+     *
+     * @return \phpbrowscap\Browscap
      */
-    public function setParser(Parser\Ini $parser)
+    public function setParser(Parser\ParserInterface $parser)
     {
         $this->parser = $parser;
+
+        return $this;
     }
 
     /**
-     * @return Parser\Ini
+     * @return Parser\ParserInterface
      */
     public function getParser()
     {
-        if ($this->parser === null) {
+        if (null === $this->parser) {
             $this->setParser(new Parser\Ini());
         }
 
