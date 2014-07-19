@@ -15,17 +15,31 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use phpbrowscap\Helper\Fetcher;
 
+/**
+ * commands to fetch a browscap ini file from the remote host and store the content in a local file
+ *
+ * @author Thomas Müller <t_mueller_stolzenhain@yahoo.de>
+ */
 class FetchCommand extends Command
 {
-    /** @var string */
-    private $defaultYamlFile;
+    /**
+     * @var string
+     */
+    private $defaultIniFile;
 
-    public function __construct($defaultYamlFile)
+    /**
+     * @param string $defaultIniFile
+     */
+    public function __construct($defaultIniFile)
     {
-        $this->defaultYamlFile = $defaultYamlFile;
         parent::__construct();
+
+        $this->defaultIniFile = $defaultIniFile;
     }
 
+    /**
+     * Configures the current command.
+     */
     protected function configure()
     {
         $this
@@ -34,12 +48,18 @@ class FetchCommand extends Command
             ->addArgument(
                 'file',
                 InputArgument::OPTIONAL,
-                'regexes.yaml output file',
-                $this->defaultYamlFile
+                'browscap.ini file',
+                $this->defaultIniFile
             )
         ;
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int|null|void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $fs      = new Filesystem();

@@ -14,8 +14,16 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * commands to parse a given useragent
+ *
+ * @author Thomas Müller <t_mueller_stolzenhain@yahoo.de>
+ */
 class ParserCommand extends Command
 {
+    /**
+     * Configures the current command.
+     */
     protected function configure()
     {
         $this
@@ -30,6 +38,12 @@ class ParserCommand extends Command
         ;
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int|null|void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $browscap = new Browscap();

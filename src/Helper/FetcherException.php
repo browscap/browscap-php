@@ -6,9 +6,9 @@
  *
  * Released under the MIT license
  */
-namespace UAParser\Exception;
+namespace phpbrowscap\Helper;
 
-class FetcherException extends DomainException
+class FetcherException extends \DomainException
 {
     public static function httpError($resource, $error)
     {

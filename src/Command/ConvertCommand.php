@@ -15,6 +15,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use phpbrowscap\Helper\Converter;
 
+/**
+ * commands to a downloaded Browscap ini file into a array
+ *
+ * @author Thomas Müller <t_mueller_stolzenhain@yahoo.de>
+ */
 class ConvertCommand extends Command
 {
     /**
@@ -27,20 +32,31 @@ class ConvertCommand extends Command
      */
     const DEFAULT_RESOURCES_FOLDER = '/../../resources';
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $resourceDirectory;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $defaultIniFile;
 
+    /**
+     * @param string $resourceDirectory
+     * @param string $defaultIniFile
+     */
     public function __construct($resourceDirectory, $defaultIniFile)
     {
+        parent::__construct();
+
         $this->resourceDirectory = $resourceDirectory;
         $this->defaultIniFile    = $defaultIniFile;
-
-        parent::__construct();
     }
 
+    /**
+     * Configures the current command.
+     */
     protected function configure()
     {
         $this
@@ -61,13 +77,16 @@ class ConvertCommand extends Command
         ;
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int|null|void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getConverter()->convertFile($input->getArgument('file'), $input->getOption('no-backup'));
-    }
+        $converter = new Converter($this->resourceDirectory);
 
-    private function getConverter()
-    {
-        return new Converter($this->resourceDirectory);
+        $converter->convertFile($input->getArgument('file'), $input->getOption('no-backup'));
     }
 }

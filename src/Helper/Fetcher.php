@@ -37,7 +37,16 @@ class Fetcher
     public function fetch()
     {
         $level = error_reporting(0);
-        $result = file_get_contents($this->resourceUri, null, $this->streamContext);
+
+        $loader = new \FileLoader\Loader();
+        $loader
+            ->setRemoteDataUrl('')
+            ->setRemoteVerUrl('')
+            ->setMode(null)
+        ;
+
+        $result = $loader->load();
+
         error_reporting($level);
 
         if ($result === false) {

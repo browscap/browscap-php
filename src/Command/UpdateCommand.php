@@ -15,11 +15,22 @@ use Symfony\Component\Console\Output\OutputInterface;
 use phpbrowscap\Helper\Converter;
 use phpbrowscap\Helper\Fetcher;
 
+/**
+ * commands to fetch a browscap ini file from the remote host, convert it into an array and store the content in a local
+ * file
+ *
+ * @author Thomas Müller <t_mueller_stolzenhain@yahoo.de>
+ */
 class UpdateCommand extends Command
 {
-    /** @var string */
-    private $resourceDirectory;
+    /**
+     * @var string
+     */
+    private $resourceDirectory = null;
 
+    /**
+     * @param string $resourceDirectory
+     */
     public function __construct($resourceDirectory)
     {
         $this->resourceDirectory = $resourceDirectory;
@@ -27,6 +38,9 @@ class UpdateCommand extends Command
         parent::__construct();
     }
 
+    /**
+     * Configures the current command.
+     */
     protected function configure()
     {
         $this
@@ -41,6 +55,12 @@ class UpdateCommand extends Command
         ;
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int|null|void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $fetcher   = new Fetcher();
