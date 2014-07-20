@@ -12,7 +12,9 @@ use phpbrowscap\Browscap;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use phpbrowscap\Helper\LoggerHelper;
 
 /**
  * commands to parse a given useragent
@@ -35,6 +37,12 @@ class ParserCommand extends Command
                 InputArgument::REQUIRED,
                 'User agent string to analyze'
             )
+            ->addOption(
+                'debug', 
+                null, 
+                InputOption::VALUE_NONE, 
+                'Should the debug mode entered?'
+            )
         ;
     }
 
@@ -46,6 +54,9 @@ class ParserCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $loggerHelper = new LoggerHelper();
+        $logger       = $loggerHelper->create($input->getOption('debug'));
+
         $browscap = new Browscap();
         $result   = $browscap->getBrowser($input->getArgument('user-agent'));
 

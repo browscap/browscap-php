@@ -4,7 +4,7 @@ namespace phpbrowscap\Command;
 use phpbrowscap\Exception;
 use Symfony\Component\Console\Application;
 
-chdir(dirname(__DIR__));
+chdir(dirname(dirname(__DIR__)));
 
 $autoloadPaths = array(
     'vendor/autoload.php',
@@ -24,8 +24,8 @@ if (!$foundVendorAutoload) {
     throw new Exception('Could not find autoload path in any of the searched locations');
 }
 
-$resourceDirectory = realpath('resources/');
-$defaultIniFile    = realpath('resources/php_browscap.ini');
+$resourceDirectory = 'resources/';
+$defaultIniFile    = 'resources/browscap.ini';
 
 $application = new Application('ua-parser');
 $application->add(new ConvertCommand($resourceDirectory, $defaultIniFile));

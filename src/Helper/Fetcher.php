@@ -15,39 +15,20 @@ class Fetcher
     /** @var resource */
     private $streamContext;
 
-    public function __construct($streamContext = null)
-    {
-        if (is_resource($streamContext) && get_resource_type($streamContext) === 'stream-context') {
-            $this->streamContext = $streamContext;
-        } else {
-            $this->streamContext = stream_context_create(
-                array(
-                    'ssl' => array(
-                        'verify_peer'         => true,
-                        'verify_depth'        => 5,
-                        'cafile'              => __DIR__ . '/../../../resources/ca-bundle.crt',
-                        'CN_match'            => 'www.github.com',
-                        'disable_compression' => true,
-                    )
-                )
-            );
-        }
-    }
-
     public function fetch()
     {
-        $level = error_reporting(0);
+        //$level = error_reporting(0);
 
         $loader = new \FileLoader\Loader();
         $loader
-            ->setRemoteDataUrl('')
-            ->setRemoteVerUrl('')
+            ->setRemoteDataUrl('http://browscap.org/stream?q=PHP_BrowscapINI')
+            ->setRemoteVerUrl('http://browscap.org/version')
             ->setMode(null)
         ;
 
         $result = $loader->load();
 
-        error_reporting($level);
+        //error_reporting($level);
 
         if ($result === false) {
             $error = error_get_last();

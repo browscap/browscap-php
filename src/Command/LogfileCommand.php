@@ -21,6 +21,7 @@ use UAParser\Exception\ReaderException;
 use UAParser\Parser;
 use UAParser\Result\Client;
 use UAParser\Util\Logfile\AbstractReader;
+use phpbrowscap\Helper\LoggerHelper;
 
 class LogfileCommand extends Command
 {
@@ -60,6 +61,12 @@ class LogfileCommand extends Command
                 'Exclude glob expressions for log files in the log directory',
                 array('*error*')
             )
+            ->addOption(
+                'debug', 
+                null, 
+                InputOption::VALUE_NONE, 
+                'Should the debug mode entered?'
+            )
         ;
     }
 
@@ -68,6 +75,9 @@ class LogfileCommand extends Command
         if (!$input->getOption('log-file') && !$input->getOption('log-dir')) {
             throw InvalidArgumentException::oneOfCommandArguments('log-file', 'log-dir');
         }
+
+        $loggerHelper = new LoggerHelper();
+        $logger       = $loggerHelper->create($input->getOption('debug'));
 
         $parser = Parser::create();
         $undefinedClients = array();

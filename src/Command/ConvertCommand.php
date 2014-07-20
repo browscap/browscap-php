@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use phpbrowscap\Helper\Converter;
+use phpbrowscap\Helper\LoggerHelper;
 
 /**
  * commands to a downloaded Browscap ini file into a array
@@ -74,6 +75,12 @@ class ConvertCommand extends Command
                 InputOption::VALUE_NONE,
                 'Do not backup the previously existing file'
             )
+            ->addOption(
+                'debug', 
+                null, 
+                InputOption::VALUE_NONE, 
+                'Should the debug mode entered?'
+            )
         ;
     }
 
@@ -85,8 +92,17 @@ class ConvertCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $loggerHelper = new LoggerHelper();
+        $logger       = $loggerHelper->create($input->getOption('debug'));
+        
+        $logger->info('initializing converting process');
+
         $converter = new Converter($this->resourceDirectory);
+        
+        $logger->info('started converting local file');
 
         $converter->convertFile($input->getArgument('file'), $input->getOption('no-backup'));
+        
+        $logger->info('finished converting local file');
     }
 }
