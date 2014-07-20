@@ -168,25 +168,22 @@ class Browscap
      *
      * Gets the information about the browser by User Agent
      *
-     * @param string $user_agent the user agent string
+     * @param string $userAgent the user agent string
      *
      * @throws Exception
      * @return \stdClass|array  the object containing the browsers details. Array if
      *                    $return_array is set to true.
      */
-    public function getBrowser($user_agent = null)
+    public function getBrowser($userAgent = null)
     {
-        // automatically detect the useragent
-        if ($user_agent === null) {
-            if (isset($_SERVER['HTTP_USER_AGENT'])) {
-                $user_agent = $_SERVER['HTTP_USER_AGENT'];
-            } else {
-                $user_agent = '';
-            }
+        // Automatically detect the useragent
+        if (!isset($userAgent)) {
+            $support   = new Helper\Support($_SERVER);
+            $userAgent = $support->getUserAgent();
         }
 
         // try to get browser data
-        $return = $this->getParser()->getBrowser($user_agent);
+        $return = $this->getParser()->getBrowser($userAgent);
 
         // if return is still NULL, updates are disabled... in this
         // case we return an empty formatter instance

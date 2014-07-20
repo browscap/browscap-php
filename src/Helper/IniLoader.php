@@ -1,7 +1,8 @@
 <?php
-namespace phpbrowscap;
+namespace phpbrowscap\Helper;
 
 use FileLoader\Loader;
+use phpbrowscap\Browscap;
 use Psr\Log\LoggerInterface;
 
 /**

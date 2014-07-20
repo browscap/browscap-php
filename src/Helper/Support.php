@@ -1,5 +1,5 @@
 <?php
-namespace phpbrowscap;
+namespace phpbrowscap\Helper;
 
 /**
  * PHP version 5.3
