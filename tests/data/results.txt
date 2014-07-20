@@ -1,0 +1,1030 @@
+13,121 possible user agents
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; MSIE 7.0; MSIE 6.0; ScanAlert; +http://www.scanalert.com/bot.jsp) Firefox/2.0.0.3'
+
+get_browser() error fixed for 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; AhrefsBot/4.0; +http://ahrefs.com/robot/)'
+
+500: report
+0 errors
+3 get_browser() errors fixed
+lib time: 21.17 sec (42.3 ms / item, max 58.7 ms)
+bc time: 3.91 sec (7.8 ms / item, max 21.9 ms)
+
+1000: report
+0 errors
+3 get_browser() errors fixed
+lib time: 45.14 sec (45.1 ms / item, max 58.7 ms)
+bc time: 4.56 sec (4.6 ms / item, max 21.9 ms)
+
+1500: report
+0 errors
+3 get_browser() errors fixed
+lib time: 67.32 sec (44.9 ms / item, max 58.7 ms)
+bc time: 6.80 sec (4.5 ms / item, max 21.9 ms)
+
+2000: report
+0 errors
+3 get_browser() errors fixed
+lib time: 90.36 sec (45.2 ms / item, max 58.7 ms)
+bc time: 8.18 sec (4.1 ms / item, max 21.9 ms)
+
+2500: report
+0 errors
+3 get_browser() errors fixed
+lib time: 110.83 sec (44.3 ms / item, max 58.7 ms)
+bc time: 12.38 sec (5.0 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'DefaultProperties'
+
+get_browser() error fixed for 'Ask'
+
+get_browser() error fixed for 'Baidu'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)'
+
+get_browser() error fixed for 'Google'
+
+get_browser() error fixed for 'MSN'
+
+get_browser() error fixed for 'msnbot-NewsBlogs/2.XY (+http://search.msn.com/msnbot.htm)'
+
+get_browser() error fixed for 'msnbot-NewsBlogs/2. (+http://search.msn.com/msnbot.htm)'
+
+get_browser() error fixed for 'Yahoo'
+
+get_browser() error fixed for 'Yandex'
+
+get_browser() error fixed for 'Best of the Web'
+
+get_browser() error fixed for 'Boitho'
+
+get_browser() error fixed for 'Convera'
+
+get_browser() error fixed for 'DotBot'
+
+get_browser() error fixed for 'Entireweb'
+
+get_browser() error fixed for 'Envolk'
+
+get_browser() error fixed for 'Exalead'
+
+get_browser() error fixed for 'Facebook'
+
+get_browser() error fixed for 'facebookexternalhit/1.0 (+httpXY://www.facebook.com/externalhit_uatext.php)XY'
+
+get_browser() error fixed for 'facebookexternalhit/1.0 (+http://www.facebook.com/externalhit_uatext.php)'
+
+get_browser() error fixed for 'facebookexternalhit/1.1 (+httpXY://www.facebook.com/externalhit_uatext.php)XY'
+
+get_browser() error fixed for 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'
+
+get_browser() error fixed for 'Fast/AllTheWeb'
+
+get_browser() error fixed for 'Gigabot'
+
+get_browser() error fixed for 'Gigabot'
+
+get_browser() error fixed for 'Ilse'
+
+get_browser() error fixed for 'iVia Project'
+
+get_browser() error fixed for 'Jayde Online'
+
+get_browser() error fixed for 'Lycos'
+
+get_browser() error fixed for 'Lycos'
+
+get_browser() error fixed for 'Snap'
+
+get_browser() error fixed for 'Sogou'
+
+get_browser() error fixed for 'YodaoBot'
+
+get_browser() error fixed for 'General Crawlers'
+
+3000: report
+0 errors
+37 get_browser() errors fixed
+lib time: 128.25 sec (42.7 ms / item, max 58.7 ms)
+bc time: 16.50 sec (5.5 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; aiHitBotXY/XY; +http://www.aihit.com/)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; aiHitBot/; +http://www.aihit.com/)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; Crawly/1.XY; +http://XY/crawler.html)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; Crawly/1.; +http:///crawler.html)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; Diffbot/0.1; +http://www.diffbot.com)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; MSIE 7.0; MSIE 6.0; ScanAlert; +http://www.scanalert.com/bot.jsp) Firefox/XY'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; MSIE 7.0; MSIE 6.0; ScanAlert; +http://www.scanalert.com/bot.jsp) Firefox/'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; SuchbaerBot/0.XY; +http://bot.suchbaer.de/info.html)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; SuchbaerBot/0.; +http://bot.suchbaer.de/info.html)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; TweetedTimes Bot/1.0; +http://tweetedtimes.com)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; unwrapbot/2.XY; +http://www.unwrap.jpXY)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; unwrapbot/2.; +http://www.unwrap.jp)'
+
+get_browser() error fixed for 'Search Engines'
+
+get_browser() error fixed for 'CatchBot/XY; +http://www.catchbot.com'
+
+get_browser() error fixed for 'CatchBot/; +http://www.catchbot.com'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; AhrefsBot/XY; +http://ahrefs.com/robot/)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; AhrefsBot/; +http://ahrefs.com/robot/)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; ScoutJet; +http://www.scoutjet.com/)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; Scrubby/XY; +http://www.scrubtheweb.com/abs/meta-check.html)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; Scrubby/; +http://www.scrubtheweb.com/abs/meta-check.html)'
+
+get_browser() error fixed for 'SosospiderZ(+http://help.soso.com/webspider.htm)'
+
+get_browser() error fixed for 'BitTorrent Clients'
+
+get_browser() error fixed for 'Hatena'
+
+get_browser() error fixed for 'Internet Archive'
+
+3500: report
+0 errors
+61 get_browser() errors fixed
+lib time: 145.53 sec (41.6 ms / item, max 58.7 ms)
+bc time: 20.76 sec (5.9 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'Nutch'
+
+get_browser() error fixed for 'Nutch'
+
+get_browser() error fixed for 'Webaroo'
+
+get_browser() error fixed for 'Word Press'
+
+get_browser() error fixed for 'Copyright/Plagiarism'
+
+get_browser() error fixed for 'DNS Tools'
+
+get_browser() error fixed for 'Download Managers'
+
+get_browser() error fixed for 'E-Mail Harvesters'
+
+get_browser() error fixed for 'Feeds Blogs'
+
+get_browser() error fixed for 'Feeds Syndicators'
+
+get_browser() error fixed for 'General RSS'
+
+get_browser() error fixed for 'UniversalFeedParser/4.XY +http://feedparser.org/'
+
+get_browser() error fixed for 'UniversalFeedParser/4. +http://feedparser.org/'
+
+get_browser() error fixed for 'HTML Validators'
+
+get_browser() error fixed for 'Image Crawlers'
+
+get_browser() error fixed for 'Link Checkers'
+
+get_browser() error fixed for 'Microsoft'
+
+4000: report
+0 errors
+78 get_browser() errors fixed
+lib time: 163.10 sec (40.8 ms / item, max 58.7 ms)
+bc time: 25.28 sec (6.3 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'Miscellaneous Browsers'
+
+get_browser() error fixed for 'Offline Browsers'
+
+get_browser() error fixed for 'Online Scanners'
+
+get_browser() error fixed for 'Proxy Servers'
+
+get_browser() error fixed for 'Research Projects'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; Webscan v0.XY; +http://otc.dyndns.org/webscan/)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; Webscan v0.; +http://otc.dyndns.org/webscan/)'
+
+get_browser() error fixed for 'Rippers'
+
+get_browser() error fixed for 'Site Monitors'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; Chirp/1.0; +http://www.binarycanary.com/chirp.cfm)'
+
+get_browser() error fixed for 'Social Networking'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; FriendFeedBot/0.XY; +Http://friendfeed.com/about/bot)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; FriendFeedBot/0.; +Http://friendfeed.com/about/bot)'
+
+get_browser() error fixed for 'Mozilla/5.0 (compatible; Twitturls; +http://twitturls.com)'
+
+get_browser() error fixed for 'Translators'
+
+get_browser() error fixed for 'Version Checkers'
+
+get_browser() error fixed for 'Automated Browscap.ini Updater. To report issues contact us at+http://www.skycomp.ca'
+
+4500: report
+0 errors
+95 get_browser() errors fixed
+lib time: 180.79 sec (40.2 ms / item, max 58.7 ms)
+bc time: 30.06 sec (6.7 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'W3C'
+
+get_browser() error fixed for 'Become'
+
+get_browser() error fixed for 'Blue Coat Systems'
+
+get_browser() error fixed for 'FeedHub'
+
+get_browser() error fixed for 'Internet Content Rating Association'
+
+get_browser() error fixed for 'Nagios'
+
+get_browser() error fixed for 'NameProtect'
+
+get_browser() error fixed for 'Netcraft'
+
+get_browser() error fixed for 'NewsGator'
+
+get_browser() error fixed for 'Chromium 10.0'
+
+get_browser() error fixed for 'Chromium 11.0'
+
+get_browser() error fixed for 'Chromium 12.0'
+
+get_browser() error fixed for 'Chromium 13.0'
+
+get_browser() error fixed for 'Chromium 14.0'
+
+get_browser() error fixed for 'Chromium 15.0'
+
+get_browser() error fixed for 'Chromium 16.0'
+
+get_browser() error fixed for 'Chromium 17.0'
+
+get_browser() error fixed for 'Chromium 18.0'
+
+get_browser() error fixed for 'Chromium 19.0'
+
+get_browser() error fixed for 'Chromium 20.0'
+
+get_browser() error fixed for 'Chromium 21.0'
+
+get_browser() error fixed for 'Chromium 22.0'
+
+get_browser() error fixed for 'Chromium 23.0'
+
+get_browser() error fixed for 'Chromium 24.0'
+
+get_browser() error fixed for 'Chromium 25.0'
+
+get_browser() error fixed for 'Chromium 26.0'
+
+get_browser() error fixed for 'Chromium 27.0'
+
+get_browser() error fixed for 'Chromium 28.0'
+
+get_browser() error fixed for 'Chromium 29.0'
+
+get_browser() error fixed for 'Chromium 30.0'
+
+get_browser() error fixed for 'Chromium 31.0'
+
+get_browser() error fixed for 'Chromium 32.0'
+
+get_browser() error fixed for 'Chromium 6.0'
+
+get_browser() error fixed for 'Chromium 7.0'
+
+get_browser() error fixed for 'Chromium 8.0'
+
+get_browser() error fixed for 'Chromium 9.0'
+
+get_browser() error fixed for 'Chromium Generic'
+
+get_browser() error fixed for 'Chrome 10.0'
+
+get_browser() error fixed for 'Chrome 11.0'
+
+get_browser() error fixed for 'Chrome 12.0'
+
+get_browser() error fixed for 'Chrome 13.0'
+
+get_browser() error fixed for 'Chrome 14.0'
+
+get_browser() error fixed for 'Chrome 15.0'
+
+get_browser() error fixed for 'Chrome 16.0'
+
+get_browser() error fixed for 'Chrome 17.0'
+
+get_browser() error fixed for 'Chrome 18.0'
+
+5000: report
+0 errors
+141 get_browser() errors fixed
+lib time: 200.79 sec (40.2 ms / item, max 58.7 ms)
+bc time: 31.64 sec (6.3 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'Chrome 19.0'
+
+get_browser() error fixed for 'Chrome 20.0'
+
+get_browser() error fixed for 'Chrome 21.0'
+
+get_browser() error fixed for 'Chrome 22.0'
+
+get_browser() error fixed for 'Chrome 23.0'
+
+get_browser() error fixed for 'Chrome 24.0'
+
+get_browser() error fixed for 'Chrome 25.0'
+
+get_browser() error fixed for 'Chrome 26.0'
+
+get_browser() error fixed for 'Chrome 27.0'
+
+get_browser() error fixed for 'Chrome 28.0'
+
+5500: report
+0 errors
+151 get_browser() errors fixed
+lib time: 222.82 sec (40.5 ms / item, max 60.1 ms)
+bc time: 32.27 sec (5.9 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'Chrome 29.0'
+
+get_browser() error fixed for 'Chrome 30.0'
+
+get_browser() error fixed for 'Chrome 31.0'
+
+get_browser() error fixed for 'Chrome 32.0'
+
+get_browser() error fixed for 'Chrome 6.0'
+
+get_browser() error fixed for 'Chrome 7.0'
+
+get_browser() error fixed for 'Chrome 8.0'
+
+get_browser() error fixed for 'Chrome 9.0'
+
+get_browser() error fixed for 'Chrome Generic'
+
+get_browser() error fixed for 'Google Code'
+
+get_browser() error fixed for 'Iron 10.0'
+
+get_browser() error fixed for 'Iron 11.0'
+
+get_browser() error fixed for 'Iron 12.0'
+
+get_browser() error fixed for 'Iron 13.0'
+
+get_browser() error fixed for 'Iron 14.0'
+
+get_browser() error fixed for 'Iron 15.0'
+
+get_browser() error fixed for 'Iron 16.0'
+
+6000: report
+0 errors
+168 get_browser() errors fixed
+lib time: 244.59 sec (40.8 ms / item, max 60.1 ms)
+bc time: 33.02 sec (5.5 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'Iron 17.0'
+
+get_browser() error fixed for 'Iron 18.0'
+
+get_browser() error fixed for 'Iron 19.0'
+
+get_browser() error fixed for 'Iron 20.0'
+
+get_browser() error fixed for 'Iron 21.0'
+
+get_browser() error fixed for 'Iron 22.0'
+
+get_browser() error fixed for 'Iron 23.0'
+
+get_browser() error fixed for 'Iron 24.0'
+
+get_browser() error fixed for 'Iron 25.0'
+
+get_browser() error fixed for 'Iron 26.0'
+
+get_browser() error fixed for 'Iron 27.0'
+
+get_browser() error fixed for 'Iron 28.0'
+
+get_browser() error fixed for 'Iron 29.0'
+
+get_browser() error fixed for 'Iron 30.0'
+
+get_browser() error fixed for 'Iron 31.0'
+
+get_browser() error fixed for 'Iron 32.0'
+
+get_browser() error fixed for 'Iron 6.0'
+
+get_browser() error fixed for 'Iron 7.0'
+
+get_browser() error fixed for 'Iron 8.0'
+
+get_browser() error fixed for 'Iron 9.0'
+
+get_browser() error fixed for 'Iron Generic'
+
+get_browser() error fixed for 'Rockmelt'
+
+get_browser() error fixed for 'Arora 0.10'
+
+get_browser() error fixed for 'Arora 0.11'
+
+get_browser() error fixed for 'Arora 0.8'
+
+get_browser() error fixed for 'Arora 0.9'
+
+get_browser() error fixed for 'Arora Generic'
+
+get_browser() error fixed for 'Media Players'
+
+get_browser() error fixed for 'Microsoft Zune'
+
+get_browser() error fixed for 'Nintendo Wii'
+
+get_browser() error fixed for 'Windows Media Player'
+
+get_browser() error fixed for 'QuickTime 10.0'
+
+6500: report
+0 errors
+200 get_browser() errors fixed
+lib time: 265.25 sec (40.8 ms / item, max 60.6 ms)
+bc time: 34.49 sec (5.3 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'QuickTime 5.0'
+
+get_browser() error fixed for 'QuickTime 6.0'
+
+get_browser() error fixed for 'QuickTime 7.0'
+
+get_browser() error fixed for 'QuickTime 7.6'
+
+get_browser() error fixed for 'Lotus Notes 5.0'
+
+get_browser() error fixed for 'Lotus Notes 6.0'
+
+get_browser() error fixed for 'Microsoft Outlook 2007'
+
+get_browser() error fixed for 'Microsoft Outlook 2010'
+
+get_browser() error fixed for 'Windows Live Mail'
+
+get_browser() error fixed for 'Blazer'
+
+get_browser() error fixed for 'Brew'
+
+get_browser() error fixed for 'DoCoMo'
+
+get_browser() error fixed for 'Dolfin'
+
+get_browser() error fixed for 'IEMobile'
+
+get_browser() error fixed for 'Jasmine'
+
+get_browser() error fixed for 'KDDI'
+
+get_browser() error fixed for 'Kindle'
+
+get_browser() error fixed for 'Maemo'
+
+get_browser() error fixed for 'Motorola Internet Browser'
+
+get_browser() error fixed for 'Nokia'
+
+get_browser() error fixed for 'Openwave Mobile Browser'
+
+get_browser() error fixed for 'Palm Web'
+
+get_browser() error fixed for 'Playstation'
+
+get_browser() error fixed for 'Pocket PC'
+
+get_browser() error fixed for 'Polaris'
+
+get_browser() error fixed for 'SEMC Browser'
+
+get_browser() error fixed for 'Silk'
+
+get_browser() error fixed for 'Skyfire'
+
+get_browser() error fixed for 'Teleca'
+
+get_browser() error fixed for 'UC Browser'
+
+get_browser() error fixed for 'Android Browser 3.0'
+
+get_browser() error fixed for 'Android Browser 4.0'
+
+get_browser() error fixed for 'BlackBerry'
+
+get_browser() error fixed for 'BlackBerry'
+
+get_browser() error fixed for 'Mobile Safari 3.0'
+
+get_browser() error fixed for 'Mobile Safari 3.1'
+
+get_browser() error fixed for 'Mobile Safari 4.0'
+
+get_browser() error fixed for 'Mobile Safari 5.0'
+
+7000: report
+0 errors
+238 get_browser() errors fixed
+lib time: 285.30 sec (40.8 ms / item, max 60.6 ms)
+bc time: 36.72 sec (5.2 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'Mobile Safari 5.1'
+
+get_browser() error fixed for 'Mobile Safari 6.0'
+
+get_browser() error fixed for 'Mobile Safari 6.1'
+
+get_browser() error fixed for 'Mobile Safari 7.0'
+
+get_browser() error fixed for 'Opera Mini 2.0'
+
+get_browser() error fixed for 'Opera Mini 3.0'
+
+get_browser() error fixed for 'Opera Mini 4.0'
+
+get_browser() error fixed for 'Opera Mini 5.0'
+
+get_browser() error fixed for 'Opera Mini 6.0'
+
+get_browser() error fixed for 'Opera Mini 7.0'
+
+get_browser() error fixed for 'Opera Mini 8.0'
+
+get_browser() error fixed for 'Opera Mini 9.0'
+
+get_browser() error fixed for 'Opera Mini Generic'
+
+get_browser() error fixed for 'Opera Mobile'
+
+get_browser() error fixed for 'NetFront 2.0'
+
+get_browser() error fixed for 'NetFront 3.0'
+
+get_browser() error fixed for 'Boxee'
+
+get_browser() error fixed for 'GoogleTV'
+
+get_browser() error fixed for 'Netbox'
+
+get_browser() error fixed for 'PowerTV'
+
+get_browser() error fixed for 'WebTV'
+
+get_browser() error fixed for 'Amaya'
+
+get_browser() error fixed for 'Links'
+
+get_browser() error fixed for 'Lynx'
+
+get_browser() error fixed for 'Mosaic'
+
+get_browser() error fixed for 'w3m'
+
+get_browser() error fixed for 'ELinks 0.10'
+
+get_browser() error fixed for 'ELinks 0.11'
+
+7500: report
+0 errors
+266 get_browser() errors fixed
+lib time: 305.32 sec (40.7 ms / item, max 60.6 ms)
+bc time: 40.03 sec (5.3 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'ELinks 0.12'
+
+get_browser() error fixed for 'ELinks 0.13'
+
+get_browser() error fixed for 'ELinks 0.9'
+
+get_browser() error fixed for 'Camino'
+
+get_browser() error fixed for 'Chimera'
+
+get_browser() error fixed for 'Dillo'
+
+get_browser() error fixed for 'Emacs/W3'
+
+get_browser() error fixed for 'fantomas'
+
+get_browser() error fixed for 'FrontPage'
+
+get_browser() error fixed for 'Galeon'
+
+get_browser() error fixed for 'HP Secure Web Browser'
+
+get_browser() error fixed for 'IBrowse'
+
+get_browser() error fixed for 'iCab'
+
+get_browser() error fixed for 'iSiloX'
+
+get_browser() error fixed for 'Lycoris Desktop/LX'
+
+get_browser() error fixed for 'NetPositive'
+
+get_browser() error fixed for 'Shiira'
+
+get_browser() error fixed for 'K-Meleon 1.0'
+
+get_browser() error fixed for 'K-Meleon 1.1'
+
+get_browser() error fixed for 'K-Meleon 1.5'
+
+get_browser() error fixed for 'K-Meleon 1.6'
+
+get_browser() error fixed for 'Konqueror 3.0'
+
+get_browser() error fixed for 'Konqueror 4.0'
+
+get_browser() error fixed for 'Konqueror 4.5'
+
+get_browser() error fixed for 'Konqueror 4.6'
+
+8000: report
+0 errors
+291 get_browser() errors fixed
+lib time: 325.06 sec (40.6 ms / item, max 60.6 ms)
+bc time: 43.72 sec (5.5 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'Konqueror 4.7'
+
+get_browser() error fixed for 'Konqueror 4.8'
+
+get_browser() error fixed for 'Safari 2.0'
+
+get_browser() error fixed for 'Safari 3.0'
+
+get_browser() error fixed for 'Safari 4.0'
+
+get_browser() error fixed for 'Safari 5.0'
+
+get_browser() error fixed for 'Safari 5.1'
+
+get_browser() error fixed for 'Safari 6.0'
+
+get_browser() error fixed for 'Safari 6.1'
+
+get_browser() error fixed for 'Safari 7.0'
+
+get_browser() error fixed for 'Safari Generic'
+
+get_browser() error fixed for 'Lunascape 5.0'
+
+get_browser() error fixed for 'Lunascape 5.1'
+
+get_browser() error fixed for 'Lunascape 6.0'
+
+get_browser() error fixed for 'Maxthon 2.0'
+
+get_browser() error fixed for 'Maxthon 3.0'
+
+get_browser() error fixed for 'OmniWeb 5.0'
+
+get_browser() error fixed for 'OmniWeb 5.10'
+
+get_browser() error fixed for 'OmniWeb 5.11'
+
+get_browser() error fixed for 'Opera 10.00'
+
+get_browser() error fixed for 'Opera 11.00'
+
+8500: report
+0 errors
+312 get_browser() errors fixed
+lib time: 346.10 sec (40.7 ms / item, max 60.6 ms)
+bc time: 45.81 sec (5.4 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'Opera 11.10'
+
+get_browser() error fixed for 'Opera 11.50'
+
+get_browser() error fixed for 'Opera 11.60'
+
+get_browser() error fixed for 'Opera 12.00'
+
+9000: report
+0 errors
+316 get_browser() errors fixed
+lib time: 366.54 sec (40.7 ms / item, max 60.6 ms)
+bc time: 49.31 sec (5.5 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'Opera 12.10'
+
+get_browser() error fixed for 'Opera 12.11'
+
+get_browser() error fixed for 'Opera 12.12'
+
+get_browser() error fixed for 'Opera 12.13'
+
+9500: report
+0 errors
+320 get_browser() errors fixed
+lib time: 386.57 sec (40.7 ms / item, max 60.6 ms)
+bc time: 52.61 sec (5.5 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'Opera 12.14'
+
+get_browser() error fixed for 'Opera 12.15'
+
+get_browser() error fixed for 'Opera 12.16'
+
+get_browser() error fixed for 'Opera 2.00'
+
+get_browser() error fixed for 'Opera 3.00'
+
+10000: report
+0 errors
+325 get_browser() errors fixed
+lib time: 406.81 sec (40.7 ms / item, max 60.6 ms)
+bc time: 56.04 sec (5.6 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'Opera 4.00'
+
+get_browser() error fixed for 'Opera 5.00'
+
+get_browser() error fixed for 'Opera 6.00'
+
+get_browser() error fixed for 'Opera 7.00'
+
+get_browser() error fixed for 'Opera 8.00'
+
+10500: report
+0 errors
+330 get_browser() errors fixed
+lib time: 426.81 sec (40.6 ms / item, max 60.6 ms)
+bc time: 59.79 sec (5.7 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'Opera 9.00'
+
+get_browser() error fixed for 'Opera Generic'
+
+get_browser() error fixed for 'Netscape 4.0'
+
+get_browser() error fixed for 'Netscape 4.7'
+
+get_browser() error fixed for 'Netscape 4.8'
+
+get_browser() error fixed for 'Netscape 6.0'
+
+get_browser() error fixed for 'Netscape 7.0'
+
+get_browser() error fixed for 'Netscape 8.0'
+
+get_browser() error fixed for 'Netscape 9.0'
+
+get_browser() error fixed for 'Palemoon'
+
+get_browser() error fixed for 'SeaMonkey 1.0'
+
+11000: report
+0 errors
+341 get_browser() errors fixed
+lib time: 447.09 sec (40.6 ms / item, max 60.6 ms)
+bc time: 63.08 sec (5.7 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'SeaMonkey 1.1'
+
+get_browser() error fixed for 'SeaMonkey 2.0'
+
+get_browser() error fixed for 'SeaMonkey 2.1'
+
+get_browser() error fixed for 'Seamonkey 2.2'
+
+get_browser() error fixed for 'Seamonkey 2.3'
+
+get_browser() error fixed for 'Seamonkey 2.4'
+
+get_browser() error fixed for 'Seamonkey 2.5'
+
+get_browser() error fixed for 'Flock 1.0'
+
+get_browser() error fixed for 'Flock 2.0'
+
+get_browser() error fixed for 'Flock 3.0'
+
+get_browser() error fixed for 'Sleipnir'
+
+get_browser() error fixed for 'Sleipnir'
+
+get_browser() error fixed for 'Firefox 1.0'
+
+get_browser() error fixed for 'Firefox 10.0'
+
+get_browser() error fixed for 'Firefox 11.0'
+
+get_browser() error fixed for 'Firefox 12.0'
+
+get_browser() error fixed for 'Firefox 13.0'
+
+get_browser() error fixed for 'Firefox 14.0'
+
+get_browser() error fixed for 'Firefox 15.0'
+
+get_browser() error fixed for 'Firefox 16.0'
+
+get_browser() error fixed for 'Firefox 17.0'
+
+get_browser() error fixed for 'Firefox 18.0'
+
+11500: report
+0 errors
+363 get_browser() errors fixed
+lib time: 468.58 sec (40.7 ms / item, max 60.6 ms)
+bc time: 65.36 sec (5.7 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'Firefox 19.0'
+
+get_browser() error fixed for 'Firefox 2.0'
+
+get_browser() error fixed for 'Firefox 20.0'
+
+get_browser() error fixed for 'Firefox 21.0'
+
+get_browser() error fixed for 'Firefox 22.0'
+
+get_browser() error fixed for 'Firefox 23.0'
+
+get_browser() error fixed for 'Firefox 24.0'
+
+get_browser() error fixed for 'Firefox 3.0'
+
+get_browser() error fixed for 'Firefox 3.1'
+
+get_browser() error fixed for 'Firefox 3.5'
+
+get_browser() error fixed for 'Firefox 3.6'
+
+get_browser() error fixed for 'Firefox 4.0'
+
+get_browser() error fixed for 'Firefox 4.2'
+
+12000: report
+0 errors
+376 get_browser() errors fixed
+lib time: 490.19 sec (40.8 ms / item, max 60.6 ms)
+bc time: 67.58 sec (5.6 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'Firefox 5.0'
+
+get_browser() error fixed for 'Firefox 6.0'
+
+get_browser() error fixed for 'Firefox 7.0'
+
+get_browser() error fixed for 'Firefox 8.0'
+
+get_browser() error fixed for 'Firefox 9.0'
+
+get_browser() error fixed for 'Fennec 1.0'
+
+get_browser() error fixed for 'Fennec 10.0'
+
+get_browser() error fixed for 'Fennec 4.0'
+
+get_browser() error fixed for 'Fennec 5.0'
+
+get_browser() error fixed for 'Fennec 6.0'
+
+get_browser() error fixed for 'Fennec 7.0'
+
+get_browser() error fixed for 'Thunderbird 1.0'
+
+get_browser() error fixed for 'Thunderbird 1.5'
+
+get_browser() error fixed for 'Thunderbird 10.0'
+
+get_browser() error fixed for 'Thunderbird 11.0'
+
+get_browser() error fixed for 'Thunderbird 12.0'
+
+get_browser() error fixed for 'Thunderbird 13.0'
+
+get_browser() error fixed for 'Thunderbird 14.0'
+
+get_browser() error fixed for 'Thunderbird 2.0'
+
+get_browser() error fixed for 'Thunderbird 3.0'
+
+get_browser() error fixed for 'Thunderbird 3.1'
+
+get_browser() error fixed for 'Thunderbird 5.0'
+
+get_browser() error fixed for 'Thunderbird 6.0'
+
+12500: report
+0 errors
+399 get_browser() errors fixed
+lib time: 511.21 sec (40.9 ms / item, max 60.6 ms)
+bc time: 69.93 sec (5.6 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'Thunderbird 7.0'
+
+get_browser() error fixed for 'Thunderbird 8.0'
+
+get_browser() error fixed for 'Thunderbird 9.0'
+
+get_browser() error fixed for 'Iceweasel'
+
+get_browser() error fixed for 'Mozilla 1.0'
+
+get_browser() error fixed for 'Mozilla 1.1'
+
+get_browser() error fixed for 'Mozilla 1.2'
+
+get_browser() error fixed for 'Mozilla 1.3'
+
+get_browser() error fixed for 'Mozilla 1.4'
+
+get_browser() error fixed for 'Mozilla 1.5'
+
+get_browser() error fixed for 'Mozilla 1.6'
+
+get_browser() error fixed for 'Mozilla 1.7'
+
+get_browser() error fixed for 'Mozilla 1.8'
+
+get_browser() error fixed for 'Mozilla 1.9'
+
+get_browser() error fixed for 'AOL 9.0/IE 5.5'
+
+get_browser() error fixed for 'AOL 9.0/IE 6.0'
+
+get_browser() error fixed for 'AOL 9.0/IE 7.0'
+
+get_browser() error fixed for 'AOL 9.0/IE 8.0'
+
+get_browser() error fixed for 'AOL 9.1/IE 7.0'
+
+get_browser() error fixed for 'AOL 9.1/IE 8.0'
+
+get_browser() error fixed for 'AOL 9.5'
+
+get_browser() error fixed for 'AOL 9.6'
+
+get_browser() error fixed for 'AOL Generic'
+
+get_browser() error fixed for 'IE 1.0'
+
+get_browser() error fixed for 'IE 1.5'
+
+get_browser() error fixed for 'IE 10.0'
+
+get_browser() error fixed for 'IE 2.0'
+
+get_browser() error fixed for 'IE 3.0'
+
+get_browser() error fixed for 'IE 4.0'
+
+get_browser() error fixed for 'IE 5.0'
+
+13000: report
+0 errors
+429 get_browser() errors fixed
+lib time: 531.83 sec (40.9 ms / item, max 60.6 ms)
+bc time: 72.53 sec (5.6 ms / item, max 21.9 ms)
+
+get_browser() error fixed for 'IE 6.0'
+
+get_browser() error fixed for 'IE 7.0'
+
+get_browser() error fixed for 'IE 8.0'
+
+get_browser() error fixed for 'IE 9.0'
+
+13120: report
+0 errors
+433 get_browser() errors fixed
+lib time: 536.68 sec (40.9 ms / item, max 60.6 ms)
+bc time: 72.99 sec (5.6 ms / item, max 21.9 ms)
+

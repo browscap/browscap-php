@@ -54,9 +54,59 @@ The Browscap.ini database now has an official site at http://browscap.org/.
 Quick start
 -----------
 
-A quick start guide is available on the GitHub wiki at the original repostitory for this project, at the following address:
-https://github.com/GaretJax/phpbrowscap/wiki/QuickStart (the Wiki is on the original project page)
+a sample using composer with taking the useragent from the global $_SERVER variable
 
+```php
+require 'vendor/autoload.php';
+
+// The Browscap class is in the phpbrowscap namespace, so import it
+use phpbrowscap\Browscap;
+
+// Create a new Browscap object (loads or creates the cache)
+$bc = new Browscap('path/to/the/cache/dir');
+
+// Get information about the current browser's user agent
+$current_browser = $bc->getBrowser();
+```
+
+If you have an user agent you can change the function
+```php
+$current_browser = $bc->getBrowser($the_user_agent);
+```
+
+If you like arrays more than the StdClass you'll get it with this change
+```php
+$current_browser = $bc->getBrowser($the_user_agent, true);
+```
+
+If your projects needs more than one server, or you dont like file caches, you may use the Detector class instaed of the Browscap class.
+```php
+require 'vendor/autoload.php';
+
+// The Browscap class is in the phpbrowscap namespace, so import it
+use phpbrowscap\Detector;
+
+// Create a new Browscap object (loads or creates the cache)
+$bc = new Detector('path/to/the/cache/dir');
+
+// Get information about the current browser's user agent
+$current_browser = $bc->getBrowser();
+```
+
+If you have more than one process using that cache dir you can set a cache prefix.
+```php
+$bc = new Detector('path/to/the/cache/dir');
+$bc->setCachePrefix('abc');
+$current_browser = $bc->getBrowser();
+```
+
+If you want to log something that happens with the detector you may set an logger.
+This logger has to implement the logger interface from Psr\Log\LoggerInterface
+```php
+$bc = new Detector('path/to/the/cache/dir');
+$bc->setLogger($logger);
+$current_browser = $bc->getBrowser();
+```
 
 Features
 --------
