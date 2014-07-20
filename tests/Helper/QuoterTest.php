@@ -53,7 +53,7 @@ class QuoterTest extends \PHPUnit_Framework_TestCase
      */
     public function testPregQuote()
     {
-        $expected = '@^Mozilla/.\.0 \(compatible; Ask Jeeves/Teoma.*\)$@';
+        $expected = 'Mozilla/.\.0 \(compatible; Ask Jeeves/Teoma.*\)';
 
         self::assertSame($expected, $this->quoter->pregQuote('Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)'));
     }
