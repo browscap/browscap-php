@@ -75,7 +75,7 @@ abstract class AbstractUpdater
             if (is_array($options)) {
                 $this->setOptions($options);
             } else {
-                throw new \InvalidArgumentException("Invalid value for 'options', array expected.");
+                throw new \phpbrowscap\Exception\InvalidArgumentException("Invalid value for 'options', array expected.");
             }
         }
     }
@@ -139,7 +139,7 @@ abstract class AbstractUpdater
         if (array_key_exists($key, $this->options)) {
             $this->options[$key] = $value;
         } else {
-            throw new \InvalidArgumentException("Invalid option key '" . (string)$key . "'.");
+            throw new \phpbrowscap\Exception\InvalidArgumentException("Invalid option key '" . (string)$key . "'.");
         }
         return $this;
     }

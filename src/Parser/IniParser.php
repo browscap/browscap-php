@@ -94,12 +94,12 @@ class IniParser
      * @return array
      * @throws \InvalidArgumentException
      */
-    public function getLinesFromFile()
+    private function getLinesFromFile()
     {
         $filename = $this->filename;
 
         if (!file_exists($filename)) {
-            throw new \InvalidArgumentException("File not found: {$filename}");
+            throw new \phpbrowscap\Exception\InvalidArgumentException("File not found: {$filename}");
         }
 
         return file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -116,7 +116,7 @@ class IniParser
     /**
      * @return array
      */
-    public function getFileLines()
+    private function getFileLines()
     {
         if (!$this->fileLines) {
             $fileLines = $this->getLinesFromFile();
@@ -174,7 +174,7 @@ class IniParser
                 $bits[1] = '';
             }
 
-            $data[$currentSection][$bits[0]] = trim($bits[1], '"');
+            $data[$currentSection][$bits[0]]   = trim($bits[1], '"');
             $data[$currentSection]['Division'] = $currentDivision;
         }
 

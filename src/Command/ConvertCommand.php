@@ -26,16 +26,6 @@ class ConvertCommand extends Command
     /**
      * @var string
      */
-    const DEFAULT_BUILD_FOLDER = '/../../build';
-
-    /**
-     * @var string
-     */
-    const DEFAULT_RESOURCES_FOLDER = '/../../resources';
-
-    /**
-     * @var string
-     */
     private $resourceDirectory;
 
     /**
@@ -62,11 +52,11 @@ class ConvertCommand extends Command
     {
         $this
             ->setName('browscap:convert')
-            ->setDescription('Converts an existing regexes.yaml file to a regexes.php file.')
+            ->setDescription('Converts an existing browscap.ini file to a cache.php file.')
             ->addArgument(
                 'file',
                 InputArgument::OPTIONAL,
-                'Path to the regexes.yaml file',
+                'Path to the browscap.ini file',
                 $this->defaultIniFile
             )
             ->addOption(
@@ -97,11 +87,14 @@ class ConvertCommand extends Command
         
         $logger->info('initializing converting process');
 
+        ini_set('memory_limit', '256M');
         $converter = new Converter($this->resourceDirectory);
         
         $logger->info('started converting local file');
-
-        $converter->convertFile($input->getArgument('file'), $input->getOption('no-backup'));
+        
+        $file = ($input->getArgument('file') ? $input->getArgument('file') : ($this->defaultIniFile));
+        
+        $converter->convertFile($file, $input->getOption('no-backup'));
         
         $logger->info('finished converting local file');
     }

@@ -6,6 +6,7 @@ use phpbrowscap\Formatter\FormatterInterface;
 use phpbrowscap\Formatter\PhpGetBrowser;
 use phpbrowscap\Helper\Quoter;
 use WurflCache\Adapter\NullStorage;
+use phpbrowscap\Parser\Helper\GetPatternInterface;
 
 /**
  * Ini parser class (compatible with PHP 5.3+)
@@ -75,7 +76,7 @@ class Ini implements ParserInterface
      *
      * @return \phpbrowscap\Parser\Ini
      */
-    public function setHelper($helper)
+    public function setHelper(GetPatternInterface $helper)
     {
         $this->helper = $helper;
 
@@ -127,6 +128,7 @@ class Ini implements ParserInterface
             $adapter     = new NullStorage();
             $this->cache = new BrowscapCache($adapter);
         }
+        
         return $this->cache;
     }
 
@@ -162,7 +164,7 @@ class Ini implements ParserInterface
                 $pattern = strtok($patterns, "\t");
 
                 while ($pattern !== false) {
-                    if (preg_match("/^" . $quoterHelper->pregQuote($pattern) . "$/", $user_agent)) {
+                    if (preg_match("/^" . $quoterHelper->pregQuote($pattern, '/') . "$/", $user_agent)) {
                         $formatter = $this->getFormatter();
                         $formatter->setData($this->getSettings($pattern));
                         break 2;

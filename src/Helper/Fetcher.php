@@ -8,6 +8,8 @@
  */
 namespace phpbrowscap\Helper;
 
+use phpbrowscap\Exception\FetcherException;
+
 class Fetcher
 {
     private $resourceUri = 'https://raw.github.com/tobie/ua-parser/master/regexes.yaml';

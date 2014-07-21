@@ -10,7 +10,7 @@ namespace phpbrowscap\Helper;
 
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
-use UAParser\Exception\FileNotFoundException;
+use phpbrowscap\Exception\FileNotFoundException;
 
 class Converter
 {
@@ -41,6 +41,9 @@ class Converter
     
     /** @var \phpbrowscap\Parser\IniParser */
     private $parser = null;
+    
+    /** @var \Monolog\Logger */
+    private $logger = null;
 
     /**
      * @param string $destination
@@ -57,7 +60,7 @@ class Converter
     /**
      * @param string $iniFile
      * @param bool $backupBeforeOverride
-     * @throws FileNotFoundException
+     * @throws \phpbrowscap\Exception\FileNotFoundException
      */
     public function convertFile($iniFile, $backupBeforeOverride = true)
     {
@@ -86,28 +89,28 @@ class Converter
     }
 
     /**
-     * @param array $regexes
+     * @param array $browsers
      * @param bool $backupBeforeOverride
      */
     private function doConvert(array $browsers, $backupBeforeOverride = true)
     {
         $data = $this->buildCache($browsers);
 
-        $regexesFile = $this->destination . '/cache.php';
-        if ($backupBeforeOverride && $this->fs->exists($regexesFile)) {
+        $cacheFile = $this->destination . '/cache.php';
+        if ($backupBeforeOverride && $this->fs->exists($cacheFile)) {
 
-            $currentHash = hash('sha512', file_get_contents($regexesFile));
-            $futureHash = hash('sha512', $data);
+            $currentHash = hash('sha512', file_get_contents($cacheFile));
+            $futureHash  = hash('sha512', $data);
 
             if ($futureHash === $currentHash) {
                 return;
             }
 
             $backupFile = $this->destination . '/cache-' . $currentHash . '.php';
-            $this->fs->copy($regexesFile, $backupFile);
+            $this->fs->copy($cacheFile, $backupFile);
         }
 
-        $this->fs->dumpFile($regexesFile, $data);
+        $this->fs->dumpFile($cacheFile, $data);
     }
 
     /**
