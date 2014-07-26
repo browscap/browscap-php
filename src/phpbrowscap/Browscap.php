@@ -372,7 +372,7 @@ class Browscap
             } elseif ($value === 'false') {
                 $value = false;
             }
-            
+
             $tmp_key = $this->_properties[$key];
             if ($this->lowercase) {
                 $tmp_key = strtolower($this->_properties[$key]);
@@ -506,10 +506,17 @@ class Browscap
      *
      * Parses the ini file and updates the cache files
      *
+     * @throws Exception
      * @return bool whether the file was correctly written to the disk
      */
     public function updateCache()
     {
+        $lockfile = $this->cacheDir . 'cache.lock';
+
+        if (file_exists($lockfile) || !touch($lockfile)) {
+            throw new Exception('temporary file already exists');
+        }
+
         $ini_path   = $this->cacheDir . $this->iniFilename;
         $cache_path = $this->cacheDir . $this->cacheFilename;
 
@@ -617,9 +624,27 @@ class Browscap
 
         // Get the whole PHP code
         $cache = $this->_buildCache();
+        $dir   = dirname($cache_path);
 
-        // Save and return
-        return (bool) file_put_contents($cache_path, $cache, LOCK_EX);
+        // "tempnam" did not work with VFSStream for tests
+        $tmpFile = $dir . '/temp_' . md5(time() . basename($cache_path));
+
+        // asume that all will be ok
+        if (false === file_put_contents($tmpFile, $cache)) {
+            // writing to the temparary file failed
+            throw new Exception('wrting to temporary file failed');
+        }
+
+        if (false === rename($tmpFile, $cache_path)) {
+            // renaming file failed, remove temp file
+            @unlink($tmpFile);
+
+            throw new Exception('could not rename temporary file to the cache file');
+        }
+
+        @unlink($lockfile);
+
+        return true;
     }
 
     /**
