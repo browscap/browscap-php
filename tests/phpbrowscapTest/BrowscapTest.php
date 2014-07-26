@@ -40,7 +40,7 @@ use ReflectionClass;
 class BrowscapTest extends TestCase
 {
     /**
-     * @expectedException PHPUnit_Framework_Error_Warning
+     * @expectedException \PHPUnit_Framework_Error_Warning
      */
     public function testConstructorFails()
     {

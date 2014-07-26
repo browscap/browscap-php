@@ -979,7 +979,7 @@ class Browscap
      * Checks for the various possibilities offered by the current configuration
      * of PHP to retrieve external HTTP data
      *
-     * @return string the name of function to use to retrieve the file
+     * @return string|boolean the name of function to use to retrieve the file or false if no methods are available
      */
     protected function _getUpdateMethod()
     {
