@@ -110,10 +110,6 @@ class Ini implements ParserInterface
      */
     public function getFormatter()
     {
-        if ($this->formatter === null) {
-            $this->setFormatter(new PhpGetBrowser());
-        }
-
         return $this->formatter;
     }
 
@@ -124,11 +120,6 @@ class Ini implements ParserInterface
      */
     public function getCache()
     {
-        if ($this->cache === null) {
-            $adapter     = new NullStorage();
-            $this->cache = new BrowscapCache($adapter);
-        }
-        
         return $this->cache;
     }
 
@@ -251,16 +242,13 @@ class Ini implements ParserInterface
         }
 
         $return = array();
-        $file   = $this->getCache()->getFileName('browscap.iniparts.' . $subkey);
-        $handle = fopen($file, "r");
-        if ($handle) {
-            while (($buffer = fgets($handle)) !== false) {
-                if (substr($buffer, 0, 32) === $patternhash) {
-                    $return = json_decode(substr($buffer, 32), true);
-                    break;
-                }
+        $file   = $this->getCache()->getItem('browscap.iniparts.' . $subkey);
+        
+        foreach ($file as $buffer) {
+            if (substr($buffer, 0, 32) === $patternhash) {
+                $return = json_decode(substr($buffer, 32), true);
+                break;
             }
-            fclose($handle);
         }
 
         return $return;

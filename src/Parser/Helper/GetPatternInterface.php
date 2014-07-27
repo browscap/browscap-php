@@ -1,6 +1,8 @@
 <?php
 namespace phpbrowscap\Parser\Helper;
 
+use phpbrowscap\Cache\BrowscapCache;
+
 /**
  * Ini parser class (compatible with PHP 5.5+)
  *
@@ -39,6 +41,22 @@ namespace phpbrowscap\Parser\Helper;
  */
 interface GetPatternInterface
 {
+    /**
+     * Gets a cache instance
+     *
+     * @return \phpbrowscap\Cache\BrowscapCache
+     */
+    public function getCache();
+
+    /**
+     * Sets a cache instance
+     *
+     * @param \phpbrowscap\Cache\BrowscapCache $cache
+     *
+     * @return \phpbrowscap\Parser\GetPatternInterface
+     */
+    public function setCache(BrowscapCache $cache);
+
     /**
      * Gets some possible patterns that have to be matched against the user agent. With the given
      * user agent string, we can optimize the search for potential patterns:

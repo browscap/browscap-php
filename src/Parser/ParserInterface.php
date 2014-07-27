@@ -3,6 +3,7 @@ namespace phpbrowscap\Parser;
 
 use phpbrowscap\Cache\BrowscapCache;
 use phpbrowscap\Formatter\FormatterInterface;
+use phpbrowscap\Parser\Helper\GetPatternInterface;
 
 /**
  * Abstract parser class
@@ -47,7 +48,7 @@ interface ParserInterface
      *
      * @return \phpbrowscap\Parser\Ini
      */
-    public function setHelper($helper);
+    public function setHelper(GetPatternInterface $helper);
 
     /**
      * @return \phpbrowscap\Parser\Helper\GetPatternInterface

@@ -33,7 +33,8 @@ class LogfileCommand extends Command
             ->addArgument(
                 'output',
                 InputArgument::REQUIRED,
-                'Path to output log file'
+                'Path to output log file',
+                null
             )
             ->addOption(
                 'log-file',

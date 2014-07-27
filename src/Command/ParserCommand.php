@@ -33,13 +33,13 @@ class ParserCommand extends Command
             ->setDescription('Parses a user agent string and dumps the results.')
             ->addArgument(
                 'user-agent',
-                null,
                 InputArgument::REQUIRED,
-                'User agent string to analyze'
+                'User agent string to analyze',
+                null
             )
             ->addOption(
                 'debug', 
-                null, 
+                'd', 
                 InputOption::VALUE_NONE, 
                 'Should the debug mode entered?'
             )

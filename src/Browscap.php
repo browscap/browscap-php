@@ -101,8 +101,13 @@ class Browscap
     public function getCache()
     {
         if (null === $this->cache) {
-            $adapter     = new NullStorage();
-            $this->cache = new BrowscapCache($adapter);
+            $resourceDirectory = __DIR__  . '/../resources/';
+            
+            $cacheAdapter = new \WurflCache\Adapter\File(
+                array(\WurflCache\Adapter\File::DIR => $resourceDirectory)
+            );
+            
+            $this->cache = new BrowscapCache($cacheAdapter);
         }
 
         return $this->cache;
@@ -152,6 +157,8 @@ class Browscap
         } else {
             $helper = new Parser\Helper\GetPatternLt55();
         }
+        
+        $helper->setCache($this->getCache());
 
         $this->parser
             ->setHelper($helper)
@@ -188,9 +195,9 @@ class Browscap
         // if return is still NULL, updates are disabled... in this
         // case we return an empty formatter instance
         if ($return === null) {
-            $return = $this->getFormatter()->getData();
+            return $this->getFormatter()->getData();
         }
 
-        return $return;
+        return $return->getData();
     }
 }

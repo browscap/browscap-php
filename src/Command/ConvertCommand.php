@@ -62,13 +62,13 @@ class ConvertCommand extends Command
             )
             ->addOption(
                 'no-backup',
-                null,
+                'n',
                 InputOption::VALUE_NONE,
                 'Do not backup the previously existing file'
             )
             ->addOption(
                 'debug', 
-                null, 
+                'd', 
                 InputOption::VALUE_NONE, 
                 'Should the debug mode entered?'
             )

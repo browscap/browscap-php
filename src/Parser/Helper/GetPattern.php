@@ -1,6 +1,8 @@
 <?php
 namespace phpbrowscap\Parser\Helper;
 
+use phpbrowscap\Cache\BrowscapCache;
+
 /**
  * Ini parser class (compatible with PHP 5.5+)
  *
@@ -40,6 +42,37 @@ namespace phpbrowscap\Parser\Helper;
 class GetPattern implements GetPatternInterface
 {
     /**
+     * The cache instance
+     *
+     * @var \phpbrowscap\Cache\BrowscapCache
+     */
+    private $cache = null;
+
+    /**
+     * Gets a cache instance
+     *
+     * @return \phpbrowscap\Cache\BrowscapCache
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
+     * Sets a cache instance
+     *
+     * @param \phpbrowscap\Cache\BrowscapCache $cache
+     *
+     * @return \phpbrowscap\Parser\Ini
+     */
+    public function setCache(BrowscapCache $cache)
+    {
+        $this->cache = $cache;
+
+        return $this;
+    }
+
+    /**
      * Gets some possible patterns that have to be matched against the user agent. With the given
      * user agent string, we can optimize the search for potential patterns:
      * - We check the first characters of the user agent (or better: a hash, generated from it)
@@ -56,7 +89,7 @@ class GetPattern implements GetPatternInterface
         $length = strlen($user_agent);
         $subkey = Pattern::getPatternCacheSubkey($start);
 
-        if (!self::getCache()->exists('browscap.patterns.' . $subkey)) {
+        if (!$this->getCache()->hasItem('browscap.patterns.' . $subkey)) {
             Pattern::createPatterns();
         }
 
@@ -64,33 +97,23 @@ class GetPattern implements GetPatternInterface
         // for the default browser (with a special key)
         foreach (array($start, str_repeat('z', 32)) as $tmp_start) {
             $tmp_subkey = Pattern::getPatternCacheSubkey($tmp_start);
-            $file       = self::getCache()->getFileName('browscap.patterns.' . $tmp_subkey);
-            if (file_exists($file)) {
-                $handle = fopen($file, "r");
-                if ($handle) {
-                    try {
-                        $found = false;
-                        while (($buffer = fgets($handle)) !== false) {
-                            $tmp_buffer = substr($buffer, 0, 32);
-                            if ($tmp_buffer === $tmp_start) {
-                                // get length of the pattern
-                                $len = (int)strstr(substr($buffer, 33, 4), ' ', true);
+            $file       = $this->getCache()->getItem('browscap.patterns.' . $tmp_subkey);
+            $found      = false;
+            
+            foreach ($file as $buffer) {
+                $tmp_buffer = substr($buffer, 0, 32);
+                if ($tmp_buffer === $tmp_start) {
+                    // get length of the pattern
+                    $len = (int)strstr(substr($buffer, 33, 4), ' ', true);
 
-                                // the user agent must be longer than the pattern without place holders
-                                if ($len <= $length) {
-                                    list(,,$patterns) = explode(" ", $buffer, 3);
-                                    yield trim($patterns);
-                                }
-                                $found = true;
-                            } elseif ($found === true) {
-                                break;
-                            }
-                        }
-                    } finally {
-                        // always close the opened file, also when the Generator is
-                        // used in a loop that is ended with a break
-                        fclose($handle);
+                    // the user agent must be longer than the pattern without place holders
+                    if ($len <= $length) {
+                        list(,,$patterns) = explode(" ", $buffer, 3);
+                        yield trim($patterns);
                     }
+                    $found = true;
+                } elseif ($found === true) {
+                    break;
                 }
             }
         }

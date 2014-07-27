@@ -46,19 +46,19 @@ class BrowscapCache
     /**
      * Current version of the class.
      */
-    const VERSION = '2.0b';
+    const VERSION = '2.0';
 
     /**
      *
      */
-    const CACHE_FILE_VERSION = '2.0b';
+    const CACHE_FILE_VERSION = '2.0';
 
     /**
-     * The update interval in seconds.
+     * The cache livetime in seconds.
      *
      * @var integer
      */
-    const UPDATE_INTERVAL = 432000; // 5 days
+    const CACHE_LIVETIME = 315360000; // ~10 years (60 * 60 * 24 * 365 * 10)
 
     /**
      * Path to the cache directory
@@ -86,7 +86,7 @@ class BrowscapCache
     {
         $this->cache = $adapter;
 
-        $this->setUpdateInterval(self::UPDATE_INTERVAL);
+        $this->setUpdateInterval(self::CACHE_LIVETIME);
     }
 
     /**
@@ -151,7 +151,7 @@ class BrowscapCache
             return null;
         }
 
-        return $data['content'];
+        return unserialize($data['content']);
     }
 
     /**
@@ -168,7 +168,7 @@ class BrowscapCache
         // Get the whole PHP code
         $data = array(
             'cacheVersion' => self::CACHE_FILE_VERSION,
-            'content'      => var_export($content, true)
+            'content'      => serialize($content)
         );
 
         if ($with_version) {

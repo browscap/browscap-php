@@ -55,7 +55,7 @@ class UpdateCommand extends Command
             )
             ->addOption(
                 'debug', 
-                null, 
+                'd', 
                 InputOption::VALUE_NONE, 
                 'Should the debug mode entered?'
             )

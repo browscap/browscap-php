@@ -54,6 +54,8 @@ class Pattern
      */
     public static function createPatterns()
     {
+        $matches = array();
+        
         // get all relevant patterns from the INI file
         // - containing "*" or "?"
         // - not containing "*" or "?", but not having a comment
@@ -83,17 +85,8 @@ class Pattern
                 }
                 $data[$tmp_start][$tmp_length][] = $match;
             }
-
-            // sorting of the data is important to check the patterns later in the correct order, because
-            // we need to check the most specific (=longest) patterns first, and the least specific
-            // (".*" for "Default Browser")  last.
-            //
-            // sort by pattern start to group them
-            ksort($data);
-            // and then by pattern length (longest first)
-            foreach (array_keys($data) as $key) {
-                krsort($data[$key]);
-            }
+            
+            unset($matches);
 
             // write optimized file (grouped by the first character of the has, generated from the pattern
             // start) with multiple patterns joined by tabs. this is to speed up loading of the data (small
@@ -112,6 +105,8 @@ class Pattern
                     }
                 }
             }
+            
+            unset($data);
         }
 
         return $contents;
@@ -147,7 +142,7 @@ class Pattern
      * @param string $pattern
      * @return int
      */
-    protected static function getPatternLength($pattern)
+    private static function getPatternLength($pattern)
     {
         return strlen(str_replace('*', '', $pattern));
     }
