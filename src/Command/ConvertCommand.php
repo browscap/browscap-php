@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use phpbrowscap\Helper\Converter;
 use phpbrowscap\Helper\LoggerHelper;
+use phpbrowscap\Cache\BrowscapCache;
 
 /**
  * commands to a downloaded Browscap ini file into a array
@@ -89,6 +90,12 @@ class ConvertCommand extends Command
 
         ini_set('memory_limit', '256M');
         $converter = new Converter($this->resourceDirectory);
+        $converter->setLogger($logger);
+        
+        $cacheAdapter = new \WurflCache\Adapter\File(array(\WurflCache\Adapter\File::DIR => $this->resourceDirectory));
+        $cache        = new BrowscapCache($cacheAdapter);
+        
+        $converter->setCache($cache);
         
         $logger->info('started converting local file');
         

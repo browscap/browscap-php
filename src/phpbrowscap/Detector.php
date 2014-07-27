@@ -612,9 +612,8 @@ class Detector extends AbstractBrowscap
 
         if (null !== $this->localFile) {
             $this->loader->setLocaleFile($this->localFile);
-            $this->loader->setIniFile(basename($this->localFile));
         } else {
-            $this->loader->setIniFile($this->iniFilename);
+            $this->loader->setRemoteFilename($this->iniFilename);
         }
 
         return $this->loader;

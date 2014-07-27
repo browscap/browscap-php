@@ -78,6 +78,13 @@ class UpdateCommand extends Command
         ini_set('memory_limit', '256M');
         $fetcher   = new Fetcher();
         $converter = new Converter($this->resourceDirectory);
+        $converter->setLogger($logger);
+        
+        $cacheAdapter = new \WurflCache\Adapter\File($this->resourceDirectory);
+        $cache        = new BrowscapCache($cacheAdapter);
+        
+        $converter->setCache($cache);
+        
         $logger->info('started fetching remote file');
         
         $content = $fetcher->fetch();

@@ -140,7 +140,7 @@ class BrowscapCache
             $cacheId .= '.' . $this->getVersion();
         }
 
-        if (!$this->hasItem($cacheId)) {
+        if (!$this->cache->hasItem($cacheId)) {
             return null;
         }
 

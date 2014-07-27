@@ -11,6 +11,7 @@ namespace phpbrowscap\Helper;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 use phpbrowscap\Exception\FileNotFoundException;
+use phpbrowscap\Cache\BrowscapCache;
 
 class Converter
 {
@@ -46,6 +47,22 @@ class Converter
     private $logger = null;
 
     /**
+     * The cache instance
+     *
+     * @var \phpbrowscap\Cache\BrowscapCache
+     */
+    private $cache = null;
+
+    /**
+     * Number of pattern to combine for a faster regular expression search.
+     *
+     * @important The number of patterns that can be processed in one step
+     *            is limited by the internal regular expression limits.
+     * @var int
+     */
+    private $joinPatterns = 100;
+
+    /**
      * @param string $destination
      * @param \Symfony\Component\Filesystem\Filesystem $fs
      */
@@ -55,6 +72,27 @@ class Converter
         $this->fs = $fs ? $fs : new Filesystem();
         $this->parser = new \phpbrowscap\Parser\IniParser();
         $this->parser->setShouldSort(false);
+    }
+    
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+        
+        return $this;
+    }
+
+    /**
+     * Sets a cache instance
+     *
+     * @param \phpbrowscap\Cache\BrowscapCache $cache
+     *
+     * @return \phpbrowscap\Browscap
+     */
+    public function setCache(BrowscapCache $cache)
+    {
+        $this->cache = $cache;
+
+        return $this;
     }
 
     /**
@@ -67,8 +105,14 @@ class Converter
         if (!$this->fs->exists($iniFile)) {
             throw FileNotFoundException::fileNotFound($iniFile);
         }
+        
+        $this->logger->info('start reading file');
+        
+        $iniString = file_get_contents($iniFile);
+        
+        $this->logger->info('finished reading file');
 
-        $this->convertString(file_get_contents($iniFile), $backupBeforeOverride);
+        $this->convertString($iniString, $backupBeforeOverride);
     }
 
     /**
@@ -77,57 +121,34 @@ class Converter
      */
     public function convertString($iniString, $backupBeforeOverride = true)
     {
-        if (false !== strpos("\r\n", $iniString)) {
-            $fileLines = explode("\r\n", $iniString);
-        } else {
-            $fileLines = explode("\n", $iniString);
-        }
+        $this->logger->info('start changing file into an array');
         
-        $this->parser->setFileLines($fileLines);
+        //if (false !== strpos("\r\n", $iniString)) {
+        //    $fileLines = explode("\r\n", $iniString);
+        //} else {
+        //    $fileLines = explode("\n", $iniString);
+        //}
         
-        $this->doConvert($this->parser->parse(), $backupBeforeOverride);
-    }
-
-    /**
-     * @param array $browsers
-     * @param bool $backupBeforeOverride
-     */
-    private function doConvert(array $browsers, $backupBeforeOverride = true)
-    {
-        $data = $this->buildCache($browsers);
-
-        $cacheFile = $this->destination . '/cache.php';
-        if ($backupBeforeOverride && $this->fs->exists($cacheFile)) {
-
-            $currentHash = hash('sha512', file_get_contents($cacheFile));
-            $futureHash  = hash('sha512', $data);
-
-            if ($futureHash === $currentHash) {
-                return;
-            }
-
-            $backupFile = $this->destination . '/cache-' . $currentHash . '.php';
-            $this->fs->copy($cacheFile, $backupFile);
-        }
-
-        $this->fs->dumpFile($cacheFile, $data);
-    }
-
-    /**
-     * XXX save
-     *
-     * Parses the ini file and updates the cache files
-     *
-     * @return bool whether the file was correctly written to the disk
-     */
-    private function buildCache(array $browsers)
-    {
-        $this->_source_version = $browsers[self::BROWSCAP_VERSION_KEY]['Version'];
+        //$this->parser->setFileLines($fileLines);
+        //$browsers = $this->parser->parse();
+        
+        $this->createPatterns($iniString);
+        $this->createIniParts($iniString);
+        /*
+        $browsers = parse_ini_string($iniString, true, INI_SCANNER_RAW);
+        
+        $this->logger->info('finished changing file into an array');
+        $this->logger->info('started building the cache');
+        
+        $_source_version = $browsers[self::BROWSCAP_VERSION_KEY]['Version'];
+        
+        $this->cache->setItem('browscap.version', $_source_version, false);
+        
         unset($browsers[self::BROWSCAP_VERSION_KEY]);
-
         unset($browsers['DefaultProperties']['RenderingEngine_Description']);
 
-        $_properties = array_keys($browsers['DefaultProperties']);
+        $_properties     = array_keys($browsers['DefaultProperties']);
+        $tmp_user_agents = array_keys($browsers);
 
         array_unshift(
             $_properties,
@@ -137,62 +158,61 @@ class Converter
             'Parent'
         );
 
-        $tmp_user_agents  = array_keys($browsers);
-        $user_agents_keys = array_flip($tmp_user_agents);
-        $properties_keys  = array_flip($_properties);
+        $this->cache->setItem('browscap.properties', $_properties);
+        //$this->cache->setItem('browscap.useragents', $tmp_user_agents);
+        
+        $this->logger->info('finished storing properties and useragents');
+        $this->logger->info('started saving browsers');
+        
+        //$user_agents_keys = array_flip($tmp_user_agents);
+        //$properties_keys  = array_flip($_properties);
 
         $tmp_patterns = array();
+        $_patterns    = array();
+        $quoterHelper = new \phpbrowscap\Helper\Quoter();
 
         foreach ($tmp_user_agents as $i => $user_agent) {
-            if (empty($browsers[$user_agent]['Comment'])
-                || false !== strpos($user_agent, '*')
-                || false !== strpos($user_agent, '?')
+            if (!empty($browsers[$user_agent]['Comment'])
+                && false === strpos($user_agent, '*')
+                && false === strpos($user_agent, '?')
             ) {
-                $quoterHelper = new \phpbrowscap\Helper\Quoter();
-                $pattern = $quoterHelper->pregQuote($user_agent);
-
-                $matches_count = preg_match_all('@\d+@', $pattern, $matches);
-
-                if (!$matches_count) {
-                    $tmp_patterns[$pattern] = $i;
-                } else {
-                    $compressed_pattern = preg_replace('@\d+@', '(\d+)', $pattern);
-
-                    if (!isset($tmp_patterns[$compressed_pattern])) {
-                        $tmp_patterns[$compressed_pattern] = array('first' => $pattern);
-                    }
-
-                    $tmp_patterns[$compressed_pattern][$i] = $matches[0];
-                }
+                continue;
             }
+            
+            $this->logger->debug('processing: ' . $user_agent);
+            
+            $pattern       = $quoterHelper->pregQuote($user_agent);
+            $matches_count = preg_match_all('@\d+@', $pattern, $matches);
 
-            if (!empty($browsers[$user_agent]['Parent'])) {
-                $parent = $browsers[$user_agent]['Parent'];
+            if (!$matches_count) {
+                $tmp_patterns[$pattern] = $i;
+            } else {
+                $compressed_pattern = preg_replace('@\d+@', '(\d+)', $pattern);
 
-                $parent_key = $user_agents_keys[$parent];
-
-                $browsers[$user_agent]['Parent']       = $parent_key;
-                $_userAgents[$parent_key . '.0'] = $tmp_user_agents[$parent_key];
-            };
-
-            $browser = array();
-            foreach ($browsers[$user_agent] as $key => $value) {
-                if (!isset($properties_keys[$key])) {
-                    continue;
+                if (!isset($tmp_patterns[$compressed_pattern])) {
+                    $tmp_patterns[$compressed_pattern] = array('first' => $pattern);
                 }
 
-                $key           = $properties_keys[$key];
-                $browser[$key] = $value;
+                $tmp_patterns[$compressed_pattern][$i] = $matches[0];
+            }
+            
+            $browser = $value = $browsers[$user_agent];
+            
+            while (array_key_exists('Parent', $value)) {
+                $value    = $browsers[$value['Parent']];
+                $browser += $value;
             }
 
-            $_browsers[] = $browser;
+            $this->cache->setItem('browscap.browsers.' . $i, $browser);
         }
+        
+        $this->logger->info('finished saving browsers');
 
         // reducing memory usage by unsetting $tmp_user_agents
         unset($tmp_user_agents);
         
-        $_patterns = array();
-
+        $this->logger->info('started deduplicating patterns');
+        
         foreach ($tmp_patterns as $pattern => $pattern_data) {
             if (is_int($pattern_data)) {
                 $_patterns[$pattern] = $pattern_data;
@@ -207,7 +227,22 @@ class Converter
                 $_patterns[$pattern] = $pattern_data;
             }
         }
+        
+        $this->cache->setItem('browscap.pattern', $_patterns);
+        
+        $this->logger->info('finished deduplicating patterns');
+        /**/
+    }
 
+    /**
+     * XXX save
+     *
+     * Parses the ini file and updates the cache files
+     *
+     * @return bool whether the file was correctly written to the disk
+     */
+    private function buildCache(array $browsers)
+    {
         // Get the whole PHP code
         $cacheTpl = "<?php\n\$source_version=%s;\n\$cache_version=%s;\n\$properties=%s;\n\$browsers=%s;\n\$userAgents=%s;\n\$patterns=%s;\n";
 
@@ -237,7 +272,7 @@ class Converter
      *
      * @return string the array parsed into a PHP string
      */
-    private function _array2string($array)
+    private function array2string($array)
     {
         $strings = array();
 
@@ -307,5 +342,146 @@ class Converter
         $pattern = implode('(\d+)', $pattern_parts);
 
         return $prepared_matches;
+    }
+
+    /**
+     * Creates new ini part cache files
+     */
+    private function createIniParts($content)
+    {
+        // get all patterns from the ini file in the correct order,
+        // so that we can calculate with index number of the resulting array,
+        // which part to use when the ini file is splitted into its sections.
+        preg_match_all('/(?<=\[)(?:[^\r\n]+)(?=\])/m', $content, $patternpositions);
+        $patternpositions = $patternpositions[0];
+
+        // split the ini file into sections and save the data in one line with a hash of the beloging
+        // pattern (filtered in the previous step)
+        $ini_parts = preg_split('/\[[^\r\n]+\]/', $content);
+        $contents  = array();
+        foreach ($patternpositions as $position => $pattern) {
+            $patternhash = md5($pattern);
+            $subkey      = $this->getIniPartCacheSubkey($patternhash);
+            if (!isset($contents[$subkey])) {
+                $contents[$subkey] = '';
+            }
+
+            // the position has to be moved by one, because the header of the ini file
+            // is also returned as a part
+            $contents[$subkey] .= $patternhash . json_encode(
+                parse_ini_string($ini_parts[($position + 1)]),
+                JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
+            ) . "\n";
+        }
+        
+        unset($patternpositions);
+        
+        foreach ($contents as $subkey => $content) {
+            $this->cache->setItem('browscap.iniparts.' . $subkey, $content);
+        }
+    }
+
+    /**
+     * Gets the subkey for the ini parts cache file, generated from the given string
+     *
+     * @param string $string
+     * @return string
+     */
+    private function getIniPartCacheSubkey($string) 
+    {
+        return $string[0] . $string[1];
+    }
+
+    /**
+     * Creates new pattern cache files
+     */
+    private function createPatterns($content)
+    {
+        // get all relevant patterns from the INI file
+        // - containing "*" or "?"
+        // - not containing "*" or "?", but not having a comment
+        preg_match_all('/(?<=\[)(?:[^\r\n]*[?*][^\r\n]*)(?=\])|(?<=\[)(?:[^\r\n*?]+)(?=\])(?![^\[]*Comment=)/m', $content, $matches);
+        $matches = $matches[0];
+
+        if (!count($matches)) {
+            return false;
+        }
+        
+        // build an array to structure the data. this requires some memory, but we need this step to be able to
+        // sort the data in the way we need it (see below).
+        $data = array();
+        foreach ($matches as $match) {
+            // get the first characters for a fast search
+            $tmp_start  = $this->getPatternStart($match);
+            $tmp_length = $this->getPatternLength($match);
+
+            // special handling of default entry
+            if ($tmp_length === 0) {
+                $tmp_start = str_repeat('z', 32);
+            }
+
+            if (!isset($data[$tmp_start])) {
+                $data[$tmp_start] = array();
+            }
+            if (!isset($data[$tmp_start][$tmp_length])) {
+                $data[$tmp_start][$tmp_length] = array();
+            }
+            $data[$tmp_start][$tmp_length][] = $match;
+        }
+        
+        unset($matches);
+
+        // write optimized file (grouped by the first character of the has, generated from the pattern
+        // start) with multiple patterns joined by tabs. this is to speed up loading of the data (small
+        // array with pattern strings instead of an large array with single patterns) and also enables
+        // us to search for multiple patterns in one preg_match call for a fast first search
+        // (3-10 faster), followed by a detailed search for each single pattern.
+        $contents = array();
+        foreach ($data as $tmp_start => $tmp_entries) {
+            foreach ($tmp_entries as $tmp_length => $tmp_patterns) {
+                for ($i = 0, $j = ceil(count($tmp_patterns) / $this->joinPatterns); $i < $j; $i++) {
+                    $tmp_joinpatterns = implode("\t", array_slice($tmp_patterns, ($i * $this->joinPatterns), $this->joinPatterns));
+                    $tmp_subkey       = $this->getIniPartCacheSubkey($tmp_start);
+                    
+                    if (!isset($contents[$tmp_subkey])) {
+                        $contents[$tmp_subkey] = '';
+                    }
+                    
+                    $contents[$tmp_subkey] .= $tmp_start . " " . $tmp_length . " " . $tmp_joinpatterns . "\n";
+                }
+            }
+        }
+        
+        unset($data);
+        
+        foreach ($contents as $subkey => $content) {
+            $this->cache->setItem('browscap.patterns.' . $subkey, $content, true);
+        }
+        
+        return true;
+    }
+
+    /**
+     * Gets a hash from the first charcters of a pattern/user agent, that can be used for a fast comparison,
+     * by comparing only the hashes, without having to match the complete pattern against the user agent.
+     *
+     * @param string $pattern
+     * @return string
+     */
+    private function getPatternStart($pattern)
+    {
+        return md5(preg_replace('/^([^\*\?\s]*)[\*\?\s].*$/', '\\1', substr($pattern, 0, 32)));
+    }
+
+    /**
+     * Gets the minimum length of the patern (used in the getPatterns() method to
+     * check against the user agent length)
+     *
+     * @param string $pattern
+     * @return int
+     */
+    private function getPatternLength($pattern)
+    {
+        return strlen(str_replace('*', '', $pattern));
     }
 }

@@ -44,7 +44,7 @@ class IniLoader
     /**
      * Current version of the class.
      */
-    const VERSION = '2.0b';
+    const VERSION = '2.0';
 
     /**
      * Options for auto update capabilities
@@ -67,13 +67,6 @@ class IniLoader
     private $remoteIniUrl = 'http://browscap.org/stream?q=Full_PHP_BrowsCapINI';
     private $remoteVerUrl = 'http://browscap.org/version';
     private $timeout = 5;
-
-    /**
-     * Path to the cache directory
-     *
-     * @var string
-     */
-    private $cacheDir = null;
 
     /**
      * The path of the local version of the browscap.ini file from which to
@@ -100,69 +93,7 @@ class IniLoader
     /**
      * @var string
      */
-    private $iniFilename = null;
-
-    /**
-     * Constructor class, checks for the existence of (and loads) the cache and
-     * if needed updated the definitions
-     *
-     * @param string $cacheDir
-     *
-     * @throws Exception
-     */
-    public function __construct($cacheDir)
-    {
-        if (!isset($cacheDir)) {
-            throw new Exception(
-                'You have to provide a path to read/store the browscap cache file',
-                Exception::CACHE_DIR_MISSING
-            );
-        }
-
-        $oldCacheDir = $cacheDir;
-        $cacheDir    = realpath($cacheDir);
-
-        if (false === $cacheDir) {
-            throw new Exception(
-                'The cache path "' . $oldCacheDir . '" is invalid. '
-                . 'Are you sure that it exists and that you have permission '
-                . 'to access it?',
-                Exception::CACHE_DIR_INVALID
-            );
-        }
-
-        // Is the cache dir really the directory or is it directly the file?
-        if (is_file($cacheDir) && substr($cacheDir, -4) === '.php') {
-            $this->cacheDir = dirname($cacheDir);
-        } elseif (is_dir($cacheDir)) {
-            $this->cacheDir = $cacheDir;
-        } else {
-            throw new Exception(
-                'The cache path "' . $oldCacheDir . '" is invalid. '
-                . 'Are you sure that it exists and that you have permission '
-                . 'to access it?',
-                Exception::CACHE_DIR_INVALID
-            );
-        }
-
-        if (!is_readable($this->cacheDir)) {
-            throw new Exception(
-                'Its not possible to read from the given cache path "'
-                . $oldCacheDir . '"',
-                Exception::CACHE_DIR_NOT_READABLE
-            );
-        }
-
-        if (!is_writable($this->cacheDir)) {
-            throw new Exception(
-                'Its not possible to write to the given cache path "'
-                . $oldCacheDir . '"',
-                Exception::CACHE_DIR_NOT_WRITABLE
-            );
-        }
-
-        $this->cacheDir .= DIRECTORY_SEPARATOR;
-    }
+    private $remoteFilename = null;
 
     /**
      * sets the logger
@@ -181,7 +112,7 @@ class IniLoader
     /**
      * sets the loader
      *
-     * @param Loader $loader
+     * @param \FileLoader\Loader $loader
      *
      * @return IniLoader
      */
@@ -216,20 +147,20 @@ class IniLoader
     /**
      * sets the name of the local ini file
      *
-     * @param string $ininame the file name
+     * @param string $name the file name
      *
      * @throws Exception
      * @return IniLoader
      */
-    public function setIniFile($ininame)
+    public function setRemoteFilename($name)
     {
-        if (empty($ininame)) {
+        if (empty($name)) {
             throw new Exception(
                 'the filename can not be empty', Exception::INI_FILE_MISSING
             );
         }
 
-        $this->iniFilename = $ininame;
+        $this->remoteFilename = $name;
 
         return $this;
     }
@@ -244,7 +175,7 @@ class IniLoader
         $iniUrl = $this->remoteIniUrl;
         $prefix = 'http://browscap.org/stream?';
 
-        switch ($this->iniFilename) {
+        switch ($this->remoteFilename) {
             case 'lite_php_browscap.ini':
                 $iniUrl = $prefix . 'Lite_PHP_BrowscapINI';
                 break;
@@ -285,19 +216,16 @@ class IniLoader
     /**
      * creates the ini loader
      *
-     * @return Loader
+     * @return \FileLoader\Loader
      */
     public function getLoader()
     {
         if (null === $this->loader) {
-            $this->loader = new Loader($this->cacheDir);
+            $this->loader = new Loader();
         }
 
         if (null !== $this->localFile) {
-            $this->loader->setLocaleFile($this->localFile);
-            $this->loader->setCacheFile(basename($this->localFile));
-        } else {
-            $this->loader->setCacheFile($this->iniFilename);
+            $this->loader->setLocalFile($this->localFile);
         }
 
         return $this->loader;
