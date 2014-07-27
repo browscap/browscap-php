@@ -16,7 +16,7 @@ class Converter
 {
     /** @var string */
     const BROWSCAP_VERSION_KEY = 'GJK_Browscap_Version';
-    
+
     /**
      * Current cache version
      */
@@ -38,9 +38,14 @@ class Converter
 
     /** @var \Symfony\Component\Filesystem\Filesystem */
     private $fs = null;
-    
+
     /** @var \phpbrowscap\Parser\IniParser */
     private $parser = null;
+
+    /**
+     * @var int
+     */
+    private $_source_version = 0;
 
     /**
      * @param string $destination
@@ -79,15 +84,15 @@ class Converter
         } else {
             $fileLines = explode("\n", $iniString);
         }
-        
+
         $this->parser->setFileLines($fileLines);
-        
+
         $this->doConvert($this->parser->parse(), $backupBeforeOverride);
     }
 
     /**
-     * @param array $regexes
-     * @param bool $backupBeforeOverride
+     * @param array $browsers
+     * @param bool  $backupBeforeOverride
      */
     private function doConvert(array $browsers, $backupBeforeOverride = true)
     {
@@ -115,6 +120,8 @@ class Converter
      *
      * Parses the ini file and updates the cache files
      *
+     * @param array $browsers
+     *
      * @return bool whether the file was correctly written to the disk
      */
     private function buildCache(array $browsers)
@@ -139,6 +146,8 @@ class Converter
         $properties_keys  = array_flip($_properties);
 
         $tmp_patterns = array();
+        $_userAgents  = array();
+        $_browsers    = array();
 
         foreach ($tmp_user_agents as $i => $user_agent) {
             if (empty($browsers[$user_agent]['Comment'])
@@ -187,7 +196,7 @@ class Converter
 
         // reducing memory usage by unsetting $tmp_user_agents
         unset($tmp_user_agents);
-        
+
         $_patterns = array();
 
         foreach ($tmp_patterns as $pattern => $pattern_data) {
