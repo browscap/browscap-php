@@ -17,7 +17,7 @@ class Converter
 {
     /** @var string */
     const BROWSCAP_VERSION_KEY = 'GJK_Browscap_Version';
-    
+
     /**
      * Current cache version
      */
@@ -39,7 +39,7 @@ class Converter
 
     /** @var \Symfony\Component\Filesystem\Filesystem */
     private $fs = null;
-    
+
     /** @var \phpbrowscap\Parser\IniParser */
     private $parser = null;
     
@@ -61,6 +61,11 @@ class Converter
      * @var int
      */
     private $joinPatterns = 100;
+
+    /**
+     * @var int
+     */
+    private $_source_version = 0;
 
     /**
      * @param string $destination
@@ -144,6 +149,55 @@ class Converter
         
         $this->cache->setItem('browscap.version', $_source_version, false);
         
+        if (false !== strpos("\r\n", $iniString)) {
+            $fileLines = explode("\r\n", $iniString);
+        } else {
+            $fileLines = explode("\n", $iniString);
+        }
+
+        $this->parser->setFileLines($fileLines);
+
+        $this->doConvert($this->parser->parse(), $backupBeforeOverride);
+        /**/
+    }
+
+    /**
+     * @param array $browsers
+     * @param bool  $backupBeforeOverride
+     */
+    private function doConvert(array $browsers, $backupBeforeOverride = true)
+    {
+        $data = $this->buildCache($browsers);
+
+        $regexesFile = $this->destination . '/cache.php';
+        if ($backupBeforeOverride && $this->fs->exists($regexesFile)) {
+
+            $currentHash = hash('sha512', file_get_contents($regexesFile));
+            $futureHash = hash('sha512', $data);
+
+            if ($futureHash === $currentHash) {
+                return;
+            }
+
+            $backupFile = $this->destination . '/cache-' . $currentHash . '.php';
+            $this->fs->copy($regexesFile, $backupFile);
+        }
+
+        $this->fs->dumpFile($regexesFile, $data);
+    }
+
+    /**
+     * XXX save
+     *
+     * Parses the ini file and updates the cache files
+     *
+     * @param array $browsers
+     *
+     * @return bool whether the file was correctly written to the disk
+     */
+    private function buildCache(array $browsers)
+    {
+        $this->_source_version = $browsers[self::BROWSCAP_VERSION_KEY]['Version'];
         unset($browsers[self::BROWSCAP_VERSION_KEY]);
         unset($browsers['DefaultProperties']['RenderingEngine_Description']);
 
@@ -168,8 +222,9 @@ class Converter
         //$properties_keys  = array_flip($_properties);
 
         $tmp_patterns = array();
-        $_patterns    = array();
         $quoterHelper = new \phpbrowscap\Helper\Quoter();
+        $_userAgents  = array();
+        $_browsers    = array();
 
         foreach ($tmp_user_agents as $i => $user_agent) {
             if (!empty($browsers[$user_agent]['Comment'])
@@ -213,6 +268,8 @@ class Converter
         
         $this->logger->info('started deduplicating patterns');
         
+        $_patterns = array();
+
         foreach ($tmp_patterns as $pattern => $pattern_data) {
             if (is_int($pattern_data)) {
                 $_patterns[$pattern] = $pattern_data;

@@ -26,12 +26,15 @@
     "require": {
         "php": ">=5.3.0",
         "mimmi20/wurflcache": "1.2.*",
-        "mimmi20/file-loader": "1.2.*",
+        "mimmi20/file-loader": "2.0.0-beta@dev",
         "symfony/console": "2.4.*",
         "monolog/monolog": "1.*"
     },
     "require-dev": {
         "phpunit/phpunit": "*"
+    },
+    "suggest": {
+        "ext-curl": "to use curl requests to get the ini file"
     },
     "autoload": {
         "psr-4": {

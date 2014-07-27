@@ -8,6 +8,7 @@
  */
 namespace phpbrowscap\Helper;
 
+use FileLoader\Loader;
 use phpbrowscap\Exception\FetcherException;
 
 class Fetcher
@@ -21,11 +22,12 @@ class Fetcher
     {
         //$level = error_reporting(0);
 
-        $loader = new \FileLoader\Loader();
+        $loader = new Loader();
         $loader
             ->setRemoteDataUrl('http://browscap.org/stream?q=PHP_BrowscapINI')
             ->setRemoteVerUrl('http://browscap.org/version')
             ->setMode(null)
+            ->setTimeout(5)
         ;
 
         $result = $loader->load();
