@@ -8,6 +8,7 @@
  */
 namespace phpbrowscap\Command;
 
+use phpbrowscap\Browscap;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,7 +19,7 @@ use phpbrowscap\Helper\LoggerHelper;
 use phpbrowscap\Cache\BrowscapCache;
 
 /**
- * commands to a downloaded Browscap ini file into a array
+ * command to convert a downloaded Browscap ini file and write it to the cache
  *
  * @author Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  */
@@ -62,7 +63,7 @@ class ConvertCommand extends Command
             )
             ->addOption(
                 'no-backup',
-                'n',
+                null,
                 InputOption::VALUE_NONE,
                 'Do not backup the previously existing file'
             )
@@ -89,19 +90,21 @@ class ConvertCommand extends Command
         $logger->info('initializing converting process');
 
         ini_set('memory_limit', '256M');
-        $converter = new Converter($this->resourceDirectory);
-        $converter->setLogger($logger);
-        
         $cacheAdapter = new \WurflCache\Adapter\File(array(\WurflCache\Adapter\File::DIR => $this->resourceDirectory));
         $cache        = new BrowscapCache($cacheAdapter);
         
-        $converter->setCache($cache);
+        $browscap = new Browscap();
+        
+        $browscap
+            ->setLogger($logger)
+            ->setCache($cache)
+        ;
         
         $logger->info('started converting local file');
         
         $file = ($input->getArgument('file') ? $input->getArgument('file') : ($this->defaultIniFile));
         
-        $converter->convertFile($file, $input->getOption('no-backup'));
+        $browscap->convertFile($file, $input->getOption('no-backup'));
         
         $logger->info('finished converting local file');
     }

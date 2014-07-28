@@ -30,7 +30,7 @@ $defaultIniFile    = 'resources/browscap.ini';
 $application = new Application('ua-parser');
 $application->add(new ConvertCommand($resourceDirectory, $defaultIniFile));
 $application->add(new UpdateCommand($resourceDirectory));
-$application->add(new ParserCommand());
+$application->add(new ParserCommand($resourceDirectory));
 $application->add(new LogfileCommand());
 $application->add(new FetchCommand($defaultIniFile));
 

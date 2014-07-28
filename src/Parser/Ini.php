@@ -70,6 +70,9 @@ class Ini implements ParserInterface
      * @var \phpbrowscap\Formatter\FormatterInterface
      */
     private $formatter = null;
+    
+    /** @var \Monolog\Logger */
+    private $logger = null;
 
     /**
      * @param \phpbrowscap\Parser\Helper\GetPatternInterface $helper
@@ -138,6 +141,20 @@ class Ini implements ParserInterface
     }
 
     /**
+     * Sets a logger instance
+     *
+     * @param \Monolog\Logger $logger
+     *
+     * @return \phpbrowscap\Parser\Ini
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+        
+        return $this;
+    }
+
+    /**
      * Gets the browser data formatr for the given user agent
      * (or null if no data avaailble, no even the default browser)
      *
@@ -150,12 +167,15 @@ class Ini implements ParserInterface
         $quoterHelper = new Quoter();
 
         foreach ($this->getHelper()->getPatterns($user_agent) as $patterns) {
-            if (preg_match("/^(?:" . str_replace("\t", ")|(?:", $quoterHelper->pregQuote($patterns)) . ")$/", $user_agent)) {
+            if (preg_match('/^(?:' . str_replace("\t", ')|(?:', $quoterHelper->pregQuote($patterns)) . ')$/', $user_agent)) {
                 // strtok() requires less memory than explode()
                 $pattern = strtok($patterns, "\t");
 
                 while ($pattern !== false) {
-                    if (preg_match("/^" . $quoterHelper->pregQuote($pattern, '/') . "$/", $user_agent)) {
+                    $this->logger->debug('1:' . $pattern);
+                    $this->logger->debug('2:' . '/^' . $quoterHelper->pregQuote($pattern, '/') . '$/');
+                    
+                    if (preg_match('/^' . $quoterHelper->pregQuote($pattern, '/') . '$/', $user_agent)) {
                         $formatter = $this->getFormatter();
                         $formatter->setData($this->getSettings($pattern));
                         break 2;
@@ -218,7 +238,7 @@ class Ini implements ParserInterface
 
         // merge settings
         $settings += $add_settings;
-
+var_export($settings);
         if ($parent_pattern !== null) {
             return $this->getSettings($parent_pattern, $settings);
         }

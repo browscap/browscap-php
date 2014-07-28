@@ -16,9 +16,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use phpbrowscap\Helper\Fetcher;
 use phpbrowscap\Helper\LoggerHelper;
+use FileLoader\Loader;
+use phpbrowscap\Exception\FetcherException;
 
 /**
- * commands to fetch a browscap ini file from the remote host and store the content in a local file
+ * command to fetch a browscap ini file from the remote host and store the content in a local file
  *
  * @author Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  */
@@ -76,11 +78,26 @@ class FetchCommand extends Command
         $logger->info('initializing fetching process');
 
         $fs      = new Filesystem();
-        $fetcher = new Fetcher();
-        
         $logger->info('started fetching remote file');
         
-        $content = $fetcher->fetch();
+        $level = error_reporting(0);
+
+        $loader = new Loader();
+        $loader
+            ->setRemoteDataUrl('http://browscap.org/stream?q=PHP_BrowscapINI')
+            ->setRemoteVerUrl('http://browscap.org/version')
+            ->setMode(null)
+            ->setTimeout(5)
+        ;
+
+        $content = $loader->load();
+
+        error_reporting($level);
+
+        if ($content === false) {
+            $error = error_get_last();
+            throw FetcherException::httpError($this->resourceUri, $error['message']);
+        }
         
         $logger->info('finished fetching remote file');
         $logger->info('started storing remote file into local file');

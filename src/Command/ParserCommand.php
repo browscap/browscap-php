@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use phpbrowscap\Helper\LoggerHelper;
+use phpbrowscap\Cache\BrowscapCache;
 
 /**
  * commands to parse a given useragent
@@ -23,6 +24,21 @@ use phpbrowscap\Helper\LoggerHelper;
  */
 class ParserCommand extends Command
 {
+    /**
+     * @var string
+     */
+    private $resourceDirectory;
+
+    /**
+     * @param string $resourceDirectory
+     */
+    public function __construct($resourceDirectory)
+    {
+        parent::__construct();
+
+        $this->resourceDirectory = $resourceDirectory;
+    }
+
     /**
      * Configures the current command.
      */
@@ -57,8 +73,17 @@ class ParserCommand extends Command
         $loggerHelper = new LoggerHelper();
         $logger       = $loggerHelper->create($input->getOption('debug'));
 
+        $cacheAdapter = new \WurflCache\Adapter\File(array(\WurflCache\Adapter\File::DIR => $this->resourceDirectory));
+        $cache        = new BrowscapCache($cacheAdapter);
+        
         $browscap = new Browscap();
-        $result   = $browscap->getBrowser($input->getArgument('user-agent'));
+        
+        $browscap
+            ->setLogger($logger)
+            ->setCache($cache)
+        ;
+        
+        $result = $browscap->getBrowser($input->getArgument('user-agent'));
 
         $output->writeln(json_encode($result, JSON_PRETTY_PRINT));
     }

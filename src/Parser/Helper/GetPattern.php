@@ -89,16 +89,19 @@ class GetPattern implements GetPatternInterface
         $length = strlen($user_agent);
         $subkey = Pattern::getPatternCacheSubkey($start);
 
-        if (!$this->getCache()->hasItem('browscap.patterns.' . $subkey)) {
-            Pattern::createPatterns();
-        }
-
         // get patterns, first for the given browser and if that is not found,
         // for the default browser (with a special key)
         foreach (array($start, str_repeat('z', 32)) as $tmp_start) {
             $tmp_subkey = Pattern::getPatternCacheSubkey($tmp_start);
-            $file       = $this->getCache()->getItem('browscap.patterns.' . $tmp_subkey);
-            $found      = false;
+            $success    = null;
+            
+            $file = $this->getCache()->getItem('browscap.patterns.' . $tmp_subkey, true, $success);
+            
+            if (!$success) {
+                continue;
+            }
+            
+            $found = false;
             
             foreach ($file as $buffer) {
                 $tmp_buffer = substr($buffer, 0, 32);

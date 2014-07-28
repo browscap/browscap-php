@@ -34,15 +34,6 @@ class Converter
     const COMPRESSION_PATTERN_START = '@';
     const COMPRESSION_PATTERN_DELIMITER = '|';
 
-    /** @var string */
-    private $destination = null;
-
-    /** @var \Symfony\Component\Filesystem\Filesystem */
-    private $fs = null;
-
-    /** @var \phpbrowscap\Parser\IniParser */
-    private $parser = null;
-    
     /** @var \Monolog\Logger */
     private $logger = null;
 
@@ -63,26 +54,16 @@ class Converter
     private $joinPatterns = 100;
 
     /**
-     * @var int
+     * Sets a logger instance
+     *
+     * @param \Monolog\Logger $logger
+     *
+     * @return \phpbrowscap\Helper\Converter
      */
-    private $_source_version = 0;
-
-    /**
-     * @param string $destination
-     * @param \Symfony\Component\Filesystem\Filesystem $fs
-     */
-    public function __construct($destination, Filesystem $fs = null)
-    {
-        $this->destination = $destination;
-        $this->fs = $fs ? $fs : new Filesystem();
-        $this->parser = new \phpbrowscap\Parser\IniParser();
-        $this->parser->setShouldSort(false);
-    }
-    
     public function setLogger($logger)
     {
         $this->logger = $logger;
-        
+
         return $this;
     }
 
@@ -91,7 +72,7 @@ class Converter
      *
      * @param \phpbrowscap\Cache\BrowscapCache $cache
      *
-     * @return \phpbrowscap\Browscap
+     * @return \Helper\Converter
      */
     public function setCache(BrowscapCache $cache)
     {
@@ -106,14 +87,16 @@ class Converter
      */
     public function convertFile($iniFile)
     {
-        if (!$this->fs->exists($iniFile)) {
+        $fs = new Filesystem();
+
+        if (!$fs->exists($iniFile)) {
             throw FileNotFoundException::fileNotFound($iniFile);
         }
-        
+
         $this->logger->info('start reading file');
-        
+
         $iniString = file_get_contents($iniFile);
-        
+
         $this->logger->info('finished reading file');
 
         $this->convertString($iniString);
@@ -125,15 +108,15 @@ class Converter
     public function convertString($iniString)
     {
         $this->logger->info('start creating patterns from the ini data');
-        
+
         $this->createPatterns($iniString);
-        
+
         $this->logger->info('finished creating patterns from the ini data');
-        
+
         $this->logger->info('start creating data from the ini data');
-        
+
         $this->createIniParts($iniString);
-        
+
         $this->logger->info('finished creating data from the ini data');
     }
 
@@ -166,9 +149,9 @@ class Converter
                 JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
             );
         }
-        
+
         unset($patternpositions);
-        
+
         foreach ($contents as $subkey => $content) {
             $this->cache->setItem('browscap.iniparts.' . $subkey, $content);
         }
@@ -180,7 +163,7 @@ class Converter
      * @param string $string
      * @return string
      */
-    private function getIniPartCacheSubkey($string) 
+    private function getIniPartCacheSubkey($string)
     {
         return $string[0] . $string[1];
     }
@@ -198,10 +181,12 @@ class Converter
         if (empty($matches[0]) || !is_array($matches[0])) {
             return false;
         }
-        
+
         // build an array to structure the data. this requires some memory, but we need this step to be able to
         // sort the data in the way we need it (see below).
-        $data = array();
+        $data        = array();
+        $patternList = array();
+
         foreach ($matches[0] as $match) {
             // get the first characters for a fast search
             $tmp_start  = $this->getPatternStart($match);
@@ -219,9 +204,13 @@ class Converter
                 $data[$tmp_start][$tmp_length] = array();
             }
             $data[$tmp_start][$tmp_length][] = $match;
+
+            $patternList[] = $match;
         }
-        
+
         unset($matches);
+
+        $this->cache->setItem('browscap.patterns', $patternList, true);
 
         // write optimized file (grouped by the first character of the has, generated from the pattern
         // start) with multiple patterns joined by tabs. this is to speed up loading of the data (small
@@ -234,22 +223,22 @@ class Converter
                 for ($i = 0, $j = ceil(count($tmp_patterns) / $this->joinPatterns); $i < $j; $i++) {
                     $tmp_joinpatterns = implode("\t", array_slice($tmp_patterns, ($i * $this->joinPatterns), $this->joinPatterns));
                     $tmp_subkey       = Pattern::getPatternCacheSubkey($tmp_start);
-                    
+
                     if (!isset($contents[$tmp_subkey])) {
                         $contents[$tmp_subkey] = array();
                     }
-                    
+
                     $contents[$tmp_subkey][] = $tmp_start . ' ' . $tmp_length . ' ' . $tmp_joinpatterns;
                 }
             }
         }
-        
+
         unset($data);
-        
+
         foreach ($contents as $subkey => $content) {
             $this->cache->setItem('browscap.patterns.' . $subkey, $content, true);
         }
-        
+
         return true;
     }
 

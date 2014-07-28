@@ -15,9 +15,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use phpbrowscap\Helper\Converter;
 use phpbrowscap\Helper\Fetcher;
 use phpbrowscap\Helper\LoggerHelper;
+use FileLoader\Loader;
+use phpbrowscap\Exception\FetcherException;
 
 /**
- * commands to fetch a browscap ini file from the remote host, convert it into an array and store the content in a local
+ * command to fetch a browscap ini file from the remote host, convert it into an array and store the content in a local
  * file
  *
  * @author Thomas Müller <t_mueller_stolzenhain@yahoo.de>
@@ -73,10 +75,31 @@ class UpdateCommand extends Command
         $loggerHelper = new LoggerHelper();
         $logger       = $loggerHelper->create($input->getOption('debug'));
         
-        $logger->info('initializing update process');
+        $logger->info('started fetching remote file');
+        
+        $level = error_reporting(0);
+
+        $loader = new Loader();
+        $loader
+            ->setRemoteDataUrl('http://browscap.org/stream?q=PHP_BrowscapINI')
+            ->setRemoteVerUrl('http://browscap.org/version')
+            ->setMode(null)
+            ->setTimeout(5)
+        ;
+
+        $content = $loader->load();
+
+        error_reporting($level);
+
+        if ($content === false) {
+            $error = error_get_last();
+            throw FetcherException::httpError($this->resourceUri, $error['message']);
+        }
+        
+        $logger->info('finished fetching remote file');
+        $logger->info('started converting remote file');
 
         ini_set('memory_limit', '256M');
-        $fetcher   = new Fetcher();
         $converter = new Converter($this->resourceDirectory);
         $converter->setLogger($logger);
         
@@ -85,13 +108,6 @@ class UpdateCommand extends Command
         
         $converter->setCache($cache);
         
-        $logger->info('started fetching remote file');
-        
-        $content = $fetcher->fetch();
-        
-        $logger->info('finished fetching remote file');
-        $logger->info('started converting remote file');
-
         $converter->convertString($content, !$input->getOption('no-backup'));
         
         $logger->info('finished converting remote file');

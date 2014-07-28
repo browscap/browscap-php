@@ -2,6 +2,8 @@
 
 namespace phpbrowscap;
 
+
+use phpbrowscap\Helper\Converter;
 use phpbrowscap\Cache\BrowscapCache;
 use WurflCache\Adapter\NullStorage;
 
@@ -67,6 +69,9 @@ class Browscap
      */
     private $cache = null;
 
+    /** @var \Monolog\Logger */
+    private $logger = null;
+
     /**
      * Set theformatter instance to use for the getBrowser() result
      *
@@ -88,6 +93,58 @@ class Browscap
     {
         if (null === $this->formatter) {
             $this->setFormatter(new Formatter\PhpGetBrowser());
+
+            $defaultproperties = array(
+                'browser_name_regex' => null,
+                'browser_name_pattern' => null,
+                'Parent' => null,
+                'Comment' => 'DefaultProperties',
+                'Browser' => 'DefaultProperties',
+                'Browser_Type' => 'unknown',
+                'Browser_Bits' => '0',
+                'Browser_Maker' => 'unknown',
+                'Browser_Modus' => 'unknown',
+                'Version' => '0.0',
+                'MajorVer' => '0',
+                'MinorVer' => '0',
+                'Platform' => 'unknown',
+                'Platform_Version' => 'unknown',
+                'Platform_Description' => 'unknown',
+                'Platform_Bits' => '0',
+                'Platform_Maker' => 'unknown',
+                'Alpha' => 'false',
+                'Beta' => 'false',
+                'Win16' => 'false',
+                'Win32' => 'false',
+                'Win64' => 'false',
+                'Frames' => 'false',
+                'IFrames' => 'false',
+                'Tables' => 'false',
+                'Cookies' => 'false',
+                'BackgroundSounds' => 'false',
+                'JavaScript' => 'false',
+                'VBScript' => 'false',
+                'JavaApplets' => 'false',
+                'ActiveXControls' => 'false',
+                'isMobileDevice' => 'false',
+                'isTablet' => 'false',
+                'isSyndicationReader' => 'false',
+                'Crawler' => 'false',
+                'CssVersion' => '0',
+                'AolVersion' => '0',
+                'Device_Name' => 'unknown',
+                'Device_Maker' => 'unknown',
+                'Device_Type' => 'unknown',
+                'Device_Pointing_Method' => 'unknown',
+                'Device_Code_Name' => 'unknown',
+                'Device_Brand_Name' => 'unknown',
+                'RenderingEngine_Name' => 'unknown',
+                'RenderingEngine_Version' => 'unknown',
+                'RenderingEngine_Description' => 'unknown',
+                'RenderingEngine_Maker' => 'unknown',
+            );
+
+            $this->formatter->setData($defaultproperties);
         }
 
         return $this->formatter;
@@ -102,11 +159,11 @@ class Browscap
     {
         if (null === $this->cache) {
             $resourceDirectory = __DIR__  . '/../resources/';
-            
+
             $cacheAdapter = new \WurflCache\Adapter\File(
                 array(\WurflCache\Adapter\File::DIR => $resourceDirectory)
             );
-            
+
             $this->cache = new BrowscapCache($cacheAdapter);
         }
 
@@ -157,17 +214,32 @@ class Browscap
         } else {
             $helper = new Parser\Helper\GetPatternLt55();
         }
-        
+
         $helper->setCache($this->getCache());
 
         $this->parser
             ->setHelper($helper)
             ->setFormatter($this->getFormatter())
             ->setCache($this->getCache())
+            ->setLogger($this->logger);
         ;
 
 
         return $this->parser;
+    }
+
+    /**
+     * Sets a logger instance
+     *
+     * @param \Monolog\Logger $logger
+     *
+     * @return \phpbrowscap\Browscap
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+
+        return $this;
     }
 
     /**
@@ -199,5 +271,34 @@ class Browscap
         }
 
         return $return->getData();
+    }
+
+    /**
+     * @param string $iniFile
+     * @throws \phpbrowscap\Exception\FileNotFoundException
+     */
+    public function convertFile($iniFile)
+    {
+        $converter = new Converter();
+
+        $converter
+            ->setLogger($logger)
+            ->setCache($cache)
+            ->convertFile($iniFile)
+        ;
+    }
+
+    /**
+     * @param string $iniString
+     */
+    public function convertString($iniString)
+    {
+        $converter = new Converter();
+
+        $converter
+            ->setLogger($logger)
+            ->setCache($cache)
+            ->convertString($iniString)
+        ;
     }
 }
