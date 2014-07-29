@@ -89,7 +89,6 @@ class ConvertCommand extends Command
         
         $logger->info('initializing converting process');
 
-        ini_set('memory_limit', '256M');
         $cacheAdapter = new \WurflCache\Adapter\File(array(\WurflCache\Adapter\File::DIR => $this->resourceDirectory));
         $cache        = new BrowscapCache($cacheAdapter);
         

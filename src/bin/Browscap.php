@@ -34,4 +34,6 @@ $application->add(new ParserCommand($resourceDirectory));
 $application->add(new LogfileCommand());
 $application->add(new FetchCommand($defaultIniFile));
 
+ini_set('memory_limit', '256M');
+
 $application->run();

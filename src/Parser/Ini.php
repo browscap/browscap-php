@@ -7,6 +7,7 @@ use phpbrowscap\Formatter\PhpGetBrowser;
 use phpbrowscap\Helper\Quoter;
 use WurflCache\Adapter\NullStorage;
 use phpbrowscap\Parser\Helper\GetPatternInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Ini parser class (compatible with PHP 5.3+)
@@ -71,7 +72,7 @@ class Ini implements ParserInterface
      */
     private $formatter = null;
     
-    /** @var \Monolog\Logger */
+    /** @var \Psr\Log\LoggerInterface */
     private $logger = null;
 
     /**
@@ -143,11 +144,11 @@ class Ini implements ParserInterface
     /**
      * Sets a logger instance
      *
-     * @param \Monolog\Logger $logger
+     * @param \Psr\Log\LoggerInterface $logger
      *
      * @return \phpbrowscap\Parser\Ini
      */
-    public function setLogger($logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
         
@@ -238,7 +239,7 @@ class Ini implements ParserInterface
 
         // merge settings
         $settings += $add_settings;
-var_export($settings);
+
         if ($parent_pattern !== null) {
             return $this->getSettings($parent_pattern, $settings);
         }

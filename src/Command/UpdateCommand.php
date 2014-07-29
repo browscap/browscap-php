@@ -17,6 +17,7 @@ use phpbrowscap\Helper\Fetcher;
 use phpbrowscap\Helper\LoggerHelper;
 use FileLoader\Loader;
 use phpbrowscap\Exception\FetcherException;
+use phpbrowscap\Helper\IniLoader;
 
 /**
  * command to fetch a browscap ini file from the remote host, convert it into an array and store the content in a local
@@ -75,41 +76,23 @@ class UpdateCommand extends Command
         $loggerHelper = new LoggerHelper();
         $logger       = $loggerHelper->create($input->getOption('debug'));
         
-        $logger->info('started fetching remote file');
+        $logger->info('started updating cache with remote file');
         
         $level = error_reporting(0);
 
-        $loader = new Loader();
-        $loader
-            ->setRemoteDataUrl('http://browscap.org/stream?q=PHP_BrowscapINI')
-            ->setRemoteVerUrl('http://browscap.org/version')
-            ->setMode(null)
-            ->setTimeout(5)
-        ;
-
-        $content = $loader->load();
-
-        error_reporting($level);
-
-        if ($content === false) {
-            $error = error_get_last();
-            throw FetcherException::httpError($this->resourceUri, $error['message']);
-        }
-        
-        $logger->info('finished fetching remote file');
-        $logger->info('started converting remote file');
-
-        ini_set('memory_limit', '256M');
-        $converter = new Converter($this->resourceDirectory);
-        $converter->setLogger($logger);
-        
-        $cacheAdapter = new \WurflCache\Adapter\File($this->resourceDirectory);
+        $cacheAdapter = new \WurflCache\Adapter\File(array(\WurflCache\Adapter\File::DIR => $this->resourceDirectory));
         $cache        = new BrowscapCache($cacheAdapter);
         
-        $converter->setCache($cache);
+        $browscap = new Browscap();
         
-        $converter->convertString($content, !$input->getOption('no-backup'));
+        $browscap
+            ->setLogger($logger)
+            ->setCache($cache)
+            ->update(IniLoader::PHP_INI)
+        ;
+
+        error_reporting($level);
         
-        $logger->info('finished converting remote file');
+        $logger->info('finished updating cache with remote file');
     }
 }

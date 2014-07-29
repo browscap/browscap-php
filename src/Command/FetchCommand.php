@@ -18,6 +18,7 @@ use phpbrowscap\Helper\Fetcher;
 use phpbrowscap\Helper\LoggerHelper;
 use FileLoader\Loader;
 use phpbrowscap\Exception\FetcherException;
+use phpbrowscap\Helper\IniLoader;
 
 /**
  * command to fetch a browscap ini file from the remote host and store the content in a local file
@@ -75,37 +76,24 @@ class FetchCommand extends Command
         $loggerHelper = new LoggerHelper();
         $logger       = $loggerHelper->create($input->getOption('debug'));
         
-        $logger->info('initializing fetching process');
-
-        $fs      = new Filesystem();
+        $file = $input->getArgument('file');
+        if (!$file) {
+            $file = $this->defaultIniFile;
+        }
+        
         $logger->info('started fetching remote file');
         
         $level = error_reporting(0);
 
-        $loader = new Loader();
-        $loader
-            ->setRemoteDataUrl('http://browscap.org/stream?q=PHP_BrowscapINI')
-            ->setRemoteVerUrl('http://browscap.org/version')
-            ->setMode(null)
-            ->setTimeout(5)
+        $browscap = new Browscap();
+        
+        $browscap
+            ->setLogger($logger)
+            ->fetch($file, IniLoader::PHP_INI)
         ;
 
-        $content = $loader->load();
-
         error_reporting($level);
-
-        if ($content === false) {
-            $error = error_get_last();
-            throw FetcherException::httpError($this->resourceUri, $error['message']);
-        }
         
         $logger->info('finished fetching remote file');
-        $logger->info('started storing remote file into local file');
-        
-        $file = ($input->getArgument('file') ? $input->getArgument('file') : ($this->defaultIniFile));
-        
-        $fs->dumpFile($file, $content);
-        
-        $logger->info('finished storing remote file into local file');
     }
 }

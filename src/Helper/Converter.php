@@ -12,6 +12,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use phpbrowscap\Exception\FileNotFoundException;
 use phpbrowscap\Cache\BrowscapCache;
 use phpbrowscap\Parser\Helper\Pattern;
+use Psr\Log\LoggerInterface;
 
 class Converter
 {
@@ -34,7 +35,7 @@ class Converter
     const COMPRESSION_PATTERN_START = '@';
     const COMPRESSION_PATTERN_DELIMITER = '|';
 
-    /** @var \Monolog\Logger */
+    /** @var \Psr\Log\LoggerInterface */
     private $logger = null;
 
     /**
@@ -56,11 +57,11 @@ class Converter
     /**
      * Sets a logger instance
      *
-     * @param \Monolog\Logger $logger
+     * @param \Psr\Log\LoggerInterface $logger
      *
      * @return \phpbrowscap\Helper\Converter
      */
-    public function setLogger($logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
 
@@ -118,6 +119,33 @@ class Converter
         $this->createIniParts($iniString);
 
         $this->logger->info('finished creating data from the ini data');
+    }
+    
+    public function getIniVersion($iniString)
+    {
+        $key = $this->pregQuote(self::BROWSCAP_VERSION_KEY);
+        if (preg_match("/\.*[" . $key . "\][^[]*Version=(\d+)\D.*/", $iniString, $matches)) {
+            if (isset($matches[1])) {
+                self::$version = (int)$matches[1];
+                
+                $this->cache->setItem('browscap.version', $content, false);
+            }
+        }
+    }
+
+    /**
+     * Quotes a pattern from the browscap.ini file, so that it can be used in regular expressions
+     *
+     * @param string $pattern
+     * @return string
+     */
+    private function pregQuote($pattern)
+    {
+        $pattern = preg_quote($pattern, '/');
+
+        // The \\x replacement is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
+        // @source https://github.com/browscap/browscap-php
+        return str_replace(array('\*', '\?', '\\x'), array('.*', '.', '\\\\x'), $pattern);
     }
 
     /**

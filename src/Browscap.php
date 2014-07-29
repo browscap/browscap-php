@@ -6,6 +6,8 @@ namespace phpbrowscap;
 use phpbrowscap\Helper\Converter;
 use phpbrowscap\Cache\BrowscapCache;
 use WurflCache\Adapter\NullStorage;
+use phpbrowscap\Helper\IniLoader;
+use Psr\Log\LoggerInterface;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -69,7 +71,7 @@ class Browscap
      */
     private $cache = null;
 
-    /** @var \Monolog\Logger */
+    /** @var \Psr\Log\LoggerInterface */
     private $logger = null;
 
     /**
@@ -231,11 +233,11 @@ class Browscap
     /**
      * Sets a logger instance
      *
-     * @param \Monolog\Logger $logger
+     * @param \Psr\Log\LoggerInterface $logger
      *
      * @return \phpbrowscap\Browscap
      */
-    public function setLogger($logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
 
@@ -274,21 +276,28 @@ class Browscap
     }
 
     /**
+     * reads and parses an ini file and writes the results into the cache
+     *
      * @param string $iniFile
      * @throws \phpbrowscap\Exception\FileNotFoundException
      */
     public function convertFile($iniFile)
     {
+        $loader = new IniLoader();
+        $loader->setLocalFile($iniFile);
+        
         $converter = new Converter();
 
         $converter
-            ->setLogger($logger)
-            ->setCache($cache)
-            ->convertFile($iniFile)
+            ->setLogger($this->logger)
+            ->setCache($this->getCache())
+            ->convertString($loader->load())
         ;
     }
 
     /**
+     * reads and parses an ini string and writes the results into the cache
+     *
      * @param string $iniString
      */
     public function convertString($iniString)
@@ -296,9 +305,74 @@ class Browscap
         $converter = new Converter();
 
         $converter
-            ->setLogger($logger)
-            ->setCache($cache)
+            ->setLogger($this->logger)
+            ->setCache($this->getCache())
             ->convertString($iniString)
+        ;
+    }
+    
+    /**
+     * fetches a remote file and stores it into a local folder
+     *
+     * @param string $file       The name of the file where to store the remote content
+     * @param string $remoteFile The code for the remote file to load
+     */
+    public function fetch($file, $remoteFile = IniLoader::PHP_INI)
+    {
+        $loader = new IniLoader();
+        $loader->setRemoteFilename($remoteFile);
+
+        $logger->debug('started fetching remote file');
+        
+        $content = $loader
+            ->setLogger($this->logger)
+            ->load()
+        ;
+
+        if ($content === false) {
+            $error = error_get_last();
+            throw FetcherException::httpError($loader->getRemoteIniUrl(), $error['message']);
+        }
+        
+        $logger->debug('finished fetching remote file');
+        $logger->debug('started storing remote file into local file');
+        
+        $fs = new Filesystem();
+        $fs->dumpFile($file, $content);
+        
+        $logger->debug('finished storing remote file into local file');
+    }
+    
+    /**
+     * fetches a remote file, parses it and writes the result into the cache
+     *
+     * @param string $remoteFile The code for the remote file to load
+     */
+    public function update($remoteFile = IniLoader::PHP_INI)
+    {
+        $loader = new IniLoader();
+        $loader->setRemoteFilename($remoteFile);
+
+        $logger->debug('started fetching remote file');
+        
+        $content = $loader
+            ->setLogger($this->logger)
+            ->load()
+        ;
+
+        if ($content === false) {
+            $error = error_get_last();
+            throw FetcherException::httpError($loader->getRemoteIniUrl(), $error['message']);
+        }
+        
+        $logger->debug('finished fetching remote file');
+        
+        $converter = new Converter();
+
+        $converter
+            ->setLogger($this->logger)
+            ->setCache($this->getCache())
+            ->convertString($content)
         ;
     }
 }

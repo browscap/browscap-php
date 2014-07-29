@@ -20,7 +20,7 @@ class Fetcher
 
     public function fetch()
     {
-        //$level = error_reporting(0);
+        $level = error_reporting(0);
 
         $loader = new Loader();
         $loader
@@ -32,7 +32,7 @@ class Fetcher
 
         $result = $loader->load();
 
-        //error_reporting($level);
+        error_reporting($level);
 
         if ($result === false) {
             $error = error_get_last();

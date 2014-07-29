@@ -45,6 +45,10 @@ class IniLoader
      * Current version of the class.
      */
     const VERSION = '2.0';
+    
+    const PHP_INI_LITE = 'Lite_PHP_BrowscapINI';
+    const PHP_INI_FULL = 'Full_PHP_BrowscapINI';
+    const PHP_INI      = 'PHP_BrowscapINI';
 
     /**
      * Options for auto update capabilities
@@ -64,7 +68,7 @@ class IniLoader
      * is MINIMAL, so there is no reason to use the standard file whatsoever. Either go for light,
      * which is blazing fast, or get the full one. (note: light version doesn't work, a fix is on its way)
      */
-    private $remoteIniUrl = 'http://browscap.org/stream?q=Full_PHP_BrowsCapINI';
+    private $remoteIniUrl = 'http://browscap.org/stream?q=%q';
     private $remoteVerUrl = 'http://browscap.org/version';
     private $timeout = 5;
 
@@ -93,7 +97,7 @@ class IniLoader
     /**
      * @var string
      */
-    private $remoteFilename = null;
+    private $remoteFilename = self::PHP_INI;
 
     /**
      * sets the logger
@@ -131,7 +135,7 @@ class IniLoader
      * @throws Exception
      * @return IniLoader
      */
-    public function setLocaleFile($filename)
+    public function setLocalFile($filename)
     {
         if (empty($filename)) {
             throw new Exception(
@@ -172,25 +176,7 @@ class IniLoader
      */
     public function getRemoteIniUrl()
     {
-        $iniUrl = $this->remoteIniUrl;
-        $prefix = 'http://browscap.org/stream?';
-
-        switch ($this->remoteFilename) {
-            case 'lite_php_browscap.ini':
-                $iniUrl = $prefix . 'Lite_PHP_BrowscapINI';
-                break;
-            case 'php_browscap.ini':
-                $iniUrl = $prefix . 'PHP_BrowscapINI';
-                break;
-            case 'full_php_browscap.ini':
-                $iniUrl = $prefix . 'Full_PHP_BrowscapINI';
-                break;
-            default:
-                // do nothing here
-                break;
-        }
-
-        return $iniUrl;
+        return str_replace('%q', $this->remoteFilename, $this->remoteIniUrl);
     }
 
     /**
@@ -238,7 +224,7 @@ class IniLoader
      * the cache dir, parses the ini file
      *
      * @throws Exception
-     * @return array the parsed ini file
+     * @return string the content of the loaded ini file
      */
     public function load()
     {
@@ -253,33 +239,6 @@ class IniLoader
         }
 
         // Get updated .ini file
-        $browscap = $internalLoader->load();
-        $browscap = explode("\n", $browscap);
-
-        // quote the values for the data kyes Browser and Parent
-        $pattern = Browscap::REGEX_DELIMITER
-            . '('
-            . Browscap::VALUES_TO_QUOTE
-            . ')="?([^"]*)"?$'
-            . Browscap::REGEX_DELIMITER;
-
-        // Ok, lets read the file
-        $content = '';
-        foreach ($browscap as $subject) {
-            $subject = trim($subject);
-            $content .= preg_replace($pattern, '$1="$2"', $subject) . "\n";
-        }
-
-        /*
-         * we have the ini content available as string
-         * -> parse the string
-         */
-        if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
-            $browsers = parse_ini_string($content, true, INI_SCANNER_RAW);
-        } else {
-            $browsers = parse_ini_string($content, true);
-        }
-
-        return $browsers;
+        return $internalLoader->load();
     }
 }
