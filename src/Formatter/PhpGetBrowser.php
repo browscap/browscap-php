@@ -35,13 +35,68 @@ class PhpGetBrowser implements FormatterInterface
     /**
      * Variable to save the settings in, type depends on implementation
      *
-     * @var mixed
+     * @var array
      */
-    private $settings = null;
+    private $settings = array();
+    
+    /**
+     * a list of possible properties
+     *
+     * @var array
+     */
+    private $defaultproperties = array(
+        'browser_name_regex',
+        'browser_name_pattern',
+        'Parent',
+        'Comment',
+        'Browser',
+        'Browser_Type',
+        'Browser_Bits',
+        'Browser_Maker',
+        'Browser_Modus',
+        'Version',
+        'MajorVer',
+        'MinorVer',
+        'Platform',
+        'Platform_Version',
+        'Platform_Description',
+        'Platform_Bits',
+        'Platform_Maker',
+        'Alpha',
+        'Beta',
+        'Win16',
+        'Win32',
+        'Win64',
+        'Frames',
+        'IFrames',
+        'Tables',
+        'Cookies',
+        'BackgroundSounds',
+        'JavaScript',
+        'VBScript',
+        'JavaApplets',
+        'ActiveXControls',
+        'isMobileDevice',
+        'isTablet',
+        'isSyndicationReader',
+        'Crawler',
+        'CssVersion',
+        'AolVersion',
+        'Device_Name',
+        'Device_Maker',
+        'Device_Type',
+        'Device_Pointing_Method',
+        'Device_Code_Name',
+        'Device_Brand_Name',
+        'RenderingEngine_Name',
+        'RenderingEngine_Version',
+        'RenderingEngine_Description',
+        'RenderingEngine_Maker',
+    );
 
     public function __construct()
     {
-        $this->settings = new \stdClass();
+        $this->settings = array();
     }
 
     /**
@@ -52,8 +107,7 @@ class PhpGetBrowser implements FormatterInterface
     public function setData(array $settings)
     {
         foreach ($settings as $key => $value) {
-            $key = strtolower($key);
-            $this->settings->$key = $value;
+            $this->settings[strtolower($key)] = $value;
         }
     }
 
@@ -64,6 +118,16 @@ class PhpGetBrowser implements FormatterInterface
      */
     public function getData()
     {
-        return $this->settings;
+        $output = new \stdClass();
+        
+        foreach ($this->defaultproperties as $property) {
+            $key = strtolower($property);
+            
+            if (array_key_exists($key, $this->settings)) {
+                $output->$key = $this->settings[$key];
+            }
+        }
+        
+        return $output;
     }
 }
