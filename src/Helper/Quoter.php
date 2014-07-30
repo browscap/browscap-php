@@ -1,40 +1,34 @@
 <?php
+/**
+ * Copyright (c) 1998-2014 Browser Capabilities Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Refer to the LICENSE file distributed with this package.
+ *
+ * @category   Browscap-PHP
+ * @package    Helper
+ * @copyright  1998-2014 Browser Capabilities Project
+ * @license    http://www.opensource.org/licenses/MIT MIT License
+ * @link       https://github.com/browscap/browscap-php/
+ * @since      added with version 3.0
+ */
 
 namespace phpbrowscap\Helper;
 
 /**
- * Browscap.ini parsing class with caching and update capabilities
+ * class to help quoting strings for using a regex
  *
- * PHP version 5
- *
- * Copyright (c) 2006-2012 Jonathan Stoppani
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @package    Browscap
- * @author     Jonathan Stoppani <jonathan@stoppani.name>
- * @author     Vítor Brandão <noisebleed@noiselabs.org>
- * @author     Mikołaj Misiurewicz <quentin389+phpb@gmail.com>
- * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
- * @version    1.0
+ * @category   Browscap-PHP
+ * @package    Helper
+ * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
+ * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
+ * @version    3.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/phpbrowscap/
+ * @link       https://github.com/browscap/browscap-php/
  */
 class Quoter
 {

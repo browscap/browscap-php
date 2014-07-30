@@ -1,4 +1,22 @@
 <?php
+/**
+ * Copyright (c) 1998-2014 Browser Capabilities Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Refer to the LICENSE file distributed with this package.
+ *
+ * @category   Browscap-PHP
+ * @package    Parser
+ * @copyright  1998-2014 Browser Capabilities Project
+ * @license    http://www.opensource.org/licenses/MIT MIT License
+ * @link       https://github.com/browscap/browscap-php/
+ * @since      added with version 3.0
+ */
+
 namespace phpbrowscap\Parser;
 
 use phpbrowscap\Cache\BrowscapCache;
@@ -12,39 +30,13 @@ use Psr\Log\LoggerInterface;
 /**
  * Ini parser class (compatible with PHP 5.3+)
  *
- * This parser uses the standard PHP browscap.ini as its source. It requires
- * the file cache, because in most cases we work with files line by line
- * instead of using arrays, to keep the memory consumption as low as possible.
- *
- *
- * The MIT License (MIT)
- *
- * Copyright (c) 2014 Christoph Ziegenberg <christoph@ziegenberg.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
- * @package phpbrowscap
- * @author Christoph Ziegenberg <christoph@ziegenberg.com>
- * @copyright Copyright (c) 2014 Christoph Ziegenberg <christoph@ziegenberg.com>
- * @version 0.1
- * @license http://www.opensource.org/licenses/MIT MIT License
- * @link https://github.com/crossjoin/browscap
+ * @category   Browscap-PHP
+ * @package    Parser
+ * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
+ * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
+ * @version    3.0
+ * @license    http://www.opensource.org/licenses/MIT MIT License
+ * @link       https://github.com/browscap/browscap-php/
  */
 class Ini implements ParserInterface
 {
@@ -96,7 +88,7 @@ class Ini implements ParserInterface
     }
 
     /**
-     * Set theformatter instance to use for the getBrowser() result
+     * Set the formatter instance to use for the getBrowser() result
      *
      * @param \phpbrowscap\Formatter\FormatterInterface $formatter
      *
@@ -188,23 +180,6 @@ class Ini implements ParserInterface
         }
 
         return $formatter;
-    }
-
-    /**
-     * Gets the content of the source file
-     *
-     * @return string
-     */
-    public function getContent()
-    {
-        $success = null;
-        $content = (string)$this->getCache()->getItem('browscap.ini', true, $success);
-
-        if (!$success) {
-            return '';
-        }
-
-        return $content;
     }
 
     /**

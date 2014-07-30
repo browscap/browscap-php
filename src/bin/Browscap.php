@@ -1,4 +1,22 @@
 <?php
+/**
+ * Copyright (c) 1998-2014 Browser Capabilities Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Refer to the LICENSE file distributed with this package.
+ *
+ * @category   Browscap-PHP
+ * @package    Command
+ * @copyright  1998-2014 Browser Capabilities Project
+ * @license    http://www.opensource.org/licenses/MIT MIT License
+ * @link       https://github.com/browscap/browscap-php/
+ * @since      added with version 3.0
+ */
+
 namespace phpbrowscap\Command;
 
 use phpbrowscap\Exception;
@@ -27,7 +45,7 @@ if (!$foundVendorAutoload) {
 $resourceDirectory = 'resources/';
 $defaultIniFile    = 'resources/browscap.ini';
 
-$application = new Application('ua-parser');
+$application = new Application('browscap.php');
 $application->add(new ConvertCommand($resourceDirectory, $defaultIniFile));
 $application->add(new UpdateCommand($resourceDirectory));
 $application->add(new ParserCommand($resourceDirectory));

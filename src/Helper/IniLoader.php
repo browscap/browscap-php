@@ -1,4 +1,22 @@
 <?php
+/**
+ * Copyright (c) 1998-2014 Browser Capabilities Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Refer to the LICENSE file distributed with this package.
+ *
+ * @category   Browscap-PHP
+ * @package    Helper
+ * @copyright  1998-2014 Browser Capabilities Project
+ * @license    http://www.opensource.org/licenses/MIT MIT License
+ * @link       https://github.com/browscap/browscap-php/
+ * @since      added with version 3.0
+ */
+
 namespace phpbrowscap\Helper;
 
 use FileLoader\Loader;
@@ -8,65 +26,33 @@ use Psr\Log\LoggerInterface;
 /**
  * class to load the browscap.ini
  *
- * PHP version 5
- *
- * Copyright (c) 2006-2012 Jonathan Stoppani
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @package    Browscap
- * @author     Jonathan Stoppani <jonathan@stoppani.name>
- * @author     Vítor Brandão <noisebleed@noiselabs.org>
- * @author     Mikołaj Misiurewicz <quentin389+phpb@gmail.com>
- * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
- * @version    1.0
+ * @category   Browscap-PHP
+ * @package    Helper
+ * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
+ * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
+ * @version    3.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/phpbrowscap/
+ * @link       https://github.com/browscap/browscap-php/
  */
 class IniLoader
 {
     /**
      * Current version of the class.
      */
-    const VERSION = '2.0';
+    const VERSION = '3.0';
     
     const PHP_INI_LITE = 'Lite_PHP_BrowscapINI';
     const PHP_INI_FULL = 'Full_PHP_BrowscapINI';
     const PHP_INI      = 'PHP_BrowscapINI';
 
     /**
-     * Options for auto update capabilities
+     * Options for update capabilities
      *
      * $remoteVerUrl: The location to use to check out if a new version of the
      *                browscap.ini file is available.
      * $remoteIniUrl: The location from which download the ini file.
      *                The placeholder for the file should be represented by a %s.
-     * $timeout: The timeout for the requests.
-     * $updateInterval: The update interval in seconds.
-     * $errorInterval: The next update interval in seconds in case of an error.
-     * $doAutoUpdate: Flag to disable the automatic interval based update.
-     * $updateMethod: The method to use to update the file, has to be a value of
-     *                an UPDATE_* constant, null or false.
-     *
-     * The default source file type is changed from normal to full. The performance difference
-     * is MINIMAL, so there is no reason to use the standard file whatsoever. Either go for light,
-     * which is blazing fast, or get the full one. (note: light version doesn't work, a fix is on its way)
+     * $timeout:      The timeout for the requests.
      */
     private $remoteIniUrl = 'http://browscap.org/stream?q=%q';
     private $remoteVerUrl = 'http://browscap.org/version';
@@ -83,7 +69,7 @@ class IniLoader
     /**
      * an logger instance
      *
-     * @var LoggerInterface
+     * @var \Psr\Log\LoggerInterface
      */
     private $logger = null;
 
@@ -102,9 +88,9 @@ class IniLoader
     /**
      * sets the logger
      *
-     * @param LoggerInterface $logger
+     * @param \Psr\Log\LoggerInterface $logger
      *
-     * @return IniLoader
+     * @return \phpbrowscap\Helper\IniLoader
      */
     public function setLogger(LoggerInterface $logger)
     {
@@ -118,7 +104,7 @@ class IniLoader
      *
      * @param \FileLoader\Loader $loader
      *
-     * @return IniLoader
+     * @return \phpbrowscap\Helper\IniLoader
      */
     public function setLoader(Loader $loader)
     {
@@ -132,8 +118,8 @@ class IniLoader
      *
      * @param string $filename the file name
      *
-     * @throws Exception
-     * @return IniLoader
+     * @throws \phpbrowscap\Helper\Exception
+     * @return \phpbrowscap\Helper\IniLoader
      */
     public function setLocalFile($filename)
     {
@@ -153,8 +139,8 @@ class IniLoader
      *
      * @param string $name the file name
      *
-     * @throws Exception
-     * @return IniLoader
+     * @throws \phpbrowscap\Helper\Exception
+     * @return \phpbrowscap\Helper\IniLoader
      */
     public function setRemoteFilename($name)
     {
@@ -220,10 +206,9 @@ class IniLoader
     /**
      * XXX save
      *
-     * loads the ini file from a remote or local location and stores it into
-     * the cache dir, parses the ini file
+     * loads the ini file from a remote or local location and returns the content of the file
      *
-     * @throws Exception
+     * @throws \phpbrowscap\Helper\Exception
      * @return string the content of the loaded ini file
      */
     public function load()

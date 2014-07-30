@@ -1,7 +1,22 @@
 <?php
+/**
+ * Copyright (c) 1998-2014 Browser Capabilities Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Refer to the LICENSE file distributed with this package.
+ *
+ * @category   Browscap-PHP
+ * @package    Browscap
+ * @copyright  1998-2014 Browser Capabilities Project
+ * @license    http://www.opensource.org/licenses/MIT MIT License
+ * @link       https://github.com/browscap/browscap-php/
+ */
 
 namespace phpbrowscap;
-
 
 use phpbrowscap\Helper\Converter;
 use phpbrowscap\Cache\BrowscapCache;
@@ -12,36 +27,16 @@ use Psr\Log\LoggerInterface;
 /**
  * Browscap.ini parsing class with caching and update capabilities
  *
- * PHP version 5
- *
- * Copyright (c) 2006-2012 Jonathan Stoppani
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
+ * @category   Browscap-PHP
  * @package    Browscap
  * @author     Jonathan Stoppani <jonathan@stoppani.name>
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @author     Mikołaj Misiurewicz <quentin389+phpb@gmail.com>
- * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
- * @version    1.0
+ * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
+ * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
+ * @version    3.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/phpbrowscap/
+ * @link       https://github.com/browscap/browscap-php/
  */
 class Browscap
 {
@@ -201,6 +196,8 @@ class Browscap
     }
 
     /**
+     * returns an instance of the used parser class
+     *
      * @return Parser\ParserInterface
      */
     public function getParser()
@@ -245,13 +242,13 @@ class Browscap
     }
 
     /**
-     * XXX parse
-     *
-     * Gets the information about the browser by User Agent
+     * parses the given user agent to get the information about the browser
+     * 
+     * if no user agent is given, it uses {@see \phpbrowscap\Helper\Support} to get it
      *
      * @param string $userAgent the user agent string
      *
-     * @throws Exception
+     * @throws \phpbrowscap\Exception
      * @return \stdClass|array  the object containing the browsers details. Array if
      *                    $return_array is set to true.
      */
@@ -345,6 +342,9 @@ class Browscap
     
     /**
      * fetches a remote file, parses it and writes the result into the cache
+     *
+     * if the local stored information are in the same version as the remote data no actions are
+     * taken
      *
      * @param string $remoteFile The code for the remote file to load
      */

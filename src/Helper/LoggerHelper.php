@@ -9,10 +9,12 @@
  *
  * Refer to the LICENSE file distributed with this package.
  *
- * @category   Browscap
+ * @category   Browscap-PHP
  * @package    Helper
  * @copyright  1998-2014 Browser Capabilities Project
- * @license    MIT
+ * @license    http://www.opensource.org/licenses/MIT MIT License
+ * @link       https://github.com/browscap/browscap-php/
+ * @since      added with version 3.0
  */
 
 namespace phpbrowscap\Helper;
@@ -28,14 +30,18 @@ use Monolog\Processor\MemoryPeakUsageProcessor;
 /**
  * Class LoggerHelper
  *
- * @category   Browscap
+ * @category   Browscap-PHP
  * @package    Helper
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
+ * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
+ * @version    3.0
+ * @license    http://www.opensource.org/licenses/MIT MIT License
+ * @link       https://github.com/browscap/browscap-php/
  */
 class LoggerHelper
 {
     /**
-     * creates a \Monolo\Logger instance
+     * creates a \Monolog\Logger instance
      *
      * @param boolean $debug If true the debug logging mode will be enabled
      *

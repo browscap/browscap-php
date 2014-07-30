@@ -9,20 +9,26 @@
  *
  * Refer to the LICENSE file distributed with this package.
  *
- * @category   Browscap
+ * @category   Browscap-PHP
  * @package    Parser
  * @copyright  1998-2014 Browser Capabilities Project
- * @license    MIT
+ * @license    http://www.opensource.org/licenses/MIT MIT License
+ * @link       https://github.com/browscap/browscap-php/
+ * @since      added with version 3.0
  */
 
 namespace phpbrowscap\Parser;
 
 /**
- * Class IniParser
+ * parses the ini data into an array of sections with their data
  *
- * @category   Browscap
+ * @category   Browscap-PHP
  * @package    Parser
  * @author     James Titcumb <james@asgrim.com>
+ * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
+ * @version    3.0
+ * @license    http://www.opensource.org/licenses/MIT MIT License
+ * @link       https://github.com/browscap/browscap-php/
  */
 class IniParser
 {
