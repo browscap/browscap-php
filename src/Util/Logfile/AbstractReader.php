@@ -21,32 +21,83 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Exception
+ * @package    Util\Logfile
  * @copyright  1998-2014 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Exception;
+namespace phpbrowscap\Util\Logfile;
+
+use phpbrowscap\Exception\ReaderException;
 
 /**
- * Exception to handle errors while fetching a remote file
+ * abstract parent class for all readers
  *
  * @category   Browscap-PHP
- * @package    Exception
- * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
+ * @package    Command
+ * @author     Dave Olsen, http://dmolsen.com
  * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
  * @version    3.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  */
-class FetcherException extends DomainException
+abstract class AbstractReader implements ReaderInterface
 {
-    public static function httpError($resource, $error)
+    /** @var ReaderInterface[] */
+    private static $readers = array();
+
+    /**
+     * @param string $line
+     * @return ReaderInterface
+     */
+    public static function factory($line)
     {
-        return new static(
-            sprintf('Could not fetch HTTP resource "%s": %s', $resource, $error)
-        );
+        foreach (static::getReaders() as $reader) {
+            if ($reader->test($line)) {
+                return $reader;
+            }
+        }
     }
+
+    private static function getReaders()
+    {
+        if (static::$readers) {
+            return static::$readers;
+        }
+
+        static::$readers[] = new ApacheCommonLogFormatReader();
+
+        return static::$readers;
+    }
+
+    public function test($line)
+    {
+        $matches = $this->match($line);
+
+        return isset($matches['userAgentString']);
+    }
+
+    public function read($line)
+    {
+        $matches = $this->match($line);
+
+        if (!isset($matches['userAgentString'])) {
+            throw ReaderException::userAgentParserError($line);
+        }
+
+        return $matches['userAgentString'];
+    }
+
+    protected function match($line)
+    {
+        if (preg_match($this->getRegex(), $line, $matches)) {
+            return $matches;
+        }
+
+        return array();
+    }
+
+    abstract protected function getRegex();
 }

@@ -31,7 +31,7 @@
 namespace phpbrowscap\Exception;
 
 /**
- * Exception to handle errors while fetching a remote file
+ * Exception to handle errors while reading a log file
  *
  * @category   Browscap-PHP
  * @package    Exception
@@ -41,12 +41,10 @@ namespace phpbrowscap\Exception;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  */
-class FetcherException extends DomainException
+class ReaderException extends DomainException
 {
-    public static function httpError($resource, $error)
+    public static function userAgentParserError($line)
     {
-        return new static(
-            sprintf('Could not fetch HTTP resource "%s": %s', $resource, $error)
-        );
+        return new static(sprintf('Cannot extract user agent string from line "%s"', $line));
     }
 }

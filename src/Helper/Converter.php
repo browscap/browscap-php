@@ -2,12 +2,23 @@
 /**
  * Copyright (c) 1998-2014 Browser Capabilities Project
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
  *
- * Refer to the LICENSE file distributed with this package.
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  * @category   Browscap-PHP
  * @package    Helper
@@ -30,6 +41,7 @@ use Psr\Log\LoggerInterface;
  *
  * @category   Browscap-PHP
  * @package    Helper
+ * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
  * @version    3.0
@@ -44,7 +56,7 @@ class Converter
     /**
      * Current cache version
      */
-    const CACHE_FILE_VERSION = '2.0b';
+    const CACHE_FILE_VERSION = '3.0';
 
     /**
      * Options for regex patterns.
@@ -75,6 +87,13 @@ class Converter
      * @var int
      */
     private $joinPatterns = 100;
+    
+    /**
+     * version of the ini file
+     *
+     * @var integer
+     */
+    private $iniVersion = 0;
 
     /**
      * Sets a logger instance
@@ -95,7 +114,7 @@ class Converter
      *
      * @param \phpbrowscap\Cache\BrowscapCache $cache
      *
-     * @return \Helper\Converter
+     * @return \phpbrowscap\Helper\Converter
      */
     public function setCache(BrowscapCache $cache)
     {
@@ -153,11 +172,23 @@ class Converter
         $key = $this->pregQuote(self::BROWSCAP_VERSION_KEY);
         if (preg_match("/\.*[" . $key . "\][^[]*Version=(\d+)\D.*/", $iniString, $matches)) {
             if (isset($matches[1])) {
-                self::$version = (int)$matches[1];
-                
-                $this->cache->setItem('browscap.version', $content, false);
+                $this->iniVersion = (int)$matches[1];
             }
         }
+        
+        return $this->iniVersion;
+    }
+    
+    /**
+     * stores the version of the ini file into cache
+     *
+     * @return \phpbrowscap\Helper\Converter
+     */
+    public function storeVersion()
+    {
+        $this->cache->setItem('browscap.version', $this->iniVersion, false);
+        
+        return $this;
     }
 
     /**
@@ -239,8 +270,7 @@ class Converter
 
         // build an array to structure the data. this requires some memory, but we need this step to be able to
         // sort the data in the way we need it (see below).
-        $data        = array();
-        $patternList = array();
+        $data = array();
 
         foreach ($matches[0] as $match) {
             // get the first characters for a fast search
@@ -259,13 +289,9 @@ class Converter
                 $data[$tmp_start][$tmp_length] = array();
             }
             $data[$tmp_start][$tmp_length][] = $match;
-
-            $patternList[] = $match;
         }
 
         unset($matches);
-
-        $this->cache->setItem('browscap.patterns', $patternList, true);
 
         // write optimized file (grouped by the first character of the has, generated from the pattern
         // start) with multiple patterns joined by tabs. this is to speed up loading of the data (small

@@ -2,12 +2,23 @@
 /**
  * Copyright (c) 1998-2014 Browser Capabilities Project
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
  *
- * Refer to the LICENSE file distributed with this package.
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  * @category   Browscap-PHP
  * @package    Helper
@@ -84,6 +95,14 @@ class IniLoader
      * @var string
      */
     private $remoteFilename = self::PHP_INI;
+
+    /**
+     * Options for the updater. The array should be overwritten,
+     * containing all options as keys, set to the default value.
+     *
+     * @var array
+     */
+    private $options = array();
 
     /**
      * sets the logger
@@ -186,6 +205,20 @@ class IniLoader
     }
 
     /**
+     * Sets multiple loader options at once
+     *
+     * @param array $options
+     *
+     * @return \FileLoader\Loader
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+        
+        return $this;
+    }
+
+    /**
      * creates the ini loader
      *
      * @return \FileLoader\Loader
@@ -199,6 +232,8 @@ class IniLoader
         if (null !== $this->localFile) {
             $this->loader->setLocalFile($this->localFile);
         }
+        
+        $this->loader->setOptions($this->options);
 
         return $this->loader;
     }

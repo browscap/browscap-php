@@ -21,32 +21,37 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Exception
+ * @package    Util\Logfile
  * @copyright  1998-2014 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Exception;
+namespace phpbrowscap\Util\Logfile;
 
 /**
- * Exception to handle errors while fetching a remote file
+ * interface for all readers
  *
  * @category   Browscap-PHP
- * @package    Exception
- * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
+ * @package    Command
+ * @author     Dave Olsen, http://dmolsen.com
  * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
  * @version    3.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  */
-class FetcherException extends DomainException
+interface ReaderInterface
 {
-    public static function httpError($resource, $error)
-    {
-        return new static(
-            sprintf('Could not fetch HTTP resource "%s": %s', $resource, $error)
-        );
-    }
+    /**
+     * @param string $line
+     * @return bool
+     */
+    public function test($line);
+
+    /**
+     * @param string $line
+     * @return string
+     */
+    public function read($line);
 }

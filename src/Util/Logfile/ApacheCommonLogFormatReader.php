@@ -21,32 +21,50 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Exception
+ * @package    Util\Logfile
  * @copyright  1998-2014 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Exception;
+namespace phpbrowscap\Util\Logfile;
 
 /**
- * Exception to handle errors while fetching a remote file
+ * reader to analyze the common log file of apache
  *
  * @category   Browscap-PHP
- * @package    Exception
- * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
+ * @package    Command
+ * @author     Dave Olsen, http://dmolsen.com
  * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
  * @version    3.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  */
-class FetcherException extends DomainException
+class ApacheCommonLogFormatReader extends AbstractReader
 {
-    public static function httpError($resource, $error)
+    protected function getRegex()
     {
-        return new static(
-            sprintf('Could not fetch HTTP resource "%s": %s', $resource, $error)
-        );
+        return '@^
+            (?:\S+)                                                 # IP
+            \s+
+            (?:\S+)
+            \s+
+            (?:\S+)
+            \s+
+            \[(?:[^:]+):(?:\d+:\d+:\d+) \s+ (?:[^\]]+)\]            # Date/time
+            \s+
+            \"(?:\S+)\s(?:.*?)                                      # Verb
+            \s+
+            (?:\S+)\"                                               # Path
+            \s+
+            (?:\S+)                                                 # Response
+            \s+
+            (?:\S+)                                                 # Length
+            \s+
+            (?:\".*?\")                                             # Referrer
+            \s+
+            \"(?P<userAgentString>.*?)\"                            # User Agent
+        $@x';
     }
 }

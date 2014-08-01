@@ -2,12 +2,23 @@
 /**
  * Copyright (c) 1998-2014 Browser Capabilities Project
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
  *
- * Refer to the LICENSE file distributed with this package.
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  * @category   Browscap-PHP
  * @package    Command
@@ -39,6 +50,7 @@ use phpbrowscap\Helper\LoggerHelper;
  *
  * @category   Browscap-PHP
  * @package    Command
+ * @author     Dave Olsen, http://dmolsen.com
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
  * @version    3.0
@@ -102,7 +114,19 @@ class LogfileCommand extends Command
         $loggerHelper = new LoggerHelper();
         $logger       = $loggerHelper->create($input->getOption('debug'));
 
-        $parser = Parser::create();
+        $loggerHelper = new LoggerHelper();
+        $logger       = $loggerHelper->create($input->getOption('debug'));
+
+        $cacheAdapter = new \WurflCache\Adapter\File(array(\WurflCache\Adapter\File::DIR => $this->resourceDirectory));
+        $cache        = new BrowscapCache($cacheAdapter);
+        
+        $browscap = new Browscap();
+        
+        $browscap
+            ->setLogger($logger)
+            ->setCache($cache)
+        ;
+        
         $undefinedClients = array();
         /** @var $file SplFileInfo */
         foreach ($this->getFiles($input) as $file) {
@@ -139,14 +163,9 @@ class LogfileCommand extends Command
                     continue;
                 }
 
-                $client = $parser->parse($userAgentString);
-
-                $result = $this->getResult($client);
+                $result = $this->getResult($browscap->getBrowser($userAgentString));
                 if ($result !== '.') {
-                    $undefinedClients[] = json_encode(
-                        array($client->toString(), $userAgentString),
-                        JSON_UNESCAPED_SLASHES
-                    );
+                    $undefinedClients[] = $userAgentString;
                 }
 
                 $count = $this->outputProgress($output, $result, $count, $totalCount);
@@ -174,23 +193,24 @@ class LogfileCommand extends Command
         return $count + 1;
     }
 
-    private function getResult(Client $client)
+    private function getResult(\stdClass $result)
     {
-        if ($client->device->family === 'Spider') {
+        if ($result->browser_type === 'Bot/Crawler') {
             return '.';
-        } elseif ($client->ua->family === 'Other') {
-            return 'U';
-        } elseif ($client->os->family === 'Other') {
-            return 'O';
-        } elseif ($client->device->family === 'Generic Smartphone') {
-            return 'S';
-        } elseif ($client->device->family === 'Generic Feature Phone') {
-            return 'F';
+        } elseif ($result->browser === 'Default Browser') {
+            return 'B';
+        } elseif ($result->platform === 'unknown') {
+            return 'P';
+        } elseif ($result->device_type === 'unknown') {
+            return 'M';
         }
 
         return '.';
     }
 
+    /**
+     * @return \Symfony\Component\Finder\Finder
+     */
     private function getFiles(InputInterface $input)
     {
         $finder = Finder::create();
@@ -214,9 +234,14 @@ class LogfileCommand extends Command
 
     private function filter(array $lines)
     {
-        return array_values(array_unique($lines));
+        return array_unique($lines);
     }
 
+    /**
+     * @param \Symfony\Component\Finder\SplFileInfo $file
+     *
+     * @return string
+     */
     private function getPath(SplFileInfo $file)
     {
         switch ($file->getExtension()) {

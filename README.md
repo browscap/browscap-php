@@ -19,10 +19,6 @@ The [browscap.ini](http://browscap.org/) file is a
 database which provides a lot of details about browsers and their capabilities, such as name,
 versions, Javascript support and so on.
 
-The [browscap.ini](http://browscap.org/), which
-provides a lot of details about browsers and their capabilities, such as name,
-versions, Javascript support and so on.
-
 PHP's native [get_browser()](http://php.net/get_browser) function parses this
 file and provides you with a complete set of information about every browser's
 details, But it requires the path to the browscap.ini file to be specified in
@@ -54,7 +50,24 @@ The Browscap.ini database now has an official site at http://browscap.org/.
 Quick start
 -----------
 
-a sample using composer with taking the useragent from the global $_SERVER variable
+Before you can start, you have to download the browscap.ini file and convert it into a cache. There are two ways.
+
+1. Download the file and convert it in two steps. The downloaded file will be stored in a local file, but there is no check
+   if the remote file has changed. If your cache gets corrupted you only need to rerun the `convert` command.
+
+```php
+php bin/Browscap.php browscap:fetch
+php bin/Browscap.php browscap:convert
+```
+
+2. Download the file and convert it in one step. The downloaded file will not be stored in a local file, but there is a check
+   if the remote file has changed. If your cache gets corrupted you have clean the cache and restart the process.
+   
+```php
+php bin/Browscap.php browscap:update
+```
+
+A sample using composer with taking the useragent from the global $_SERVER variable. 
 
 ```php
 require 'vendor/autoload.php';
@@ -63,7 +76,7 @@ require 'vendor/autoload.php';
 use phpbrowscap\Browscap;
 
 // Create a new Browscap object (loads or creates the cache)
-$bc = new Browscap('path/to/the/cache/dir');
+$bc = new Browscap();
 
 // Get information about the current browser's user agent
 $current_browser = $bc->getBrowser();
@@ -74,38 +87,54 @@ If you have an user agent you can change the function
 $current_browser = $bc->getBrowser($the_user_agent);
 ```
 
-If you like arrays more than the StdClass you'll get it with this change
-```php
-$current_browser = $bc->getBrowser($the_user_agent, true);
-```
-
-If your projects needs more than one server, or you dont like file caches, you may use the Detector class instaed of the Browscap class.
-```php
-require 'vendor/autoload.php';
-
-// The Browscap class is in the phpbrowscap namespace, so import it
-use phpbrowscap\Detector;
-
-// Create a new Browscap object (loads or creates the cache)
-$bc = new Detector('path/to/the/cache/dir');
-
-// Get information about the current browser's user agent
-$current_browser = $bc->getBrowser();
-```
-
-If you have more than one process using that cache dir you can set a cache prefix.
-```php
-$bc = new Detector('path/to/the/cache/dir');
-$bc->setCachePrefix('abc');
-$current_browser = $bc->getBrowser();
-```
-
 If you want to log something that happens with the detector you may set an logger.
 This logger has to implement the logger interface from Psr\Log\LoggerInterface
 ```php
-$bc = new Detector('path/to/the/cache/dir');
+$bc = new Browscap();
 $bc->setLogger($logger);
 $current_browser = $bc->getBrowser();
+```
+
+If you want to use an other cache than the file cache, you may set a different one. You have to 
+cache the cache adapter before building the cache with the `convert` or the `update` commands.
+
+NOTE: If you want to use a different cache, the samples above will not work, because they are using
+a predefined file cache
+
+This cache adapter has to implement the adapter interface from WurflCache\Adapter\AdapterInterface
+```php
+$adapter = new \WurflCache\Adapter\Memcache(<your memcache configuration as array>);
+$bc = new Browscap();
+$bc->setCache($adapter);
+$current_browser = $bc->getBrowser();
+```
+
+In this sample a memcache is used to store the full version of the bropwscap.ini file
+```php
+$adapter = new \WurflCache\Adapter\Memcache(<your memcache configuration as array>);
+
+$bc = new Browscap();
+$bc
+    ->setCache($adapter)
+    ->update(\phpbrowscap\Helper\IniLoader::PHP_INI_FULL)
+;
+```
+
+If you are behind a proxy you have to set a configuration with the proxy data. Parts who are not 
+needed for your connection (like the port if the standard port is used) dont need to be set
+
+```php
+$proxyConfig = array(
+    'ProxyProtocol' => 'http',
+    'ProxyHost'     => 'example.org',
+    //'ProxyPort'     => null,
+    'ProxyAuth'     => 'basic',
+    'ProxyUser'     => 'your username',
+    'ProxyPassword' => 'your super secret password',
+);
+
+$bc = new Browscap();
+$bc->setOptions($proxyConfig);
 ```
 
 Features

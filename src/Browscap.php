@@ -2,12 +2,23 @@
 /**
  * Copyright (c) 1998-2014 Browser Capabilities Project
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
  *
- * Refer to the LICENSE file distributed with this package.
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  *
  * @category   Browscap-PHP
  * @package    Browscap
@@ -21,8 +32,10 @@ namespace phpbrowscap;
 use phpbrowscap\Helper\Converter;
 use phpbrowscap\Cache\BrowscapCache;
 use WurflCache\Adapter\NullStorage;
+use WurflCache\Adapter\AdapterInterface;
 use phpbrowscap\Helper\IniLoader;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -32,6 +45,7 @@ use Psr\Log\LoggerInterface;
  * @author     Jonathan Stoppani <jonathan@stoppani.name>
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @author     Mikołaj Misiurewicz <quentin389+phpb@gmail.com>
+ * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
  * @version    3.0
@@ -68,6 +82,14 @@ class Browscap
 
     /** @var \Psr\Log\LoggerInterface */
     private $logger = null;
+
+    /**
+     * Options for the updater. The array should be overwritten,
+     * containing all options as keys, set to the default value.
+     *
+     * @var array
+     */
+    private $options = array();
 
     /**
      * Set theformatter instance to use for the getBrowser() result
@@ -118,13 +140,23 @@ class Browscap
     /**
      * Sets a cache instance
      *
-     * @param \phpbrowscap\Cache\BrowscapCache $cache
+     * @param \phpbrowscap\Cache\BrowscapCache|\WurflCache\Adapter\AdapterInterface $cache
      *
      * @return \phpbrowscap\Browscap
      */
-    public function setCache(BrowscapCache $cache)
+    public function setCache($cache)
     {
-        $this->cache = $cache;
+        if ($cache instanceof BrowscapCache) {
+            $this->cache = $cache;
+        } elseif ($cache instanceof AdapterInterface) {
+            $this->cache = new BrowscapCache($cache);
+        } else {
+            throw new Exception(
+                'the cache has to be an instance of \phpbrowscap\Cache\BrowscapCache or '
+                . 'an instanceof of \WurflCache\Adapter\AdapterInterface',
+                Exception::CACHE_INCOMPATIBLE
+            );
+        }
 
         return $this;
     }
@@ -168,7 +200,7 @@ class Browscap
             ->setHelper($helper)
             ->setFormatter($this->getFormatter())
             ->setCache($this->getCache())
-            ->setLogger($this->logger);
+            ->setLogger($this->getLogger())
         ;
 
 
@@ -186,6 +218,36 @@ class Browscap
     {
         $this->logger = $logger;
 
+        return $this;
+    }
+
+    /**
+     * Sets a logger instance
+     *
+     * @param \Psr\Log\LoggerInterface $logger
+     *
+     * @return \phpbrowscap\Browscap
+     */
+    public function getLogger()
+    {
+        if (null === $this->logger) {
+            $this->logger = new NullLogger();
+        }
+
+        return $this->logger;
+    }
+
+    /**
+     * Sets multiple loader options at once
+     *
+     * @param array $options
+     *
+     * @return \FileLoader\Loader
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+        
         return $this;
     }
 
@@ -234,7 +296,7 @@ class Browscap
         $converter = new Converter();
 
         $converter
-            ->setLogger($this->logger)
+            ->setLogger($this->getLogger())
             ->setCache($this->getCache())
             ->convertString($loader->load())
         ;
@@ -250,7 +312,7 @@ class Browscap
         $converter = new Converter();
 
         $converter
-            ->setLogger($this->logger)
+            ->setLogger($this->getLogger())
             ->setCache($this->getCache())
             ->convertString($iniString)
         ;
@@ -265,12 +327,15 @@ class Browscap
     public function fetch($file, $remoteFile = IniLoader::PHP_INI)
     {
         $loader = new IniLoader();
-        $loader->setRemoteFilename($remoteFile);
+        $loader
+            ->setRemoteFilename($remoteFile)
+            ->setOptions($this->options)
+        ;
 
-        $logger->debug('started fetching remote file');
+        $this->getLogger()->debug('started fetching remote file');
         
         $content = $loader
-            ->setLogger($this->logger)
+            ->setLogger($this->getLogger())
             ->load()
         ;
 
@@ -279,13 +344,13 @@ class Browscap
             throw FetcherException::httpError($loader->getRemoteIniUrl(), $error['message']);
         }
         
-        $logger->debug('finished fetching remote file');
-        $logger->debug('started storing remote file into local file');
+        $this->getLogger()->debug('finished fetching remote file');
+        $this->getLogger()->debug('started storing remote file into local file');
         
         $fs = new Filesystem();
         $fs->dumpFile($file, $content);
         
-        $logger->debug('finished storing remote file into local file');
+        $this->getLogger()->debug('finished storing remote file into local file');
     }
     
     /**
@@ -299,28 +364,56 @@ class Browscap
     public function update($remoteFile = IniLoader::PHP_INI)
     {
         $loader = new IniLoader();
-        $loader->setRemoteFilename($remoteFile);
-
-        $logger->debug('started fetching remote file');
-        
-        $content = $loader
-            ->setLogger($this->logger)
-            ->load()
+        $loader
+            ->setRemoteFilename($remoteFile)
+            ->setOptions($this->options)
         ;
 
-        if ($content === false) {
-            $error = error_get_last();
-            throw FetcherException::httpError($loader->getRemoteIniUrl(), $error['message']);
-        }
+        $this->getLogger()->debug('started fetching remote file');
         
-        $logger->debug('finished fetching remote file');
+        $loader->setLogger($this->getLogger());
+        $internalLoader = $loader->getLoader();
         
         $converter = new Converter();
 
         $converter
-            ->setLogger($this->logger)
+            ->setLogger($this->getLogger())
             ->setCache($this->getCache())
-            ->convertString($content)
         ;
+        
+        $cachedVersion = $this->getCache()->getItem('browscap.version', false);
+        
+        if ($internalLoader->isSupportingLoadingLines()) {
+            if (false === $internalLoader->init($internalLoader->getUri())) {
+                throw new FetcherException(
+                    'the file on location ' . $internalLoader->getUri() . ' is not readable'
+                );
+            }
+            
+            $content = '';
+            while ($internalLoader->isValid()) {
+                $content .= $internalLoader->getLine() . "\n";
+            }
+
+            $internalLoader->close();
+        } else {
+            $content = $loader->load();
+
+            if ($content === false) {
+                $error = error_get_last();
+                throw FetcherException::httpError($internalLoader->getUri(), $error['message']);
+            }
+            
+            $this->getLogger()->debug('finished fetching remote file');
+            
+            $iniVersion = $converter->getIniVersion($content);
+            
+            if ($iniVersion > $cachedVersion) {
+                $converter
+                    ->storeVersion()
+                    ->convertString($content)
+                ;
+            }
+        }
     }
 }
