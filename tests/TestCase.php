@@ -44,9 +44,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
     {
     }
 
-    protected function createCacheDir($cache_dir = null)
+    protected function createCacheDir()
     {
-        $cacheDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'browscap_testing';
+        $cacheDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'browscap_testing';
 
         if (!is_dir($cacheDir)) {
             if (false === @mkdir($cacheDir, 0777, true)) {
