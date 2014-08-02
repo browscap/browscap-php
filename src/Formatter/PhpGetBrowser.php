@@ -50,7 +50,7 @@ class PhpGetBrowser implements FormatterInterface
      * @var array
      */
     private $settings = array();
-    
+
     /**
      * a list of possible properties
      *
@@ -131,15 +131,15 @@ class PhpGetBrowser implements FormatterInterface
     public function getData()
     {
         $output = new \stdClass();
-        
+
         foreach ($this->defaultproperties as $property) {
             $key = strtolower($property);
-            
+
             if (array_key_exists($key, $this->settings)) {
                 $output->$key = $this->settings[$key];
             }
         }
-        
+
         return $output;
     }
 }

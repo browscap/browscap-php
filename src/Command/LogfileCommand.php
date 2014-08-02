@@ -40,8 +40,6 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use phpbrowscap\Exception\InvalidArgumentException;
 use phpbrowscap\Exception\ReaderException;
-use UAParser\Parser;
-use UAParser\Result\Client;
 use UAParser\Util\Logfile\AbstractReader;
 use phpbrowscap\Helper\LoggerHelper;
 
@@ -97,9 +95,9 @@ class LogfileCommand extends Command
                 array('*error*')
             )
             ->addOption(
-                'debug', 
-                null, 
-                InputOption::VALUE_NONE, 
+                'debug',
+                null,
+                InputOption::VALUE_NONE,
                 'Should the debug mode entered?'
             )
         ;
@@ -119,14 +117,14 @@ class LogfileCommand extends Command
 
         $cacheAdapter = new \WurflCache\Adapter\File(array(\WurflCache\Adapter\File::DIR => $this->resourceDirectory));
         $cache        = new BrowscapCache($cacheAdapter);
-        
+
         $browscap = new Browscap();
-        
+
         $browscap
             ->setLogger($logger)
             ->setCache($cache)
         ;
-        
+
         $undefinedClients = array();
         /** @var $file SplFileInfo */
         foreach ($this->getFiles($input) as $file) {
@@ -180,6 +178,11 @@ class LogfileCommand extends Command
         $fs->dumpFile($input->getArgument('output'), join(PHP_EOL, $undefinedClients));
     }
 
+    /**
+     * @param string $result
+     * @param integer $count
+     * @param integer $totalCount
+     */
     private function outputProgress(OutputInterface $output, $result, $count, $totalCount, $end = false)
     {
         if (($count % 70) === 0 || $end) {

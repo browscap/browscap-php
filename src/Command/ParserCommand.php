@@ -83,9 +83,9 @@ class ParserCommand extends Command
                 null
             )
             ->addOption(
-                'debug', 
-                'd', 
-                InputOption::VALUE_NONE, 
+                'debug',
+                'd',
+                InputOption::VALUE_NONE,
                 'Should the debug mode entered?'
             )
         ;
@@ -104,14 +104,14 @@ class ParserCommand extends Command
 
         $cacheAdapter = new \WurflCache\Adapter\File(array(\WurflCache\Adapter\File::DIR => $this->resourceDirectory));
         $cache        = new BrowscapCache($cacheAdapter);
-        
+
         $browscap = new Browscap();
-        
+
         $browscap
             ->setLogger($logger)
             ->setCache($cache)
         ;
-        
+
         $result = $browscap->getBrowser($input->getArgument('user-agent'));
 
         $output->writeln(json_encode($result, JSON_PRETTY_PRINT));

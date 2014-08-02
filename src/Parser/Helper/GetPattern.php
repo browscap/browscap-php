@@ -99,15 +99,15 @@ class GetPattern implements GetPatternInterface
         foreach (array($start, str_repeat('z', 32)) as $tmp_start) {
             $tmp_subkey = Pattern::getPatternCacheSubkey($tmp_start);
             $success    = null;
-            
+
             $file = $this->getCache()->getItem('browscap.patterns.' . $tmp_subkey, true, $success);
-            
+
             if (!$success) {
                 continue;
             }
-            
+
             $found = false;
-            
+
             foreach ($file as $buffer) {
                 $tmp_buffer = substr($buffer, 0, 32);
                 if ($tmp_buffer === $tmp_start) {

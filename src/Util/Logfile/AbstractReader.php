@@ -90,6 +90,9 @@ abstract class AbstractReader implements ReaderInterface
         return $matches['userAgentString'];
     }
 
+    /**
+     * @param string $line
+     */
     protected function match($line)
     {
         if (preg_match($this->getRegex(), $line, $matches)) {
@@ -99,5 +102,8 @@ abstract class AbstractReader implements ReaderInterface
         return array();
     }
 
+    /**
+     * @return string
+     */
     abstract protected function getRegex();
 }

@@ -32,7 +32,6 @@ namespace phpbrowscap;
 use phpbrowscap\Helper\Converter;
 use phpbrowscap\Cache\BrowscapCache;
 use WurflCache\Adapter\File;
-use WurflCache\Adapter\NullStorage;
 use WurflCache\Adapter\AdapterInterface;
 use phpbrowscap\Helper\IniLoader;
 use phpbrowscap\Exception\FetcherException;
@@ -142,7 +141,7 @@ class Browscap
     /**
      * Sets a cache instance
      *
-     * @param \phpbrowscap\Cache\BrowscapCache|\WurflCache\Adapter\AdapterInterface $cache
+     * @param BrowscapCache $cache
      *
      * @throws \phpbrowscap\Exception
      * @return \phpbrowscap\Browscap
