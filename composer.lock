@@ -4,20 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "17b8f68716c4f30d6ffcccc5d33bd065",
+    "hash": "e3badc96d82a3adcc728b7a43a7c47b8",
     "packages": [
         {
             "name": "mimmi20/file-loader",
-            "version": "2.0.0-beta",
+            "version": "2.0.0-beta2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mimmi20/FileLoader.git",
-                "reference": "d246a8edf719a963967a2f65484e2592398c35f0"
+                "reference": "d3d98fa3840f52f6f2a4c86895fd16545e457371"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mimmi20/FileLoader/zipball/d246a8edf719a963967a2f65484e2592398c35f0",
-                "reference": "d246a8edf719a963967a2f65484e2592398c35f0",
+                "url": "https://api.github.com/repos/mimmi20/FileLoader/zipball/d3d98fa3840f52f6f2a4c86895fd16545e457371",
+                "reference": "d3d98fa3840f52f6f2a4c86895fd16545e457371",
                 "shasum": ""
             },
             "require": {
@@ -52,20 +52,20 @@
             ],
             "description": "a class to load remote or local files",
             "homepage": "http://github.com/mimmi20/FileLoader",
-            "time": "2014-07-27 14:59:14"
+            "time": "2014-08-01 17:38:33"
         },
         {
             "name": "mimmi20/wurflcache",
-            "version": "1.2.2",
+            "version": "1.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mimmi20/WurflCache.git",
-                "reference": "faf16abd480c031027d471e9344561cdd7a500ed"
+                "reference": "aa0688ce630b1a4175bbd0c4bfd7d6f39554fb31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mimmi20/WurflCache/zipball/faf16abd480c031027d471e9344561cdd7a500ed",
-                "reference": "faf16abd480c031027d471e9344561cdd7a500ed",
+                "url": "https://api.github.com/repos/mimmi20/WurflCache/zipball/aa0688ce630b1a4175bbd0c4bfd7d6f39554fb31",
+                "reference": "aa0688ce630b1a4175bbd0c4bfd7d6f39554fb31",
                 "shasum": ""
             },
             "require": {
@@ -114,7 +114,7 @@
                 "Wurfl",
                 "cache"
             ],
-            "time": "2014-07-22 18:49:26"
+            "time": "2014-08-01 18:03:39"
         },
         {
             "name": "monolog/monolog",
@@ -325,6 +325,55 @@
             "description": "Symfony Filesystem Component",
             "homepage": "http://symfony.com",
             "time": "2014-07-09 09:05:48"
+        },
+        {
+            "name": "symfony/finder",
+            "version": "v2.4.8",
+            "target-dir": "Symfony/Component/Finder",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Finder.git",
+                "reference": "b495517531feb9f27c35991d0ed606ffb210faea"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/b495517531feb9f27c35991d0ed606ffb210faea",
+                "reference": "b495517531feb9f27c35991d0ed606ffb210faea",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Finder\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Finder Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-07-15 14:07:10"
         }
     ],
     "packages-dev": [
