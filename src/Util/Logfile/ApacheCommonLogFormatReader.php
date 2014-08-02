@@ -43,6 +43,9 @@ namespace phpbrowscap\Util\Logfile;
  */
 class ApacheCommonLogFormatReader extends AbstractReader
 {
+    /**
+     * @return string
+     */
     protected function getRegex()
     {
         return '@^

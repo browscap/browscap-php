@@ -47,6 +47,8 @@ class FileNotFoundException extends Exception
 {
     /**
      * @param string $file
+     *
+     * @return FileNotFoundException
      */
     public static function fileNotFound($file)
     {

@@ -50,17 +50,22 @@ abstract class AbstractReader implements ReaderInterface
 
     /**
      * @param string $line
-     * @return ReaderInterface
+     * @return ReaderInterface|null
      */
     public static function factory($line)
     {
-        foreach (static::getReaders() as $reader) {
+        foreach (self::getReaders() as $reader) {
             if ($reader->test($line)) {
                 return $reader;
             }
         }
+
+        return null;
     }
 
+    /**
+     * @return ReaderInterface[]
+     */
     private static function getReaders()
     {
         if (static::$readers) {
@@ -72,6 +77,11 @@ abstract class AbstractReader implements ReaderInterface
         return static::$readers;
     }
 
+    /**
+     * @param string $line
+     *
+     * @return bool
+     */
     public function test($line)
     {
         $matches = $this->match($line);
@@ -79,6 +89,12 @@ abstract class AbstractReader implements ReaderInterface
         return isset($matches['userAgentString']);
     }
 
+    /**
+     * @param string $line
+     *
+     * @return string
+     * @throws \phpbrowscap\Exception\ReaderException
+     */
     public function read($line)
     {
         $matches = $this->match($line);
@@ -92,6 +108,8 @@ abstract class AbstractReader implements ReaderInterface
 
     /**
      * @param string $line
+     *
+     * @return array
      */
     protected function match($line)
     {

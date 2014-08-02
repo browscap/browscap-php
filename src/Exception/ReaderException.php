@@ -45,6 +45,8 @@ class ReaderException extends DomainException
 {
     /**
      * @param string $line
+     *
+     * @return ReaderException
      */
     public static function userAgentParserError($line)
     {

@@ -144,7 +144,8 @@ class IniLoader
     {
         if (empty($filename)) {
             throw new Exception(
-                'the filename can not be empty', Exception::LOCAL_FILE_MISSING
+                'the filename can not be empty',
+                Exception::LOCAL_FILE_MISSING
             );
         }
 
@@ -165,7 +166,8 @@ class IniLoader
     {
         if (empty($name)) {
             throw new Exception(
-                'the filename can not be empty', Exception::INI_FILE_MISSING
+                'the filename can not be empty',
+                Exception::INI_FILE_MISSING
             );
         }
 

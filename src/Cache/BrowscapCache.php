@@ -129,16 +129,16 @@ class BrowscapCache
      * Get an item.
      *
      * @param string $cacheId
-     * @param bool   $with_version
+     * @param bool   $withVersion
      * @param bool   $success
      *
      * @return mixed Data on success, null on failure
      */
-    public function getItem($cacheId, $with_version = true, & $success = null)
+    public function getItem($cacheId, $withVersion = true, & $success = null)
     {
         $success = false;
 
-        if ($with_version) {
+        if ($withVersion) {
             $cacheId .= '.' . $this->getVersion();
         }
 
@@ -161,11 +161,11 @@ class BrowscapCache
      *
      * @param string $cacheId The cache id
      * @param mixed  $content The content to store
-     * @param bool   $with_version
+     * @param bool   $withVersion
      *
      * @return boolean whether the file was correctly written to the disk
      */
-    public function setItem($cacheId, $content, $with_version = true)
+    public function setItem($cacheId, $content, $withVersion = true)
     {
         // Get the whole PHP code
         $data = array(
@@ -173,7 +173,7 @@ class BrowscapCache
             'content'      => serialize($content)
         );
 
-        if ($with_version) {
+        if ($withVersion) {
             $cacheId .= '.' . $this->getVersion();
         }
 
@@ -185,13 +185,13 @@ class BrowscapCache
      * Test if an item exists.
      *
      * @param string $cacheId
-     * @param bool   $with_version
+     * @param bool   $withVersion
      *
      * @return bool
      */
-    public function hasItem($cacheId, $with_version = true)
+    public function hasItem($cacheId, $withVersion = true)
     {
-        if ($with_version) {
+        if ($withVersion) {
             $cacheId .= '.' . $this->getVersion();
         }
 
@@ -202,13 +202,13 @@ class BrowscapCache
      * Remove an item.
      *
      * @param string $cacheId
-     * @param bool   $with_version
+     * @param bool   $withVersion
      *
      * @return bool
      */
-    public function removeItem($cacheId, $with_version = true)
+    public function removeItem($cacheId, $withVersion = true)
     {
-        if ($with_version) {
+        if ($withVersion) {
             $cacheId .= '.' . $this->getVersion();
         }
 

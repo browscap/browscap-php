@@ -40,8 +40,9 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use phpbrowscap\Exception\InvalidArgumentException;
 use phpbrowscap\Exception\ReaderException;
-use UAParser\Util\Logfile\AbstractReader;
 use phpbrowscap\Helper\LoggerHelper;
+use WurflCache\Adapter\File;
+use phpbrowscap\Util\Logfile\AbstractReader;
 
 /**
  * commands to parse a log file and parse the useragents in it
@@ -57,6 +58,24 @@ use phpbrowscap\Helper\LoggerHelper;
  */
 class LogfileCommand extends Command
 {
+    /**
+     * @var string
+     */
+    private $resourceDirectory;
+
+    /**
+     * @param string $resourceDirectory
+     */
+    public function __construct($resourceDirectory)
+    {
+        parent::__construct();
+
+        $this->resourceDirectory = $resourceDirectory;
+    }
+
+    /**
+     * Configures the current command.
+     */
     protected function configure()
     {
         $this
@@ -103,6 +122,13 @@ class LogfileCommand extends Command
         ;
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @throws \phpbrowscap\Exception\InvalidArgumentException
+     * @return int|null|void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!$input->getOption('log-file') && !$input->getOption('log-dir')) {
@@ -112,10 +138,7 @@ class LogfileCommand extends Command
         $loggerHelper = new LoggerHelper();
         $logger       = $loggerHelper->create($input->getOption('debug'));
 
-        $loggerHelper = new LoggerHelper();
-        $logger       = $loggerHelper->create($input->getOption('debug'));
-
-        $cacheAdapter = new \WurflCache\Adapter\File(array(\WurflCache\Adapter\File::DIR => $this->resourceDirectory));
+        $cacheAdapter = new File(array(File::DIR => $this->resourceDirectory));
         $cache        = new BrowscapCache($cacheAdapter);
 
         $browscap = new Browscap();
@@ -126,7 +149,7 @@ class LogfileCommand extends Command
         ;
 
         $undefinedClients = array();
-        /** @var $file SplFileInfo */
+        /** @var $file \SplFileInfo */
         foreach ($this->getFiles($input) as $file) {
 
             $path = $this->getPath($file);
@@ -153,7 +176,6 @@ class LogfileCommand extends Command
             $count = 1;
             $totalCount = count($lines);
             foreach ($lines as $line) {
-
                 try {
                     $userAgentString = $reader->read($line);
                 } catch (ReaderException $e) {
@@ -179,9 +201,13 @@ class LogfileCommand extends Command
     }
 
     /**
-     * @param string $result
-     * @param integer $count
-     * @param integer $totalCount
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param string                                            $result
+     * @param integer                                           $count
+     * @param integer                                           $totalCount
+     * @param bool                                              $end
+     *
+     * @return int
      */
     private function outputProgress(OutputInterface $output, $result, $count, $totalCount, $end = false)
     {
@@ -196,6 +222,11 @@ class LogfileCommand extends Command
         return $count + 1;
     }
 
+    /**
+     * @param \stdClass $result
+     *
+     * @return string
+     */
     private function getResult(\stdClass $result)
     {
         if ($result->browser_type === 'Bot/Crawler') {
@@ -212,6 +243,8 @@ class LogfileCommand extends Command
     }
 
     /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     *
      * @return \Symfony\Component\Finder\Finder
      */
     private function getFiles(InputInterface $input)
@@ -235,6 +268,11 @@ class LogfileCommand extends Command
         return $finder;
     }
 
+    /**
+     * @param array $lines
+     *
+     * @return array
+     */
     private function filter(array $lines)
     {
         return array_unique($lines);

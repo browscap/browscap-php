@@ -63,7 +63,7 @@ class Browscap
     /**
      * Parser to use
      *
-     * @var \phpbrowscap\Parser\Ini
+     * @var \phpbrowscap\Parser\ParserInterface
      */
     private $parser = null;
 
@@ -77,7 +77,7 @@ class Browscap
     /**
      * The cache instance
      *
-     * @var \phpbrowscap\Cache\BrowscapCache|\WurflCache\Adapter\AdapterInterface
+     * @var \phpbrowscap\Cache\BrowscapCache
      */
     private $cache = null;
 

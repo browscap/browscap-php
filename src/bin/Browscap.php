@@ -60,7 +60,7 @@ $application = new Application('browscap.php');
 $application->add(new ConvertCommand($resourceDirectory, $defaultIniFile));
 $application->add(new UpdateCommand($resourceDirectory));
 $application->add(new ParserCommand($resourceDirectory));
-$application->add(new LogfileCommand());
+$application->add(new LogfileCommand($resourceDirectory));
 $application->add(new FetchCommand($defaultIniFile));
 
 ini_set('memory_limit', '256M');

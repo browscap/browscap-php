@@ -45,6 +45,9 @@ use InvalidArgumentException as BaseInvalidArgumentException;
  */
 class InvalidArgumentException extends BaseInvalidArgumentException
 {
+    /**
+     * @return InvalidArgumentException
+     */
     public static function oneOfCommandArguments()
     {
         return new static(

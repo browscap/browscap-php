@@ -45,6 +45,9 @@ class FetcherException extends DomainException
 {
     /**
      * @param string $resource
+     * @param string $error
+     *
+     * @return FetcherException
      */
     public static function httpError($resource, $error)
     {
