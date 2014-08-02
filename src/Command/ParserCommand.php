@@ -38,6 +38,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use phpbrowscap\Helper\LoggerHelper;
 use phpbrowscap\Cache\BrowscapCache;
+use WurflCache\Adapter\File;
 
 /**
  * commands to parse a given useragent
@@ -102,7 +103,7 @@ class ParserCommand extends Command
         $loggerHelper = new LoggerHelper();
         $logger       = $loggerHelper->create($input->getOption('debug'));
 
-        $cacheAdapter = new \WurflCache\Adapter\File(array(\WurflCache\Adapter\File::DIR => $this->resourceDirectory));
+        $cacheAdapter = new File(array(File::DIR => $this->resourceDirectory));
         $cache        = new BrowscapCache($cacheAdapter);
 
         $browscap = new Browscap();

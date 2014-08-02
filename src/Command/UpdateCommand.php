@@ -36,6 +36,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use phpbrowscap\Helper\LoggerHelper;
 use phpbrowscap\Helper\IniLoader;
+use WurflCache\Adapter\File;
 
 /**
  * command to fetch a browscap ini file from the remote host, convert it into an array and store the content in a local
@@ -105,7 +106,7 @@ class UpdateCommand extends Command
 
         $level = error_reporting(0);
 
-        $cacheAdapter = new \WurflCache\Adapter\File(array(\WurflCache\Adapter\File::DIR => $this->resourceDirectory));
+        $cacheAdapter = new File(array(File::DIR => $this->resourceDirectory));
         $cache        = new BrowscapCache($cacheAdapter);
 
         $browscap = new Browscap();

@@ -38,6 +38,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use phpbrowscap\Helper\LoggerHelper;
 use phpbrowscap\Cache\BrowscapCache;
+use WurflCache\Adapter\File;
 
 /**
  * command to convert a downloaded Browscap ini file and write it to the cache
@@ -117,7 +118,7 @@ class ConvertCommand extends Command
 
         $logger->info('initializing converting process');
 
-        $cacheAdapter = new \WurflCache\Adapter\File(array(\WurflCache\Adapter\File::DIR => $this->resourceDirectory));
+        $cacheAdapter = new File(array(File::DIR => $this->resourceDirectory));
         $cache        = new BrowscapCache($cacheAdapter);
 
         $browscap = new Browscap();

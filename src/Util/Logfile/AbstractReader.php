@@ -68,13 +68,13 @@ abstract class AbstractReader implements ReaderInterface
      */
     private static function getReaders()
     {
-        if (static::$readers) {
-            return static::$readers;
+        if (self::$readers) {
+            return self::$readers;
         }
 
-        static::$readers[] = new ApacheCommonLogFormatReader();
+        self::$readers[] = new ApacheCommonLogFormatReader();
 
-        return static::$readers;
+        return self::$readers;
     }
 
     /**
