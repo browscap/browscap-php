@@ -247,13 +247,13 @@ class Browscap
     public function setOptions(array $options)
     {
         $this->options = $options;
-        
+
         return $this;
     }
 
     /**
      * parses the given user agent to get the information about the browser
-     * 
+     *
      * if no user agent is given, it uses {@see \phpbrowscap\Helper\Support} to get it
      *
      * @param string $userAgent the user agent string
@@ -292,7 +292,7 @@ class Browscap
     {
         $loader = new IniLoader();
         $loader->setLocalFile($iniFile);
-        
+
         $converter = new Converter();
 
         $converter
@@ -317,7 +317,7 @@ class Browscap
             ->convertString($iniString)
         ;
     }
-    
+
     /**
      * fetches a remote file and stores it into a local folder
      *
@@ -333,7 +333,7 @@ class Browscap
         ;
 
         $this->getLogger()->debug('started fetching remote file');
-        
+
         $content = $loader
             ->setLogger($this->getLogger())
             ->load()
@@ -343,16 +343,16 @@ class Browscap
             $error = error_get_last();
             throw FetcherException::httpError($loader->getRemoteIniUrl(), $error['message']);
         }
-        
+
         $this->getLogger()->debug('finished fetching remote file');
         $this->getLogger()->debug('started storing remote file into local file');
-        
+
         $fs = new Filesystem();
         $fs->dumpFile($file, $content);
-        
+
         $this->getLogger()->debug('finished storing remote file into local file');
     }
-    
+
     /**
      * fetches a remote file, parses it and writes the result into the cache
      *
@@ -370,50 +370,35 @@ class Browscap
         ;
 
         $this->getLogger()->debug('started fetching remote file');
-        
+
         $loader->setLogger($this->getLogger());
         $internalLoader = $loader->getLoader();
-        
+
         $converter = new Converter();
 
         $converter
             ->setLogger($this->getLogger())
             ->setCache($this->getCache())
         ;
-        
+
         $cachedVersion = $this->getCache()->getItem('browscap.version', false);
-        
-        if ($internalLoader->isSupportingLoadingLines()) {
-            if (false === $internalLoader->init($internalLoader->getUri())) {
-                throw new FetcherException(
-                    'the file on location ' . $internalLoader->getUri() . ' is not readable'
-                );
-            }
-            
-            $content = '';
-            while ($internalLoader->isValid()) {
-                $content .= $internalLoader->getLine() . "\n";
-            }
 
-            $internalLoader->close();
-        } else {
-            $content = $loader->load();
+        $content = $loader->load();
 
-            if ($content === false) {
-                $error = error_get_last();
-                throw FetcherException::httpError($internalLoader->getUri(), $error['message']);
-            }
-            
-            $this->getLogger()->debug('finished fetching remote file');
-            
-            $iniVersion = $converter->getIniVersion($content);
-            
-            if ($iniVersion > $cachedVersion) {
-                $converter
-                    ->storeVersion()
-                    ->convertString($content)
-                ;
-            }
+        if ($content === false) {
+            $error = error_get_last();
+            throw FetcherException::httpError($internalLoader->getUri(), $error['message']);
+        }
+
+        $this->getLogger()->debug('finished fetching remote file');
+
+        $iniVersion = $converter->getIniVersion($content);
+
+        if ($iniVersion > $cachedVersion) {
+            $converter
+                ->storeVersion()
+                ->convertString($content)
+            ;
         }
     }
 }
