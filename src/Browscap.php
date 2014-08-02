@@ -31,9 +31,11 @@ namespace phpbrowscap;
 
 use phpbrowscap\Helper\Converter;
 use phpbrowscap\Cache\BrowscapCache;
+use WurflCache\Adapter\File;
 use WurflCache\Adapter\NullStorage;
 use WurflCache\Adapter\AdapterInterface;
 use phpbrowscap\Helper\IniLoader;
+use phpbrowscap\Exception\FetcherException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -76,7 +78,7 @@ class Browscap
     /**
      * The cache instance
      *
-     * @var \phpbrowscap\Cache\BrowscapCache
+     * @var \phpbrowscap\Cache\BrowscapCache|\WurflCache\Adapter\AdapterInterface
      */
     private $cache = null;
 
@@ -127,8 +129,8 @@ class Browscap
         if (null === $this->cache) {
             $resourceDirectory = __DIR__  . '/../resources/';
 
-            $cacheAdapter = new \WurflCache\Adapter\File(
-                array(\WurflCache\Adapter\File::DIR => $resourceDirectory)
+            $cacheAdapter = new File(
+                array(File::DIR => $resourceDirectory)
             );
 
             $this->cache = new BrowscapCache($cacheAdapter);
@@ -142,6 +144,7 @@ class Browscap
      *
      * @param \phpbrowscap\Cache\BrowscapCache|\WurflCache\Adapter\AdapterInterface $cache
      *
+     * @throws \phpbrowscap\Exception
      * @return \phpbrowscap\Browscap
      */
     public function setCache($cache)
@@ -222,11 +225,9 @@ class Browscap
     }
 
     /**
-     * Sets a logger instance
+     * returns a logger instance
      *
-     * @param \Psr\Log\LoggerInterface $logger
-     *
-     * @return \phpbrowscap\Browscap
+     * @return \Psr\Log\LoggerInterface
      */
     public function getLogger()
     {
@@ -242,7 +243,7 @@ class Browscap
      *
      * @param array $options
      *
-     * @return \FileLoader\Loader
+     * @return \phpbrowscap\Browscap
      */
     public function setOptions(array $options)
     {
@@ -259,7 +260,7 @@ class Browscap
      * @param string $userAgent the user agent string
      *
      * @throws \phpbrowscap\Exception
-     * @return \stdClass|array  the object containing the browsers details. Array if
+     * @return \stdClass  the object containing the browsers details. Array if
      *                    $return_array is set to true.
      */
     public function getBrowser($userAgent = null)
@@ -323,6 +324,8 @@ class Browscap
      *
      * @param string $file       The name of the file where to store the remote content
      * @param string $remoteFile The code for the remote file to load
+     *
+     * @throws \phpbrowscap\Exception\FetcherException
      */
     public function fetch($file, $remoteFile = IniLoader::PHP_INI)
     {
@@ -360,6 +363,8 @@ class Browscap
      * taken
      *
      * @param string $remoteFile The code for the remote file to load
+     *
+     * @throws \phpbrowscap\Exception\FetcherException
      */
     public function update($remoteFile = IniLoader::PHP_INI)
     {
