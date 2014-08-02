@@ -74,7 +74,7 @@ class IniParser
     /**
      * @param bool $shouldSort
      *
-     * @return \Browscap\Parser\IniParser
+     * @return IniParser
      */
     public function setShouldSort($shouldSort)
     {

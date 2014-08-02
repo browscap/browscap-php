@@ -87,7 +87,7 @@ class Converter
      * @var int
      */
     private $joinPatterns = 100;
-    
+
     /**
      * version of the ini file
      *
@@ -161,7 +161,7 @@ class Converter
 
         $this->logger->info('finished creating data from the ini data');
     }
-    
+
     /**
      * Parses the ini data to get the version of loaded ini file
      *
@@ -175,10 +175,10 @@ class Converter
                 $this->iniVersion = (int)$matches[1];
             }
         }
-        
+
         return $this->iniVersion;
     }
-    
+
     /**
      * stores the version of the ini file into cache
      *
@@ -187,7 +187,7 @@ class Converter
     public function storeVersion()
     {
         $this->cache->setItem('browscap.version', $this->iniVersion, false);
-        
+
         return $this;
     }
 
@@ -208,6 +208,7 @@ class Converter
 
     /**
      * Creates new ini part cache files
+     * @param string $content
      */
     private function createIniParts($content)
     {
@@ -256,6 +257,7 @@ class Converter
 
     /**
      * Creates new pattern cache files
+     * @param string $content
      */
     private function createPatterns($content)
     {

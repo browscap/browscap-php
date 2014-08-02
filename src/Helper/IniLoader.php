@@ -51,7 +51,7 @@ class IniLoader
      * Current version of the class.
      */
     const VERSION = '3.0';
-    
+
     const PHP_INI_LITE = 'Lite_PHP_BrowscapINI';
     const PHP_INI_FULL = 'Full_PHP_BrowscapINI';
     const PHP_INI      = 'PHP_BrowscapINI';
@@ -209,12 +209,12 @@ class IniLoader
      *
      * @param array $options
      *
-     * @return \FileLoader\Loader
+     * @return IniLoader
      */
     public function setOptions(array $options)
     {
         $this->options = $options;
-        
+
         return $this;
     }
 
@@ -232,7 +232,7 @@ class IniLoader
         if (null !== $this->localFile) {
             $this->loader->setLocalFile($this->localFile);
         }
-        
+
         $this->loader->setOptions($this->options);
 
         return $this->loader;

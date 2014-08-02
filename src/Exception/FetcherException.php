@@ -43,6 +43,9 @@ namespace phpbrowscap\Exception;
  */
 class FetcherException extends DomainException
 {
+    /**
+     * @param string $resource
+     */
     public static function httpError($resource, $error)
     {
         return new static(

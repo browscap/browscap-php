@@ -32,9 +32,7 @@ namespace phpbrowscap\Parser;
 
 use phpbrowscap\Cache\BrowscapCache;
 use phpbrowscap\Formatter\FormatterInterface;
-use phpbrowscap\Formatter\PhpGetBrowser;
 use phpbrowscap\Helper\Quoter;
-use WurflCache\Adapter\NullStorage;
 use phpbrowscap\Parser\Helper\GetPatternInterface;
 use Psr\Log\LoggerInterface;
 
@@ -75,7 +73,7 @@ class Ini implements ParserInterface
      * @var \phpbrowscap\Formatter\FormatterInterface
      */
     private $formatter = null;
-    
+
     /** @var \Psr\Log\LoggerInterface */
     private $logger = null;
 
@@ -155,7 +153,7 @@ class Ini implements ParserInterface
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
-        
+
         return $this;
     }
 
@@ -179,7 +177,7 @@ class Ini implements ParserInterface
                 while ($pattern !== false) {
                     $this->logger->debug('1:' . $pattern);
                     $this->logger->debug('2:' . '/^' . $quoterHelper->pregQuote($pattern, '/') . '$/');
-                    
+
                     if (preg_match('/^' . $quoterHelper->pregQuote($pattern, '/') . '$/', $user_agent)) {
                         $formatter = $this->getFormatter();
                         $formatter->setData($this->getSettings($pattern));
@@ -251,7 +249,7 @@ class Ini implements ParserInterface
 
         $return = array();
         $file   = $this->getCache()->getItem('browscap.iniparts.' . $subkey);
-        
+
         foreach ($file as $buffer) {
             if (substr($buffer, 0, 32) === $patternhash) {
                 $return = json_decode(substr($buffer, 32), true);

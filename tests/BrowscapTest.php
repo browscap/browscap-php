@@ -3,7 +3,6 @@
 namespace phpbrowscapTest;
 
 use phpbrowscap\Browscap;
-use ReflectionClass;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities

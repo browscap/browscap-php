@@ -33,7 +33,7 @@ namespace phpbrowscap\Parser\Helper;
 use phpbrowscap\Cache\BrowscapCache;
 
 /**
- * extracts the pattern and the data for theses pattern from the ini content, 
+ * extracts the pattern and the data for theses pattern from the ini content,
  * optimized for PHP 5.3 and PHP 5.4
  *
  * @category   Browscap-PHP
@@ -69,7 +69,7 @@ class GetPatternLt55 implements GetPatternInterface
      *
      * @param \phpbrowscap\Cache\BrowscapCache $cache
      *
-     * @return \phpbrowscap\Parser\Ini
+     * @return GetPatternLt55
      */
     public function setCache(BrowscapCache $cache)
     {
@@ -101,15 +101,15 @@ class GetPatternLt55 implements GetPatternInterface
         foreach (array($start, str_repeat('z', 32)) as $tmp_start) {
             $tmp_subkey = Pattern::getPatternCacheSubkey($tmp_start);
             $success    = null;
-            
+
             $file = $this->getCache()->getItem('browscap.patterns.' . $tmp_subkey, true, $success);
-            
+
             if (!$success) {
                 continue;
             }
-            
+
             $found = false;
-            
+
             foreach ($file as $buffer) {
                 $tmp_buffer = substr($buffer, 0, 32);
                 if ($tmp_buffer === $tmp_start) {

@@ -45,6 +45,9 @@ use Exception;
  */
 class FileNotFoundException extends Exception
 {
+    /**
+     * @param string $file
+     */
     public static function fileNotFound($file)
     {
         return new static(sprintf('File "%s" does not exist', $file));

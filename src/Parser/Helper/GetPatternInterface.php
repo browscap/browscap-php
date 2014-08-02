@@ -58,7 +58,7 @@ interface GetPatternInterface
      *
      * @param \phpbrowscap\Cache\BrowscapCache $cache
      *
-     * @return \phpbrowscap\Parser\GetPatternInterface
+     * @return GetPatternLt55
      */
     public function setCache(BrowscapCache $cache);
 

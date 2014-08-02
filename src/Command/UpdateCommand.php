@@ -34,9 +34,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use phpbrowscap\Helper\Converter;
 use phpbrowscap\Helper\LoggerHelper;
-use FileLoader\Loader;
 use phpbrowscap\Helper\IniLoader;
 
 /**
@@ -84,9 +82,9 @@ class UpdateCommand extends Command
                 'Do not backup the previously existing file'
             )
             ->addOption(
-                'debug', 
-                'd', 
-                InputOption::VALUE_NONE, 
+                'debug',
+                'd',
+                InputOption::VALUE_NONE,
                 'Should the debug mode entered?'
             )
         ;
@@ -102,16 +100,16 @@ class UpdateCommand extends Command
     {
         $loggerHelper = new LoggerHelper();
         $logger       = $loggerHelper->create($input->getOption('debug'));
-        
+
         $logger->info('started updating cache with remote file');
-        
+
         $level = error_reporting(0);
 
         $cacheAdapter = new \WurflCache\Adapter\File(array(\WurflCache\Adapter\File::DIR => $this->resourceDirectory));
         $cache        = new BrowscapCache($cacheAdapter);
-        
+
         $browscap = new Browscap();
-        
+
         $browscap
             ->setLogger($logger)
             ->setCache($cache)
@@ -119,7 +117,7 @@ class UpdateCommand extends Command
         ;
 
         error_reporting($level);
-        
+
         $logger->info('finished updating cache with remote file');
     }
 }

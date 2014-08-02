@@ -35,9 +35,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
 use phpbrowscap\Helper\LoggerHelper;
-use FileLoader\Loader;
 use phpbrowscap\Helper\IniLoader;
 
 /**
@@ -84,9 +82,9 @@ class FetchCommand extends Command
                 $this->defaultIniFile
             )
             ->addOption(
-                'debug', 
-                'd', 
-                InputOption::VALUE_NONE, 
+                'debug',
+                'd',
+                InputOption::VALUE_NONE,
                 'Should the debug mode entered?'
             )
         ;
@@ -102,25 +100,25 @@ class FetchCommand extends Command
     {
         $loggerHelper = new LoggerHelper();
         $logger       = $loggerHelper->create($input->getOption('debug'));
-        
+
         $file = $input->getArgument('file');
         if (!$file) {
             $file = $this->defaultIniFile;
         }
-        
+
         $logger->info('started fetching remote file');
-        
+
         $level = error_reporting(0);
 
         $browscap = new Browscap();
-        
+
         $browscap
             ->setLogger($logger)
             ->fetch($file, IniLoader::PHP_INI)
         ;
 
         error_reporting($level);
-        
+
         $logger->info('finished fetching remote file');
     }
 }
