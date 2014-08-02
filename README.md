@@ -62,12 +62,12 @@ php bin/Browscap.php browscap:convert
 
 2. Download the file and convert it in one step. The downloaded file will not be stored in a local file, but there is a check
    if the remote file has changed. If your cache gets corrupted you have clean the cache and restart the process.
-   
+
 ```php
 php bin/Browscap.php browscap:update
 ```
 
-A sample using composer with taking the useragent from the global $_SERVER variable. 
+A sample using composer with taking the useragent from the global $_SERVER variable.
 
 ```php
 require 'vendor/autoload.php';
@@ -95,8 +95,8 @@ $bc->setLogger($logger);
 $current_browser = $bc->getBrowser();
 ```
 
-If you want to use an other cache than the file cache, you may set a different one. You have to 
-cache the cache adapter before building the cache with the `convert` or the `update` commands.
+If you want to use an other cache than the file cache, you may set a different one. You have to
+change the cache adapter before building the cache with the `convert` or the `update` commands.
 
 NOTE: If you want to use a different cache, the samples above will not work, because they are using
 a predefined file cache
@@ -120,7 +120,7 @@ $bc
 ;
 ```
 
-If you are behind a proxy you have to set a configuration with the proxy data. Parts who are not 
+If you are behind a proxy you have to set a configuration with the proxy data. Parts who are not
 needed for your connection (like the port if the standard port is used) dont need to be set
 
 ```php
