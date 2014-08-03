@@ -257,7 +257,10 @@ class Converter
 
     /**
      * Creates new pattern cache files
+     *
      * @param string $content
+     *
+     * @return bool
      */
     private function createPatterns($content)
     {
@@ -276,8 +279,8 @@ class Converter
 
         foreach ($matches[0] as $match) {
             // get the first characters for a fast search
-            $tmp_start  = $this->getPatternStart($match);
-            $tmp_length = $this->getPatternLength($match);
+            $tmp_start  = Pattern::getPatternStart($match);
+            $tmp_length = Pattern::getPatternLength($match);
 
             // special handling of default entry
             if ($tmp_length === 0) {
@@ -318,34 +321,19 @@ class Converter
 
         unset($data);
 
+        // write cache files. important: also write empty cache files for
+        // unused patterns, so that the regeneration is not unnecessarily
+        // triggered by the getPatterns() method.
+        $subkeys = array_flip(Pattern::getAllPatternCacheSubkeys());
         foreach ($contents as $subkey => $content) {
-            $this->cache->setItem('browscap.patterns.' . $subkey, $content, true);
+            $this->cache->set('browscap.patterns.' . $subkey, $content, true);
+            unset($subkeys[$subkey]);
+        }
+
+        foreach (array_keys($subkeys) as $subkey) {
+            $this->cache->set('browscap.patterns.' . $subkey, '', true);
         }
 
         return true;
-    }
-
-    /**
-     * Gets a hash from the first charcters of a pattern/user agent, that can be used for a fast comparison,
-     * by comparing only the hashes, without having to match the complete pattern against the user agent.
-     *
-     * @param string $pattern
-     * @return string
-     */
-    private function getPatternStart($pattern)
-    {
-        return md5(preg_replace('/^([^\*\?\s]*)[\*\?\s].*$/', '\\1', substr($pattern, 0, 32)));
-    }
-
-    /**
-     * Gets the minimum length of the patern (used in the getPatterns() method to
-     * check against the user agent length)
-     *
-     * @param string $pattern
-     * @return int
-     */
-    private function getPatternLength($pattern)
-    {
-        return strlen(str_replace('*', '', $pattern));
     }
 }

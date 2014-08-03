@@ -90,13 +90,15 @@ class GetPattern implements GetPatternInterface
      */
     public function getPatterns($user_agent)
     {
-        $start  = Pattern::getPatternStart($user_agent);
+        $starts = Pattern::getPatternStart($user_agent, true);
         $length = strlen($user_agent);
-        $subkey = Pattern::getPatternCacheSubkey($start);
+
+        // add special key to fall back to the default browser
+        $starts[] = str_repeat('z', 32);
 
         // get patterns, first for the given browser and if that is not found,
         // for the default browser (with a special key)
-        foreach (array($start, str_repeat('z', 32)) as $tmp_start) {
+        foreach ($starts as $tmp_start) {
             $tmp_subkey = Pattern::getPatternCacheSubkey($tmp_start);
             $success    = null;
 
@@ -125,6 +127,7 @@ class GetPattern implements GetPatternInterface
                 }
             }
         }
+        
         yield false;
     }
 }

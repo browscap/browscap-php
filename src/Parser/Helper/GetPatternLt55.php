@@ -91,9 +91,8 @@ class GetPatternLt55 implements GetPatternInterface
      */
     public function getPatterns($user_agent)
     {
-        $start  = Pattern::getPatternStart($user_agent);
+        $start  = Pattern::getPatternStart($user_agent, true);
         $length = strlen($user_agent);
-        $subkey = Pattern::getPatternCacheSubkey($start);
 
         // get patterns, first for the given browser and if that is not found,
         // for the default browser (with a special key)
@@ -127,6 +126,7 @@ class GetPatternLt55 implements GetPatternInterface
                 }
             }
         }
+
         return $patternarr;
     }
 }

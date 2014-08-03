@@ -65,15 +65,40 @@ class Pattern
     }
 
     /**
-     * Gets a hash from the first charcters of a pattern/user agent, that can be used for a fast comparison,
-     * by comparing only the hashes, without having to match the complete pattern against the user agent.
+     * Gets a hash or an array of hashes from the first characters of a pattern/user agent, that can
+     * be used for a fast comparison, by comparing only the hashes, without having to match the
+     * complete pattern against the user agent.
+     *
+     * With the variants options, all variants from the maximum number of pattern characters to one
+     * character will be returned. This is required in some cases, the a placeholder is used very
+     * early in the pattern.
+     *
+     * Example:
+     *
+     * Pattern: "Mozilla/* (Nintendo 3DS; *) Version/*"
+     * User agent: "Mozilla/5.0 (Nintendo 3DS; U; ; en) Version/1.7567.US"
+     *
+     * In this case the has for the pattern is created for "Mozilla/" while the pattern
+     * for the hash for user agent is created for "Mozilla/5.0". The variants option
+     * results in an array with hashes for "Mozilla/5.0", "Mozilla/5.", "Mozilla/5",
+     * "Mozilla/" ... "M", so that the pattern hash is included.
      *
      * @param string $pattern
-     * @return string
+     * @param boolean $variants
+     * @return string|array
      */
-    public static function getPatternStart($pattern)
+    public static function getPatternStart($pattern, $variants = false)
     {
-        return md5(preg_replace('/^([^\*\?\s]*)[\*\?\s].*$/', '\\1', substr($pattern, 0, 32)));
+        $string = preg_replace('/^([^\*\?\s]*)[\*\?\s].*$/', '\\1', substr($pattern, 0, 32));
+        if ($variants === true) {
+            $pattern_starts = array();
+            for ($i = strlen($string); $i >= 1; $i--) {
+                $pattern_starts[] = md5(substr($string, 0, $i));
+            }
+            return $pattern_starts;
+        } else {
+            return md5($string);
+        }
     }
 
     /**
@@ -83,8 +108,27 @@ class Pattern
      * @param string $pattern
      * @return int
      */
-    private static function getPatternLength($pattern)
+    public static function getPatternLength($pattern)
     {
         return strlen(str_replace('*', '', $pattern));
+    }
+
+    /**
+     * Gets all subkeys for the pattern cache files
+     *
+     * @return array
+     */
+    public static function getAllPatternCacheSubkeys()
+    {
+        $subkeys = array();
+        $chars   = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
+
+        foreach ($chars as $char_one) {
+            foreach ($chars as $char_two) {
+                $subkeys[] = $char_one . $char_two;
+            }
+        }
+
+        return $subkeys;
     }
 }
