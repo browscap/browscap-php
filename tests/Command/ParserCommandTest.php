@@ -1,8 +1,8 @@
 <?php
 
-namespace phpbrowscapTest;
+namespace phpbrowscapTest\Command;
 
-use phpbrowscap\Browscap;
+use phpbrowscap\Command\ParserCommand;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -36,8 +36,23 @@ use phpbrowscap\Browscap;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/GaretJax/phpbrowscap/
  */
-class BrowscapTest extends \PHPUnit_Framework_TestCase
+class ParserCommandTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \Browscap\Command\ParserCommand
+     */
+    private $object = null;
+
+    /**
+     * Sets up the fixture, for example, open a network connection.
+     * This method is called before a test is executed.
+     *
+     */
+    public function setUp()
+    {
+        $this->object = new ParserCommand();
+    }
+
     /**
      * @expectedException \PHPUnit_Framework_Error_Warning
      */
@@ -45,34 +60,6 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
     {
         $this->markTestSkipped('need to be updated');
 
-        new Browscap();
-    }
-
-    /**
-     * @expectedException \phpbrowscap\Exception
-     * @expectedExceptionMessage You have to provide a path to read/store the browscap cache file
-     */
-    public function testConstructorFails2()
-    {
-        $this->markTestSkipped('need to be updated');
-
-        new Browscap(null);
-    }
-
-    /**
-     *
-     */
-    public function testConstructorFails3()
-    {
-        $this->markTestSkipped('need to be updated');
-
-        $path = '/abc/test';
-
-        $this->setExpectedException(
-            '\\phpbrowscap\\Exception',
-            'The cache path ' . $path . ' is invalid. Are you sure that it exists and that you have permission to access it?'
-        );
-
-        new Browscap($path);
+        new ParserCommand();
     }
 }

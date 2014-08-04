@@ -1,8 +1,8 @@
 <?php
 
-namespace phpbrowscapTest;
+namespace phpbrowscapTest\Helper;
 
-use phpbrowscap\Browscap;
+use phpbrowscap\Helper\IniLoader;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -36,43 +36,31 @@ use phpbrowscap\Browscap;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/GaretJax/phpbrowscap/
  */
-class BrowscapTest extends \PHPUnit_Framework_TestCase
+class IniLoaderTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @expectedException \PHPUnit_Framework_Error_Warning
+     * @var \phpbrowscap\Helper\IniLoader
      */
-    public function testConstructorFails()
+    private $object = null;
+
+    public function setUp()
     {
-        $this->markTestSkipped('need to be updated');
-
-        new Browscap();
-    }
-
-    /**
-     * @expectedException \phpbrowscap\Exception
-     * @expectedExceptionMessage You have to provide a path to read/store the browscap cache file
-     */
-    public function testConstructorFails2()
-    {
-        $this->markTestSkipped('need to be updated');
-
-        new Browscap(null);
+        $this->object = new IniLoader();
     }
 
     /**
      *
      */
-    public function testConstructorFails3()
+    public function testPregQuote()
     {
         $this->markTestSkipped('need to be updated');
+    }
 
-        $path = '/abc/test';
-
-        $this->setExpectedException(
-            '\\phpbrowscap\\Exception',
-            'The cache path ' . $path . ' is invalid. Are you sure that it exists and that you have permission to access it?'
-        );
-
-        new Browscap($path);
+    /**
+     *
+     */
+    public function testPregUnQuote()
+    {
+        $this->markTestSkipped('need to be updated');
     }
 }

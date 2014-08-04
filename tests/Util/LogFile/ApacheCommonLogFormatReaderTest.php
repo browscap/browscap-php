@@ -1,8 +1,8 @@
 <?php
 
-namespace phpbrowscapTest;
+namespace phpbrowscapTest\Util\LogFile;
 
-use phpbrowscap\Browscap;
+use phpbrowscap\Util\LogFile\ApacheCommonLogFormatReader;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -36,49 +36,30 @@ use phpbrowscap\Browscap;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/GaretJax/phpbrowscap/
  */
-class TestCase extends \PHPUnit_Framework_TestCase
+class ApacheCommonLogFormatReaderTest extends \PHPUnit_Framework_TestCase
 {
-    protected $cacheDir;
+    /**
+     * @var \Browscap\Util\LogFile\ApacheCommonLogFormatReader
+     */
+    private $object = null;
 
+    /**
+     * Sets up the fixture, for example, open a network connection.
+     * This method is called before a test is executed.
+     *
+     */
     public function setUp()
     {
+        $this->object = new ApacheCommonLogFormatReader();
     }
 
-    protected function createCacheDir()
+    /**
+     * @expectedException \PHPUnit_Framework_Error_Warning
+     */
+    public function testConstructorFails()
     {
-        $cacheDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'browscap_testing';
+        $this->markTestSkipped('need to be updated');
 
-        if (!is_dir($cacheDir)) {
-            if (false === @mkdir($cacheDir, 0777, true)) {
-                throw new \RuntimeException(sprintf('Unable to create the "%s" directory', $cacheDir));
-            }
-        }
-
-        $this->cacheDir = $cacheDir;
-
-        return $this->cacheDir;
-    }
-
-    protected function createBrowscap()
-    {
-        $cacheDir = $this->createCacheDir();
-
-        return new Browscap($cacheDir);
-    }
-
-    protected function removeCacheDir()
-    {
-        if (isset($this->cacheDir) && is_dir($this->cacheDir)) {
-            if (false === @rmdir($this->cacheDir)) {
-                throw new \RuntimeException(sprintf('Unable to remove the "%s" directory', $this->cacheDir));
-            }
-
-            $this->cacheDir = null;
-        }
-    }
-
-    public function tearDown()
-    {
-        $this->removeCacheDir();
+        new ApacheCommonLogFormatReader();
     }
 }
