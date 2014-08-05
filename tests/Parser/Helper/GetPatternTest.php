@@ -50,6 +50,10 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
+        if (version_compare(PHP_VERSION, '5.5.0') < 0) {
+            $this->markTestSkipped('not supported by this PHP version');
+        }
+        
         $this->object = new GetPattern();
     }
 
