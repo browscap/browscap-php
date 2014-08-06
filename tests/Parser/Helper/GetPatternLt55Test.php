@@ -54,12 +54,26 @@ class GetPatternLt55Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \PHPUnit_Framework_Error_Warning
+     *
      */
-    public function testConstructorFails()
+    public function testSetGetCache()
     {
-        $this->markTestSkipped('need to be updated');
+        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array(), array(), '', false);
+        
+        self::assertSame($this->object, $this->object->setCache($cache));
+        self::assertSame($cache, $this->object->getCache());
+    }
 
-        new GetPatternLt55();
+    /**
+     *
+     */
+    public function testGetPatterns()
+    {
+        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array(), array(), '', false);
+        
+        $this->object->setCache($cache);
+        $result = $this->object->getPatterns('Mozilla/5.0 (compatible; Ask Jeeves/Teoma*)');
+        
+        self::assertInternalType('array', $result);
     }
 }

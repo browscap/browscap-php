@@ -39,28 +39,13 @@ use phpbrowscap\Helper\Support;
 class SupportTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \phpbrowscap\Helper\Support
-     */
-    private $object = null;
-
-    public function setUp()
-    {
-        $this->object = new Support();
-    }
-
-    /**
      *
      */
     public function testPregQuote()
     {
-        $this->markTestSkipped('need to be updated');
-    }
-
-    /**
-     *
-     */
-    public function testPregUnQuote()
-    {
-        $this->markTestSkipped('need to be updated');
+		$source = array('HTTP_USER_AGENT' => 'testUA');
+        $object = new Support($source);
+		
+		self::assertSame('testUA', $object->getUserAgent());
     }
 }
