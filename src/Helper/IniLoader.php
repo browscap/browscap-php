@@ -119,6 +119,16 @@ class IniLoader
     }
 
     /**
+     * returns the logger
+     *
+     * @return \Psr\Log\LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
      * sets the loader
      *
      * @param \FileLoader\Loader $loader
@@ -130,6 +140,26 @@ class IniLoader
         $this->loader = $loader;
 
         return $this;
+    }
+
+    /**
+     * creates the ini loader
+     *
+     * @return \FileLoader\Loader
+     */
+    public function getLoader()
+    {
+        if (null === $this->loader) {
+            $this->loader = new Loader();
+        }
+
+        if (null !== $this->localFile) {
+            $this->loader->setLocalFile($this->localFile);
+        }
+
+        $this->loader->setOptions($this->options);
+
+        return $this->loader;
     }
 
     /**
@@ -162,7 +192,7 @@ class IniLoader
      * @throws \phpbrowscap\Helper\Exception
      * @return \phpbrowscap\Helper\IniLoader
      */
-    public function setRemoteFilename($name)
+    public function setRemoteFilename($name = null)
     {
         if (empty($name)) {
             throw new Exception(
@@ -221,26 +251,6 @@ class IniLoader
     }
 
     /**
-     * creates the ini loader
-     *
-     * @return \FileLoader\Loader
-     */
-    public function getLoader()
-    {
-        if (null === $this->loader) {
-            $this->loader = new Loader();
-        }
-
-        if (null !== $this->localFile) {
-            $this->loader->setLocalFile($this->localFile);
-        }
-
-        $this->loader->setOptions($this->options);
-
-        return $this->loader;
-    }
-
-    /**
      * XXX save
      *
      * loads the ini file from a remote or local location and returns the content of the file
@@ -256,8 +266,8 @@ class IniLoader
             ->setRemoteVerUrl($this->getRemoteVerUrl())
             ->setTimeout($this->getTimeout());
 
-        if (null !== $this->logger) {
-            $internalLoader->setLogger($this->logger);
+        if (null !== $this->getLogger()) {
+            $internalLoader->setLogger($this->getLogger());
         }
 
         // Get updated .ini file

@@ -56,10 +56,17 @@ class PhpGetBrowserTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \PHPUnit_Framework_Error_Warning
      */
-    public function testConstructorFails()
+    public function testSetGetData()
     {
-        $this->markTestSkipped('need to be updated');
+        $data = array(
+			'Browser' => 'test',
+			'Comment' => 'TestComment',
+		);
 
-        new PhpGetBrowser();
+        self::assertSame($this->object, $this->object->setData($data));
+		$return = $this->object->getData();
+		self::assertInstanceOf('\stdClass', $return);
+		self::assertSame('test', $return->browser);
+		self::assertSame('TestComment', $return->comment);
     }
 }

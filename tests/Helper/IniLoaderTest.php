@@ -51,16 +51,138 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testPregQuote()
+    public function testSetGetLoader()
     {
-        $this->markTestSkipped('need to be updated');
+        $loader = $this->getMock('\FileLoader\Loader', array(), array(), '', false);
+		
+		self::assertSame($this->object, $this->object->setLoader($loader));
+		self::assertSame($loader, $this->object->getLoader());
+		
+		self::assertSame($this->object, $this->object->setLocalFile('test'));
+		self::assertSame($loader, $this->object->getLoader());
     }
 
     /**
      *
      */
-    public function testPregUnQuote()
+    public function testSetGetLogger()
     {
-        $this->markTestSkipped('need to be updated');
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        
+        self::assertSame($this->object, $this->object->setLogger($logger));
+        self::assertSame($logger, $this->object->getLogger());
+    }
+
+    /**
+     * @expectedException \phpbrowscap\Helper\Exception
+	 * @expectedExceptionMessage the filename can not be empty
+     */
+    public function testSetMissingRemoteFilename()
+    {
+        self::assertSame($this->object, $this->object->setRemoteFilename());
+    }
+
+    /**
+     *
+     */
+    public function testSetRemoteFilename()
+    {
+        self::assertSame($this->object, $this->object->setRemoteFilename('testFile'));
+    }
+
+    /**
+     * @expectedException \phpbrowscap\Helper\Exception
+	 * @expectedExceptionMessage the filename can not be empty
+     */
+    public function testSetMissingLocalFile()
+    {
+        self::assertSame($this->object, $this->object->setLocalFile());
+    }
+
+    /**
+     *
+     */
+    public function testSetLocalFile()
+    {
+        self::assertSame($this->object, $this->object->setLocalFile('testFile'));
+    }
+
+    /**
+     *
+     */
+    public function testGetRemoteIniUrl()
+    {
+		$this->object->setRemoteFilename(IniLoader::PHP_INI_LITE);
+        self::assertSame('http://browscap.org/stream?q=Lite_PHP_BrowscapINI', $this->object->getRemoteIniUrl());
+		
+		$this->object->setRemoteFilename(IniLoader::PHP_INI_FULL);
+        self::assertSame('http://browscap.org/stream?q=Full_PHP_BrowscapINI', $this->object->getRemoteIniUrl());
+    }
+
+    /**
+     *
+     */
+    public function testGetRemoteVerUrl()
+    {
+        self::assertSame('http://browscap.org/version', $this->object->getRemoteVerUrl());
+    }
+
+    /**
+     *
+     */
+    public function testGetTimeout()
+    {
+        self::assertSame(5, $this->object->getTimeout());
+    }
+
+    /**
+     *
+     */
+    public function testSetOptions()
+    {
+		$options = array();
+		
+        self::assertSame($this->object, $this->object->setOptions($options));
+    }
+
+    /**
+     *
+     */
+    public function testLoad()
+    {
+		$loader = $this->getMock('\FileLoader\Loader', array('load', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout', 'setLogger'), array(), '', false);
+		$loader
+            ->expects(self::once())
+            ->method('load')
+            ->will(self::returnValue(true))
+        ;
+		$loader
+            ->expects(self::once())
+            ->method('setRemoteDataUrl')
+            ->will(self::returnSelf())
+        ;
+		$loader
+            ->expects(self::once())
+            ->method('setRemoteVerUrl')
+            ->will(self::returnSelf())
+        ;
+		$loader
+            ->expects(self::once())
+            ->method('setTimeout')
+            ->will(self::returnSelf())
+        ;
+		$loader
+            ->expects(self::once())
+            ->method('setLogger')
+            ->will(self::returnSelf())
+        ;
+		
+		$this->object->setLoader($loader);
+		
+		$logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        
+        $this->object->setLogger($logger);
+		
+        self::assertTrue($this->object->load());
     }
 }

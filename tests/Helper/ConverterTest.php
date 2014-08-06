@@ -51,16 +51,237 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testPregQuote()
+    public function testSetGetLogger()
     {
-        $this->markTestSkipped('need to be updated');
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        
+        self::assertSame($this->object, $this->object->setLogger($logger));
+        self::assertSame($logger, $this->object->getLogger());
     }
 
     /**
      *
      */
-    public function testPregUnQuote()
+    public function testSetGetCache()
     {
-        $this->markTestSkipped('need to be updated');
+        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array(), array(), '', false);
+        
+        self::assertSame($this->object, $this->object->setCache($cache));
+        self::assertSame($cache, $this->object->getCache());
+    }
+
+    /**
+     *
+     */
+    public function testSetGetFilesystem()
+    {
+		self::assertInstanceOf('\Symfony\Component\Filesystem\Filesystem', $this->object->getFilesystem());
+		
+        $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array(), array(), '', false);
+        
+        self::assertSame($this->object, $this->object->setFilesystem($file));
+        self::assertSame($file, $this->object->getFilesystem());
+    }
+
+    /**
+     * @expectedException \phpbrowscap\Exception\FileNotFoundException
+	 * @expectedExceptionMessage testFile
+     */
+    public function testConvertMissingFile()
+    {
+        $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array('exists'), array(), '', false);
+		$file
+            ->expects(self::once())
+            ->method('exists')
+            ->will(self::returnValue(false))
+        ;
+		
+		$logger = $this->getMock('\Monolog\Logger', array('info'), array(), '', false);
+		$logger
+            ->expects(self::never())
+            ->method('info')
+            ->will(self::returnValue(false))
+        ;
+        
+        $this->object->setFilesystem($file);
+        $this->object->setLogger($logger);
+        $this->object->convertFile('testFile');
+    }
+
+    /**
+     * 
+     */
+    public function testGetIniVersion()
+    {
+        $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array('exists'), array(), '', false);
+		$file
+            ->expects(self::never())
+            ->method('exists')
+            ->will(self::returnValue(false))
+        ;
+		
+		$logger = $this->getMock('\Monolog\Logger', array('info'), array(), '', false);
+		$logger
+            ->expects(self::never())
+            ->method('info')
+            ->will(self::returnValue(false))
+        ;
+        
+        $this->object->setFilesystem($file);
+        $this->object->setLogger($logger);
+		
+		$cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array(), array(), '', false);
+        
+        $this->object->setCache($cache);
+		
+		$content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+
+[GJK_Browscap_Version]
+Version=5031
+Released=Mon, 30 Jun 2014 17:55:58 +0200
+Format=ASP
+Type=';
+		
+        self::assertSame(5031, $this->object->getIniVersion($content));
+		self::assertSame($this->object, $this->object->storeVersion());
+    }
+
+    /**
+     * 
+     */
+    public function testConvertString()
+    {
+        $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array('exists'), array(), '', false);
+		$file
+            ->expects(self::never())
+            ->method('exists')
+            ->will(self::returnValue(false))
+        ;
+		
+		$logger = $this->getMock('\Monolog\Logger', array('info'), array(), '', false);
+		$logger
+            ->expects(self::exactly(4))
+            ->method('info')
+            ->will(self::returnValue(false))
+        ;
+        
+        $this->object->setFilesystem($file);
+        $this->object->setLogger($logger);
+		
+		$cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array('setItem'), array(), '', false);
+		$cache
+            ->expects(self::any())
+            ->method('setItem')
+            ->will(self::returnValue(false))
+        ;
+        
+        $this->object->setCache($cache);
+		
+		$content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+
+[GJK_Browscap_Version]
+Version=5031
+Released=Mon, 30 Jun 2014 17:55:58 +0200
+Format=ASP
+Type=
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; DefaultProperties
+
+[DefaultProperties]
+
+Comment=DefaultProperties
+Browser=DefaultProperties
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=false
+Beta=false
+Win16=false
+Win32=false
+Win64=false
+Frames=false
+IFrames=false
+Tables=false
+Cookies=false
+BackgroundSounds=false
+JavaScript=false
+VBScript=false
+JavaApplets=false
+ActiveXControls=false
+isMobileDevice=false
+isTablet=false
+isSyndicationReader=false
+Crawler=false
+CssVersion=0
+AolVersion=0
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Ask
+
+[Ask]
+
+Parent=DefaultProperties
+Comment=Ask
+Browser=Ask
+Frames=1
+IFrames=1
+Tables=1
+Crawler=1
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=
+Beta=
+Win16=
+Win32=
+Win64=
+Cookies=
+BackgroundSounds=
+JavaScript=
+VBScript=
+JavaApplets=
+ActiveXControls=
+isMobileDevice=
+isTablet=
+isSyndicationReader=
+CssVersion=0
+AolVersion=0
+
+[Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)]
+
+Parent=Ask
+Browser=Teoma
+Comment=Ask
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=
+Beta=
+Win16=
+Win32=
+Win64=
+Frames=1
+IFrames=1
+Tables=1
+Cookies=
+BackgroundSounds=
+JavaScript=
+VBScript=
+JavaApplets=
+ActiveXControls=
+isMobileDevice=
+isTablet=
+isSyndicationReader=
+Crawler=1
+CssVersion=0
+AolVersion=0
+';
+		
+        self::assertSame(5031, $this->object->convertString($content));
     }
 }

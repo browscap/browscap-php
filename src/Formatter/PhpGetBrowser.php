@@ -115,12 +115,16 @@ class PhpGetBrowser implements FormatterInterface
      * Sets the data (done by the parser)
      *
      * @param array $settings
+     *
+     * @return \phpbrowscap\Formatter\PhpGetBrowser
      */
     public function setData(array $settings)
     {
         foreach ($settings as $key => $value) {
             $this->settings[strtolower($key)] = $value;
         }
+		
+		return $this;
     }
 
     /**

@@ -78,6 +78,13 @@ class Converter
      * @var \phpbrowscap\Cache\BrowscapCache
      */
     private $cache = null;
+	
+	/**
+	 * a filesystem helper instance
+	 *
+	 * @var \Symfony\Component\Filesystem\Filesystem
+	 */
+	private $filessystem = null;
 
     /**
      * Number of pattern to combine for a faster regular expression search.
@@ -110,6 +117,16 @@ class Converter
     }
 
     /**
+     * Returns a logger instance
+     *
+     * @return \Psr\Log\LoggerInterface $logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
      * Sets a cache instance
      *
      * @param \phpbrowscap\Cache\BrowscapCache $cache
@@ -124,22 +141,58 @@ class Converter
     }
 
     /**
+     * Returns a cache instance
+     *
+     * @return \phpbrowscap\Cache\BrowscapCache $cache
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
+     * Sets a filesystem instance
+     *
+     * @param \Symfony\Component\Filesystem\Filesystem $file
+     *
+     * @return \phpbrowscap\Helper\Converter
+     */
+    public function setFilesystem(Filesystem $file)
+    {
+        $this->filessystem = $file;
+
+        return $this;
+    }
+
+    /**
+     * Returns a filesystem instance
+     *
+     * @return \Symfony\Component\Filesystem\Filesystem
+     */
+    public function getFilesystem()
+    {
+        if (null === $this->filessystem) {
+			$this->filessystem = new Filesystem();
+		}
+		
+		return $this->filessystem;
+    }
+
+    /**
      * @param string $iniFile
      * @throws \phpbrowscap\Exception\FileNotFoundException
      */
     public function convertFile($iniFile)
     {
-        $fs = new Filesystem();
-
-        if (!$fs->exists($iniFile)) {
+        if (!$this->getFilesystem()->exists($iniFile)) {
             throw FileNotFoundException::fileNotFound($iniFile);
         }
 
-        $this->logger->info('start reading file');
+        $this->getLogger()->info('start reading file');
 
         $iniString = file_get_contents($iniFile);
 
-        $this->logger->info('finished reading file');
+        $this->getLogger()->info('finished reading file');
 
         $this->convertString($iniString);
     }
@@ -149,17 +202,17 @@ class Converter
      */
     public function convertString($iniString)
     {
-        $this->logger->info('start creating patterns from the ini data');
+        $this->getLogger()->info('start creating patterns from the ini data');
 
         $this->createPatterns($iniString);
 
-        $this->logger->info('finished creating patterns from the ini data');
+        $this->getLogger()->info('finished creating patterns from the ini data');
 
-        $this->logger->info('start creating data from the ini data');
+        $this->getLogger()->info('start creating data from the ini data');
 
         $this->createIniParts($iniString);
 
-        $this->logger->info('finished creating data from the ini data');
+        $this->getLogger()->info('finished creating data from the ini data');
     }
 
     /**
@@ -170,6 +223,7 @@ class Converter
     public function getIniVersion($iniString)
     {
         $key = $this->pregQuote(self::BROWSCAP_VERSION_KEY);
+		
         if (preg_match("/\.*[" . $key . "\][^[]*Version=(\d+)\D.*/", $iniString, $matches)) {
             if (isset($matches[1])) {
                 $this->iniVersion = (int)$matches[1];
@@ -186,7 +240,7 @@ class Converter
      */
     public function storeVersion()
     {
-        $this->cache->setItem('browscap.version', $this->iniVersion, false);
+        $this->getCache()->setItem('browscap.version', $this->iniVersion, false);
 
         return $this;
     }
@@ -240,7 +294,7 @@ class Converter
         unset($patternpositions);
 
         foreach ($contents as $subkey => $content) {
-            $this->cache->setItem('browscap.iniparts.' . $subkey, $content);
+            $this->getCache()->setItem('browscap.iniparts.' . $subkey, $content, true);
         }
     }
 
@@ -326,12 +380,12 @@ class Converter
         // triggered by the getPatterns() method.
         $subkeys = array_flip(Pattern::getAllPatternCacheSubkeys());
         foreach ($contents as $subkey => $content) {
-            $this->cache->set('browscap.patterns.' . $subkey, $content, true);
+            $this->cache->setItem('browscap.patterns.' . $subkey, $content, true);
             unset($subkeys[$subkey]);
         }
 
         foreach (array_keys($subkeys) as $subkey) {
-            $this->cache->set('browscap.patterns.' . $subkey, '', true);
+            $this->getCache()->setItem('browscap.patterns.' . $subkey, '', true);
         }
 
         return true;
