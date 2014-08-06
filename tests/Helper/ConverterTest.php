@@ -282,6 +282,6 @@ CssVersion=0
 AolVersion=0
 ';
 		
-        self::assertSame(5031, $this->object->convertString($content));
+        self::assertNull($this->object->convertString($content));
     }
 }

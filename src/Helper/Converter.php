@@ -223,10 +223,10 @@ class Converter
     public function getIniVersion($iniString)
     {
         $key = $this->pregQuote(self::BROWSCAP_VERSION_KEY);
-		
-        if (preg_match("/\.*[" . $key . "\][^[]*Version=(\d+)\D.*/", $iniString, $matches)) {
+        
+        if (preg_match("/\.*\[" . $key . "\][^\[]*Version=(\d+)\D.*/", $iniString, $matches)) {
             if (isset($matches[1])) {
-                $this->iniVersion = (int)$matches[1];
+                $this->iniVersion = (int) $matches[1];
             }
         }
 
