@@ -46,7 +46,7 @@ class IniParser
     /**
      * @var string
      */
-    private $filename;
+    private $filename = null;
 
     /**
      * @var bool
@@ -56,12 +56,12 @@ class IniParser
     /**
      * @var array
      */
-    private $data;
+    private $data = array();
 
     /**
      * @var array
      */
-    private $fileLines;
+    private $fileLines = array();
 
     /**
      * @param string $filename

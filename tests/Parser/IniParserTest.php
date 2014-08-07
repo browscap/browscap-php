@@ -3,6 +3,7 @@
 namespace phpbrowscapTest\Parser;
 
 use phpbrowscap\Parser\IniParser;
+use org\bovigo\vfs\vfsStream;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -38,28 +39,28 @@ use phpbrowscap\Parser\IniParser;
  */
 class IniParserTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var \Browscap\Parser\IniParser
-     */
-    private $object = null;
+    const STORAGE_DIR = 'storage';
 
     /**
-     * Sets up the fixture, for example, open a network connection.
-     * This method is called before a test is executed.
-     *
+     * @var \org\bovigo\vfs\vfsStreamDirectory
      */
+    private $root = null;
+
     public function setUp()
     {
-        $this->object = new IniParser();
+        $this->root = vfsStream::setup(self::STORAGE_DIR);
     }
 
     /**
-     * @expectedException \PHPUnit_Framework_Error_Warning
+     * 
      */
     public function testConstructorFails()
     {
-        $this->markTestSkipped('need to be updated');
-
-        new IniParser();
+        $file = vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.ini');
+        
+        $object = new IniParser($file);
+        
+        self::assertSame($object, $object->setShouldSort(true));
+        self::assertTrue($object->shouldSort());
     }
 }
