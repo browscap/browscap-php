@@ -54,7 +54,7 @@ class IniParserTest extends \PHPUnit_Framework_TestCase
     /**
      * 
      */
-    public function testConstructorFails()
+    public function testShouldSort()
     {
         $file = vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.ini');
         
@@ -62,5 +62,6 @@ class IniParserTest extends \PHPUnit_Framework_TestCase
         
         self::assertSame($object, $object->setShouldSort(true));
         self::assertTrue($object->shouldSort());
+        self::assertSame($file, $object->getFilename());
     }
 }

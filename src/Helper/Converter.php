@@ -34,6 +34,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use phpbrowscap\Exception\FileNotFoundException;
 use phpbrowscap\Cache\BrowscapCache;
 use phpbrowscap\Parser\Helper\Pattern;
+use phpbrowscap\Parser\Ini;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -50,9 +51,6 @@ use Psr\Log\LoggerInterface;
  */
 class Converter
 {
-    /** @var string */
-    const BROWSCAP_VERSION_KEY = 'GJK_Browscap_Version';
-
     /**
      * Current cache version
      */
@@ -222,7 +220,7 @@ class Converter
      */
     public function getIniVersion($iniString)
     {
-        $key = $this->pregQuote(self::BROWSCAP_VERSION_KEY);
+        $key = $this->pregQuote(Ini::BROWSCAP_VERSION_KEY);
         
         if (preg_match("/\.*\[" . $key . "\][^\[]*Version=(\d+)\D.*/", $iniString, $matches)) {
             if (isset($matches[1])) {

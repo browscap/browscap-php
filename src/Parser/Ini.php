@@ -158,6 +158,16 @@ class Ini implements ParserInterface
     }
 
     /**
+     * Returns a logger instance
+     *
+     * @return \Psr\Log\LoggerInterface $logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
      * Gets the browser data formatr for the given user agent
      * (or null if no data avaailble, no even the default browser)
      *
@@ -175,8 +185,8 @@ class Ini implements ParserInterface
                 $pattern = strtok($patterns, "\t");
 
                 while ($pattern !== false) {
-                    $this->logger->debug('1:' . $pattern);
-                    $this->logger->debug('2:' . '/^' . $quoterHelper->pregQuote($pattern, '/') . '$/');
+                    $this->getLogger()->debug('1:' . $pattern);
+                    $this->getLogger()->debug('2:' . '/^' . $quoterHelper->pregQuote($pattern, '/') . '$/');
 
                     if (preg_match('/^' . $quoterHelper->pregQuote($pattern, '/') . '$/', $user_agent)) {
                         $formatter = $this->getFormatter();

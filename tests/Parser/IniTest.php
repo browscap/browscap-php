@@ -54,12 +54,46 @@ class IniTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \PHPUnit_Framework_Error_Warning
+     * 
      */
-    public function testConstructorFails()
+    public function testSetGetHelper()
     {
-        $this->markTestSkipped('need to be updated');
+        $helper = $this->getMock('\phpbrowscap\Parser\Helper\GetPattern', array(), array(), '', false);
 
-        new Ini();
+        self::assertSame($this->object, $this->object->setHelper($helper));
+        self::assertSame($helper, $this->object->getHelper());
+    }
+
+    /**
+     * 
+     */
+    public function testSetGetFormatter()
+    {
+        $formatter = $this->getMock('\phpbrowscap\Formatter\PhpGetBrowser', array(), array(), '', false);
+
+        self::assertSame($this->object, $this->object->setFormatter($formatter));
+        self::assertSame($formatter, $this->object->getFormatter());
+    }
+
+    /**
+     *
+     */
+    public function testSetGetCache()
+    {
+        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array(), array(), '', false);
+        
+        self::assertSame($this->object, $this->object->setCache($cache));
+        self::assertSame($cache, $this->object->getCache());
+    }
+
+    /**
+     *
+     */
+    public function testSetGetLogger()
+    {
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        
+        self::assertSame($this->object, $this->object->setLogger($logger));
+        self::assertSame($logger, $this->object->getLogger());
     }
 }
