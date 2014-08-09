@@ -2,7 +2,7 @@
 
 namespace phpbrowscapTest\Util\LogFile;
 
-use phpbrowscap\Util\LogFile\ApacheCommonLogFormatReader;
+use phpbrowscap\Util\Logfile\ApacheCommonLogFormatReader;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -39,7 +39,7 @@ use phpbrowscap\Util\LogFile\ApacheCommonLogFormatReader;
 class ApacheCommonLogFormatReaderTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \phpbrowscap\Util\LogFile\ApacheCommonLogFormatReader
+     * @var \phpbrowscap\Util\Logfile\ApacheCommonLogFormatReader
      */
     private $object = null;
 
