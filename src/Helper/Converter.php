@@ -76,13 +76,13 @@ class Converter
      * @var \phpbrowscap\Cache\BrowscapCache
      */
     private $cache = null;
-	
-	/**
-	 * a filesystem helper instance
-	 *
-	 * @var \Symfony\Component\Filesystem\Filesystem
-	 */
-	private $filessystem = null;
+
+    /**
+     * a filesystem helper instance
+     *
+     * @var \Symfony\Component\Filesystem\Filesystem
+     */
+    private $filessystem = null;
 
     /**
      * Number of pattern to combine for a faster regular expression search.
@@ -170,10 +170,10 @@ class Converter
     public function getFilesystem()
     {
         if (null === $this->filessystem) {
-			$this->filessystem = new Filesystem();
-		}
-		
-		return $this->filessystem;
+            $this->filessystem = new Filesystem();
+        }
+
+        return $this->filessystem;
     }
 
     /**
@@ -221,7 +221,7 @@ class Converter
     public function getIniVersion($iniString)
     {
         $key = $this->pregQuote(Ini::BROWSCAP_VERSION_KEY);
-        
+
         if (preg_match("/\.*\[" . $key . "\][^\[]*Version=(\d+)\D.*/", $iniString, $matches)) {
             if (isset($matches[1])) {
                 $this->iniVersion = (int) $matches[1];

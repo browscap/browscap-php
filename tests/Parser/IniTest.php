@@ -39,7 +39,7 @@ use phpbrowscap\Parser\Ini;
 class IniTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Browscap\Parser\Ini
+     * @var \phpbrowscap\Parser\Ini
      */
     private $object = null;
 

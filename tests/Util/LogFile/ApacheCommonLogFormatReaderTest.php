@@ -39,7 +39,7 @@ use phpbrowscap\Util\LogFile\ApacheCommonLogFormatReader;
 class ApacheCommonLogFormatReaderTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Browscap\Util\LogFile\ApacheCommonLogFormatReader
+     * @var \phpbrowscap\Util\LogFile\ApacheCommonLogFormatReader
      */
     private $object = null;
 

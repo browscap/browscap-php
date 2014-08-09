@@ -54,19 +54,19 @@ class PhpGetBrowserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * 
+     *
      */
     public function testSetGetData()
     {
         $data = array(
-			'Browser' => 'test',
-			'Comment' => 'TestComment',
-		);
+            'Browser' => 'test',
+            'Comment' => 'TestComment',
+        );
 
         self::assertSame($this->object, $this->object->setData($data));
-		$return = $this->object->getData();
-		self::assertInstanceOf('\stdClass', $return);
-		self::assertSame('test', $return->browser);
-		self::assertSame('TestComment', $return->comment);
+        $return = $this->object->getData();
+        self::assertInstanceOf('\stdClass', $return);
+        self::assertSame('test', $return->browser);
+        self::assertSame('TestComment', $return->comment);
     }
 }

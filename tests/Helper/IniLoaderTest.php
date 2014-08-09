@@ -54,12 +54,12 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
     public function testSetGetLoader()
     {
         $loader = $this->getMock('\FileLoader\Loader', array(), array(), '', false);
-		
-		self::assertSame($this->object, $this->object->setLoader($loader));
-		self::assertSame($loader, $this->object->getLoader());
-		
-		self::assertSame($this->object, $this->object->setLocalFile('test'));
-		self::assertSame($loader, $this->object->getLoader());
+
+        self::assertSame($this->object, $this->object->setLoader($loader));
+        self::assertSame($loader, $this->object->getLoader());
+
+        self::assertSame($this->object, $this->object->setLocalFile('test'));
+        self::assertSame($loader, $this->object->getLoader());
     }
 
     /**
@@ -68,14 +68,14 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
     public function testSetGetLogger()
     {
         $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
-        
+
         self::assertSame($this->object, $this->object->setLogger($logger));
         self::assertSame($logger, $this->object->getLogger());
     }
 
     /**
      * @expectedException \phpbrowscap\Helper\Exception
-	 * @expectedExceptionMessage the filename can not be empty
+     * @expectedExceptionMessage the filename can not be empty
      */
     public function testSetMissingRemoteFilename()
     {
@@ -92,7 +92,7 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \phpbrowscap\Helper\Exception
-	 * @expectedExceptionMessage the filename can not be empty
+     * @expectedExceptionMessage the filename can not be empty
      */
     public function testSetMissingLocalFile()
     {
@@ -112,10 +112,10 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetRemoteIniUrl()
     {
-		$this->object->setRemoteFilename(IniLoader::PHP_INI_LITE);
+        $this->object->setRemoteFilename(IniLoader::PHP_INI_LITE);
         self::assertSame('http://browscap.org/stream?q=Lite_PHP_BrowscapINI', $this->object->getRemoteIniUrl());
-		
-		$this->object->setRemoteFilename(IniLoader::PHP_INI_FULL);
+
+        $this->object->setRemoteFilename(IniLoader::PHP_INI_FULL);
         self::assertSame('http://browscap.org/stream?q=Full_PHP_BrowscapINI', $this->object->getRemoteIniUrl());
     }
 
@@ -140,8 +140,8 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetOptions()
     {
-		$options = array();
-		
+        $options = array();
+
         self::assertSame($this->object, $this->object->setOptions($options));
     }
 
@@ -150,39 +150,39 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoad()
     {
-		$loader = $this->getMock('\FileLoader\Loader', array('load', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout', 'setLogger'), array(), '', false);
-		$loader
+        $loader = $this->getMock('\FileLoader\Loader', array('load', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout', 'setLogger'), array(), '', false);
+        $loader
             ->expects(self::once())
             ->method('load')
             ->will(self::returnValue(true))
         ;
-		$loader
+        $loader
             ->expects(self::once())
             ->method('setRemoteDataUrl')
             ->will(self::returnSelf())
         ;
-		$loader
+        $loader
             ->expects(self::once())
             ->method('setRemoteVerUrl')
             ->will(self::returnSelf())
         ;
-		$loader
+        $loader
             ->expects(self::once())
             ->method('setTimeout')
             ->will(self::returnSelf())
         ;
-		$loader
+        $loader
             ->expects(self::once())
             ->method('setLogger')
             ->will(self::returnSelf())
         ;
-		
-		$this->object->setLoader($loader);
-		
-		$logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
-        
+
+        $this->object->setLoader($loader);
+
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+
         $this->object->setLogger($logger);
-		
+
         self::assertTrue($this->object->load());
     }
 }

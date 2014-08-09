@@ -123,8 +123,8 @@ class PhpGetBrowser implements FormatterInterface
         foreach ($settings as $key => $value) {
             $this->settings[strtolower($key)] = $value;
         }
-		
-		return $this;
+
+        return $this;
     }
 
     /**
