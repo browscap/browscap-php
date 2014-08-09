@@ -54,18 +54,22 @@ class IniTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * 
+     *
      */
     public function testSetGetHelper()
     {
-        $helper = $this->getMock('\phpbrowscap\Parser\Helper\GetPattern', array(), array(), '', false);
+        if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
+            $helper = $this->getMock('\phpbrowscap\Parser\Helper\GetPattern', array(), array(), '', false);
+        } else {
+            $helper = $this->getMock('\phpbrowscap\Parser\Helper\GetPatternLt55', array(), array(), '', false);
+        }
 
         self::assertSame($this->object, $this->object->setHelper($helper));
         self::assertSame($helper, $this->object->getHelper());
     }
 
     /**
-     * 
+     *
      */
     public function testSetGetFormatter()
     {
@@ -81,7 +85,7 @@ class IniTest extends \PHPUnit_Framework_TestCase
     public function testSetGetCache()
     {
         $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array(), array(), '', false);
-        
+
         self::assertSame($this->object, $this->object->setCache($cache));
         self::assertSame($cache, $this->object->getCache());
     }
@@ -92,7 +96,7 @@ class IniTest extends \PHPUnit_Framework_TestCase
     public function testSetGetLogger()
     {
         $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
-        
+
         self::assertSame($this->object, $this->object->setLogger($logger));
         self::assertSame($logger, $this->object->getLogger());
     }
