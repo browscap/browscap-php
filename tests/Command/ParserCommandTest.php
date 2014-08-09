@@ -50,7 +50,9 @@ class ParserCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->object = new ParserCommand();
+        $resourceDirectory = 'resources/';
+
+        $this->object = new ParserCommand($resourceDirectory);
     }
 
     /**

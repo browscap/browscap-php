@@ -170,7 +170,7 @@ class IniLoader
      * @throws \phpbrowscap\Helper\Exception
      * @return \phpbrowscap\Helper\IniLoader
      */
-    public function setLocalFile($filename)
+    public function setLocalFile($filename = null)
     {
         if (empty($filename)) {
             throw new Exception(

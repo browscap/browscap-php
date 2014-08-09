@@ -50,7 +50,9 @@ class FetchCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->object = new FetchCommand();
+        $defaultIniFile = 'resources/browscap.ini';
+
+        $this->object = new FetchCommand($defaultIniFile);
     }
 
     /**

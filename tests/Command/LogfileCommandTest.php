@@ -50,7 +50,9 @@ class LogfileCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->object = new LogfileCommand();
+        $resourceDirectory = 'resources/';
+
+        $this->object = new LogfileCommand($resourceDirectory);
     }
 
     /**

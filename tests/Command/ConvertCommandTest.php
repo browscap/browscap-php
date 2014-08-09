@@ -50,7 +50,10 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->object = new ConvertCommand();
+        $resourceDirectory = 'resources/';
+        $defaultIniFile    = 'resources/browscap.ini';
+
+        $this->object = new ConvertCommand($resourceDirectory, $defaultIniFile);
     }
 
     /**

@@ -50,7 +50,9 @@ class UpdateCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->object = new UpdateCommand();
+        $resourceDirectory = 'resources/';
+
+        $this->object = new UpdateCommand($resourceDirectory);
     }
 
     /**
