@@ -3,6 +3,7 @@
 namespace phpbrowscapTest\Parser\Helper;
 
 use phpbrowscap\Parser\Helper\GetPatternLt55;
+use phpbrowscap\Cache\BrowscapCache;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
