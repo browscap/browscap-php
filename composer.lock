@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "099a1d340e037ba23a9804e5725414e8",
+    "hash": "33547bad6f4bd2415d1ca3570c72f97c",
     "packages": [
         {
             "name": "mikey179/vfsStream",
@@ -46,16 +46,16 @@
         },
         {
             "name": "mimmi20/file-loader",
-            "version": "2.0.0-beta2",
+            "version": "2.0.0-beta3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mimmi20/FileLoader.git",
-                "reference": "d3d98fa3840f52f6f2a4c86895fd16545e457371"
+                "reference": "6b597be028641eca83c3f6844a6408da3490023f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mimmi20/FileLoader/zipball/d3d98fa3840f52f6f2a4c86895fd16545e457371",
-                "reference": "d3d98fa3840f52f6f2a4c86895fd16545e457371",
+                "url": "https://api.github.com/repos/mimmi20/FileLoader/zipball/6b597be028641eca83c3f6844a6408da3490023f",
+                "reference": "6b597be028641eca83c3f6844a6408da3490023f",
                 "shasum": ""
             },
             "require": {
@@ -90,7 +90,7 @@
             ],
             "description": "a class to load remote or local files",
             "homepage": "http://github.com/mimmi20/FileLoader",
-            "time": "2014-08-01 17:38:33"
+            "time": "2014-08-10 18:07:58"
         },
         {
             "name": "mimmi20/wurflcache",
