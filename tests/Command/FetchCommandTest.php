@@ -39,7 +39,7 @@ use phpbrowscap\Command\FetchCommand;
 class FetchCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Browscap\Command\FetchCommand
+     * @var \phpbrowscap\Command\FetchCommand
      */
     private $object = null;
 
@@ -60,7 +60,7 @@ class FetchCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $class  = new \ReflectionClass('ReflectionClass');
+        $class  = new \ReflectionClass('\phpbrowscap\Command\FetchCommand');
         $method = $class->getMethod('execute');
 
         self::assertNull($method->invoke($this->object));

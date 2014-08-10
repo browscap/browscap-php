@@ -39,7 +39,7 @@ use phpbrowscap\Command\ParserCommand;
 class ParserCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Browscap\Command\ParserCommand
+     * @var \phpbrowscap\Command\ParserCommand
      */
     private $object = null;
 
@@ -60,7 +60,7 @@ class ParserCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $class  = new \ReflectionClass('ReflectionClass');
+        $class  = new \ReflectionClass('\phpbrowscap\Command\ParserCommand');
         $method = $class->getMethod('execute');
 
         self::assertNull($method->invoke($this->object));

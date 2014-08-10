@@ -39,7 +39,7 @@ use phpbrowscap\Command\LogfileCommand;
 class LogfileCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Browscap\Command\LogfileCommand
+     * @var \phpbrowscap\Command\LogfileCommand
      */
     private $object = null;
 
@@ -60,7 +60,7 @@ class LogfileCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $class  = new \ReflectionClass('ReflectionClass');
+        $class  = new \ReflectionClass('\phpbrowscap\Command\LogfileCommand');
         $method = $class->getMethod('execute');
 
         self::assertNull($method->invoke($this->object));

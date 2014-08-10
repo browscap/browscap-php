@@ -39,7 +39,7 @@ use phpbrowscap\Command\UpdateCommand;
 class UpdateCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Browscap\Command\UpdateCommand
+     * @var \phpbrowscap\Command\UpdateCommand
      */
     private $object = null;
 
@@ -60,7 +60,7 @@ class UpdateCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $class  = new \ReflectionClass('ReflectionClass');
+        $class  = new \ReflectionClass('\phpbrowscap\Command\UpdateCommand');
         $method = $class->getMethod('execute');
 
         self::assertNull($method->invoke($this->object));

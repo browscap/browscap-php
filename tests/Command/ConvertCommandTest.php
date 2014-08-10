@@ -39,7 +39,7 @@ use phpbrowscap\Command\ConvertCommand;
 class ConvertCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Browscap\Command\ConvertCommand
+     * @var \phpbrowscap\Command\ConvertCommand
      */
     private $object = null;
 
@@ -61,7 +61,7 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $class  = new \ReflectionClass('ReflectionClass');
+        $class  = new \ReflectionClass('\phpbrowscap\Command\ConvertCommand');
         $method = $class->getMethod('execute');
 
         self::assertNull($method->invoke($this->object));
