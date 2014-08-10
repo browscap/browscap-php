@@ -3,6 +3,8 @@
 namespace phpbrowscapTest\Command;
 
 use phpbrowscap\Command\ParserCommand;
+use phpbrowscap\Cache\BrowscapCache;
+use WurflCache\Adapter\Memory;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -50,9 +52,10 @@ class ParserCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $resourceDirectory = 'resources/';
+        $cacheAdapter   = new Memory();
+        $cache          = new BrowscapCache($cacheAdapter);
 
-        $this->object = new ParserCommand($resourceDirectory);
+        $this->object = new ParserCommand($cache);
     }
 
     /**

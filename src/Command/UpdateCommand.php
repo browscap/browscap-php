@@ -37,6 +37,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use phpbrowscap\Helper\LoggerHelper;
 use phpbrowscap\Helper\IniLoader;
 use WurflCache\Adapter\File;
+use phpbrowscap\Cache\BrowscapCache;
 
 /**
  * command to fetch a browscap ini file from the remote host, convert it into an array and store the content in a local
@@ -54,18 +55,18 @@ use WurflCache\Adapter\File;
 class UpdateCommand extends Command
 {
     /**
-     * @var string
+     * @var \phpbrowscap\Cache\BrowscapCache
      */
-    private $resourceDirectory = null;
+    private $cache = null;
 
     /**
-     * @param string $resourceDirectory
+     * @param \phpbrowscap\Cache\BrowscapCache $cache
      */
-    public function __construct($resourceDirectory)
+    public function __construct(BrowscapCache $cache)
     {
-        $this->resourceDirectory = $resourceDirectory;
-
         parent::__construct();
+
+        $this->cache = $cache;
     }
 
     /**
@@ -104,20 +105,13 @@ class UpdateCommand extends Command
 
         $logger->info('started updating cache with remote file');
 
-        $level = error_reporting(0);
-
-        $cacheAdapter = new File(array(File::DIR => $this->resourceDirectory));
-        $cache        = new BrowscapCache($cacheAdapter);
-
         $browscap = new Browscap();
 
         $browscap
             ->setLogger($logger)
-            ->setCache($cache)
+            ->setCache($this->cache)
             ->update(IniLoader::PHP_INI)
         ;
-
-        error_reporting($level);
 
         $logger->info('finished updating cache with remote file');
     }

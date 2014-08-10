@@ -55,18 +55,18 @@ use WurflCache\Adapter\File;
 class ParserCommand extends Command
 {
     /**
-     * @var string
+     * @var \phpbrowscap\Cache\BrowscapCache
      */
-    private $resourceDirectory;
+    private $cache = null;
 
     /**
-     * @param string $resourceDirectory
+     * @param \phpbrowscap\Cache\BrowscapCache $cache
      */
-    public function __construct($resourceDirectory)
+    public function __construct(BrowscapCache $cache)
     {
         parent::__construct();
 
-        $this->resourceDirectory = $resourceDirectory;
+        $this->cache = $cache;
     }
 
     /**
@@ -103,14 +103,11 @@ class ParserCommand extends Command
         $loggerHelper = new LoggerHelper();
         $logger       = $loggerHelper->create($input->getOption('debug'));
 
-        $cacheAdapter = new File(array(File::DIR => $this->resourceDirectory));
-        $cache        = new BrowscapCache($cacheAdapter);
-
         $browscap = new Browscap();
 
         $browscap
             ->setLogger($logger)
-            ->setCache($cache)
+            ->setCache($this->cache)
         ;
 
         $result = $browscap->getBrowser($input->getArgument('user-agent'));

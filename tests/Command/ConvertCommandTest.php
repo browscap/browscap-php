@@ -3,6 +3,8 @@
 namespace phpbrowscapTest\Command;
 
 use phpbrowscap\Command\ConvertCommand;
+use phpbrowscap\Cache\BrowscapCache;
+use WurflCache\Adapter\Memory;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -50,10 +52,11 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $resourceDirectory = 'resources/';
-        $defaultIniFile    = 'resources/browscap.ini';
+        $cacheAdapter   = new Memory();
+        $cache          = new BrowscapCache($cacheAdapter);
+        $defaultIniFile = 'resources/browscap.ini';
 
-        $this->object = new ConvertCommand($resourceDirectory, $defaultIniFile);
+        $this->object = new ConvertCommand($cache, $defaultIniFile);
     }
 
     /**

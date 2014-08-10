@@ -3,6 +3,8 @@
 namespace phpbrowscapTest\Command;
 
 use phpbrowscap\Command\UpdateCommand;
+use phpbrowscap\Cache\BrowscapCache;
+use WurflCache\Adapter\Memory;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -50,9 +52,10 @@ class UpdateCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $resourceDirectory = 'resources/';
+        $cacheAdapter   = new Memory();
+        $cache          = new BrowscapCache($cacheAdapter);
 
-        $this->object = new UpdateCommand($resourceDirectory);
+        $this->object = new UpdateCommand($cache);
     }
 
     /**

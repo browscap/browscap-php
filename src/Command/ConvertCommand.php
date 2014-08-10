@@ -55,9 +55,9 @@ use WurflCache\Adapter\File;
 class ConvertCommand extends Command
 {
     /**
-     * @var string
+     * @var \phpbrowscap\Cache\BrowscapCache
      */
-    private $resourceDirectory;
+    private $cache = null;
 
     /**
      * @var string
@@ -65,15 +65,15 @@ class ConvertCommand extends Command
     private $defaultIniFile;
 
     /**
-     * @param string $resourceDirectory
-     * @param string $defaultIniFile
+     * @param \phpbrowscap\Cache\BrowscapCache $cache
+     * @param string                           $defaultIniFile
      */
-    public function __construct($resourceDirectory, $defaultIniFile)
+    public function __construct(BrowscapCache $cache, $defaultIniFile)
     {
         parent::__construct();
 
-        $this->resourceDirectory = $resourceDirectory;
-        $this->defaultIniFile    = $defaultIniFile;
+        $this->cache          = $cache;
+        $this->defaultIniFile = $defaultIniFile;
     }
 
     /**
@@ -118,14 +118,11 @@ class ConvertCommand extends Command
 
         $logger->info('initializing converting process');
 
-        $cacheAdapter = new File(array(File::DIR => $this->resourceDirectory));
-        $cache        = new BrowscapCache($cacheAdapter);
-
         $browscap = new Browscap();
 
         $browscap
             ->setLogger($logger)
-            ->setCache($cache)
+            ->setCache($this->cache)
         ;
 
         $logger->info('started converting local file');

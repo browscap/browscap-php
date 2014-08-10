@@ -41,6 +41,7 @@ use Symfony\Component\Finder\SplFileInfo;
 use phpbrowscap\Exception\InvalidArgumentException;
 use phpbrowscap\Exception\ReaderException;
 use phpbrowscap\Helper\LoggerHelper;
+use phpbrowscap\Cache\BrowscapCache;
 use WurflCache\Adapter\File;
 use phpbrowscap\Util\Logfile\AbstractReader;
 
@@ -59,18 +60,18 @@ use phpbrowscap\Util\Logfile\AbstractReader;
 class LogfileCommand extends Command
 {
     /**
-     * @var string
+     * @var \phpbrowscap\Cache\BrowscapCache
      */
-    private $resourceDirectory;
+    private $cache = null;
 
     /**
-     * @param string $resourceDirectory
+     * @param \phpbrowscap\Cache\BrowscapCache $cache
      */
-    public function __construct($resourceDirectory)
+    public function __construct(BrowscapCache $cache)
     {
         parent::__construct();
 
-        $this->resourceDirectory = $resourceDirectory;
+        $this->cache = $cache;
     }
 
     /**
@@ -138,14 +139,11 @@ class LogfileCommand extends Command
         $loggerHelper = new LoggerHelper();
         $logger       = $loggerHelper->create($input->getOption('debug'));
 
-        $cacheAdapter = new File(array(File::DIR => $this->resourceDirectory));
-        $cache        = new BrowscapCache($cacheAdapter);
-
         $browscap = new Browscap();
 
         $browscap
             ->setLogger($logger)
-            ->setCache($cache)
+            ->setCache($this->cache)
         ;
 
         $undefinedClients = array();

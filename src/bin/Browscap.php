@@ -32,6 +32,8 @@ namespace phpbrowscap\Command;
 
 use phpbrowscap\Exception;
 use Symfony\Component\Console\Application;
+use phpbrowscap\Cache\BrowscapCache;
+use WurflCache\Adapter\File;
 
 chdir(dirname(dirname(__DIR__)));
 
@@ -56,11 +58,14 @@ if (!$foundVendorAutoload) {
 $resourceDirectory = 'resources/';
 $defaultIniFile    = 'resources/browscap.ini';
 
+$cacheAdapter = new File(array(File::DIR => $resourceDirectory));
+$cache        = new BrowscapCache($cacheAdapter);
+
 $application = new Application('browscap.php');
-$application->add(new ConvertCommand($resourceDirectory, $defaultIniFile));
-$application->add(new UpdateCommand($resourceDirectory));
-$application->add(new ParserCommand($resourceDirectory));
-$application->add(new LogfileCommand($resourceDirectory));
+$application->add(new ConvertCommand($cache, $defaultIniFile));
+$application->add(new UpdateCommand($cache));
+$application->add(new ParserCommand($cache));
+$application->add(new LogfileCommand($cache));
 $application->add(new FetchCommand($defaultIniFile));
 
 ini_set('memory_limit', '256M');
