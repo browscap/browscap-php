@@ -38,7 +38,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use phpbrowscap\Helper\LoggerHelper;
 use phpbrowscap\Helper\IniLoader;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * command to fetch a browscap ini file from the remote host and store the content in a local file
