@@ -30,8 +30,8 @@
 
 namespace phpbrowscap\Helper;
 
+use FileLoader\Exception as LoaderException;
 use FileLoader\Loader;
-use phpbrowscap\Browscap;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -87,7 +87,7 @@ class IniLoader
     /**
      * an file loader instance
      *
-     * @var Loader
+     * @var \FileLoader\Loader
      */
     private $loader = null;
 
@@ -267,7 +267,34 @@ class IniLoader
             ->setTimeout($this->getTimeout())
         ;
 
-        // Get updated .ini file
-        return $internalLoader->load();
+        try {
+            // Get updated .ini file
+            return $internalLoader->load();
+        } catch (LoaderException $exception) {
+            throw new Exception('could not load the data file', 0, $exception);
+        }
+    }
+
+    /**
+     * Gets the remote file update timestamp
+     *
+     * @throws \phpbrowscap\Helper\Exception
+     * @return integer the remote modification timestamp
+     */
+    public function getMTime()
+    {
+        $internalLoader = $this->getLoader();
+        $internalLoader
+            ->setRemoteDataUrl($this->getRemoteIniUrl())
+            ->setRemoteVerUrl($this->getRemoteVerUrl())
+            ->setTimeout($this->getTimeout())
+        ;
+
+        try {
+            // Get updated timestamp
+            return $internalLoader->getMTime();
+        } catch (LoaderException $exception) {
+            throw new Exception('could not load the new version', 0, $exception);
+        }
     }
 }

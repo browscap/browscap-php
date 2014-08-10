@@ -384,6 +384,9 @@ AolVersion=0
 
         vfsStream::setup(self::STORAGE_DIR, null, $structure);
 
+        $cache = $this->getMock('\WurflCache\Adapter\Memory', array(), array(), '', false);
+        $this->object->setCache($cache);
+
         self::assertNull(
             $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.ini'))
         );
@@ -498,6 +501,9 @@ Crawler=1
 CssVersion=0
 AolVersion=0
 ';
+
+        $cache = $this->getMock('\WurflCache\Adapter\Memory', array(), array(), '', false);
+        $this->object->setCache($cache);
 
         self::assertNull(
             $this->object->convertString($content)

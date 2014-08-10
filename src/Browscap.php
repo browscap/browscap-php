@@ -384,6 +384,13 @@ class Browscap
         ;
 
         $cachedVersion = $this->getCache()->getItem('browscap.version', false);
+        $cachedTime    = $this->getCache()->getItem('browscap.time', false);
+        $remoteTime    = $loader->getMTime();
+
+        if ($remoteTime <= $cachedTime) {
+            // no newer version available
+            return;
+        }
 
         $content = $loader->load();
 
