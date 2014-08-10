@@ -5,6 +5,7 @@ namespace phpbrowscapTest\Command;
 use phpbrowscap\Command\UpdateCommand;
 use phpbrowscap\Cache\BrowscapCache;
 use WurflCache\Adapter\Memory;
+use org\bovigo\vfs\vfsStream;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
