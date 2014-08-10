@@ -69,9 +69,9 @@ interface GetPatternInterface
      * - We compare the length of the pattern with the length of the user agent
      *   (the pattern cannot be longer than the user agent!)
      *
-     * @param string $user_agent
+     * @param string $userAgent
      *
      * @return \Iterator
      */
-    public function getPatterns($user_agent);
+    public function getPatterns($userAgent);
 }

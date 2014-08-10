@@ -51,6 +51,14 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
+    public function testGetLoader()
+    {
+        self::assertInstanceOf('\FileLoader\Loader', $this->object->getLoader());
+    }
+
+    /**
+     *
+     */
     public function testSetGetLoader()
     {
         $loader = $this->getMock('\FileLoader\Loader', array(), array(), '', false);

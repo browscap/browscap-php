@@ -141,7 +141,7 @@ class Browscap
     /**
      * Sets a cache instance
      *
-     * @param BrowscapCache $cache
+     * @param \phpbrowscap\Cache\BrowscapCache|\WurflCache\Adapter\AdapterInterface $cache
      *
      * @throws \phpbrowscap\Exception
      * @return \phpbrowscap\Browscap
@@ -204,7 +204,6 @@ class Browscap
             ->setCache($this->getCache())
             ->setLogger($this->getLogger())
         ;
-
 
         return $this->parser;
     }

@@ -264,11 +264,8 @@ class IniLoader
         $internalLoader
             ->setRemoteDataUrl($this->getRemoteIniUrl())
             ->setRemoteVerUrl($this->getRemoteVerUrl())
-            ->setTimeout($this->getTimeout());
-
-        if (null !== $this->getLogger()) {
-            $internalLoader->setLogger($this->getLogger());
-        }
+            ->setTimeout($this->getTimeout())
+        ;
 
         // Get updated .ini file
         return $internalLoader->load();

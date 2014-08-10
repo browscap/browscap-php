@@ -73,7 +73,31 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetPatterns()
     {
-        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array(), array(), '', false);
+        $map = array(
+            array(
+                'browscap.version',
+                null,
+                array(
+                    'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
+                    'content'      => serialize(42)
+                )
+            ),
+            array(
+                'test.42',
+                null,
+                array(
+                    'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
+                    'content'      => serialize('this is a test')
+                )
+            )
+        );
+
+        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array('getItem'), array(), '', false);
+        $cache
+            ->expects(self::once())
+            ->method('getItem')
+            ->will(self::returnValueMap($map))
+        ;
 
         $this->object->setCache($cache);
         $result = $this->object->getPatterns('Mozilla/5.0 (compatible; Ask Jeeves/Teoma*)');

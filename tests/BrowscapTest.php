@@ -39,40 +39,115 @@ use phpbrowscap\Browscap;
 class BrowscapTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @expectedException \PHPUnit_Framework_Error_Warning
+     * @var \phpbrowscap\Browscap
      */
-    public function testConstructorFails()
-    {
-        $this->markTestSkipped('need to be updated');
-
-        new Browscap();
-    }
+    private $object = null;
 
     /**
-     * @expectedException \phpbrowscap\Exception
-     * @expectedExceptionMessage You have to provide a path to read/store the browscap cache file
+     * Sets up the fixture, for example, open a network connection.
+     * This method is called before a test is executed.
+     *
      */
-    public function testConstructorFails2()
+    public function setUp()
     {
-        $this->markTestSkipped('need to be updated');
-
-        new Browscap(null);
+        $this->object = new Browscap();
     }
 
     /**
      *
      */
-    public function testConstructorFails3()
+    public function testSetGetFormatter()
     {
-        $this->markTestSkipped('need to be updated');
+        $formatter = $this->getMock('\phpbrowscap\Formatter\PhpGetBrowser', array(), array(), '', false);
 
-        $path = '/abc/test';
+        self::assertSame($this->object, $this->object->setFormatter($formatter));
+        self::assertSame($formatter, $this->object->getFormatter());
+    }
 
-        $this->setExpectedException(
-            '\\phpbrowscap\\Exception',
-            'The cache path ' . $path . ' is invalid. Are you sure that it exists and that you have permission to access it?'
-        );
+    /**
+     *
+     */
+    public function testGetCache()
+    {
+        self::assertInstanceOf('\phpbrowscap\Cache\BrowscapCache', $this->object->getCache());
+    }
 
-        new Browscap($path);
+    /**
+     *
+     */
+    public function testSetGetCache()
+    {
+        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array(), array(), '', false);
+
+        self::assertSame($this->object, $this->object->setCache($cache));
+        self::assertSame($cache, $this->object->getCache());
+    }
+
+    /**
+     *
+     */
+    public function testSetGetCacheWithAdapter()
+    {
+        $cache = $this->getMock('\WurflCache\Adapter\Memory', array(), array(), '', false);
+
+        self::assertSame($this->object, $this->object->setCache($cache));
+        self::assertInstanceOf('\phpbrowscap\Cache\BrowscapCache', $this->object->getCache());
+    }
+
+    /**
+     * @expectedException \phpbrowscap\Exception
+     * @expectedExceptionMessage the cache has to be an instance of \phpbrowscap\Cache\BrowscapCache or an instanceof of \WurflCache\Adapter\AdapterInterface
+     */
+    public function testSetGetCacheWithWrongType()
+    {
+        $this->object->setCache('test');
+    }
+
+    /**
+     *
+     */
+    public function testGetParser()
+    {
+        self::assertInstanceOf('\phpbrowscap\Parser\Ini', $this->object->getParser());
+    }
+
+    /**
+     *
+     */
+    public function testSetGetParser()
+    {
+        $parser = $this->getMock('\phpbrowscap\Parser\Ini', array(), array(), '', false);
+
+        self::assertSame($this->object, $this->object->setParser($parser));
+        self::assertSame($parser, $this->object->getParser());
+    }
+
+    /**
+     *
+     */
+    public function testGetLogger()
+    {
+        self::assertInstanceOf('\Psr\Log\NullLogger', $this->object->getLogger());
+    }
+
+    /**
+     *
+     */
+    public function testSetGetLogger()
+    {
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+
+        self::assertSame($this->object, $this->object->setLogger($logger));
+        self::assertSame($logger, $this->object->getLogger());
+    }
+
+    /**
+     *
+     */
+    public function testSetOptions()
+    {
+        $options = array();
+
+        self::assertSame($this->object, $this->object->setOptions($options));
     }
 }

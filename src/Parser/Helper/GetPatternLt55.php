@@ -85,14 +85,14 @@ class GetPatternLt55 implements GetPatternInterface
      * - We compare the length of the pattern with the length of the user agent
      *   (the pattern cannot be longer than the user agent!)
      *
-     * @param string $user_agent
+     * @param string $userAgent
      *
      * @return array
      */
-    public function getPatterns($user_agent)
+    public function getPatterns($userAgent)
     {
-        $starts = Pattern::getPatternStart($user_agent, true);
-        $length = strlen($user_agent);
+        $starts = Pattern::getPatternStart($userAgent, true);
+        $length = strlen($userAgent);
 
         // add special key to fall back to the default browser
         $starts[] = str_repeat('z', 32);
@@ -100,11 +100,11 @@ class GetPatternLt55 implements GetPatternInterface
         // get patterns, first for the given browser and if that is not found,
         // for the default browser (with a special key)
         $patternarr = array();
-        foreach ($starts as $tmp_start) {
-            $tmp_subkey = Pattern::getPatternCacheSubkey($tmp_start);
-            $success    = null;
+        foreach ($starts as $tmpStart) {
+            $tmpSubkey = Pattern::getPatternCacheSubkey($tmpStart);
+            $success   = null;
 
-            $file = $this->getCache()->getItem('browscap.patterns.' . $tmp_subkey, true, $success);
+            $file = $this->getCache()->getItem('browscap.patterns.' . $tmpSubkey, true, $success);
 
             if (!$success) {
                 continue;
@@ -113,8 +113,8 @@ class GetPatternLt55 implements GetPatternInterface
             $found = false;
 
             foreach ($file as $buffer) {
-                $tmp_buffer = substr($buffer, 0, 32);
-                if ($tmp_buffer === $tmp_start) {
+                $tmpBuffer = substr($buffer, 0, 32);
+                if ($tmpBuffer === $tmpStart) {
                     // get length of the pattern
                     $len = (int)strstr(substr($buffer, 33, 4), ' ', true);
 

@@ -33,4 +33,10 @@ class LoggerHelperTest extends \PHPUnit_Framework_TestCase
         $helper = new LoggerHelper();
         self::assertInstanceOf('\Monolog\Logger', $helper->create());
     }
+
+    public function testCreateInDebugMode()
+    {
+        $helper = new LoggerHelper();
+        self::assertInstanceOf('\Monolog\Logger', $helper->create(true));
+    }
 }
