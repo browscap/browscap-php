@@ -106,11 +106,6 @@ class PhpGetBrowser implements FormatterInterface
         'RenderingEngine_Maker',
     );
 
-    public function __construct()
-    {
-        $this->settings = array();
-    }
-
     /**
      * Sets the data (done by the parser)
      *

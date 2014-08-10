@@ -176,4 +176,328 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
 
         self::assertSame($this->object, $this->object->setOptions($options));
     }
+
+    /**
+     *
+     */
+    public function testGetBrowserWithoutUa()
+    {
+        $formatter = $this->getMock('\phpbrowscap\Formatter\PhpGetBrowser', array('getData'), array(), '', false);
+        $formatter
+            ->expects(self::once())
+            ->method('getData')
+            ->will(self::returnValue(null))
+        ;
+
+        $parser = $this->getMock('\phpbrowscap\Parser\Ini', array('getBrowser'), array(), '', false);
+        $parser
+            ->expects(self::once())
+            ->method('getBrowser')
+            ->will(self::returnValue($formatter))
+        ;
+
+        $this->object->setFormatter($formatter);
+        $this->object->setParser($parser);
+        $result = $this->object->getBrowser();
+
+        self::assertInstanceOf('\stdClass', $result);
+
+        self::assertArrayHasKey('Parent', (array) $result);
+        self::assertArrayHasKey('Comment', (array) $result);
+    }
+
+    /**
+     *
+     */
+    public function testGetBrowserWithUa()
+    {
+        $formatter = $this->getMock('\phpbrowscap\Formatter\PhpGetBrowser', array('getData'), array(), '', false);
+        $formatter
+            ->expects(self::once())
+            ->method('getData')
+            ->will(self::returnValue(null))
+        ;
+
+        $parser = $this->getMock('\phpbrowscap\Parser\Ini', array('getBrowser'), array(), '', false);
+        $parser
+            ->expects(self::once())
+            ->method('getBrowser')
+            ->will(self::returnValue($formatter))
+        ;
+
+        $this->object->setFormatter($formatter);
+        $this->object->setParser($parser);
+        $result = $this->object->getBrowser('Mozilla/5.0 (compatible; Ask Jeeves/Teoma)');
+
+        self::assertInstanceOf('\stdClass', $result);
+
+        self::assertArrayHasKey('Parent', (array) $result);
+        self::assertArrayHasKey('Comment', (array) $result);
+    }
+
+    /**
+     *
+     */
+    public function testGetBrowserWithDefaultResult()
+    {
+        $formatter = $this->getMock('\phpbrowscap\Formatter\PhpGetBrowser', array('getData'), array(), '', false);
+        $formatter
+            ->expects(self::once())
+            ->method('getData')
+            ->will(self::returnValue(null))
+        ;
+
+        $parser = $this->getMock('\phpbrowscap\Parser\Ini', array('getBrowser'), array(), '', false);
+        $parser
+            ->expects(self::once())
+            ->method('getBrowser')
+            ->will(self::returnValue(null))
+        ;
+
+        $this->object->setFormatter($formatter);
+        $this->object->setParser($parser);
+        $result = $this->object->getBrowser('Mozilla/5.0 (compatible; Ask Jeeves/Teoma)');
+
+        self::assertInstanceOf('\stdClass', $result);
+
+        self::assertArrayHasKey('Parent', (array) $result);
+        self::assertArrayHasKey('Comment', (array) $result);
+    }
+
+    /**
+     *
+     */
+    public function testConvertFile()
+    {
+        $content   = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+
+[GJK_Browscap_Version]
+Version=5031
+Released=Mon, 30 Jun 2014 17:55:58 +0200
+Format=ASP
+Type=
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; DefaultProperties
+
+[DefaultProperties]
+
+Comment=DefaultProperties
+Browser=DefaultProperties
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=false
+Beta=false
+Win16=false
+Win32=false
+Win64=false
+Frames=false
+IFrames=false
+Tables=false
+Cookies=false
+BackgroundSounds=false
+JavaScript=false
+VBScript=false
+JavaApplets=false
+ActiveXControls=false
+isMobileDevice=false
+isTablet=false
+isSyndicationReader=false
+Crawler=false
+CssVersion=0
+AolVersion=0
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Ask
+
+[Ask]
+
+Parent=DefaultProperties
+Comment=Ask
+Browser=Ask
+Frames=1
+IFrames=1
+Tables=1
+Crawler=1
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=
+Beta=
+Win16=
+Win32=
+Win64=
+Cookies=
+BackgroundSounds=
+JavaScript=
+VBScript=
+JavaApplets=
+ActiveXControls=
+isMobileDevice=
+isTablet=
+isSyndicationReader=
+CssVersion=0
+AolVersion=0
+
+[Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)]
+
+Parent=Ask
+Browser=Teoma
+Comment=Ask
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=
+Beta=
+Win16=
+Win32=
+Win64=
+Frames=1
+IFrames=1
+Tables=1
+Cookies=
+BackgroundSounds=
+JavaScript=
+VBScript=
+JavaApplets=
+ActiveXControls=
+isMobileDevice=
+isTablet=
+isSyndicationReader=
+Crawler=1
+CssVersion=0
+AolVersion=0
+';
+        $structure = array(
+            self::STORAGE_DIR => array(
+                'test.ini' => $content,
+            )
+        );
+
+        vfsStream::setup(self::STORAGE_DIR, null, $structure);
+
+        self::assertNull(
+            $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.ini'))
+        );
+    }
+
+    /**
+     *
+     */
+    public function testConvertString()
+    {
+        $content   = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+
+[GJK_Browscap_Version]
+Version=5031
+Released=Mon, 30 Jun 2014 17:55:58 +0200
+Format=ASP
+Type=
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; DefaultProperties
+
+[DefaultProperties]
+
+Comment=DefaultProperties
+Browser=DefaultProperties
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=false
+Beta=false
+Win16=false
+Win32=false
+Win64=false
+Frames=false
+IFrames=false
+Tables=false
+Cookies=false
+BackgroundSounds=false
+JavaScript=false
+VBScript=false
+JavaApplets=false
+ActiveXControls=false
+isMobileDevice=false
+isTablet=false
+isSyndicationReader=false
+Crawler=false
+CssVersion=0
+AolVersion=0
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Ask
+
+[Ask]
+
+Parent=DefaultProperties
+Comment=Ask
+Browser=Ask
+Frames=1
+IFrames=1
+Tables=1
+Crawler=1
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=
+Beta=
+Win16=
+Win32=
+Win64=
+Cookies=
+BackgroundSounds=
+JavaScript=
+VBScript=
+JavaApplets=
+ActiveXControls=
+isMobileDevice=
+isTablet=
+isSyndicationReader=
+CssVersion=0
+AolVersion=0
+
+[Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)]
+
+Parent=Ask
+Browser=Teoma
+Comment=Ask
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=
+Beta=
+Win16=
+Win32=
+Win64=
+Frames=1
+IFrames=1
+Tables=1
+Cookies=
+BackgroundSounds=
+JavaScript=
+VBScript=
+JavaApplets=
+ActiveXControls=
+isMobileDevice=
+isTablet=
+isSyndicationReader=
+Crawler=1
+CssVersion=0
+AolVersion=0
+';
+
+        self::assertNull(
+            $this->object->convertString($content)
+        );
+    }
 }

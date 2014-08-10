@@ -331,14 +331,12 @@ class Browscap
         $loader
             ->setRemoteFilename($remoteFile)
             ->setOptions($this->options)
+            ->setLogger($this->getLogger())
         ;
 
         $this->getLogger()->debug('started fetching remote file');
 
-        $content = $loader
-            ->setLogger($this->getLogger())
-            ->load()
-        ;
+        $content = $loader->load();
 
         if ($content === false) {
             $error = error_get_last();
@@ -370,11 +368,11 @@ class Browscap
         $loader
             ->setRemoteFilename($remoteFile)
             ->setOptions($this->options)
+            ->setLogger($this->getLogger())
         ;
 
         $this->getLogger()->debug('started fetching remote file');
 
-        $loader->setLogger($this->getLogger());
         $internalLoader = $loader->getLoader();
 
         $converter = new Converter();
