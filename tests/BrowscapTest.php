@@ -3,6 +3,7 @@
 namespace phpbrowscapTest;
 
 use phpbrowscap\Browscap;
+use org\bovigo\vfs\vfsStream;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
