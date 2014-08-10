@@ -2,8 +2,8 @@
 
 namespace phpbrowscapTest\Helper;
 
-use phpbrowscap\Helper\Converter;
 use org\bovigo\vfs\vfsStream;
+use phpbrowscap\Helper\Converter;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -37,7 +37,8 @@ use org\bovigo\vfs\vfsStream;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/GaretJax/phpbrowscap/
  */
-class ConverterTest extends \PHPUnit_Framework_TestCase
+class ConverterTest
+    extends \PHPUnit_Framework_TestCase
 {
     const STORAGE_DIR = 'storage';
 
@@ -98,18 +99,14 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
     public function testConvertMissingFile()
     {
         $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array('exists'), array(), '', false);
-        $file
-            ->expects(self::once())
+        $file->expects(self::once())
             ->method('exists')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $logger = $this->getMock('\Monolog\Logger', array('info'), array(), '', false);
-        $logger
-            ->expects(self::never())
+        $logger->expects(self::never())
             ->method('info')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $this->object->setFilesystem($file);
         $this->object->setLogger($logger);
@@ -122,7 +119,7 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
      */
     public function testConvertFile()
     {
-        $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+        $content   = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]
 Version=5031
@@ -235,18 +232,14 @@ AolVersion=0
         $this->root = vfsStream::setup(self::STORAGE_DIR, null, $structure);
 
         $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array('exists'), array(), '', false);
-        $file
-            ->expects(self::once())
+        $file->expects(self::once())
             ->method('exists')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $logger = $this->getMock('\Monolog\Logger', array('info'), array(), '', false);
-        $logger
-            ->expects(self::never())
+        $logger->expects(self::never())
             ->method('info')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $this->object->setFilesystem($file);
         $this->object->setLogger($logger);
@@ -261,18 +254,14 @@ AolVersion=0
     public function testGetIniVersion()
     {
         $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array('exists'), array(), '', false);
-        $file
-            ->expects(self::never())
+        $file->expects(self::never())
             ->method('exists')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $logger = $this->getMock('\Monolog\Logger', array('info'), array(), '', false);
-        $logger
-            ->expects(self::never())
+        $logger->expects(self::never())
             ->method('info')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $this->object->setFilesystem($file);
         $this->object->setLogger($logger);
@@ -299,28 +288,22 @@ Type=';
     public function testConvertString()
     {
         $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array('exists'), array(), '', false);
-        $file
-            ->expects(self::never())
+        $file->expects(self::never())
             ->method('exists')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $logger = $this->getMock('\Monolog\Logger', array('info'), array(), '', false);
-        $logger
-            ->expects(self::exactly(4))
+        $logger->expects(self::exactly(4))
             ->method('info')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $this->object->setFilesystem($file);
         $this->object->setLogger($logger);
 
         $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array('setItem'), array(), '', false);
-        $cache
-            ->expects(self::any())
+        $cache->expects(self::any())
             ->method('setItem')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $this->object->setCache($cache);
 
@@ -431,40 +414,33 @@ AolVersion=0
 
         self::assertNull($this->object->convertString($content));
     }
-}
 
-/**
- *
- */
-public function testConvertStringWithoutPatternFaound()
-{
-    $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array('exists'), array(), '', false);
-    $file
-        ->expects(self::never())
-        ->method('exists')
-        ->will(self::returnValue(false))
-    ;
+    /**
+     *
+     */
+    public function testConvertStringWithoutPatternFaound()
+    {
+        $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array('exists'), array(), '', false);
+        $file->expects(self::never())
+            ->method('exists')
+            ->will(self::returnValue(false));
 
-    $logger = $this->getMock('\Monolog\Logger', array('info'), array(), '', false);
-    $logger
-        ->expects(self::exactly(4))
-        ->method('info')
-        ->will(self::returnValue(false))
-    ;
+        $logger = $this->getMock('\Monolog\Logger', array('info'), array(), '', false);
+        $logger->expects(self::exactly(4))
+            ->method('info')
+            ->will(self::returnValue(false));
 
-    $this->object->setFilesystem($file);
-    $this->object->setLogger($logger);
+        $this->object->setFilesystem($file);
+        $this->object->setLogger($logger);
 
-    $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array('setItem'), array(), '', false);
-    $cache
-        ->expects(self::any())
-        ->method('setItem')
-        ->will(self::returnValue(false))
-    ;
+        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array('setItem'), array(), '', false);
+        $cache->expects(self::any())
+            ->method('setItem')
+            ->will(self::returnValue(false));
 
-    $this->object->setCache($cache);
+        $this->object->setCache($cache);
 
-    $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+        $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]
 Version=5031
@@ -538,6 +514,6 @@ CssVersion=0
 AolVersion=0
 ';
 
-    self::assertNull($this->object->convertString($content));
-}
+        self::assertNull($this->object->convertString($content));
+    }
 }
