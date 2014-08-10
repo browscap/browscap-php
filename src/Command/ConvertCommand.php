@@ -38,8 +38,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use phpbrowscap\Helper\LoggerHelper;
 use phpbrowscap\Cache\BrowscapCache;
-use WurflCache\Adapter\File;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * command to convert a downloaded Browscap ini file and write it to the cache
