@@ -577,7 +577,7 @@ class Detector extends AbstractBrowscap
     /**
      * Loads the cache into object's properties
      *
-     * @return boolean
+     * @return boolean|null
      */
     private function loadCache()
     {
