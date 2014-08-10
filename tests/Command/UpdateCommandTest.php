@@ -92,7 +92,7 @@ class UpdateCommandTest extends \PHPUnit_Framework_TestCase
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 
-        self::assertNull($method->invoke($this->object));
+        self::assertNull($method->invoke($object));
     }
 
     /**
@@ -100,10 +100,13 @@ class UpdateCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
+        $input  = $this->getMock('\Symfony\Component\Console\Input\ArgvInput', array(), array(), '', false);
+        $output = $this->getMock('\Symfony\Component\Console\Output\ConsoleOutput', array(), array(), '', false);
+
         $class  = new \ReflectionClass('\phpbrowscap\Command\UpdateCommand');
         $method = $class->getMethod('execute');
         $method->setAccessible(true);
 
-        self::assertNull($method->invoke($this->object));
+        self::assertNull($method->invoke($this->object, $input, $output));
     }
 }
