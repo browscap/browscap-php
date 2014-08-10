@@ -26,7 +26,7 @@
     "require": {
         "php": ">=5.3.0",
         "mimmi20/wurflcache": "1.2.*",
-        "mimmi20/file-loader": "2.0.0-beta2@dev",
+        "mimmi20/file-loader": "2.0.0-beta3@dev",
         "symfony/filesystem": "*",
         "symfony/finder": "2.4.*",
         "symfony/console": "2.4.*",
