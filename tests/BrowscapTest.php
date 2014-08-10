@@ -38,6 +38,8 @@ use phpbrowscap\Browscap;
  */
 class BrowscapTest extends \PHPUnit_Framework_TestCase
 {
+    const STORAGE_DIR = 'storage';
+
     /**
      * @var \phpbrowscap\Browscap
      */
