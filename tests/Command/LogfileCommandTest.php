@@ -41,6 +41,8 @@ use org\bovigo\vfs\vfsStream;
  */
 class LogfileCommandTest extends \PHPUnit_Framework_TestCase
 {
+    const STORAGE_DIR = 'storage';
+
     /**
      * @var \phpbrowscap\Command\LogfileCommand
      */
