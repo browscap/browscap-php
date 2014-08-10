@@ -37,6 +37,7 @@ use phpbrowscap\Helper\IniLoader;
 use phpbrowscap\Exception\FetcherException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities

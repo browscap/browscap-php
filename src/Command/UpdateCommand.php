@@ -39,6 +39,7 @@ use phpbrowscap\Helper\LoggerHelper;
 use phpbrowscap\Helper\IniLoader;
 use WurflCache\Adapter\File;
 use phpbrowscap\Cache\BrowscapCache;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * command to fetch a browscap ini file from the remote host, convert it into an array and store the content in a local
