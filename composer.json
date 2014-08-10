@@ -34,7 +34,8 @@
         "mikey179/vfsStream": "1.3.*@dev"
     },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "*",
+        "browscap/browscap": "*@dev"
     },
     "suggest": {
         "ext-curl": "to use curl requests to get the ini file"

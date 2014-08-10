@@ -45,7 +45,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         }
 
         // First, generate the INI files
-        $resourceFolder = __DIR__ . '/../vendor/browscap/browscap-php/resources/';
+        $resourceFolder = __DIR__ . '/../vendor/browscap/browscap/resources';
 
         $logger = new Logger('browscap');
         $logger->pushHandler(new NullHandler(Logger::DEBUG));
