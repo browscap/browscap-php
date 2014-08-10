@@ -56,12 +56,13 @@ class LogfileCommandTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \PHPUnit_Framework_Error_Warning
+     *
      */
-    public function testConstructorFails()
+    public function testExecute()
     {
-        $this->markTestSkipped('need to be updated');
+        $class  = new \ReflectionClass('ReflectionClass');
+        $method = $class->getMethod('execute');
 
-        new LogfileCommand();
+        self::assertNull($method->invoke($this->object));
     }
 }
