@@ -46,7 +46,7 @@ class InvalidArgumentExceptionTest extends \PHPUnit_Framework_TestCase
         /** @var \phpbrowscap\Exception\InvalidArgumentException $exception */
         $exception = InvalidArgumentException::oneOfCommandArguments('http://example.org', 'Uri not reachable');
 
-        self::assertInstanceOf('\phpbrowscap\Exception\FileNotFoundException', $exception);
+        self::assertInstanceOf('\phpbrowscap\Exception\InvalidArgumentException', $exception);
         self::assertSame(
             'One of the command arguments "a", "b" is required',
             $exception->getMessage()

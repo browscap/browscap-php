@@ -161,7 +161,7 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $loader = $this->getMock(
             '\FileLoader\Loader',
-            array('load', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout', 'setLogger'),
+            array('load', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout'),
             array(),
             '',
             false
@@ -186,11 +186,6 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
             ->method('setTimeout')
             ->will(self::returnSelf())
         ;
-        $loader
-            ->expects(self::once())
-            ->method('setLogger')
-            ->will(self::returnSelf())
-        ;
 
         $this->object->setLoader($loader);
 
@@ -209,7 +204,7 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $loader = $this->getMock(
             '\FileLoader\Loader',
-            array('load', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout', 'setLogger'),
+            array('load', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout'),
             array(),
             '',
             false
@@ -234,11 +229,6 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
             ->method('setTimeout')
             ->will(self::returnSelf())
         ;
-        $loader
-            ->expects(self::once())
-            ->method('setLogger')
-            ->will(self::returnSelf())
-        ;
 
         $this->object->setLoader($loader);
 
@@ -256,7 +246,7 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $loader = $this->getMock(
             '\FileLoader\Loader',
-            array('getMTime', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout', 'setLogger'),
+            array('getMTime', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout'),
             array(),
             '',
             false
@@ -281,11 +271,6 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
             ->method('setTimeout')
             ->will(self::returnSelf())
         ;
-        $loader
-            ->expects(self::once())
-            ->method('setLogger')
-            ->will(self::returnSelf())
-        ;
 
         $this->object->setLoader($loader);
 
@@ -304,7 +289,7 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $loader = $this->getMock(
             '\FileLoader\Loader',
-            array('getMTime', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout', 'setLogger'),
+            array('getMTime', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout'),
             array(),
             '',
             false
@@ -327,11 +312,6 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
         $loader
             ->expects(self::once())
             ->method('setTimeout')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setLogger')
             ->will(self::returnSelf())
         ;
 

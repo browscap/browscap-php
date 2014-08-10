@@ -377,9 +377,7 @@ CssVersion=0
 AolVersion=0
 ';
         $structure = array(
-            self::STORAGE_DIR => array(
-                'test.ini' => $content,
-            )
+            'test.ini' => $content
         );
 
         vfsStream::setup(self::STORAGE_DIR, null, $structure);
