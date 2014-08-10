@@ -43,7 +43,6 @@ use phpbrowscap\Exception\InvalidArgumentException;
 use phpbrowscap\Exception\ReaderException;
 use phpbrowscap\Helper\LoggerHelper;
 use phpbrowscap\Cache\BrowscapCache;
-use WurflCache\Adapter\File;
 use phpbrowscap\Util\Logfile\AbstractReader;
 
 /**
