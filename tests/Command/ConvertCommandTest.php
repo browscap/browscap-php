@@ -61,11 +61,39 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testConfigure()
     {
+        $object = $this->getMock(
+            '\phpbrowscap\Command\ConvertCommand',
+            array('setName', 'setDescription', 'addArgument', 'addOption'),
+            array(),
+            '',
+            false
+        );
+        $object
+            ->expects(self::once())
+            ->method('setName')
+            ->will(self::returnSelf())
+        ;
+        $object
+            ->expects(self::once())
+            ->method('setDescription')
+            ->will(self::returnSelf())
+        ;
+        $object
+            ->expects(self::once())
+            ->method('addArgument')
+            ->will(self::returnSelf())
+        ;
+        $object
+            ->expects(self::exactly(2))
+            ->method('addOption')
+            ->will(self::returnSelf())
+        ;
+
         $class  = new \ReflectionClass('\phpbrowscap\Command\ConvertCommand');
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 
-        self::assertNull($method->invoke($this->object));
+        self::assertNull($method->invoke($object));
     }
 
     /**

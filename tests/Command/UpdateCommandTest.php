@@ -60,6 +60,34 @@ class UpdateCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testConfigure()
     {
+        $object = $this->getMock(
+            '\phpbrowscap\Command\UpdateCommand',
+            array('setName', 'setDescription', 'addArgument', 'addOption'),
+            array(),
+            '',
+            false
+        );
+        $object
+            ->expects(self::once())
+            ->method('setName')
+            ->will(self::returnSelf())
+        ;
+        $object
+            ->expects(self::once())
+            ->method('setDescription')
+            ->will(self::returnSelf())
+        ;
+        $object
+            ->expects(self::never())
+            ->method('addArgument')
+            ->will(self::returnSelf())
+        ;
+        $object
+            ->expects(self::exactly(2))
+            ->method('addOption')
+            ->will(self::returnSelf())
+        ;
+
         $class  = new \ReflectionClass('\phpbrowscap\Command\UpdateCommand');
         $method = $class->getMethod('configure');
         $method->setAccessible(true);

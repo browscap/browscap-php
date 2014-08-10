@@ -60,6 +60,34 @@ class FetchCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testConfigure()
     {
+        $object = $this->getMock(
+            '\phpbrowscap\Command\FetchCommand',
+            array('setName', 'setDescription', 'addArgument', 'addOption'),
+            array(),
+            '',
+            false
+        );
+        $object
+            ->expects(self::once())
+            ->method('setName')
+            ->will(self::returnSelf())
+        ;
+        $object
+            ->expects(self::once())
+            ->method('setDescription')
+            ->will(self::returnSelf())
+        ;
+        $object
+            ->expects(self::once())
+            ->method('addArgument')
+            ->will(self::returnSelf())
+        ;
+        $object
+            ->expects(self::once())
+            ->method('addOption')
+            ->will(self::returnSelf())
+        ;
+
         $class  = new \ReflectionClass('\phpbrowscap\Command\FetchCommand');
         $method = $class->getMethod('configure');
         $method->setAccessible(true);

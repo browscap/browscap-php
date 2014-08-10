@@ -60,6 +60,34 @@ class LogfileCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testConfigure()
     {
+        $object = $this->getMock(
+            '\phpbrowscap\Command\LogfileCommand',
+            array('setName', 'setDescription', 'addArgument', 'addOption'),
+            array(),
+            '',
+            false
+        );
+        $object
+            ->expects(self::once())
+            ->method('setName')
+            ->will(self::returnSelf())
+        ;
+        $object
+            ->expects(self::once())
+            ->method('setDescription')
+            ->will(self::returnSelf())
+        ;
+        $object
+            ->expects(self::once())
+            ->method('addArgument')
+            ->will(self::returnSelf())
+        ;
+        $object
+            ->expects(self::exactly(5))
+            ->method('addOption')
+            ->will(self::returnSelf())
+        ;
+
         $class  = new \ReflectionClass('\phpbrowscap\Command\LogfileCommand');
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
