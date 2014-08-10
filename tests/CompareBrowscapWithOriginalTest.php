@@ -67,8 +67,8 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $bcPropertyKeys  = array_map('strtolower', array_keys($bcProperties));
 
         self::assertSame(
-            $libPropertyKeys, 
-            $bcPropertyKeys, 
+            $libPropertyKeys,
+            $bcPropertyKeys,
             'the properties found by "get_browser()" differ from found by "Browser::getBrowser()"'
         );
 

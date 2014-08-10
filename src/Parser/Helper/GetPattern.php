@@ -127,7 +127,7 @@ class GetPattern implements GetPatternInterface
                 }
             }
         }
-        
+
         yield false;
     }
 }
