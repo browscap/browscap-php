@@ -3,7 +3,6 @@
 namespace phpbrowscapTest\Command;
 
 use phpbrowscap\Command\FetchCommand;
-use org\bovigo\vfs\vfsStream;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
