@@ -91,7 +91,7 @@ class GetPatternLt55Test extends \PHPUnit_Framework_TestCase
 
         $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array('getItem'), array(), '', false);
         $cache
-            ->expects(self::excactly(2))
+            ->expects(self::exactly(2))
             ->method('getItem')
             ->will(self::returnValueMap($map))
         ;
