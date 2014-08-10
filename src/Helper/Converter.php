@@ -217,6 +217,8 @@ class Converter
      * Parses the ini data to get the version of loaded ini file
      *
      * @param string $iniString The loaded ini data
+     *
+     * @return int
      */
     public function getIniVersion($iniString)
     {
@@ -272,7 +274,7 @@ class Converter
 
         // split the ini file into sections and save the data in one line with a hash of the beloging
         // pattern (filtered in the previous step)
-        $ini_parts = preg_split('/\[[^\r\n]+\]/', $content);
+        $iniParts = preg_split('/\[[^\r\n]+\]/', $content);
         $contents  = array();
         foreach ($patternpositions as $position => $pattern) {
             $patternhash = md5($pattern);
@@ -284,7 +286,7 @@ class Converter
             // the position has to be moved by one, because the header of the ini file
             // is also returned as a part
             $contents[$subkey][] = $patternhash . json_encode(
-                parse_ini_string($ini_parts[($position + 1)]),
+                parse_ini_string($iniParts[($position + 1)]),
                 JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
             );
         }
@@ -331,21 +333,21 @@ class Converter
 
         foreach ($matches[0] as $match) {
             // get the first characters for a fast search
-            $tmp_start  = Pattern::getPatternStart($match);
-            $tmp_length = Pattern::getPatternLength($match);
+            $tmpStart  = Pattern::getPatternStart($match);
+            $tmpLength = Pattern::getPatternLength($match);
 
             // special handling of default entry
-            if ($tmp_length === 0) {
-                $tmp_start = str_repeat('z', 32);
+            if ($tmpLength === 0) {
+                $tmpStart = str_repeat('z', 32);
             }
 
-            if (!isset($data[$tmp_start])) {
-                $data[$tmp_start] = array();
+            if (!isset($data[$tmpStart])) {
+                $data[$tmpStart] = array();
             }
-            if (!isset($data[$tmp_start][$tmp_length])) {
-                $data[$tmp_start][$tmp_length] = array();
+            if (!isset($data[$tmpStart][$tmpLength])) {
+                $data[$tmpStart][$tmpLength] = array();
             }
-            $data[$tmp_start][$tmp_length][] = $match;
+            $data[$tmpStart][$tmpLength][] = $match;
         }
 
         unset($matches);
@@ -356,17 +358,20 @@ class Converter
         // us to search for multiple patterns in one preg_match call for a fast first search
         // (3-10 faster), followed by a detailed search for each single pattern.
         $contents = array();
-        foreach ($data as $tmp_start => $tmp_entries) {
-            foreach ($tmp_entries as $tmp_length => $tmp_patterns) {
-                for ($i = 0, $j = ceil(count($tmp_patterns) / $this->joinPatterns); $i < $j; $i++) {
-                    $tmp_joinpatterns = implode("\t", array_slice($tmp_patterns, ($i * $this->joinPatterns), $this->joinPatterns));
-                    $tmp_subkey       = Pattern::getPatternCacheSubkey($tmp_start);
+        foreach ($data as $tmpStart => $tmpEntries) {
+            foreach ($tmpEntries as $tmpLength => $tmpPatterns) {
+                for ($i = 0, $j = ceil(count($tmpPatterns) / $this->joinPatterns); $i < $j; $i++) {
+                    $tmpJoinPatterns = implode(
+                        "\t",
+                        array_slice($tmpPatterns, ($i * $this->joinPatterns), $this->joinPatterns)
+                    );
+                    $tmpSubkey       = Pattern::getPatternCacheSubkey($tmpStart);
 
-                    if (!isset($contents[$tmp_subkey])) {
-                        $contents[$tmp_subkey] = array();
+                    if (!isset($contents[$tmpSubkey])) {
+                        $contents[$tmpSubkey] = array();
                     }
 
-                    $contents[$tmp_subkey][] = $tmp_start . ' ' . $tmp_length . ' ' . $tmp_joinpatterns;
+                    $contents[$tmpSubkey][] = $tmpStart . ' ' . $tmpLength . ' ' . $tmpJoinPatterns;
                 }
             }
         }

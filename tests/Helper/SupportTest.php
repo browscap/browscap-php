@@ -41,11 +41,19 @@ class SupportTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testPregQuote()
+    public function testGetUserAgent()
     {
         $source = array('HTTP_USER_AGENT' => 'testUA');
         $object = new Support($source);
 
         self::assertSame('testUA', $object->getUserAgent());
+    }/**
+ *
+ */
+    public function testGetUserAgentWithoutSource()
+    {
+        $object = new Support();
+
+        self::assertSame('', $object->getUserAgent());
     }
 }

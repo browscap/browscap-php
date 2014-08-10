@@ -39,7 +39,7 @@ use phpbrowscap\Cache\BrowscapCache;
 class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Browscap\Cache\BrowscapCache
+     * @var \phpbrowscap\Cache\BrowscapCache
      */
     private $object = null;
 
@@ -205,11 +205,6 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetItemCachedWithVersion()
     {
-        $data = array(
-            'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
-            'content'      => serialize(42)
-        );
-
         $map = array(
             array(
                 'browscap.version',
@@ -245,6 +240,48 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
         $success = null;
         self::assertSame('this is a test', $this->object->getItem('test', true, $success));
         self::assertTrue($success);
+    }
+
+    /**
+     *
+     */
+    public function testHasItemNotCached()
+    {
+        $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem'), array(), '', false);
+        $adapter
+            ->expects(self::once())
+            ->method('hasItem')
+            ->will(self::returnValue(false))
+        ;
+
+        $this->object->setCacheAdapter($adapter);
+        self::assertFalse($this->object->hasItem('test', false));
+    }
+
+    /**
+     *
+     */
+    public function testHasItemCachedWithVersion()
+    {
+        $data = array(
+            'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
+            'content'      => serialize(42)
+        );
+
+        $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem'), array(), '', false);
+        $adapter
+            ->expects(self::once())
+            ->method('hasItem')
+            ->will(self::returnValue(true))
+        ;
+        $adapter
+            ->expects(self::once())
+            ->method('getItem')
+            ->will(self::returnValue($data))
+        ;
+
+        $this->object->setCacheAdapter($adapter);
+        self::assertTrue($this->object->hasItem('test', true));
     }
 
     /**

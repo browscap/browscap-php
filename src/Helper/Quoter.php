@@ -58,38 +58,4 @@ class Quoter
         // the \\x replacement is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
         return str_replace(array('\*', '\?', '\\x'), array('.*', '.', '\\\\x'), $pattern);
     }
-
-    /**
-     * Converts preg match patterns back to browscap match patterns.
-     *
-     * @param string        $pattern
-     * @param array|boolean $matches
-     * @param string        $delimiter
-     *
-     * @return string
-     */
-    public function pregUnQuote($pattern, $matches, $delimiter = '/')
-    {
-        // list of escaped characters: http://www.php.net/manual/en/function.preg-quote.php
-        // to properly unescape '?' which was changed to '.', I replace '\.' (real dot) with '\?', then change '.' to '?' and then '\?' to '.'.
-        $search  = array(
-            '\\' . $delimiter, '\\.', '\\\\', '\\+', '\\[', '\\^', '\\]', '\\$', '\\(', '\\)', '\\{', '\\}',
-            '\\=', '\\!', '\\<', '\\>', '\\|', '\\:', '\\-', '.*', '.', '\\?'
-        );
-        $replace = array(
-            $delimiter, '\\?', '\\', '+', '[', '^', ']', '$', '(', ')', '{', '}', '=', '!', '<', '>', '|',
-            ':', '-', '*', '?', '.'
-        );
-
-        $result = substr(str_replace($search, $replace, $pattern), 2, -2);
-
-        if (is_array($matches)) {
-            foreach ($matches as $one_match) {
-                $num_pos = strpos($result, '(\d)');
-                $result  = substr_replace($result, $one_match, $num_pos, 4);
-            }
-        }
-
-        return $result;
-    }
 }

@@ -57,14 +57,4 @@ class QuoterTest extends \PHPUnit_Framework_TestCase
 
         self::assertSame($expected, $this->quoter->pregQuote('Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)'));
     }
-
-    /**
-     *
-     */
-    public function testPregUnQuote()
-    {
-        $expected = 'Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)';
-
-        self::assertSame($expected, $this->quoter->pregUnQuote('@^Mozilla/.\.0 \(compatible; Ask Jeeves/Teoma.*\)$@', array()));
-    }
 }
