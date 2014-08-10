@@ -110,16 +110,12 @@ class FetchCommand extends Command
 
         $logger->info('started fetching remote file');
 
-        $level = error_reporting(0);
-
         $browscap = new Browscap();
 
         $browscap
             ->setLogger($logger)
             ->fetch($file, IniLoader::PHP_INI)
         ;
-
-        error_reporting($level);
 
         $logger->info('finished fetching remote file');
     }
