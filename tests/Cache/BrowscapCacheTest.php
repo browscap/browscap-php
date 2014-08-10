@@ -51,23 +51,23 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $adapter = $this->getMock('\WurflCache\Adapter\File', array(), array(), '', false);
-        
+
         $this->object = new BrowscapCache($adapter);
     }
 
     /**
-     * 
+     *
      */
     public function testSetGetCacheAdapter()
     {
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array(), array(), '', false);
-        
+
         self::assertSame($this->object, $this->object->setCacheAdapter($adapter));
         self::assertSame($adapter, $this->object->getCacheAdapter());
     }
 
     /**
-     * 
+     *
      */
     public function testSetUpdateInterval()
     {
@@ -75,7 +75,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * 
+     *
      */
     public function testGetVersionNotCached()
     {
@@ -90,13 +90,13 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
             ->method('getItem')
             ->will(self::returnValue(false))
         ;
-        
+
         $this->object->setCacheAdapter($adapter);
         self::assertNull($this->object->getVersion());
     }
 
     /**
-     * 
+     *
      */
     public function testGetVersionCached()
     {
@@ -104,7 +104,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
             'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
             'content'      => serialize(42)
         );
-        
+
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem'), array(), '', false);
         $adapter
             ->expects(self::once())
@@ -116,13 +116,13 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
             ->method('getItem')
             ->will(self::returnValue($data))
         ;
-        
+
         $this->object->setCacheAdapter($adapter);
         self::assertSame(42, $this->object->getVersion());
     }
 
     /**
-     * 
+     *
      */
     public function testGetItemNotCached()
     {
@@ -137,7 +137,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
             ->method('getItem')
             ->will(self::returnValue(false))
         ;
-        
+
         $this->object->setCacheAdapter($adapter);
         $success = null;
         self::assertNull($this->object->getItem('test', false, $success));
@@ -145,7 +145,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * 
+     *
      */
     public function testGetItemWrongCacheVersion()
     {
@@ -153,7 +153,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
             'cacheVersion' => null,
             'content'      => serialize(42)
         );
-        
+
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem'), array(), '', false);
         $adapter
             ->expects(self::once())
@@ -165,7 +165,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
             ->method('getItem')
             ->will(self::returnValue($data))
         ;
-        
+
         $this->object->setCacheAdapter($adapter);
         $success = null;
         self::assertNull($this->object->getItem('test', false, $success));
@@ -173,7 +173,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * 
+     *
      */
     public function testGetItemCached()
     {
@@ -181,7 +181,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
             'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
             'content'      => serialize(42)
         );
-        
+
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem'), array(), '', false);
         $adapter
             ->expects(self::once())
@@ -193,7 +193,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
             ->method('getItem')
             ->will(self::returnValue($data))
         ;
-        
+
         $this->object->setCacheAdapter($adapter);
         $success = null;
         self::assertSame(42, $this->object->getItem('test', false, $success));
@@ -201,7 +201,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * 
+     *
      */
     public function testGetItemCachedWithVersion()
     {
@@ -209,26 +209,26 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
             'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
             'content'      => serialize(42)
         );
-        
+
         $map = array(
             array(
-                'browscap.version', 
-                null, 
+                'browscap.version',
+                null,
                 array(
                     'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
                     'content'      => serialize(42)
                 )
             ),
             array(
-                'test.42', 
-                null, 
+                'test.42',
+                null,
                 array(
                     'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
                     'content'      => serialize('this is a test')
                 )
             )
         );
-        
+
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem'), array(), '', false);
         $adapter
             ->expects(self::exactly(2))
@@ -240,7 +240,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
             ->method('getItem')
             ->will(self::returnValueMap($map))
         ;
-        
+
         $this->object->setCacheAdapter($adapter);
         $success = null;
         self::assertSame('this is a test', $this->object->getItem('test', true, $success));
@@ -248,7 +248,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * 
+     *
      */
     public function testSetItemWithVersion()
     {
@@ -256,7 +256,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
             'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
             'content'      => serialize(42)
         );
-        
+
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem', 'setItem'), array(), '', false);
         $adapter
             ->expects(self::once())
@@ -273,13 +273,13 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
             ->method('setItem')
             ->will(self::returnValue(true))
         ;
-        
+
         $this->object->setCacheAdapter($adapter);
         self::assertTrue($this->object->setItem('test', true, true));
     }
 
     /**
-     * 
+     *
      */
     public function testRemoveItemWithVersion()
     {
@@ -287,7 +287,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
             'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
             'content'      => serialize(42)
         );
-        
+
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem', 'removeItem'), array(), '', false);
         $adapter
             ->expects(self::once())
@@ -304,13 +304,13 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
             ->method('removeItem')
             ->will(self::returnValue(true))
         ;
-        
+
         $this->object->setCacheAdapter($adapter);
         self::assertTrue($this->object->removeItem('test', true));
     }
 
     /**
-     * 
+     *
      */
     public function testFlush()
     {
@@ -318,7 +318,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
             'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
             'content'      => serialize(42)
         );
-        
+
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem', 'flush'), array(), '', false);
         $adapter
             ->expects(self::never())
@@ -335,7 +335,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
             ->method('flush')
             ->will(self::returnValue(true))
         ;
-        
+
         $this->object->setCacheAdapter($adapter);
         self::assertTrue($this->object->flush());
     }

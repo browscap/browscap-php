@@ -91,7 +91,7 @@ class BrowscapCache
             ->setUpdateInterval(self::CACHE_LIVETIME)
         ;
     }
-    
+
     /**
      * sets the cache adapter
      *
@@ -102,7 +102,7 @@ class BrowscapCache
     public function setCacheAdapter(AdapterInterface $adapter)
     {
         $this->cache = $adapter;
-        
+
         return $this;
     }
 
@@ -167,7 +167,7 @@ class BrowscapCache
 
         if (!$this->getCacheAdapter()->hasItem($cacheId)) {
             $success = false;
-            
+
             return null;
         }
 
@@ -176,7 +176,7 @@ class BrowscapCache
 
         if (!isset($data['cacheVersion']) || $data['cacheVersion'] !== self::CACHE_FILE_VERSION) {
             $success = false;
-            
+
             return null;
         }
 

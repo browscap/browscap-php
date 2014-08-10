@@ -53,7 +53,7 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
         if (version_compare(PHP_VERSION, '5.5.0') < 0) {
             $this->markTestSkipped('not supported by this PHP version');
         }
-        
+
         $this->object = new GetPattern();
     }
 
@@ -63,7 +63,7 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
     public function testSetGetCache()
     {
         $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array(), array(), '', false);
-        
+
         self::assertSame($this->object, $this->object->setCache($cache));
         self::assertSame($cache, $this->object->getCache());
     }
@@ -74,10 +74,10 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
     public function testGetPatterns()
     {
         $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array(), array(), '', false);
-        
+
         $this->object->setCache($cache);
         $result = $this->object->getPatterns('Mozilla/5.0 (compatible; Ask Jeeves/Teoma*)');
-        
+
         self::assertInstanceOf('Generator', $result);
     }
 }
