@@ -33,7 +33,7 @@ namespace phpbrowscap\Util\Logfile;
 use phpbrowscap\Exception\ReaderException;
 
 /**
- * abstract parent class for all readers
+ * reader collection class
  *
  * @category   Browscap-PHP
  * @package    Command
@@ -43,36 +43,57 @@ use phpbrowscap\Exception\ReaderException;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  */
-class ReaderFactory
+class ReaderCollection implements ReaderInterface
 {
-    /** @var ReaderInterface[] */
-    private static $readers = array();
+    /**
+     * @var \phpbrowscap\Util\Logfile\AbstractReader[]
+     */
+    private $readers = array();
 
     /**
+     * adds a new reader to this collection
+     *
+     * @param \phpbrowscap\Util\Logfile\AbstractReader $reader
+     *
      * @return \phpbrowscap\Util\Logfile\ReaderCollection
      */
-    public static function factory()
+    public function addReader(AbstractReader $reader)
     {
-        $collection = new ReaderCollection();
+        $this->readers[] = $reader;
 
-        foreach (self::getReaders() as $reader) {
-            $collection->addReader($reader);
-        }
-
-        return $collection;
+        return $this;
     }
 
     /**
-     * @return ReaderInterface[]
+     * @param string $line
+     *
+     * @return bool
      */
-    private static function getReaders()
+    public function test($line)
     {
-        if (self::$readers) {
-            return self::$readers;
+        foreach ($this->readers as $reader) {
+            if ($reader->test($line)) {
+                return true;
+            }
         }
 
-        self::$readers[] = new ApacheCommonLogFormatReader();
+        return false;
+    }
 
-        return self::$readers;
+    /**
+     * @param string $line
+     *
+     * @return string
+     * @throws \phpbrowscap\Exception\ReaderException
+     */
+    public function read($line)
+    {
+        foreach ($this->readers as $reader) {
+            if ($reader->test($line)) {
+                return $reader->read($line);
+            }
+        }
+
+        throw ReaderException::userAgentParserError($line);
     }
 }

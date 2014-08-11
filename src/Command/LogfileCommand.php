@@ -31,6 +31,7 @@
 namespace phpbrowscap\Command;
 
 use phpbrowscap\Browscap;
+use phpbrowscap\Util\Logfile\ReaderCollection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,6 +45,7 @@ use phpbrowscap\Exception\ReaderException;
 use phpbrowscap\Helper\LoggerHelper;
 use phpbrowscap\Cache\BrowscapCache;
 use phpbrowscap\Util\Logfile\ReaderFactory;
+use phpbrowscap\Helper\IniLoader;
 
 /**
  * commands to parse a log file and parse the useragents in it
@@ -63,6 +65,11 @@ class LogfileCommand extends Command
      * @var \phpbrowscap\Cache\BrowscapCache
      */
     private $cache = null;
+
+    /**
+     * @var array
+     */
+    private $undefinedClients = array();
 
     /**
      * @param \phpbrowscap\Cache\BrowscapCache $cache
@@ -140,62 +147,93 @@ class LogfileCommand extends Command
         $logger       = $loggerHelper->create($input->getOption('debug'));
 
         $browscap = new Browscap();
+        $loader   = new IniLoader();
 
         $browscap
             ->setLogger($logger)
             ->setCache($this->cache)
         ;
 
-        $undefinedClients = array();
         /** @var $file \SplFileInfo */
         foreach ($this->getFiles($input) as $file) {
 
-            $path = $this->getPath($file);
-            $lines = file($path);
-
-            if (empty($lines)) {
-                $output->writeln(sprintf('Skipping empty file "%s"', $file->getPathname()));
-                $output->writeln('');
-                continue;
-            }
-
-            $firstLine = reset($lines);
-
-            $reader = ReaderFactory::factory($firstLine);
-            if (!$reader) {
-                $output->writeln(sprintf('Could not find reader for file "%s"', $file->getPathname()));
-                $output->writeln('');
-                continue;
-            }
+            $path  = $this->getPath($file);
+            $loader->setLocalFile($path);
+            $internalLoader = $loader->getLoader();
+            $collection     = ReaderFactory::factory();
 
             $output->writeln('');
             $output->writeln(sprintf('Analyzing "%s"', $file->getPathname()));
 
-            $count      = 1;
-            $totalCount = count($lines);
-            foreach ($lines as $line) {
-                try {
-                    $userAgentString = $reader->read($line);
-                } catch (ReaderException $e) {
-                    $count = $this->outputProgress($output, 'E', $count, $totalCount);
+            if ($internalLoader->isSupportingLoadingLines()) {
+                if (!$internalLoader->init($path)) {
+                    $output->writeln(sprintf('Skipping empty file "%s"', $file->getPathname()));
+                    $output->writeln('');
                     continue;
                 }
 
-                $result = $this->getResult($browscap->getBrowser($userAgentString));
-                if ($result !== '.') {
-                    $undefinedClients[] = $userAgentString;
+                $count      = 1;
+                $totalCount = 1;
+
+                while ($internalLoader->isValid()) {
+                    $count = $this->handleLine(
+                        $collection,
+                        $browscap,
+                        $output,
+                        $internalLoader->getLine(),
+                        $count,
+                        $totalCount
+                    );
+                    $totalCount++;
                 }
 
-                $count = $this->outputProgress($output, $result, $count, $totalCount);
+                $internalLoader->close();
+            } else {
+                $lines = file($path);
+
+                if (empty($lines)) {
+                    $output->writeln(sprintf('Skipping empty file "%s"', $file->getPathname()));
+                    $output->writeln('');
+                    continue;
+                }
+
+                $count      = 1;
+                $totalCount = count($lines);
+
+                foreach ($lines as $line) {
+                    $count = $this->handleLine(
+                        $collection,
+                        $browscap,
+                        $output,
+                        $line,
+                        $count,
+                        $totalCount
+                    );
+                }
             }
             $this->outputProgress($output, '', $count - 1, $totalCount, true);
             $output->writeln('');
         }
 
-        $undefinedClients = $this->filter($undefinedClients);
-
         $fs = new Filesystem();
-        $fs->dumpFile($input->getArgument('output'), join(PHP_EOL, $undefinedClients));
+        $fs->dumpFile($input->getArgument('output'), join(PHP_EOL, array_unique($this->undefinedClients)));
+    }
+
+    private function handleLine(ReaderCollection $collection, Browscap $browscap, OutputInterface $output, $line, $count, $totalCount)
+    {
+        try {
+            $userAgentString = $collection->read($line);
+        } catch (ReaderException $e) {
+            return $this->outputProgress($output, 'E', $count, $totalCount);
+        }
+
+        $result = $this->getResult($browscap->getBrowser($userAgentString));
+
+        if ($result !== '.') {
+            $this->undefinedClients[] = $userAgentString;
+        }
+
+        return $this->outputProgress($output, $result, $count, $totalCount);
     }
 
     /**
@@ -264,16 +302,6 @@ class LogfileCommand extends Command
         }
 
         return $finder;
-    }
-
-    /**
-     * @param array $lines
-     *
-     * @return array
-     */
-    private function filter(array $lines)
-    {
-        return array_unique($lines);
     }
 
     /**
