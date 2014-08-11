@@ -230,7 +230,7 @@ AolVersion=0
         );
 
         $this->root = vfsStream::setup(self::STORAGE_DIR, null, $structure);
-
+var_dump($this->root);
         $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array('exists'), array(), '', false);
         $file->expects(self::once())
             ->method('exists')

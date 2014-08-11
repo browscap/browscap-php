@@ -43,53 +43,37 @@ use phpbrowscap\Exception\ReaderException;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  */
-abstract class AbstractReader implements ReaderInterface
+class ReaderFactory
 {
-    /**
-     * @param string $line
-     *
-     * @return bool
-     */
-    public function test($line)
-    {
-        $matches = $this->match($line);
-
-        return isset($matches['userAgentString']);
-    }
+    /** @var ReaderInterface[] */
+    private static $readers = array();
 
     /**
      * @param string $line
-     *
-     * @return string
-     * @throws \phpbrowscap\Exception\ReaderException
+     * @return ReaderInterface|null
      */
-    public function read($line)
+    public static function factory($line)
     {
-        $matches = $this->match($line);
-
-        if (!isset($matches['userAgentString'])) {
-            throw ReaderException::userAgentParserError($line);
+        foreach (self::getReaders() as $reader) {
+            if ($reader->test($line)) {
+                return $reader;
+            }
         }
 
-        return $matches['userAgentString'];
+        return null;
     }
 
     /**
-     * @param string $line
-     *
-     * @return array
+     * @return ReaderInterface[]
      */
-    protected function match($line)
+    private static function getReaders()
     {
-        if (preg_match($this->getRegex(), $line, $matches)) {
-            return $matches;
+        if (self::$readers) {
+            return self::$readers;
         }
 
-        return array();
-    }
+        self::$readers[] = new ApacheCommonLogFormatReader();
 
-    /**
-     * @return string
-     */
-    abstract protected function getRegex();
+        return self::$readers;
+    }
 }

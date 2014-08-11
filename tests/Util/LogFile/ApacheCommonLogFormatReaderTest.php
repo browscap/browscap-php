@@ -54,12 +54,19 @@ class ApacheCommonLogFormatReaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \PHPUnit_Framework_Error_Warning
+     * 
      */
-    public function testConstructorFails()
+    public function testTestFails()
     {
-        $this->markTestSkipped('need to be updated');
+        self::assertFalse($this->object->test('test'));
+    }
 
-        new ApacheCommonLogFormatReader();
+    /**
+     * @expectedException \phpbrowscap\Exception\ReaderException
+     * @expectedExceptionMessage test
+     */
+    public function testReadFails()
+    {
+        $this->object->read('test');
     }
 }

@@ -43,7 +43,7 @@ use phpbrowscap\Exception\InvalidArgumentException;
 use phpbrowscap\Exception\ReaderException;
 use phpbrowscap\Helper\LoggerHelper;
 use phpbrowscap\Cache\BrowscapCache;
-use phpbrowscap\Util\Logfile\AbstractReader;
+use phpbrowscap\Util\Logfile\ReaderFactory;
 
 /**
  * commands to parse a log file and parse the useragents in it
@@ -161,7 +161,7 @@ class LogfileCommand extends Command
 
             $firstLine = reset($lines);
 
-            $reader = AbstractReader::factory($firstLine);
+            $reader = ReaderFactory::factory($firstLine);
             if (!$reader) {
                 $output->writeln(sprintf('Could not find reader for file "%s"', $file->getPathname()));
                 $output->writeln('');
@@ -171,7 +171,7 @@ class LogfileCommand extends Command
             $output->writeln('');
             $output->writeln(sprintf('Analyzing "%s"', $file->getPathname()));
 
-            $count = 1;
+            $count      = 1;
             $totalCount = count($lines);
             foreach ($lines as $line) {
                 try {

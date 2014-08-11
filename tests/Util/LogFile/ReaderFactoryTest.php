@@ -1,8 +1,8 @@
 <?php
 
-namespace phpbrowscapTest\Exception;
+namespace phpbrowscapTest\Util\LogFile;
 
-use phpbrowscap\Exception\InvalidArgumentException;
+use phpbrowscap\Util\Logfile\ReaderFactory;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -36,20 +36,13 @@ use phpbrowscap\Exception\InvalidArgumentException;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/GaretJax/phpbrowscap/
  */
-class InvalidArgumentExceptionTest extends \PHPUnit_Framework_TestCase
+class ReaderFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     *
+     * @expectedException \PHPUnit_Framework_Error_Warning
      */
-    public function testOneOfCommandArguments()
+    public function testFactoryFails()
     {
-        /** @var \phpbrowscap\Exception\InvalidArgumentException $exception */
-        $exception = InvalidArgumentException::oneOfCommandArguments('http://example.org', 'Uri not reachable');
-
-        self::assertInstanceOf('\phpbrowscap\Exception\InvalidArgumentException', $exception);
-        self::assertSame(
-            'One of the command arguments "http://example.org", "Uri not reachable" is required',
-            $exception->getMessage()
-        );
+        self::assertNull(ReaderFactory::factory('test'));
     }
 }
