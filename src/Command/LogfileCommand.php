@@ -219,6 +219,10 @@ class LogfileCommand extends Command
         $fs->dumpFile($input->getArgument('output'), join(PHP_EOL, array_unique($this->undefinedClients)));
     }
 
+    /**
+     * @param integer $count
+     * @param integer $totalCount
+     */
     private function handleLine(ReaderCollection $collection, Browscap $browscap, OutputInterface $output, $line, $count, $totalCount)
     {
         try {

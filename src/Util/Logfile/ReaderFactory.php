@@ -30,8 +30,6 @@
 
 namespace phpbrowscap\Util\Logfile;
 
-use phpbrowscap\Exception\ReaderException;
-
 /**
  * abstract parent class for all readers
  *
