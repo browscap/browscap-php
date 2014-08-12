@@ -41,9 +41,9 @@ class Browscap
     /**
      * Current version of the class.
      */
-    const VERSION = '2.0b';
+    const VERSION = '2.0.3';
 
-    const CACHE_FILE_VERSION = '2.0b';
+    const CACHE_FILE_VERSION = '2.0.3';
 
     /**
      * Different ways to access remote and local files.
