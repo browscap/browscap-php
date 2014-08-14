@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "33547bad6f4bd2415d1ca3570c72f97c",
+    "hash": "a07bc2e0fe1a8a8a9e6f335af1bef3d7",
     "packages": [
         {
             "name": "mikey179/vfsStream",
@@ -46,16 +46,16 @@
         },
         {
             "name": "mimmi20/file-loader",
-            "version": "2.0.0-beta3",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mimmi20/FileLoader.git",
-                "reference": "6b597be028641eca83c3f6844a6408da3490023f"
+                "reference": "f0b75da1ee4746e090ad659b9e2df6f9e8449c2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mimmi20/FileLoader/zipball/6b597be028641eca83c3f6844a6408da3490023f",
-                "reference": "6b597be028641eca83c3f6844a6408da3490023f",
+                "url": "https://api.github.com/repos/mimmi20/FileLoader/zipball/f0b75da1ee4746e090ad659b9e2df6f9e8449c2f",
+                "reference": "f0b75da1ee4746e090ad659b9e2df6f9e8449c2f",
                 "shasum": ""
             },
             "require": {
@@ -90,7 +90,7 @@
             ],
             "description": "a class to load remote or local files",
             "homepage": "http://github.com/mimmi20/FileLoader",
-            "time": "2014-08-10 18:07:58"
+            "time": "2014-08-11 20:04:28"
         },
         {
             "name": "mimmi20/wurflcache",
@@ -480,16 +480,16 @@
         },
         {
             "name": "ocramius/instantiator",
-            "version": "1.0.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ocramius/Instantiator.git",
-                "reference": "cc754c2289ffd4483c319f6ed6ee88ce21676f64"
+                "reference": "8aa99efa86c51319afc26d23254fe6a8b5a5144a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ocramius/Instantiator/zipball/cc754c2289ffd4483c319f6ed6ee88ce21676f64",
-                "reference": "cc754c2289ffd4483c319f6ed6ee88ce21676f64",
+                "url": "https://api.github.com/repos/Ocramius/Instantiator/zipball/8aa99efa86c51319afc26d23254fe6a8b5a5144a",
+                "reference": "8aa99efa86c51319afc26d23254fe6a8b5a5144a",
                 "shasum": ""
             },
             "require": {
@@ -498,6 +498,7 @@
             },
             "require-dev": {
                 "athletic/athletic": "~0.1.8",
+                "ext-pdo": "*",
                 "ext-phar": "*",
                 "phpunit/phpunit": "~4.0",
                 "squizlabs/php_codesniffer": "2.0.*@ALPHA"
@@ -521,8 +522,7 @@
                 {
                     "name": "Marco Pivetta",
                     "email": "ocramius@gmail.com",
-                    "homepage": "http://ocramius.github.com/",
-                    "role": "Developer"
+                    "homepage": "http://ocramius.github.com/"
                 }
             ],
             "description": "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
@@ -531,7 +531,7 @@
                 "constructor",
                 "instantiate"
             ],
-            "time": "2014-06-15 11:44:46"
+            "time": "2014-08-11 23:48:35"
         },
         {
             "name": "ocramius/lazy-map",
@@ -1291,10 +1291,10 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "mimmi20/file-loader": 20,
         "mikey179/vfsstream": 20,
         "browscap/browscap": 20
     },
+    "prefer-stable": false,
     "platform": {
         "php": ">=5.3.0"
     },
