@@ -34,6 +34,7 @@ use phpbrowscap\Cache\BrowscapCache;
 use phpbrowscap\Formatter\FormatterInterface;
 use phpbrowscap\Helper\Quoter;
 use phpbrowscap\Parser\Helper\GetPatternInterface;
+use phpbrowscap\Data\PropertyHolder;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -257,12 +258,25 @@ class Ini implements ParserInterface
             return array();
         }
 
-        $return = array();
-        $file   = $this->getCache()->getItem('browscap.iniparts.' . $subkey);
+        $success = null;
+        $file    = $this->getCache()->getItem('browscap.iniparts.' . $subkey, true, $success);
+        
+        if (!$success) {
+            return array();
+        }
 
+        $return = array();
         foreach ($file as $buffer) {
             if (substr($buffer, 0, 32) === $patternhash) {
                 $return = json_decode(substr($buffer, 32), true);
+                
+                foreach (array_keys($return) as $property) {
+                    $return[$property] = $this->formatPropertyValue(
+                        $return[$property],
+                        $property
+                    );
+                }
+                
                 break;
             }
         }
@@ -279,5 +293,43 @@ class Ini implements ParserInterface
     private function getIniPartCacheSubkey($string)
     {
         return $string[0] . $string[1];
+    }
+
+    /**
+     * formats the name of a property
+     *
+     * @param string $value
+     * @param string $property
+     *
+     * @return string
+     */
+    private function formatPropertyValue($value, $property)
+    {
+        $valueOutput    = $value;
+        $propertyHolder = new PropertyHolder();
+
+        switch ($propertyHolder->getPropertyType($property)) {
+            case PropertyHolder::TYPE_BOOLEAN:
+                if (true === $value || $value === 'true' || $value === '1') {
+                    $valueOutput = true;
+                } elseif (false === $value || $value === 'false' || $value === '') {
+                    $valueOutput = false;
+                } else {
+                    $valueOutput = '';
+                }
+                break;
+            case PropertyHolder::TYPE_IN_ARRAY:
+                try {
+                    $valueOutput = $propertyHolder->checkValueInArray($property, $value);
+                } catch (\InvalidArgumentException $ex) {
+                    $valueOutput = '';
+                }
+                break;
+            default:
+                // nothing t do here
+                break;
+        }
+
+        return $valueOutput;
     }
 }
