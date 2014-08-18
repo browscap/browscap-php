@@ -101,7 +101,7 @@ class GetPattern implements GetPatternInterface
         foreach ($starts as $tmpStart) {
             $tmpSubkey = Pattern::getPatternCacheSubkey($tmpStart);
             $success   = null;
-var_dump('browscap.patterns.' . $tmpSubkey);
+
             $file = $this->getCache()->getItem('browscap.patterns.' . $tmpSubkey, true, $success);
 
             if (!$success) {
@@ -118,7 +118,7 @@ var_dump('browscap.patterns.' . $tmpSubkey);
 
                     // the user agent must be longer than the pattern without place holders
                     if ($len <= $length) {
-                        list(,,$patterns) = explode(' ', $buffer, 3);
+                        list(,$patterns) = explode(' ', $buffer, 2);
                         yield trim($patterns);
                     }
                     $found = true;

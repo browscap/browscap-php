@@ -120,7 +120,7 @@ class GetPatternLt55 implements GetPatternInterface
 
                     // the user agent must be longer than the pattern without place holders
                     if ($len <= $length) {
-                        list(,,$patterns) = explode(' ', $buffer, 3);
+                        list(,$patterns) = explode(' ', $buffer, 2);
                         $patternarr[] = trim($patterns);
                     }
                     $found = true;

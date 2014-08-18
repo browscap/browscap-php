@@ -276,7 +276,7 @@ class Converter
         // split the ini file into sections and save the data in one line with a hash of the beloging
         // pattern (filtered in the previous step)
         $iniParts = preg_split('/\[[^\r\n]+\]/', $content);
-        $contents  = array();
+        $contents = array();
         foreach ($patternpositions as $position => $pattern) {
             $patternhash = md5($pattern);
             $subkey      = $this->getIniPartCacheSubkey($patternhash);
@@ -292,6 +292,8 @@ class Converter
                     $property
                 );
             }
+            
+            var_dump($pattern, $browserProperties);
 
             // the position has to be moved by one, because the header of the ini file
             // is also returned as a part
@@ -302,6 +304,7 @@ class Converter
         }
 
         unset($patternpositions);
+        unset($iniParts);
 
         foreach ($contents as $subkey => $content) {
             $this->getCache()->setItem('browscap.iniparts.' . $subkey, $content, true);
@@ -342,6 +345,7 @@ class Converter
         $data = array();
 
         foreach ($matches[0] as $match) {
+            //var_dump($match);
             // get the first characters for a fast search
             $tmpStart  = Pattern::getPatternStart($match);
             $tmpLength = Pattern::getPatternLength($match);
@@ -354,10 +358,7 @@ class Converter
             if (!isset($data[$tmpStart])) {
                 $data[$tmpStart] = array();
             }
-            if (!isset($data[$tmpStart][$tmpLength])) {
-                $data[$tmpStart][$tmpLength] = array();
-            }
-            $data[$tmpStart][$tmpLength][] = $match;
+            $data[$tmpStart][] = $match;
         }
 
         unset($matches);
@@ -368,22 +369,26 @@ class Converter
         // us to search for multiple patterns in one preg_match call for a fast first search
         // (3-10 faster), followed by a detailed search for each single pattern.
         $contents = array();
-        foreach ($data as $tmpStart => $tmpEntries) {
-            foreach ($tmpEntries as $tmpLength => $tmpPatterns) {
-                for ($i = 0, $j = ceil(count($tmpPatterns) / $this->joinPatterns); $i < $j; $i++) {
-                    $tmpJoinPatterns = implode(
-                        "\t",
-                        array_slice($tmpPatterns, ($i * $this->joinPatterns), $this->joinPatterns)
-                    );
+        foreach ($data as $tmpStart => $tmpPatterns) {
+            //foreach (array_reverse(array_keys($tmpEntries)) as $tmpLength) {
+                //$tmpPatterns = $tmpEntries[$tmpLength];
+                
+                //var_dump($tmpPatterns);
+                //for ($i = 0, $j = ceil(count($tmpPatterns) / $this->joinPatterns); $i < $j; $i++) {
+                    //$tmpJoinPatterns = implode(
+                    //    "\t",
+                    //    array_slice($tmpPatterns, ($i * $this->joinPatterns), $this->joinPatterns)
+                    //);
+                    $tmpJoinPatterns = implode("\t", $tmpPatterns);
                     $tmpSubkey       = Pattern::getPatternCacheSubkey($tmpStart);
 
                     if (!isset($contents[$tmpSubkey])) {
                         $contents[$tmpSubkey] = array();
                     }
 
-                    $contents[$tmpSubkey][] = $tmpStart . ' ' . $tmpLength . ' ' . $tmpJoinPatterns;
-                }
-            }
+                    $contents[$tmpSubkey][] = $tmpStart . ' ' . $tmpJoinPatterns;
+                //}
+            //}
         }
 
         unset($data);
@@ -419,9 +424,9 @@ class Converter
 
         switch ($propertyHolder->getPropertyType($property)) {
             case PropertyHolder::TYPE_BOOLEAN:
-                if (true === $value || $value === 'true') {
+                if (true === $value || $value === 'true' || $value === '1') {
                     $valueOutput = 'true';
-                } elseif (false === $value || $value === 'false') {
+                } elseif (false === $value || $value === 'false' || $value === '') {
                     $valueOutput = 'false';
                 } else {
                     $valueOutput = '';
