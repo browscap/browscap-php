@@ -46,16 +46,16 @@
         },
         {
             "name": "mimmi20/file-loader",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mimmi20/FileLoader.git",
-                "reference": "f0b75da1ee4746e090ad659b9e2df6f9e8449c2f"
+                "reference": "b451a72b5c6e74c189213a1e14f9d25dc2ecba60"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mimmi20/FileLoader/zipball/f0b75da1ee4746e090ad659b9e2df6f9e8449c2f",
-                "reference": "f0b75da1ee4746e090ad659b9e2df6f9e8449c2f",
+                "url": "https://api.github.com/repos/mimmi20/FileLoader/zipball/b451a72b5c6e74c189213a1e14f9d25dc2ecba60",
+                "reference": "b451a72b5c6e74c189213a1e14f9d25dc2ecba60",
                 "shasum": ""
             },
             "require": {
@@ -90,7 +90,7 @@
             ],
             "description": "a class to load remote or local files",
             "homepage": "http://github.com/mimmi20/FileLoader",
-            "time": "2014-08-11 20:04:28"
+            "time": "2014-08-20 19:10:44"
         },
         {
             "name": "mimmi20/wurflcache",
@@ -1188,8 +1188,7 @@
                 },
                 {
                     "name": "Adam Harvey",
-                    "email": "aharvey@php.net",
-                    "role": "Lead"
+                    "email": "aharvey@php.net"
                 },
                 {
                     "name": "Bernhard Schussek",

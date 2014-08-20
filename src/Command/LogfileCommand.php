@@ -154,10 +154,10 @@ class LogfileCommand extends Command
             ->setCache($this->cache)
         ;
 
-        /** @var $file \SplFileInfo */
+        /** @var $file \Symfony\Component\Finder\SplFileInfo */
         foreach ($this->getFiles($input) as $file) {
-
             $path  = $this->getPath($file);
+
             $loader->setLocalFile($path);
             $internalLoader = $loader->getLoader();
             $collection     = ReaderFactory::factory();
@@ -188,6 +188,7 @@ class LogfileCommand extends Command
                 }
 
                 $internalLoader->close();
+                $totalCount--;
             } else {
                 $lines = file($path);
 
@@ -319,11 +320,9 @@ class LogfileCommand extends Command
             case 'gz':
                 $path = 'compress.zlib://' . $file->getPathname();
                 break;
-
             case 'bz2':
                 $path = 'compress.bzip2://' . $file->getPathname();
                 break;
-
             default:
                 $path = $file->getPathname();
                 break;
