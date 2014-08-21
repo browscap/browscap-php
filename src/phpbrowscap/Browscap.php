@@ -41,7 +41,9 @@ class Browscap extends AbstractBrowscap
     /**
      * Current cache version
      */
-    const CACHE_FILE_VERSION = '2.0b';
+    const VERSION = '2.0.3';
+
+    const CACHE_FILE_VERSION = '2.0.3';
 
     /**
      * Different ways to access remote and local files.
@@ -735,19 +737,39 @@ class Browscap extends AbstractBrowscap
             }
         }
 
-        // Get updated .ini file
-        $browscap = $this->_getRemoteData($url);
-        $browscap = explode("\n", $browscap);
-        $pattern  = self::REGEX_DELIMITER . '(' . self::VALUES_TO_QUOTE . ')="?([^"]*)"?$' . self::REGEX_DELIMITER;
-
-        // Ok, lets read the file
-        $content = '';
-        foreach ($browscap as $subject) {
-            $subject = trim($subject);
-            $content .= preg_replace($pattern, '$1="$2"', $subject) . "\n";
-        }
-
         if ($url != $path) {
+            // Check if it's possible to write to the .ini file.
+            if (is_file($path)) {
+                if (!is_writable($path)) {
+                    throw new Exception(
+                        'Could not write to "' . $path . '" (check the permissions of the current/old ini file).'
+                    );
+                }
+            } else {
+                // Test writability by creating a file only if one already doesn't exist, so we can safely delete it after the test.
+                $test_file = fopen($path, 'a');
+                if ($test_file) {
+                    fclose($test_file);
+                    unlink($path);
+                } else {
+                    throw new Exception(
+                        'Could not write to "' . $path . '" (check the permissions of the cache directory).'
+                    );
+                }
+            }
+
+            // Get updated .ini file
+            $browscap = $this->_getRemoteData($url);
+            $browscap = explode("\n", $browscap);
+            $pattern  = self::REGEX_DELIMITER . '(' . self::VALUES_TO_QUOTE . ')="?([^"]*)"?$' . self::REGEX_DELIMITER;
+
+            // Ok, lets read the file
+            $content = '';
+            foreach ($browscap as $subject) {
+                $subject = trim($subject);
+                $content .= preg_replace($pattern, '$1="$2"', $subject) . "\n";
+            }
+
             if (!file_put_contents($path, $content)) {
                 throw new Exception("Could not write .ini content to $path");
             }
