@@ -292,8 +292,6 @@ class Converter
                     $property
                 );
             }
-            
-            var_dump($pattern, $browserProperties);
 
             // the position has to be moved by one, because the header of the ini file
             // is also returned as a part

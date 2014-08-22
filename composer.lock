@@ -419,12 +419,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/browscap/browscap.git",
-                "reference": "0f9510b67c0fad9a494ad64551277ee50ec13387"
+                "reference": "8c8275e69ce00d9a7bacbd1d695b38d60874f38f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/browscap/browscap/zipball/0f9510b67c0fad9a494ad64551277ee50ec13387",
-                "reference": "0f9510b67c0fad9a494ad64551277ee50ec13387",
+                "url": "https://api.github.com/repos/browscap/browscap/zipball/8c8275e69ce00d9a7bacbd1d695b38d60874f38f",
+                "reference": "8c8275e69ce00d9a7bacbd1d695b38d60874f38f",
                 "shasum": ""
             },
             "require": {
@@ -476,7 +476,7 @@
             "keywords": [
                 "Browscap"
             ],
-            "time": "2014-08-05 19:37:16"
+            "time": "2014-08-21 07:21:22"
         },
         {
             "name": "ocramius/instantiator",
