@@ -569,8 +569,9 @@ class Browscap extends AbstractBrowscap
         unset($browsers['DefaultProperties']['RenderingEngine_Description']);
 
         $tmp_user_agents = array_keys($browsers);
+        $sorterHelper    = new Helper\Sorter();
 
-        usort($tmp_user_agents, array($this, 'compareBcStrings'));
+        usort($tmp_user_agents, array($sorterHelper, 'compareBcStrings'));
 
         $user_agents_keys = array_flip($tmp_user_agents);
 
