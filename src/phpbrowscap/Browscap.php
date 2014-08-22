@@ -126,6 +126,34 @@ class Browscap extends AbstractBrowscap
     public $cacheFilename = 'cache.php';
 
     /**
+     * Where to store the temporary property data (while generating the cache data)?
+     *
+     * @var string|null
+     */
+    public $cachePropertiesFilename;
+
+    /**
+     * Where to store the temporary browser data (while generating the cache data)?
+     *
+     * @var string|null
+     */
+    public $cacheBrowserFilename;
+
+    /**
+     * Where to store the temporary useragent data (while generating the cache data)?
+     *
+     * @var string|null
+     */
+    public $cacheUseragentsFilename;
+
+    /**
+     * Where to store the temporary pattern data (while generating the cache data)?
+     *
+     * @var string|null
+     */
+    public $cachePatternsFilename;
+
+    /**
      * Where to store the downloaded ini file.
      *
      * @var string
@@ -214,6 +242,21 @@ class Browscap extends AbstractBrowscap
             $this->cacheDir      = dirname($cache_dir);
         } else {
             $this->cacheDir = $cache_dir;
+        }
+
+        // if not set, automatically set file names for temporary files that are used while creating the cache
+        // (derived from main cache file: 'cachefile.php' -> 'cachefile.part.php')
+        if ($this->cachePropertiesFilename === null) {
+            $this->cachePropertiesFilename = substr($this->cacheFilename, 0, -4) . '.properties.php';
+        }
+        if ($this->cacheBrowserFilename === null) {
+            $this->cacheBrowserFilename = substr($this->cacheFilename, 0, -4) . '.browser.php';
+        }
+        if ($this->cacheUseragentsFilename === null) {
+            $this->cacheUseragentsFilename = substr($this->cacheFilename, 0, -4) . '.useragents.php';
+        }
+        if ($this->cachePatternsFilename === null) {
+            $this->cachePatternsFilename = substr($this->cacheFilename, 0, -4) . '.patterns.php';
         }
 
         $this->cacheDir .= DIRECTORY_SEPARATOR;
@@ -306,7 +349,7 @@ class Browscap extends AbstractBrowscap
 
                     $simple_match = true;
                 } else {
-                    $pattern_data = unserialize($pattern_data);
+                    $pattern_data = json_decode($pattern_data, true);
 
                     // match with numeric replacements
                     array_shift($matches);
@@ -330,10 +373,10 @@ class Browscap extends AbstractBrowscap
                     $quoterHelper->pregUnQuote($pattern, $simple_match ? false : $matches)
                 );
 
-                $browser = $value = $browser + unserialize($this->_browsers[$key]);
+                $browser = $value = $browser + json_decode($this->_browsers[$key], true);
 
                 while (array_key_exists(3, $value)) {
-                    $value = unserialize($this->_browsers[$value[3]]);
+                    $value = json_decode($this->_browsers[$value[3]], true);
                     $browser += $value;
                 }
 
@@ -498,8 +541,12 @@ class Browscap extends AbstractBrowscap
             throw new Exception('temporary file already exists');
         }
 
-        $ini_path   = $this->cacheDir . $this->iniFilename;
-        $cache_path = $this->cacheDir . $this->cacheFilename;
+        $ini_path              = $this->cacheDir . $this->iniFilename;
+        $cache_path            = $this->cacheDir . $this->cacheFilename;
+        $cache_path_properties = $this->cacheDir . $this->cachePropertiesFilename;
+        $cache_path_browsers   = $this->cacheDir . $this->cacheBrowserFilename;
+        $cache_path_useragent  = $this->cacheDir . $this->cacheUseragentsFilename;
+        $cache_path_patterns   = $this->cacheDir . $this->cachePatternsFilename;
 
         // Choose the right url
         if ($this->_getUpdateMethod() == self::UPDATE_LOCAL) {
@@ -521,36 +568,99 @@ class Browscap extends AbstractBrowscap
 
         unset($browsers['DefaultProperties']['RenderingEngine_Description']);
 
-        $this->_properties = array_keys($browsers['DefaultProperties']);
+        $tmp_user_agents = array_keys($browsers);
+
+        usort($tmp_user_agents, array($this, 'compareBcStrings'));
+
+        $user_agents_keys = array_flip($tmp_user_agents);
+
+        // convert to SplFixedArray (requires less memory)
+        $tmp_user_agents       = \SplFixedArray::fromArray($tmp_user_agents);
+        $tmp_user_agents_count = $tmp_user_agents->count();
+
+        // get user agent data
+        $data_user_agents = array();
+        for ($i = 0, $j = $tmp_user_agents_count; $i < $j; $i++) {
+            if (!empty($browsers[$tmp_user_agents[$i]]['Parent'])) {
+                $parent = $browsers[$tmp_user_agents[$i]]['Parent'];
+
+                if (isset($user_agents_keys[$parent])) {
+                    $parent_key = $user_agents_keys[$parent];
+
+                    $browsers[$tmp_user_agents[$i]]['Parent'] = $parent_key;
+                    $data_user_agents[$parent_key . '.0']     = $tmp_user_agents[$parent_key];
+                }
+            }
+        }
+
+        // unset unnecessary variable(s) to optimize memory usage
+        unset($user_agents_keys);
+
+        // save data in temporary file
+        file_put_contents($cache_path_useragent, $this->_array2string($data_user_agents), LOCK_EX);
+
+        // unset unnecessary variable(s) to optimize memory usage
+        unset($data_user_agents);
+
+        // get property data
+        $data_properties = array_keys($browsers['DefaultProperties']);
 
         array_unshift(
-            $this->_properties,
+            $data_properties,
             'browser_name',
             'browser_name_regex',
             'browser_name_pattern',
             'Parent'
         );
 
-        $tmp_user_agents = array_keys($browsers);
+        $properties_keys = array_flip($data_properties);
 
         $sorterHelper = new Helper\Sorter();
 
         usort($tmp_user_agents, array($sorterHelper, 'compareBcStrings'));
+        // save data in temporary file
+        file_put_contents($cache_path_properties, $this->_array2string($data_properties), LOCK_EX);
 
-        $user_agents_keys = array_flip($tmp_user_agents);
-        $properties_keys  = array_flip($this->_properties);
+        // unset unnecessary variable(s) to optimize memory usage
+        unset($data_properties);
 
+        // get browser data
+        $data_browsers = array();
+        for ($i = 0, $j = $tmp_user_agents_count; $i < $j; $i++) {
+            $browser = array();
+            foreach ($browsers[$tmp_user_agents[$i]] as $key => $value) {
+                if (!isset($properties_keys[$key])) {
+                    continue;
+                }
+
+                $key           = $properties_keys[$key];
+                $browser[$key] = $value;
+            }
+
+            unset($browsers[$tmp_user_agents[$i]]);
+            $data_browsers[] = $browser;
+        }
+
+        // unset unnecessary variable(s) to optimize memory usage
+        unset($browsers, $properties_keys);
+
+        // save data in temporary file
+        file_put_contents($cache_path_browsers, $this->_array2string($data_browsers), LOCK_EX);
+
+        // unset unnecessary variable(s) to optimize memory usage
+        unset($data_browsers);
+
+        // prepare patterns
         $tmp_patterns = array();
+        $quoterHelper = new Helper\Quoter();
 
-        foreach ($tmp_user_agents as $i => $user_agent) {
-
-            if (empty($browsers[$user_agent]['Comment'])
-                || false !== strpos($user_agent, '*')
-                || false !== strpos($user_agent, '?')
+        for ($i = 0, $j = $tmp_user_agents_count; $i < $j; $i++) {
+            if (empty($browsers[$tmp_user_agents[$i]]['Comment'])
+                || false !== strpos($tmp_user_agents[$i], '*')
+                || false !== strpos($tmp_user_agents[$i], '?')
             ) {
-                $quoterHelper = new Helper\Quoter();
-                $pattern = $quoterHelper->pregQuote($user_agent);
 
+                $pattern       = $quoterHelper->pregQuote($tmp_user_agents[$i]);
                 $matches_count = preg_match_all('@\d@', $pattern, $matches);
 
                 if (!$matches_count) {
@@ -565,46 +675,35 @@ class Browscap extends AbstractBrowscap
                     $tmp_patterns[$compressed_pattern][$i] = $matches[0];
                 }
             }
-
-            if (!empty($browsers[$user_agent]['Parent'])) {
-                $parent = $browsers[$user_agent]['Parent'];
-
-                $parent_key = $user_agents_keys[$parent];
-
-                $browsers[$user_agent]['Parent']       = $parent_key;
-                $this->_userAgents[$parent_key . '.0'] = $tmp_user_agents[$parent_key];
-            };
-
-            $browser = array();
-            foreach ($browsers[$user_agent] as $key => $value) {
-                if (!isset($properties_keys[$key])) {
-                    continue;
-                }
-
-                $key           = $properties_keys[$key];
-                $browser[$key] = $value;
-            }
-
-            $this->_browsers[] = $browser;
         }
 
-        // reducing memory usage by unsetting $tmp_user_agents
+        // unset unnecessary variable(s) to optimize memory usage
         unset($tmp_user_agents);
 
+        // get pattern data
+        $data_patterns = array();
         foreach ($tmp_patterns as $pattern => $pattern_data) {
             if (is_int($pattern_data)) {
-                $this->_patterns[$pattern] = $pattern_data;
-            } elseif (2 == count($pattern_data)) {
+                $data_patterns[$pattern] = $pattern_data;
+            } elseif (2 === count($pattern_data)) {
                 end($pattern_data);
-                $this->_patterns[$pattern_data['first']] = key($pattern_data);
+                $data_patterns[$pattern_data['first']] = key($pattern_data);
             } else {
                 unset($pattern_data['first']);
 
-                $pattern_data = $this->deduplicateCompressionPattern($pattern_data, $pattern);
-
-                $this->_patterns[$pattern] = $pattern_data;
+                $data_patterns[$pattern] = $this->deduplicateCompressionPattern($pattern_data, $pattern);
             }
+            unset($tmp_patterns[$pattern]);
         }
+
+        // unset unnecessary variable(s) to optimize memory usage
+        unset($tmp_patterns, $pattern_data);
+
+        // save data in temporary file
+        file_put_contents($cache_path_patterns, $this->_array2string($data_patterns), LOCK_EX);
+
+        // unset unnecessary variable(s) to optimize memory usage
+        unset($data_patterns);
 
         // Get the whole PHP code
         $cache = $this->_buildCache();
@@ -675,11 +774,24 @@ class Browscap extends AbstractBrowscap
     {
         $cacheTpl = "<?php\n\$source_version=%s;\n\$cache_version=%s;\n\$properties=%s;\n\$browsers=%s;\n\$userAgents=%s;\n\$patterns=%s;\n";
 
-        $propertiesArray = $this->_array2string($this->_properties);
-        $patternsArray   = $this->_array2string($this->_patterns);
-        $userAgentsArray = $this->_array2string($this->_userAgents);
-        $browsersArray   = $this->_array2string($this->_browsers);
+        $cache_path_properties = $this->cacheDir . $this->cachePropertiesFilename;
+        $cache_path_browsers   = $this->cacheDir . $this->cacheBrowserFilename;
+        $cache_path_useragent  = $this->cacheDir . $this->cacheUseragentsFilename;
+        $cache_path_patterns   = $this->cacheDir . $this->cachePatternsFilename;
 
+        // get prepared data
+        $propertiesArray = file_get_contents($cache_path_properties);
+        $patternsArray   = file_get_contents($cache_path_patterns);
+        $userAgentsArray = file_get_contents($cache_path_useragent);
+        $browsersArray   = file_get_contents($cache_path_browsers);
+
+        // delete temporary files
+        unlink($cache_path_properties);
+        unlink($cache_path_patterns);
+        unlink($cache_path_useragent);
+        unlink($cache_path_browsers);
+
+        // return PHP cache file content
         return sprintf(
             $cacheTpl,
             "'" . $this->_source_version . "'",
@@ -809,6 +921,43 @@ class Browscap extends AbstractBrowscap
         }
 
         return filemtime($this->localFile);
+    }
+
+    /**
+     * Converts the given array to the PHP string which represent it.
+     * This method optimizes the PHP code and the output differs form the
+     * var_export one as the internal PHP function does not strip whitespace or
+     * convert strings to numbers.
+     *
+     * @param array $array the array to parse and convert
+     *
+     * @return string the array parsed into a PHP string
+     */
+    protected function _array2string($array)
+    {
+        $strings = array();
+
+        foreach ($array as $key => $value) {
+            if (is_int($key)) {
+                $key = '';
+            } elseif (ctype_digit((string) $key) || '.0' === substr($key, -2)) {
+                $key = intval($key) . '=>';
+            } else {
+                $key = "'" . str_replace("'", "\'", $key) . "'=>";
+            }
+
+            if (is_array($value)) {
+                $value = "'" . addcslashes(json_encode($value, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP), "'") . "'";
+            } elseif (ctype_digit((string) $value)) {
+                $value = intval($value);
+            } else {
+                $value = "'" . str_replace("'", "\'", $value) . "'";
+            }
+
+            $strings[] = $key . $value;
+        }
+
+        return "array(\n" . implode(",\n", $strings) . "\n)";
     }
 
     /**
