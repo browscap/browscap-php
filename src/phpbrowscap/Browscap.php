@@ -615,10 +615,6 @@ class Browscap extends AbstractBrowscap
         );
 
         $properties_keys = array_flip($data_properties);
-
-        $sorterHelper = new Helper\Sorter();
-
-        usort($tmp_user_agents, array($sorterHelper, 'compareBcStrings'));
         // save data in temporary file
         file_put_contents($cache_path_properties, $this->_array2string($data_properties), LOCK_EX);
 
