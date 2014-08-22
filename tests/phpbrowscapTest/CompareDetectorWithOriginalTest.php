@@ -2,6 +2,7 @@
 namespace phpbrowscapTest;
 
 use phpbrowscap\Detector;
+use WurflCache\Adapter\Memory;
 
 /**
  * Compares get_browser results for all matches in browscap.ini with results from Browscap class.
@@ -10,7 +11,7 @@ use phpbrowscap\Detector;
 class CompareDetectorWithOriginalTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Browscap
+     * @var \phpbrowscap\Detector
      */
     private $object = null;
 
@@ -57,25 +58,10 @@ class CompareDetectorWithOriginalTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->object = new Detector(self::$cacheDir);
-        $this->object->setLocaleFile($objectIniPath);
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-        if (null !== $this->object) {
-            $this->object->getCache()->flush();
-            $this->object->getLoader()->getLoader()->getCache()->flush();
-        }
-
-        unset($this->object);
-
-        $this->object = null;
-
-        parent::tearDown();
+        $this->object
+            ->setLocaleFile($objectIniPath)
+            ->setCache(new Memory())
+        ;
     }
 
     public function testCheckProperties()

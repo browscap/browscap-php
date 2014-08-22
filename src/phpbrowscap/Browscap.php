@@ -718,6 +718,7 @@ class Browscap extends AbstractBrowscap
         if (false === rename($tmpFile, $cache_path)) {
             // renaming file failed, remove temp file
             @unlink($tmpFile);
+            @unlink($lockfile);
 
             throw new Exception('could not rename temporary file to the cache file');
         }
