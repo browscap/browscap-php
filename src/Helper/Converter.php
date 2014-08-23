@@ -292,7 +292,6 @@ class Converter
                     $property
                 );
             }
-
             // the position has to be moved by one, because the header of the ini file
             // is also returned as a part
             $contents[$subkey][] = $patternhash . json_encode(
