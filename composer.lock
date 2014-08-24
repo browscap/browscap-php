@@ -94,16 +94,16 @@
         },
         {
             "name": "mimmi20/wurflcache",
-            "version": "1.2.3",
+            "version": "1.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mimmi20/WurflCache.git",
-                "reference": "aa0688ce630b1a4175bbd0c4bfd7d6f39554fb31"
+                "reference": "bcc6e200a94f416e8b63591b5f365c541ffb2ee4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mimmi20/WurflCache/zipball/aa0688ce630b1a4175bbd0c4bfd7d6f39554fb31",
-                "reference": "aa0688ce630b1a4175bbd0c4bfd7d6f39554fb31",
+                "url": "https://api.github.com/repos/mimmi20/WurflCache/zipball/bcc6e200a94f416e8b63591b5f365c541ffb2ee4",
+                "reference": "bcc6e200a94f416e8b63591b5f365c541ffb2ee4",
                 "shasum": ""
             },
             "require": {
@@ -127,13 +127,12 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "WurflCache\\": "src/",
-                    "WurflCacheTest\\": "tests/"
+                    "WurflCache\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "LGPL-2.1"
+                "MIT"
             ],
             "authors": [
                 {
@@ -152,7 +151,7 @@
                 "Wurfl",
                 "cache"
             ],
-            "time": "2014-08-01 18:03:39"
+            "time": "2014-08-24 20:33:27"
         },
         {
             "name": "monolog/monolog",
