@@ -283,9 +283,9 @@ class Converter
             if (!isset($contents[$subkey])) {
                 $contents[$subkey] = array();
             }
-            
+
             $browserProperties = parse_ini_string($iniParts[($position + 1)]);
-            
+
             foreach (array_keys($browserProperties) as $property) {
                 $browserProperties[$property] = $this->formatPropertyValue(
                     $browserProperties[$property],
@@ -367,25 +367,20 @@ class Converter
         // (3-10 faster), followed by a detailed search for each single pattern.
         $contents = array();
         foreach ($data as $tmpStart => $tmpPatterns) {
-            //foreach (array_reverse(array_keys($tmpEntries)) as $tmpLength) {
-                //$tmpPatterns = $tmpEntries[$tmpLength];
-                
-                //var_dump($tmpPatterns);
-                //for ($i = 0, $j = ceil(count($tmpPatterns) / $this->joinPatterns); $i < $j; $i++) {
-                    //$tmpJoinPatterns = implode(
-                    //    "\t",
-                    //    array_slice($tmpPatterns, ($i * $this->joinPatterns), $this->joinPatterns)
-                    //);
-                    $tmpJoinPatterns = implode("\t", $tmpPatterns);
-                    $tmpSubkey       = Pattern::getPatternCacheSubkey($tmpStart);
+            for ($i = 0, $j = ceil(count($tmpPatterns) / $this->joinPatterns); $i < $j; $i++) {
+                $tmpJoinPatterns = implode(
+                    "\t",
+                    array_slice($tmpPatterns, ($i * $this->joinPatterns), $this->joinPatterns)
+                );
 
-                    if (!isset($contents[$tmpSubkey])) {
-                        $contents[$tmpSubkey] = array();
-                    }
+                $tmpSubkey       = Pattern::getPatternCacheSubkey($tmpStart);
 
-                    $contents[$tmpSubkey][] = $tmpStart . ' ' . $tmpJoinPatterns;
-                //}
-            //}
+                if (!isset($contents[$tmpSubkey])) {
+                    $contents[$tmpSubkey] = array();
+                }
+
+                $contents[$tmpSubkey][] = $tmpStart . ' ' . $tmpJoinPatterns;
+            }
         }
 
         unset($data);
