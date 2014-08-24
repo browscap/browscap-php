@@ -197,7 +197,10 @@ class Browscap
             $helper = new Parser\Helper\GetPatternLt55();
         }
 
-        $helper->setCache($this->getCache());
+        $helper
+            ->setCache($this->getCache())
+            ->setLogger($this->getLogger())
+        ;
 
         $this->parser
             ->setHelper($helper)
@@ -271,15 +274,15 @@ class Browscap
         }
 
         // try to get browser data
-        $return = $this->getParser()->getBrowser($userAgent);
+        $formatter = $this->getParser()->getBrowser($userAgent);
 
         // if return is still NULL, updates are disabled... in this
         // case we return an empty formatter instance
-        if ($return === null) {
+        if ($formatter === null) {
             return $this->getFormatter()->getData();
         }
 
-        return $return->getData();
+        return $formatter->getData();
     }
 
     /**

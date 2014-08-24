@@ -31,6 +31,7 @@
 namespace phpbrowscap\Parser\Helper;
 
 use phpbrowscap\Cache\BrowscapCache;
+use Psr\Log\LoggerInterface;
 
 /**
  * extracts the pattern and the data for theses pattern from the ini content,
@@ -54,6 +55,9 @@ class GetPatternLt55 implements GetPatternInterface
      */
     private $cache = null;
 
+    /** @var \Psr\Log\LoggerInterface */
+    private $logger = null;
+
     /**
      * Gets a cache instance
      *
@@ -69,13 +73,37 @@ class GetPatternLt55 implements GetPatternInterface
      *
      * @param \phpbrowscap\Cache\BrowscapCache $cache
      *
-     * @return GetPatternLt55
+     * @return \phpbrowscap\Parser\Helper\GetPatternLt55
      */
     public function setCache(BrowscapCache $cache)
     {
         $this->cache = $cache;
 
         return $this;
+    }
+
+    /**
+     * Sets a logger instance
+     *
+     * @param \Psr\Log\LoggerInterface $logger
+     *
+     * @return \phpbrowscap\Parser\Helper\GetPatternLt55
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+
+        return $this;
+    }
+
+    /**
+     * Returns a logger instance
+     *
+     * @return \Psr\Log\LoggerInterface $logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
     }
 
     /**
@@ -107,6 +135,7 @@ class GetPatternLt55 implements GetPatternInterface
             $file = $this->getCache()->getItem('browscap.patterns.' . $tmpSubkey, true, $success);
 
             if (!$success) {
+                $this->getLogger()->debug('cache key "browscap.patterns.' . $tmpSubkey . '" not found');
                 continue;
             }
 

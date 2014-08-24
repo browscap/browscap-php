@@ -31,6 +31,7 @@
 namespace phpbrowscap\Parser\Helper;
 
 use phpbrowscap\Cache\BrowscapCache;
+use Psr\Log\LoggerInterface;
 
 /**
  * interface for the parser helper
@@ -58,9 +59,25 @@ interface GetPatternInterface
      *
      * @param \phpbrowscap\Cache\BrowscapCache $cache
      *
-     * @return GetPatternLt55
+     * @return GetPatternInterface
      */
     public function setCache(BrowscapCache $cache);
+
+    /**
+     * Sets a logger instance
+     *
+     * @param \Psr\Log\LoggerInterface $logger
+     *
+     * @return \phpbrowscap\Parser\Helper\GetPatternInterface
+     */
+    public function setLogger(LoggerInterface $logger);
+
+    /**
+     * Returns a logger instance
+     *
+     * @return \Psr\Log\LoggerInterface $logger
+     */
+    public function getLogger();
 
     /**
      * Gets some possible patterns that have to be matched against the user agent. With the given
