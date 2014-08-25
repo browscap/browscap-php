@@ -162,13 +162,11 @@ class LogfileCommand extends Command
             $internalLoader = $loader->getLoader();
             $collection     = ReaderFactory::factory();
 
-            $output->writeln('');
-            $output->writeln(sprintf('Analyzing "%s"', $file->getPathname()));
+            $logger->info('Analyzing file "' . $file->getPathname() . '"');
 
             if ($internalLoader->isSupportingLoadingLines()) {
                 if (!$internalLoader->init($path)) {
-                    $output->writeln(sprintf('Skipping empty file "%s"', $file->getPathname()));
-                    $output->writeln('');
+                    $logger->info('Skipping empty file "' . $file->getPathname() . '"');
                     continue;
                 }
 
@@ -193,8 +191,7 @@ class LogfileCommand extends Command
                 $lines = file($path);
 
                 if (empty($lines)) {
-                    $output->writeln(sprintf('Skipping empty file "%s"', $file->getPathname()));
-                    $output->writeln('');
+                    $logger->info('Skipping empty file "' . $file->getPathname() . '"');
                     continue;
                 }
 
@@ -277,7 +274,7 @@ class LogfileCommand extends Command
         } elseif ($result->platform === 'unknown') {
             return 'P';
         } elseif ($result->device_type === 'unknown') {
-            return 'M';
+            return 'D';
         }
 
         return '.';
