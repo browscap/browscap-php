@@ -115,7 +115,7 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
 
         $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
         $this->object->setLogger($logger);
-        
+
         $result = $this->object->getPatterns('Mozilla/5.0 (compatible; Ask Jeeves/Teoma*)');
 
         self::assertInstanceOf('Generator', $result);

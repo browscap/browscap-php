@@ -185,11 +185,15 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetBrowserWithoutUa()
     {
+        $browserObject = new \StdClass();
+        $browserObject->parent = 'something';
+        $browserObject->comment = 'an comment';
+
         $formatter = $this->getMock('\phpbrowscap\Formatter\PhpGetBrowser', array('getData'), array(), '', false);
         $formatter
             ->expects(self::once())
             ->method('getData')
-            ->will(self::returnValue(null))
+            ->will(self::returnValue($browserObject))
         ;
 
         $parser = $this->getMock('\phpbrowscap\Parser\Ini', array('getBrowser'), array(), '', false);
@@ -203,10 +207,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
         $this->object->setParser($parser);
         $result = $this->object->getBrowser();
 
-        self::assertInstanceOf('\stdClass', $result);
-
-        self::assertArrayHasKey('Parent', (array) $result);
-        self::assertArrayHasKey('Comment', (array) $result);
+        self::assertSame($browserObject, $result);
     }
 
     /**
@@ -214,11 +215,15 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetBrowserWithUa()
     {
+        $browserObject = new \StdClass();
+        $browserObject->parent = 'something';
+        $browserObject->comment = 'an comment';
+
         $formatter = $this->getMock('\phpbrowscap\Formatter\PhpGetBrowser', array('getData'), array(), '', false);
         $formatter
             ->expects(self::once())
             ->method('getData')
-            ->will(self::returnValue(null))
+            ->will(self::returnValue($browserObject))
         ;
 
         $parser = $this->getMock('\phpbrowscap\Parser\Ini', array('getBrowser'), array(), '', false);
@@ -232,10 +237,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
         $this->object->setParser($parser);
         $result = $this->object->getBrowser('Mozilla/5.0 (compatible; Ask Jeeves/Teoma)');
 
-        self::assertInstanceOf('\stdClass', $result);
-
-        self::assertArrayHasKey('Parent', (array) $result);
-        self::assertArrayHasKey('Comment', (array) $result);
+        self::assertSame($browserObject, $result);
     }
 
     /**
@@ -261,10 +263,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
         $this->object->setParser($parser);
         $result = $this->object->getBrowser('Mozilla/5.0 (compatible; Ask Jeeves/Teoma)');
 
-        self::assertInstanceOf('\stdClass', $result);
-
-        self::assertArrayHasKey('Parent', (array) $result);
-        self::assertArrayHasKey('Comment', (array) $result);
+        self::assertNull($result);
     }
 
     /**

@@ -270,7 +270,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
 
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem'), array(), '', false);
         $adapter
-            ->expects(self::once())
+            ->expects(self::exactly(2))
             ->method('hasItem')
             ->will(self::returnValue(true))
         ;
