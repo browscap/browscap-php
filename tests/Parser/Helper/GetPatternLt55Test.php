@@ -68,6 +68,17 @@ class GetPatternLt55Test extends \PHPUnit_Framework_TestCase
     /**
      *
      */
+    public function testSetGetLogger()
+    {
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+
+        self::assertSame($this->object, $this->object->setLogger($logger));
+        self::assertSame($logger, $this->object->getLogger());
+    }
+
+    /**
+     *
+     */
     public function testGetPatterns()
     {
         $map = array(
@@ -97,6 +108,10 @@ class GetPatternLt55Test extends \PHPUnit_Framework_TestCase
         ;
 
         $this->object->setCache($cache);
+
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $this->object->setLogger($logger);
+
         $result = $this->object->getPatterns('Mozilla/5.0 (compatible; Ask Jeeves/Teoma*)');
 
         self::assertInternalType('array', $result);
