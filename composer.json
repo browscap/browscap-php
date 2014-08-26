@@ -34,11 +34,11 @@
         "mikey179/vfsStream": "1.3.*@dev"
     },
     "require-dev": {
-        "phpunit/phpunit": "*",
-        "browscap/browscap": "*@dev"
+        "phpunit/phpunit": "*"
     },
     "suggest": {
-        "ext-curl": "to use curl requests to get the ini file"
+        "ext-curl": "to use curl requests to get the ini file",
+        "browscap/browscap": "to update the source file without downloading, for PHP 5.4+"
     },
     "autoload": {
         "psr-4": {

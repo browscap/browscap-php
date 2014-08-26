@@ -102,7 +102,7 @@ class ParserCommand extends Command
         $loggerHelper = new LoggerHelper();
         $logger       = $loggerHelper->create($input->getOption('debug'));
 
-        $browscap = new Browscap();
+        $browscap = $this->getBrowscap();
 
         $browscap
             ->setLogger($logger)
@@ -112,5 +112,10 @@ class ParserCommand extends Command
         $result = $browscap->getBrowser($input->getArgument('user-agent'));
 
         $output->writeln(json_encode($result, JSON_PRETTY_PRINT));
+    }
+    
+    private function getBrowscap()
+    {
+        return new Browscap();
     }
 }

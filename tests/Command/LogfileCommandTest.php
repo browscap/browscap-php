@@ -231,11 +231,16 @@ AolVersion=0
             )
         );
 
-        $input  = $this->getMock('\Symfony\Component\Console\Input\ArgvInput', array('getOption'), array(), '', false);
+        $input  = $this->getMock('\Symfony\Component\Console\Input\ArgvInput', array('getOption', 'getArgument'), array(), '', false);
         $input
-            ->expects(self::exactly(3))
+            ->expects(self::exactly(5))
             ->method('getOption')
             ->will(self::returnValueMap($map))
+        ;
+        $input
+            ->expects(self::once())
+            ->method('getArgument')
+            ->will(self::returnValue(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.txt')))
         ;
 
         $output = $this->getMock('\Symfony\Component\Console\Output\ConsoleOutput', array(), array(), '', false);

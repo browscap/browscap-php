@@ -117,7 +117,7 @@ class ConvertCommand extends Command
 
         $logger->info('initializing converting process');
 
-        $browscap = new Browscap();
+        $browscap = $this->getBrowscap();
 
         $browscap
             ->setLogger($logger)
@@ -131,5 +131,10 @@ class ConvertCommand extends Command
         $browscap->convertFile($file, $input->getOption('no-backup'));
 
         $logger->info('finished converting local file');
+    }
+    
+    private function getBrowscap()
+    {
+        return new Browscap();
     }
 }

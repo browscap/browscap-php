@@ -105,7 +105,7 @@ class UpdateCommand extends Command
 
         $logger->info('started updating cache with remote file');
 
-        $browscap = new Browscap();
+        $browscap = $this->getBrowscap();
 
         $browscap
             ->setLogger($logger)
@@ -114,5 +114,10 @@ class UpdateCommand extends Command
         ;
 
         $logger->info('finished updating cache with remote file');
+    }
+    
+    private function getBrowscap()
+    {
+        return new Browscap();
     }
 }

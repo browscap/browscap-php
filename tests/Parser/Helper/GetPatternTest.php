@@ -106,7 +106,7 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
 
         $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array('getItem'), array(), '', false);
         $cache
-            ->expects(self::once())
+            ->expects(self::never())
             ->method('getItem')
             ->will(self::returnValueMap($map))
         ;

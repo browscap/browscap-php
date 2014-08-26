@@ -83,7 +83,7 @@ Crawler=1
 CssVersion=0
 AolVersion=0
 ';
-        self::assertSame('9f682ab8d08d29dcfdf903a551041532', Pattern::getPatternStart($pattern, false));
+        self::assertSame('d41d8cd98f00b204e9800998ecf8427e', Pattern::getPatternStart($pattern, false));
     }
 
     /**
@@ -157,6 +157,7 @@ AolVersion=0
             30 => '81051bcc2cf1bedf378224b0a93e2877',
             31 => 'dcb9be2f604e5df91deb9659bed4748d',
         );
+        $expected = array();
         self::assertSame($expected, Pattern::getPatternStart($pattern, true));
     }
 

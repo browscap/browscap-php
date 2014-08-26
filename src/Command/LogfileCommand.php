@@ -146,7 +146,7 @@ class LogfileCommand extends Command
         $loggerHelper = new LoggerHelper();
         $logger       = $loggerHelper->create($input->getOption('debug'));
 
-        $browscap = new Browscap();
+        $browscap = $this->getBrowscap();
         $loader   = new IniLoader();
 
         $browscap
@@ -326,5 +326,10 @@ class LogfileCommand extends Command
         }
 
         return $path;
+    }
+    
+    private function getBrowscap()
+    {
+        return new Browscap();
     }
 }

@@ -109,7 +109,7 @@ class FetchCommand extends Command
 
         $logger->info('started fetching remote file');
 
-        $browscap = new Browscap();
+        $browscap = $this->getBrowscap();
 
         $browscap
             ->setLogger($logger)
@@ -117,5 +117,10 @@ class FetchCommand extends Command
         ;
 
         $logger->info('finished fetching remote file');
+    }
+    
+    private function getBrowscap()
+    {
+        return new Browscap();
     }
 }
