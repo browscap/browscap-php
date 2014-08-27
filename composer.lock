@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a07bc2e0fe1a8a8a9e6f335af1bef3d7",
+    "hash": "0c172a90a47a8b1f598ca0e543234cd9",
     "packages": [
         {
             "name": "mikey179/vfsStream",
@@ -46,16 +46,16 @@
         },
         {
             "name": "mimmi20/file-loader",
-            "version": "2.0.1",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mimmi20/FileLoader.git",
-                "reference": "b451a72b5c6e74c189213a1e14f9d25dc2ecba60"
+                "reference": "55e558bcd4a28210ac2f7b5bf9ae83326004414b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mimmi20/FileLoader/zipball/b451a72b5c6e74c189213a1e14f9d25dc2ecba60",
-                "reference": "b451a72b5c6e74c189213a1e14f9d25dc2ecba60",
+                "url": "https://api.github.com/repos/mimmi20/FileLoader/zipball/55e558bcd4a28210ac2f7b5bf9ae83326004414b",
+                "reference": "55e558bcd4a28210ac2f7b5bf9ae83326004414b",
                 "shasum": ""
             },
             "require": {
@@ -90,7 +90,7 @@
             ],
             "description": "a class to load remote or local files",
             "homepage": "http://github.com/mimmi20/FileLoader",
-            "time": "2014-08-20 19:10:44"
+            "time": "2014-08-25 19:33:41"
         },
         {
             "name": "mimmi20/wurflcache",
@@ -412,71 +412,6 @@
         }
     ],
     "packages-dev": [
-        {
-            "name": "browscap/browscap",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/browscap/browscap.git",
-                "reference": "df3717a72f1b6282720a7cce07b3abaceee87eaf"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/browscap/browscap/zipball/df3717a72f1b6282720a7cce07b3abaceee87eaf",
-                "reference": "df3717a72f1b6282720a7cce07b3abaceee87eaf",
-                "shasum": ""
-            },
-            "require": {
-                "monolog/monolog": "1.*",
-                "php": ">= 5.4.0",
-                "symfony/console": "2.4.*"
-            },
-            "require-dev": {
-                "browscap/browscap-php": "*@dev",
-                "mikey179/vfsstream": "1.3.*@dev",
-                "phpunit/phpunit": "3.7.*"
-            },
-            "bin": [
-                "bin/browscap"
-            ],
-            "type": "application",
-            "autoload": {
-                "psr-4": {
-                    "Browscap\\": "src/Browscap/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Contributors",
-                    "homepage": "https://github.com/browscap/browscap/graphs/contributors"
-                },
-                {
-                    "name": "James Titcumb",
-                    "email": "james@asgrim.com",
-                    "homepage": "http://www.jamestitcumb.com"
-                },
-                {
-                    "name": "Thomas Müller",
-                    "homepage": "https://github.com/mimmi20",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Joshua Estes",
-                    "email": "f1gm3nt@gmail.com",
-                    "homepage": "http://joshuaestes.me"
-                }
-            ],
-            "description": "Browser Capabilities Tools",
-            "homepage": "https://github.com/browscap/browscap",
-            "keywords": [
-                "Browscap"
-            ],
-            "time": "2014-08-23 13:19:47"
-        },
         {
             "name": "ocramius/instantiator",
             "version": "1.1.3",
@@ -1290,8 +1225,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "mikey179/vfsstream": 20,
-        "browscap/browscap": 20
+        "mikey179/vfsstream": 20
     },
     "prefer-stable": false,
     "platform": {
