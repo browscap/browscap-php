@@ -162,6 +162,6 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->object->addReader($reader);
-        $this->object->test('Test');
+        $this->object->read('Test');
     }
 }
