@@ -115,12 +115,10 @@ class ConverterTest
 
     /**
      * @expectedException \phpbrowscap\Exception\FileNotFoundException
-     * @expectedExceptionMessage testFile
+     * @expectedExceptionMessage File "vfs://storage/test.ini" does not exist
      */
     public function testConvertFile()
     {
-        self::markTestSkipped('browscap not defined in php.ini');
-        
         $content   = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]
@@ -232,7 +230,7 @@ AolVersion=0
         );
 
         $this->root = vfsStream::setup(self::STORAGE_DIR, null, $structure);
-var_dump($this->root);
+
         $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array('exists'), array(), '', false);
         $file->expects(self::once())
             ->method('exists')
@@ -245,9 +243,7 @@ var_dump($this->root);
 
         $this->object->setFilesystem($file);
         $this->object->setLogger($logger);
-        self::assertNull(
-            $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.ini'))
-        );
+        $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.ini'));
     }
 
     /**

@@ -350,7 +350,7 @@ class Browscap
         $this->getLogger()->debug('finished fetching remote file');
         $this->getLogger()->debug('started storing remote file into local file');
 
-        $fs = new Filesystem();
+        $fs = new \phpbrowscap\Helper\Filesystem();
         $fs->dumpFile($file, $content);
 
         $this->getLogger()->debug('finished storing remote file into local file');

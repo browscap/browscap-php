@@ -37,7 +37,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use phpbrowscap\Exception\InvalidArgumentException;
@@ -213,8 +212,15 @@ class LogfileCommand extends Command
             $output->writeln('');
         }
 
-        $fs = new Filesystem();
-        $fs->dumpFile($input->getArgument('output'), join(PHP_EOL, array_unique($this->undefinedClients)));
+        $fs         = new \phpbrowscap\Helper\Filesystem();
+        $content    = implode(PHP_EOL, array_unique($this->undefinedClients));
+        $outputFile = $input->getArgument('output');
+        
+        try {
+            $fs->dumpFile($outputFile, $content);
+        } catch (\Symfony\Component\Filesystem\Exception\IOException $e) {
+            throw new \UnexpectedValueException('writing to file "' . $outputFile . '" failed', 0, $e);
+        }
     }
 
     /**
