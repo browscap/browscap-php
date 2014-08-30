@@ -373,7 +373,7 @@ class Converter
                     array_slice($tmpPatterns, ($i * $this->joinPatterns), $this->joinPatterns)
                 );
 
-                $tmpSubkey       = Pattern::getPatternCacheSubkey($tmpStart);
+                $tmpSubkey = Pattern::getPatternCacheSubkey($tmpStart);
 
                 if (!isset($contents[$tmpSubkey])) {
                     $contents[$tmpSubkey] = array();
