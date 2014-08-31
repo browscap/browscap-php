@@ -40,7 +40,7 @@ use phpbrowscap\Cache\BrowscapCache;
 class GetPatternLt55Test extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Browscap\Parser\Helper\GetPatternLt55
+     * @var \phpbrowscap\Parser\Helper\GetPatternLt55
      */
     private $object = null;
 
@@ -102,7 +102,7 @@ class GetPatternLt55Test extends \PHPUnit_Framework_TestCase
 
         $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array('getItem'), array(), '', false);
         $cache
-            ->expects(self::exactly(12))
+            ->expects(self::once())
             ->method('getItem')
             ->will(self::returnValueMap($map))
         ;

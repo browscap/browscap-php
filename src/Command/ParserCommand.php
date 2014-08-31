@@ -111,9 +111,14 @@ class ParserCommand extends Command
 
         $result = $browscap->getBrowser($input->getArgument('user-agent'));
 
+        if (!defined('JSON_PRETTY_PRINT')) {
+            // not defined in PHP 5.3
+            define('JSON_PRETTY_PRINT', 128);
+        }
+
         $output->writeln(json_encode($result, JSON_PRETTY_PRINT));
     }
-    
+
     private function getBrowscap()
     {
         return new Browscap();
