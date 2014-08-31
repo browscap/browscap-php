@@ -31,12 +31,14 @@
 namespace phpbrowscap\Command;
 
 use phpbrowscap\Browscap;
+use phpbrowscap\Helper\Filesystem;
 use phpbrowscap\Util\Logfile\ReaderCollection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use phpbrowscap\Exception\InvalidArgumentException;
@@ -133,6 +135,7 @@ class LogfileCommand extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
+     * @throws \UnexpectedValueException
      * @throws \phpbrowscap\Exception\InvalidArgumentException
      * @return int|null|void
      */
@@ -212,20 +215,26 @@ class LogfileCommand extends Command
             $output->writeln('');
         }
 
-        $fs         = new \phpbrowscap\Helper\Filesystem();
+        $fs         = new Filesystem();
         $content    = implode(PHP_EOL, array_unique($this->undefinedClients));
         $outputFile = $input->getArgument('output');
-        
+
         try {
             $fs->dumpFile($outputFile, $content);
-        } catch (\Symfony\Component\Filesystem\Exception\IOException $e) {
+        } catch (IOException $e) {
             throw new \UnexpectedValueException('writing to file "' . $outputFile . '" failed', 0, $e);
         }
     }
 
     /**
-     * @param integer $count
-     * @param integer $totalCount
+     * @param \phpbrowscap\Util\Logfile\ReaderCollection        $collection
+     * @param \phpbrowscap\Browscap                             $browscap
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param integer                                           $line
+     * @param integer                                           $count
+     * @param integer                                           $totalCount
+     *
+     * @return int
      */
     private function handleLine(ReaderCollection $collection, Browscap $browscap, OutputInterface $output, $line, $count, $totalCount)
     {
@@ -333,7 +342,7 @@ class LogfileCommand extends Command
 
         return $path;
     }
-    
+
     private function getBrowscap()
     {
         return new Browscap();

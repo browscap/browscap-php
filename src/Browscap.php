@@ -31,13 +31,13 @@ namespace phpbrowscap;
 
 use phpbrowscap\Helper\Converter;
 use phpbrowscap\Cache\BrowscapCache;
+use phpbrowscap\Helper\Filesystem;
 use WurflCache\Adapter\File;
 use WurflCache\Adapter\AdapterInterface;
 use phpbrowscap\Helper\IniLoader;
 use phpbrowscap\Exception\FetcherException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -350,7 +350,7 @@ class Browscap
         $this->getLogger()->debug('finished fetching remote file');
         $this->getLogger()->debug('started storing remote file into local file');
 
-        $fs = new \phpbrowscap\Helper\Filesystem();
+        $fs = new Filesystem();
         $fs->dumpFile($file, $content);
 
         $this->getLogger()->debug('finished storing remote file into local file');
