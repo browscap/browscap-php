@@ -40,7 +40,7 @@ use phpbrowscap\Cache\BrowscapCache;
 class GetPatternTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Browscap\Parser\Helper\GetPattern
+     * @var \phpbrowscap\Parser\Helper\GetPattern
      */
     private $object = null;
 
