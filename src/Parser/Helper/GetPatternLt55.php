@@ -113,36 +113,49 @@ class GetPatternLt55 implements GetPatternInterface
      * - We compare the length of the pattern with the length of the user agent
      *   (the pattern cannot be longer than the user agent!)
      *
+     * @param string $userAgent
+     *
      * @return array
      */
-    public function getPatterns()
+    public function getPatterns($userAgent)
     {
-        $success = null;
-        $count   = $this->getCache()->getItem('browscap.patterns.count', true, $success);
+        $starts = Pattern::getPatternStart($userAgent, true);
+        $length = strlen($userAgent);
 
-        if (!$success) {
-            $this->getLogger()->debug('cache key "browscap.patterns.count" not found');
-            return array();
-        }
+        // add special key to fall back to the default browser
+        $starts[] = str_repeat('z', 32);
 
-        $keyLength  = strlen((string) $count);
+        // get patterns, first for the given browser and if that is not found,
+        // for the default browser (with a special key)
         $patternarr = array();
+        foreach ($starts as $tmpStart) {
+            $tmpSubkey = Pattern::getPatternCacheSubkey($tmpStart);
+            $success   = null;
 
-        for ($index = 0; $index <= $count; $index++) {
-            $success = null;
-            $key     = str_pad($index, $keyLength, '0', STR_PAD_LEFT);
-
-            $this->getLogger()->debug('search key "browscap.patterns.' . $key . '"');
-
-            $file = $this->getCache()->getItem('browscap.patterns.' . $key, true, $success);
+            $file = $this->getCache()->getItem('browscap.patterns.' . $tmpSubkey, true, $success);
 
             if (!$success) {
-                $this->getLogger()->info('cache key "browscap.patterns.' . $key . '" not found');
+                $this->getLogger()->debug('cache key "browscap.patterns.' . $tmpSubkey . '" not found');
                 continue;
             }
 
+            $found = false;
+
             foreach ($file as $buffer) {
-                $patternarr[] = trim($buffer);
+                $tmpBuffer = substr($buffer, 0, 32);
+                if ($tmpBuffer === $tmpStart) {
+                    // get length of the pattern
+                    $len = (int)strstr(substr($buffer, 33, 4), ' ', true);
+
+                    // the user agent must be longer than the pattern without place holders
+                    if ($len <= $length) {
+                        list(,$patterns) = explode(' ', $buffer, 2);
+                        $patternarr[] = trim($patterns);
+                    }
+                    $found = true;
+                } elseif ($found === true) {
+                    break;
+                }
             }
         }
 
