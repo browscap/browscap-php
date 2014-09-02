@@ -328,8 +328,6 @@ class Converter
      */
     private function createPatterns($content)
     {
-        $matches = array();
-
         // get all relevant patterns from the INI file
         // - containing "*" or "?"
         // - not containing "*" or "?", but not having a comment
@@ -339,7 +337,27 @@ class Converter
             return false;
         }
 
-        $data = $matches[0];
+        // build an array to structure the data. this requires some memory, but we need this step to be able to
+        // sort the data in the way we need it (see below).
+        $data = array();
+
+        foreach ($matches[0] as $match) {
+            //var_dump($match);
+            // get the first characters for a fast search
+            $tmpStart  = Pattern::getPatternStart($match);
+            $tmpLength = Pattern::getPatternLength($match);
+
+            // special handling of default entry
+            if ($tmpLength === 0) {
+                $tmpStart = str_repeat('z', 32);
+            }
+
+            if (!isset($data[$tmpStart])) {
+                $data[$tmpStart] = array();
+            }
+            $data[$tmpStart][] = $match;
+        }
+
         unset($matches);
 
         // write optimized file (grouped by the first character of the has, generated from the pattern
@@ -348,13 +366,21 @@ class Converter
         // us to search for multiple patterns in one preg_match call for a fast first search
         // (3-10 faster), followed by a detailed search for each single pattern.
         $contents = array();
-        for ($i = 0, $j = ceil(count($data) / $this->joinPatterns); $i < $j; $i++) {
-            $tmpJoinPatterns = implode(
-                "\t",
-                array_slice($data, ($i * $this->joinPatterns), $this->joinPatterns)
-            );
+        foreach ($data as $tmpStart => $tmpPatterns) {
+            for ($i = 0, $j = ceil(count($tmpPatterns) / $this->joinPatterns); $i < $j; $i++) {
+                $tmpJoinPatterns = implode(
+                    "\t",
+                    array_slice($tmpPatterns, ($i * $this->joinPatterns), $this->joinPatterns)
+                );
 
-            $contents[] = $tmpJoinPatterns;
+                $tmpSubkey = Pattern::getPatternCacheSubkey($tmpStart);
+
+                if (!isset($contents[$tmpSubkey])) {
+                    $contents[$tmpSubkey] = array();
+                }
+
+                $contents[$tmpSubkey][] = $tmpStart . ' ' . $tmpJoinPatterns;
+            }
         }
 
         unset($data);
@@ -362,14 +388,15 @@ class Converter
         // write cache files. important: also write empty cache files for
         // unused patterns, so that the regeneration is not unnecessarily
         // triggered by the getPatterns() method.
-        $maxKey    = max(array_keys($contents));
-        $keyLength = strlen((string) $maxKey);
-
-        foreach ($contents as $id => $content) {
-            $this->cache->setItem('browscap.patterns.' . str_pad($id, $keyLength, '0', STR_PAD_LEFT), $contents, true);
+        $subkeys = array_flip(Pattern::getAllPatternCacheSubkeys());
+        foreach ($contents as $subkey => $content) {
+            $this->cache->setItem('browscap.patterns.' . $subkey, $content, true);
+            unset($subkeys[$subkey]);
         }
 
-        $this->cache->setItem('browscap.patterns.count', $maxKey, true);
+        foreach (array_keys($subkeys) as $subkey) {
+            $this->getCache()->setItem('browscap.patterns.' . $subkey, '', true);
+        }
 
         return true;
     }

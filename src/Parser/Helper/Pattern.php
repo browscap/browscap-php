@@ -90,15 +90,22 @@ class Pattern
     public static function getPatternStart($pattern, $variants = false)
     {
         $string = preg_replace('/^([^\*\?\s]*)[\*\?\s].*$/', '\\1', substr($pattern, 0, 32));
+
         if (true === $variants) {
-            $pattern_starts = array();
+            $patternStarts = array();
+
             for ($i = strlen($string); $i >= 1; $i--) {
-                $pattern_starts[] = md5(substr($string, 0, $i));
+                $patternStarts[] = md5(substr($string, 0, $i));
             }
-            return $pattern_starts;
-        } else {
-            return md5($string);
+
+            // Add empty pattern start to include patterns that start with "*",
+            // e.g. "*FAST Enterprise Crawler*"
+            $patternStarts[] = md5('');
+
+            return $patternStarts;
         }
+
+        return md5($string);
     }
 
     /**
