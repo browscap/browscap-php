@@ -30,11 +30,11 @@
         "symfony/filesystem": "*",
         "symfony/finder": "2.4.*",
         "symfony/console": "2.4.*",
-        "monolog/monolog": "1.*",
-        "mikey179/vfsStream": "dev-master"
+        "monolog/monolog": "1.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "*",
+        "mikey179/vfsStream": "dev-master"
     },
     "suggest": {
         "ext-curl": "to use curl requests to get the ini file",
