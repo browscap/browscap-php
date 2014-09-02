@@ -156,6 +156,7 @@ AolVersion=0
             29 => '95dd19e22eecd28e59bfb997142aca0c',
             30 => '81051bcc2cf1bedf378224b0a93e2877',
             31 => 'dcb9be2f604e5df91deb9659bed4748d',
+            32 => 'd41d8cd98f00b204e9800998ecf8427e',
         );
         
         self::assertSame($expected, Pattern::getPatternStart($pattern, true));
