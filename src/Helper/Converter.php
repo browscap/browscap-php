@@ -366,7 +366,7 @@ class Converter
         $keyLength = strlen((string) $maxKey);
 
         foreach ($contents as $id => $content) {
-            $this->cache->setItem('browscap.patterns.' . str_pad($id, $keyLength, '0', STR_PAD_LEFT), $content, true);
+            $this->cache->setItem('browscap.patterns.' . str_pad($id, $keyLength, '0', STR_PAD_LEFT), $contents, true);
         }
 
         $this->cache->setItem('browscap.patterns.count', $maxKey, true);

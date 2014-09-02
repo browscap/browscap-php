@@ -39,14 +39,8 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
     public static function setUpBeforeClass()
     {
         self::markTestSkipped('not ready');
-        $objectIniPath = ini_get('browscap');
 
-        if (!is_file($objectIniPath)) {
-            self::markTestSkipped('browscap property not defined in php.ini');
-        }
-        
         if (class_exists('\Browscap\Browscap')) {
-
             // First, generate the INI files
             $resourceFolder = __DIR__ . '/../vendor/browscap/browscap/resources';
 
