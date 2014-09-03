@@ -181,15 +181,14 @@ class Ini implements ParserInterface
         $quoterHelper = new Quoter();
 
         foreach ($this->getHelper()->getPatterns($user_agent) as $patterns) {
-            if (preg_match('/^(?:' . str_replace("\t", ')|(?:', $quoterHelper->pregQuote($patterns)) . ')$/', $user_agent)) {
+            if (preg_match('/^(?:' . str_replace("\t", ')|(?:', $quoterHelper->pregQuote($patterns)) . ')$/i', $user_agent)) {
                 // strtok() requires less memory than explode()
                 $pattern = strtok($patterns, "\t");
 
                 while ($pattern !== false) {
-                    $this->getLogger()->debug('1:' . $pattern);
-                    $this->getLogger()->debug('2:' . '/^' . $quoterHelper->pregQuote($pattern, '/') . '$/');
+                    $quotedPattern = '/^' . $quoterHelper->pregQuote($pattern, '/') . '$/i';
 
-                    if (preg_match('/^' . $quoterHelper->pregQuote($pattern, '/') . '$/', $user_agent)) {
+                    if (preg_match($quotedPattern, $user_agent)) {
                         $formatter = $this->getFormatter();
                         $formatter->setData($this->getSettings($pattern));
                         break 2;
@@ -260,7 +259,7 @@ class Ini implements ParserInterface
 
         $success = null;
         $file    = $this->getCache()->getItem('browscap.iniparts.' . $subkey, true, $success);
-        
+
         if (!$success) {
             return array();
         }
@@ -269,14 +268,14 @@ class Ini implements ParserInterface
         foreach ($file as $buffer) {
             if (substr($buffer, 0, 32) === $patternhash) {
                 $return = json_decode(substr($buffer, 32), true);
-                
+
                 foreach (array_keys($return) as $property) {
                     $return[$property] = $this->formatPropertyValue(
                         $return[$property],
                         $property
                     );
                 }
-                
+
                 break;
             }
         }
