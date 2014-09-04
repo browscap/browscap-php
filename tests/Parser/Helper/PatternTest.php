@@ -51,8 +51,7 @@ class PatternTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetPatternStartWithoutVariants()
     {
-        $pattern = '
-[Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)]
+        $pattern = '[Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)]
 
 Parent=Ask
 Browser=Teoma
@@ -83,7 +82,7 @@ Crawler=1
 CssVersion=0
 AolVersion=0
 ';
-        self::assertSame('9f682ab8d08d29dcfdf903a551041532', Pattern::getPatternStart($pattern, false));
+        self::assertSame('235cb78c730de50ce5ba6a0c1784b16b', Pattern::getPatternStart($pattern, false));
     }
 
     /**
@@ -91,8 +90,7 @@ AolVersion=0
      */
     public function testGetPatternStartWithVariants()
     {
-        $pattern = '
-[Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)]
+        $pattern = '[Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)]
 
 Parent=Ask
 Browser=Teoma
@@ -124,39 +122,16 @@ CssVersion=0
 AolVersion=0
 ';
         $expected = array(
-            0 => '9f682ab8d08d29dcfdf903a551041532',
-            1 => '61eb5b9b5c3640831a939f1505172d99',
-            2 => '56be64f42fc5a64043d50b644bfbe8e4',
-            3 => 'a17e2d50e840101cdef9513380e58eb0',
-            4 => '102babdb315f476a94926677ee75bc33',
-            5 => '7bc6b077149128faa5f60505ddf66d8b',
-            6 => '207725bbff292458dc1f27e6380612fb',
-            7 => 'cf25ada4ee8c919c1071425479828203',
-            8 => '0f5968938d2fc124104f26d532ab2d2f',
-            9 => '0bb89e443bf4c740849694c366053cc7',
-            10 => 'cf76182e25e0f305059ad0fa5c1f2903',
-            11 => '8343f8c706352e84b1c4cc3d965504b3',
-            12 => 'bcd30809b0c5f5a6639e00f99b76bcc3',
-            13 => '4a3d660c83be161e246e81b6a6f0e759',
-            14 => '61e36827a465361f623252fa60fc99db',
-            15 => 'ccbb20a39f769b076d0805e6de6f11dc',
-            16 => 'e8f791e6dfaae20752deb76914987d23',
-            17 => '9ab0469979ef2ad462a9c631f7bee57b',
-            18 => '0d77ae958ea79ceafd3b6325cead40e8',
-            19 => 'dcf79d48fe1c9598195420085aef8d42',
-            20 => 'e444c37c98d06c78a9bc2bec775dfb83',
-            21 => '5d2a30213544008af9f5619c817cb951',
-            22 => '0b150dcec87b82e86c490e153307b609',
-            23 => 'e1ac479bafd3b110495c5d7a7b18f345',
-            24 => 'fe5d28debaffe4832cdc2b97693b7b3c',
-            25 => 'e7d2873468242b93c68aae3fa964b0a3',
-            26 => '1c4a35525b18fb4e85f9a10a2daee756',
-            27 => 'afb0c413d29e59f172554e1fa13f8d73',
-            28 => 'e7508ba7ac4f76500744676ac508db24',
-            29 => '95dd19e22eecd28e59bfb997142aca0c',
-            30 => '81051bcc2cf1bedf378224b0a93e2877',
-            31 => 'dcb9be2f604e5df91deb9659bed4748d',
-            32 => 'd41d8cd98f00b204e9800998ecf8427e',
+            0 => '235cb78c730de50ce5ba6a0c1784b16b',
+            1 => 'da1cf5a1bb225ddb155d34f2b0e24a2f',
+            2 => '8a8cb4370f287109b2b04f733c9e0be8',
+            3 => '31a3f71a58d7463916e992fe2e5e0636',
+            4 => 'b15bdb2762b5359a3bcf114bf259dc4d',
+            5 => '5e2a51bcd4ab81cc553588b044da6d1b',
+            6 => '7d31a9d8363d6bc4d7d171bd9c0f032c',
+            7 => 'ca66a7b1eb8df6a16330c46e4dee233b',
+            8 => '815417267f76f6f460a4a61f9db75fdb',
+            9 => 'd41d8cd98f00b204e9800998ecf8427e',
         );
         
         self::assertSame($expected, Pattern::getPatternStart($pattern, true));

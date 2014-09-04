@@ -89,7 +89,14 @@ class Pattern
      */
     public static function getPatternStart($pattern, $variants = false)
     {
-        $string = preg_replace('/^([^\*\?\s]*)[\*\?\s].*$/', '\\1', substr($pattern, 0, 32));
+        $regex   = '/^([^\*\?\s\r\n]*)[\*\?\s].*$/';
+        $pattern = substr($pattern, 0, 32);
+        
+        if (!preg_match($regex, $pattern)) {
+            return ($variants ? array(md5('')) : md5(''));
+        }
+        
+        $string = preg_replace($regex, '\\1', $pattern);
 
         if (true === $variants) {
             $patternStarts = array();
