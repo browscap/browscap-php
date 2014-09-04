@@ -31,7 +31,6 @@
 namespace phpbrowscap\Helper;
 
 use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Filesystem\Filesystem as BaseFilesystem;
 
 /**
@@ -46,7 +45,7 @@ class Filesystem extends BaseFilesystem
      *
      * @param  string       $filename The file to be written to.
      * @param  string       $content  The data to write into the file.
-     * @param  null|int     $mode     The file mode (octal). If null, file permissions are not modified
+     * @param  integer     $mode     The file mode (octal). If null, file permissions are not modified
      *                                Deprecated since version 2.3.12, to be removed in 3.0.
      * @throws IOException            If the file cannot be written to.
      */
@@ -71,10 +70,10 @@ class Filesystem extends BaseFilesystem
             $this->rename($tmpFile, $filename, true);
         } catch (IOException $e) {
             unlink($tmpFile);
-            
+
             throw $e;
         }
-        
+
         if (null !== $mode) {
             $this->chmod($filename, $mode);
         }

@@ -39,12 +39,12 @@ use phpbrowscap\Util\Logfile\ReaderFactory;
 class ReaderFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * 
+     *
      */
     public function testFactoryFails()
     {
         $collection = ReaderFactory::factory('test');
-        
+
         self::assertInstanceOf('\phpbrowscap\Util\Logfile\ReaderCollection', $collection);
     }
 }

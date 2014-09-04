@@ -104,7 +104,7 @@ class UpdateCommandTest extends \PHPUnit_Framework_TestCase
     public function testExecute()
     {
         self::markTestSkipped('not ready yet');
-        
+
         $input  = $this->getMock('\Symfony\Component\Console\Input\ArgvInput', array(), array(), '', false);
         $output = $this->getMock('\Symfony\Component\Console\Output\ConsoleOutput', array(), array(), '', false);
 

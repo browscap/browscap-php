@@ -279,7 +279,7 @@ class IniLoader
      * Gets the remote file update timestamp
      *
      * @throws \phpbrowscap\Helper\Exception
-     * @return string the remote modification timestamp
+     * @return integer the remote modification timestamp
      */
     public function getMTime()
     {

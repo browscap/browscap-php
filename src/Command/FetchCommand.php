@@ -118,7 +118,7 @@ class FetchCommand extends Command
 
         $logger->info('finished fetching remote file');
     }
-    
+
     private function getBrowscap()
     {
         return new Browscap();
