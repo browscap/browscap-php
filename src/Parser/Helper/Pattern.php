@@ -91,11 +91,11 @@ class Pattern
     {
         $regex   = '/^([^\*\?\s\r\n]*)[\*\?\s].*$/';
         $pattern = substr($pattern, 0, 32);
-        
+
         if (!preg_match($regex, $pattern)) {
             return ($variants ? array(md5('')) : md5(''));
         }
-        
+
         $string = preg_replace($regex, '\\1', $pattern);
 
         if (true === $variants) {

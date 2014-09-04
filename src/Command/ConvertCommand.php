@@ -132,7 +132,7 @@ class ConvertCommand extends Command
 
         $logger->info('finished converting local file');
     }
-    
+
     private function getBrowscap()
     {
         return new Browscap();
