@@ -133,7 +133,7 @@ AolVersion=0
             8 => '815417267f76f6f460a4a61f9db75fdb',
             9 => 'd41d8cd98f00b204e9800998ecf8427e',
         );
-        
+
         self::assertSame($expected, Pattern::getPatternStart($pattern, true));
     }
 
