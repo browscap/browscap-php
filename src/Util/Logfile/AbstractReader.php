@@ -81,6 +81,8 @@ abstract class AbstractReader implements ReaderInterface
      */
     protected function match($line)
     {
+        $matches = array();
+
         if (preg_match($this->getRegex(), $line, $matches)) {
             return $matches;
         }

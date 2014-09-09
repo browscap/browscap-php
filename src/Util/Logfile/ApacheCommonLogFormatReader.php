@@ -48,26 +48,24 @@ class ApacheCommonLogFormatReader extends AbstractReader
      */
     protected function getRegex()
     {
-        return '@^
-            (?:\S+)                                                 # IP
-            \s+
-            (?:\S+)
-            \s+
-            (?:\S+)
-            \s+
-            \[(?:[^:]+):(?:\d+:\d+:\d+) \s+ (?:[^\]]+)\]            # Date/time
-            \s+
-            \"(?:\S+)\s(?:.*?)                                      # Verb
-            \s+
-            (?:\S+)\"                                               # Path
-            \s+
-            (?:\S+)                                                 # Response
-            \s+
-            (?:\S+)                                                 # Length
-            \s+
-            (?:\".*?\")                                             # Referrer
-            \s+
-            \"(?P<userAgentString>.*?)\"                            # User Agent
-        $@x';
+        return '/^'
+            . '(\S+)'                                                 # remote host (IP)
+            . '\s+'
+            . '(\S+)'                                                 # remote logname
+            . '\s+'
+            . '(\S+)'                                                 # remote user
+            . '.*'
+            . '\[([^]]+)\]'                                           # date/time
+            . '[^"]+'
+            . '\"(.*)\"'                                              # Verb(GET|POST|HEAD) Path HTTP Version
+            . '\s+'
+            . '(.*)'                                                  # Status
+            . '\s+'
+            . '(.*)'                                                  # Length (include Header)
+            . '[^"]+'
+            . '\"(.*)\"'                                              # Referrer
+            . '[^"]+'
+            . '\"(?P<userAgentString>.+?)\".*'                        # User Agent
+            . '$/x';
     }
 }

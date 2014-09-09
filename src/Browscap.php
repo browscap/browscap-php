@@ -36,6 +36,7 @@ use WurflCache\Adapter\File;
 use WurflCache\Adapter\AdapterInterface;
 use phpbrowscap\Helper\IniLoader;
 use phpbrowscap\Exception\FetcherException;
+use Browscap\Generator\BuildFullFileOnlyGenerator;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -368,16 +369,7 @@ class Browscap
      */
     public function update($remoteFile = IniLoader::PHP_INI)
     {
-        $loader = new IniLoader();
-        $loader
-            ->setRemoteFilename($remoteFile)
-            ->setOptions($this->options)
-            ->setLogger($this->getLogger())
-        ;
-
         $this->getLogger()->debug('started fetching remote file');
-
-        $internalLoader = $loader->getLoader();
 
         $converter = new Converter();
 
@@ -385,32 +377,67 @@ class Browscap
             ->setLogger($this->getLogger())
             ->setCache($this->getCache())
         ;
-
-        $cachedVersion = $this->getCache()->getItem('browscap.version', false);
-        $cachedTime    = $this->getCache()->getItem('browscap.time', false);
-        $remoteTime    = $loader->getMTime();
-
-        if ($remoteTime <= $cachedTime) {
-            // no newer version available
-            return;
-        }
-
-        $content = $loader->load();
-
-        if ($content === false) {
-            $error = error_get_last();
-            throw FetcherException::httpError($internalLoader->getUri(), $error['message']);
-        }
-
-        $this->getLogger()->debug('finished fetching remote file');
-
-        $iniVersion = $converter->getIniVersion($content);
-
-        if ($iniVersion > $cachedVersion) {
-            $converter
-                ->storeVersion()
-                ->convertString($content)
+        
+        if (class_exists('\Browscap\Browscap')) {
+            $resourceFolder = 'vendor/browscap/browscap/resources/';
+            
+            $buildNumber = (int) file_get_contents('vendor/browscap/browscap/BUILD_NUMBER');
+            
+            $buildFolder = 'resources/browscap-ua-test-' . $buildNumber;
+            $iniFile     = $buildFolder . '/full_php_browscap.ini';
+            
+            mkdir($buildFolder, 0777, true);
+            
+            $builder = new BuildFullFileOnlyGenerator($resourceFolder, $buildFolder);
+            $builder
+                ->setLogger($this->getLogger())
+                ->run($buildNumber, $iniFile)
             ;
+            
+            $converter
+                ->setVersion($buildNumber)
+                ->storeVersion()
+                ->convertFile($iniFile)
+            ;
+            
+            unlink($iniFile);
+            rmdir($buildFolder);
+        } else {
+            $loader = new IniLoader();
+            $loader
+                ->setRemoteFilename($remoteFile)
+                ->setOptions($this->options)
+                ->setLogger($this->getLogger())
+            ;
+            
+            $internalLoader = $loader->getLoader();
+            
+            $cachedVersion = $this->getCache()->getItem('browscap.version', false);
+            $cachedTime    = $this->getCache()->getItem('browscap.time', false);
+            $remoteTime    = $loader->getMTime();
+            
+            if ($remoteTime <= $cachedTime) {
+                // no newer version available
+                return;
+            }
+            
+            $content = $loader->load();
+            
+            if ($content === false) {
+                $error = error_get_last();
+                throw FetcherException::httpError($internalLoader->getUri(), $error['message']);
+            }
+            
+            $this->getLogger()->debug('finished fetching remote file');
+            
+            $iniVersion = $converter->getIniVersion($content);
+            
+            if ($iniVersion > $cachedVersion) {
+                $converter
+                    ->storeVersion()
+                    ->convertString($content)
+                ;
+            }
         }
     }
 }

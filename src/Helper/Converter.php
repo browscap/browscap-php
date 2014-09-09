@@ -233,6 +233,20 @@ class Converter
 
         return $this->iniVersion;
     }
+    
+    /**
+     * sets the version
+     * 
+     * @param int $version
+     *
+     * @return \phpbrowscap\Helper\Converter
+     */
+    public function setVersion($version)
+    {
+        $this->iniVersion = $version;
+        
+        return $this;
+    }
 
     /**
      * stores the version of the ini file into cache

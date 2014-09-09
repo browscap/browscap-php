@@ -72,6 +72,8 @@ class LogfileCommand extends Command
      */
     private $undefinedClients = array();
 
+    private $uas = array();
+
     /**
      * @param \phpbrowscap\Cache\BrowscapCache $cache
      */
@@ -158,7 +160,8 @@ class LogfileCommand extends Command
 
         /** @var $file \Symfony\Component\Finder\SplFileInfo */
         foreach ($this->getFiles($input) as $file) {
-            $path  = $this->getPath($file);
+            $this->uas = array();
+            $path      = $this->getPath($file);
 
             $loader->setLocalFile($path);
             $internalLoader = $loader->getLoader();
@@ -212,12 +215,28 @@ class LogfileCommand extends Command
                 }
             }
             $this->outputProgress($output, '', $count - 1, $totalCount, true);
-            $output->writeln('');
+
+            asort($this->uas, SORT_NUMERIC);
+
+            foreach ($this->uas as $agentOfLine => $count) {
+                $sql = "INSERT INTO `agents` (`agent`, `count`) VALUES ('" . addslashes($agentOfLine) . "', " . addslashes($count) . ") ON DUPLICATE KEY UPDATE `count`=`count`+" . addslashes($count) . ";\n";
+                file_put_contents($input->getArgument('output') . '/output.sql', $sql, FILE_APPEND | LOCK_EX);
+            }
+
+            $fs         = new Filesystem();
+            $content    = implode(PHP_EOL, array_unique($this->undefinedClients));
+            $outputFile = $input->getArgument('output') . '/output.txt';
+
+            try {
+                $fs->dumpFile($outputFile, $content);
+            } catch (IOException $e) {
+                // do nothing
+            }
         }
 
         $fs         = new Filesystem();
         $content    = implode(PHP_EOL, array_unique($this->undefinedClients));
-        $outputFile = $input->getArgument('output');
+        $outputFile = $input->getArgument('output') . '/output.txt';
 
         try {
             $fs->dumpFile($outputFile, $content);
@@ -244,7 +263,14 @@ class LogfileCommand extends Command
             return $this->outputProgress($output, 'E', $count, $totalCount);
         }
 
-        $result = $this->getResult($browscap->getBrowser($userAgentString));
+        if (isset($this->uas[$userAgentString])) {
+            $this->uas[$userAgentString]++;
+        } else {
+            $this->uas[$userAgentString] = 1;
+        }
+
+        $browserResult = $browscap->getBrowser($userAgentString);
+        $result        = $this->getResult($browserResult);
 
         if ($result !== '.') {
             $this->undefinedClients[] = $userAgentString;
@@ -264,9 +290,11 @@ class LogfileCommand extends Command
      */
     private function outputProgress(OutputInterface $output, $result, $count, $totalCount, $end = false)
     {
-        if (($count % 70) === 0 || $end) {
+        $rowLength = max(100, exec('tput cols') - 30);
+
+        if (($count % $rowLength) === 0 || $end) {
             $formatString = '%s  %' . strlen($totalCount) . 'd / %-' . strlen($totalCount) . 'd (%3d%%)';
-            $result = $end ? str_repeat(' ', 70 - ($count % 70)) : $result;
+            $result = $end ? str_repeat(' ', $rowLength - ($count % $rowLength)) : $result;
             $output->writeln(sprintf($formatString, $result, $count, $totalCount, $count / $totalCount * 100));
         } else {
             $output->write($result);
@@ -290,6 +318,8 @@ class LogfileCommand extends Command
             return 'P';
         } elseif ($result->device_type === 'unknown') {
             return 'D';
+        } elseif ($result->renderingengine_name === 'unknown') {
+            return 'N';
         }
 
         return '.';
