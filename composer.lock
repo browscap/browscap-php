@@ -223,17 +223,17 @@
         },
         {
             "name": "symfony/console",
-            "version": "v2.4.9",
+            "version": "v2.4.10",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "6cdbe19f8f9025a84ccc45c3870e388e424bea5c"
+                "reference": "39dd1c85ffdfc3c5fb008019dd027af05f64ec36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/6cdbe19f8f9025a84ccc45c3870e388e424bea5c",
-                "reference": "6cdbe19f8f9025a84ccc45c3870e388e424bea5c",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/39dd1c85ffdfc3c5fb008019dd027af05f64ec36",
+                "reference": "39dd1c85ffdfc3c5fb008019dd027af05f64ec36",
                 "shasum": ""
             },
             "require": {
@@ -272,21 +272,21 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2014-08-14 14:51:32"
+            "time": "2014-09-22 08:51:05"
         },
         {
             "name": "symfony/filesystem",
-            "version": "v2.5.4",
+            "version": "v2.5.5",
             "target-dir": "Symfony/Component/Filesystem",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Filesystem.git",
-                "reference": "a765efd199e02ff4001c115c318e219030be9364"
+                "reference": "4e62fab0060a826561c78b665925b37c870c45f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/a765efd199e02ff4001c115c318e219030be9364",
-                "reference": "a765efd199e02ff4001c115c318e219030be9364",
+                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/4e62fab0060a826561c78b665925b37c870c45f5",
+                "reference": "4e62fab0060a826561c78b665925b37c870c45f5",
                 "shasum": ""
             },
             "require": {
@@ -319,21 +319,21 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "http://symfony.com",
-            "time": "2014-09-03 09:00:14"
+            "time": "2014-09-22 09:14:18"
         },
         {
             "name": "symfony/finder",
-            "version": "v2.4.9",
+            "version": "v2.4.10",
             "target-dir": "Symfony/Component/Finder",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Finder.git",
-                "reference": "9f4151230ad2aa56b667279d10f7a9d4617cc567"
+                "reference": "cd03920154bc6669f64fbabb803d24cc8629964c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/9f4151230ad2aa56b667279d10f7a9d4617cc567",
-                "reference": "9f4151230ad2aa56b667279d10f7a9d4617cc567",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/cd03920154bc6669f64fbabb803d24cc8629964c",
+                "reference": "cd03920154bc6669f64fbabb803d24cc8629964c",
                 "shasum": ""
             },
             "require": {
@@ -366,7 +366,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "http://symfony.com",
-            "time": "2014-09-03 08:42:07"
+            "time": "2014-09-27 08:35:25"
         }
     ],
     "packages-dev": [
@@ -376,12 +376,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mikey179/vfsStream.git",
-                "reference": "eeea14e2de0b164b6a117e73e6531250b03905ba"
+                "reference": "61b12172292cf539685507aa65b076c1530e83c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/eeea14e2de0b164b6a117e73e6531250b03905ba",
-                "reference": "eeea14e2de0b164b6a117e73e6531250b03905ba",
+                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/61b12172292cf539685507aa65b076c1530e83c1",
+                "reference": "61b12172292cf539685507aa65b076c1530e83c1",
                 "shasum": ""
             },
             "require": {
@@ -406,7 +406,7 @@
                 "BSD"
             ],
             "homepage": "http://vfs.bovigo.org/",
-            "time": "2014-09-04 20:48:08"
+            "time": "2014-09-14 10:18:53"
         },
         {
             "name": "ocramius/instantiator",
@@ -770,16 +770,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.2.4",
+            "version": "4.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "f0c2d374ad06ec1e56c721f4ed87c59ff35f440e"
+                "reference": "c28a790620fe30b049bb693be1ef9cd4e0fe906c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/f0c2d374ad06ec1e56c721f4ed87c59ff35f440e",
-                "reference": "f0c2d374ad06ec1e56c721f4ed87c59ff35f440e",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c28a790620fe30b049bb693be1ef9cd4e0fe906c",
+                "reference": "c28a790620fe30b049bb693be1ef9cd4e0fe906c",
                 "shasum": ""
             },
             "require": {
@@ -840,20 +840,20 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-08-31 06:46:49"
+            "time": "2014-09-14 09:31:24"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
-            "version": "2.2.0",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "42e589e08bc86e3e9bdf20d385e948347788505b"
+                "reference": "b241b18d87a47093f20fae8b0ba40379b00bd53a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/42e589e08bc86e3e9bdf20d385e948347788505b",
-                "reference": "42e589e08bc86e3e9bdf20d385e948347788505b",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/b241b18d87a47093f20fae8b0ba40379b00bd53a",
+                "reference": "b241b18d87a47093f20fae8b0ba40379b00bd53a",
                 "shasum": ""
             },
             "require": {
@@ -862,7 +862,7 @@
                 "phpunit/php-text-template": "~1.2"
             },
             "require-dev": {
-                "phpunit/phpunit": "4.2.*@dev"
+                "phpunit/phpunit": "~4.2"
             },
             "suggest": {
                 "ext-soap": "*"
@@ -879,9 +879,6 @@
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                ""
-            ],
             "license": [
                 "BSD-3-Clause"
             ],
@@ -898,7 +895,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2014-08-02 13:50:58"
+            "time": "2014-09-06 17:32:37"
         },
         {
             "name": "sebastian/comparator",
@@ -967,25 +964,28 @@
         },
         {
             "name": "sebastian/diff",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/diff.git",
-                "reference": "1e091702a5a38e6b4c1ba9ca816e3dd343df2e2d"
+                "reference": "5843509fed39dee4b356a306401e9dd1a931fec7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/diff/zipball/1e091702a5a38e6b4c1ba9ca816e3dd343df2e2d",
-                "reference": "1e091702a5a38e6b4c1ba9ca816e3dd343df2e2d",
+                "url": "https://api.github.com/repos/sebastianbergmann/diff/zipball/5843509fed39dee4b356a306401e9dd1a931fec7",
+                "reference": "5843509fed39dee4b356a306401e9dd1a931fec7",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
+            "require-dev": {
+                "phpunit/phpunit": "~4.2"
+            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1-dev"
+                    "dev-master": "1.2-dev"
                 }
             },
             "autoload": {
@@ -999,13 +999,12 @@
             ],
             "authors": [
                 {
-                    "name": "Sebastian Bergmann",
-                    "email": "sebastian@phpunit.de",
-                    "role": "lead"
-                },
-                {
                     "name": "Kore Nordmann",
                     "email": "mail@kore-nordmann.de"
+                },
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de"
                 }
             ],
             "description": "Diff implementation",
@@ -1013,7 +1012,7 @@
             "keywords": [
                 "diff"
             ],
-            "time": "2013-08-03 16:46:33"
+            "time": "2014-08-15 10:29:00"
         },
         {
             "name": "sebastian/environment",
@@ -1169,17 +1168,17 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.5.4",
+            "version": "v2.5.5",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "01a7695bcfb013d0a15c6757e15aae120342986f"
+                "reference": "b1dbc53593b98c2d694ebf383660ac9134d30b96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/01a7695bcfb013d0a15c6757e15aae120342986f",
-                "reference": "01a7695bcfb013d0a15c6757e15aae120342986f",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/b1dbc53593b98c2d694ebf383660ac9134d30b96",
+                "reference": "b1dbc53593b98c2d694ebf383660ac9134d30b96",
                 "shasum": ""
             },
             "require": {
@@ -1212,7 +1211,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2014-08-31 03:22:04"
+            "time": "2014-09-22 09:14:18"
         }
     ],
     "aliases": [

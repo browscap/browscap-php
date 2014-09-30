@@ -292,8 +292,10 @@ class Converter
         $iniParts = preg_split('/\[[^\r\n]+\]/', $content);
         $contents = array();
         foreach ($patternpositions as $position => $pattern) {
+            $pattern     = strtolower($pattern);
             $patternhash = md5($pattern);
-            $subkey      = $this->getIniPartCacheSubkey($patternhash);
+            $subkey      = self::getIniPartCacheSubkey($patternhash);
+            
             if (!isset($contents[$subkey])) {
                 $contents[$subkey] = array();
             }
@@ -328,7 +330,7 @@ class Converter
      * @param string $string
      * @return string
      */
-    private function getIniPartCacheSubkey($string)
+    public static function getIniPartCacheSubkey($string)
     {
         return $string[0] . $string[1];
     }
@@ -356,7 +358,8 @@ class Converter
         $data = array();
 
         foreach ($matches[0] as $match) {
-            //var_dump($match);
+            $match = strtolower($match);
+            
             // get the first characters for a fast search
             $tmpStart  = Pattern::getPatternStart($match);
             $tmpLength = Pattern::getPatternLength($match);
