@@ -176,17 +176,43 @@ class LogfileCommand extends Command
                 }
 
                 $count      = 1;
+                $countOk    = 0;
+                $countNok   = 0;
                 $totalCount = 1;
 
                 while ($internalLoader->isValid()) {
-                    $count = $this->handleLine(
-                        $collection,
-                        $browscap,
-                        $output,
-                        $internalLoader->getLine(),
-                        $count,
-                        $totalCount
-                    );
+                    try {
+                        $this->handleLine(
+                            $collection,
+                            $browscap,
+                            $internalLoader->getLine()
+                        );
+
+                        $this->outputProgress($output, '.', $totalCount, $countOk, $countNok)
+                        $countOk++;
+                    } catch (ReaderException $e) {
+                        $this->outputProgress($output, 'E', $totalCount, $countOk, $countNok)
+                        $countNok++;
+                    } catch (UnknownBrowserTypeException $e) {
+                        $this->outputProgress($output, 'T', $totalCount, $countOk, $countNok)
+                        $countNok++;
+                    } catch (UnknownBrowserException $e) {
+                        $this->outputProgress($output, 'B', $totalCount, $countOk, $countNok)
+                        $countNok++;
+                    } catch (UnknownPlatformException $e) {
+                        $this->outputProgress($output, 'P', $totalCount, $countOk, $countNok)
+                        $countNok++;
+                    } catch (UnknownDeviceException $e) {
+                        $this->outputProgress($output, 'D', $totalCount, $countOk, $countNok)
+                        $countNok++;
+                    } catch (UnknownEngineException $e) {
+                        $this->outputProgress($output, 'N', $totalCount, $countOk, $countNok)
+                        $countNok++;
+                    } catch (\Exception $e) {
+                        $this->outputProgress($output, 'U', $totalCount, $countOk, $countNok)
+                        $countNok++;
+                    }
+
                     $totalCount++;
                 }
 
@@ -201,22 +227,48 @@ class LogfileCommand extends Command
                 }
 
                 $count      = 1;
+                $countOk    = 0;
+                $countNok   = 0;
                 $totalCount = count($lines);
 
                 foreach ($lines as $line) {
-                    $count = $this->handleLine(
-                        $collection,
-                        $browscap,
-                        $output,
-                        $line,
-                        $count,
-                        $totalCount
-                    );
+                    try {
+                        $this->handleLine(
+                            $collection,
+                            $browscap,
+                            $line
+                        );
+
+                        $this->outputProgress($output, '.', $totalCount, $countOk, $countNok)
+                        $countOk++;
+                    } catch (ReaderException $e) {
+                        $this->outputProgress($output, 'E', $totalCount, $countOk, $countNok)
+                        $countNok++;
+                    } catch (UnknownBrowserTypeException $e) {
+                        $this->outputProgress($output, 'T', $totalCount, $countOk, $countNok)
+                        $countNok++;
+                    } catch (UnknownBrowserException $e) {
+                        $this->outputProgress($output, 'B', $totalCount, $countOk, $countNok)
+                        $countNok++;
+                    } catch (UnknownPlatformException $e) {
+                        $this->outputProgress($output, 'P', $totalCount, $countOk, $countNok)
+                        $countNok++;
+                    } catch (UnknownDeviceException $e) {
+                        $this->outputProgress($output, 'D', $totalCount, $countOk, $countNok)
+                        $countNok++;
+                    } catch (UnknownEngineException $e) {
+                        $this->outputProgress($output, 'N', $totalCount, $countOk, $countNok)
+                        $countNok++;
+                    } catch (\Exception $e) {
+                        $this->outputProgress($output, 'U', $totalCount, $countOk, $countNok)
+                        $countNok++;
+                    }
                 }
             }
-            $this->outputProgress($output, '', $count - 1, $totalCount, true);
 
-            asort($this->uas, SORT_NUMERIC);
+            $this->outputProgress($output, '', $totalCount, $countOk, $countNok, true);
+
+            arsort($this->uas, SORT_NUMERIC);
 
             foreach ($this->uas as $agentOfLine => $count) {
                 $sql = "INSERT INTO `agents` (`agent`, `count`) VALUES ('" . addslashes($agentOfLine) . "', " . addslashes($count) . ") ON DUPLICATE KEY UPDATE `count`=`count`+" . addslashes($count) . ";\n";
@@ -246,22 +298,15 @@ class LogfileCommand extends Command
     }
 
     /**
-     * @param \phpbrowscap\Util\Logfile\ReaderCollection        $collection
-     * @param \phpbrowscap\Browscap                             $browscap
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param integer                                           $line
-     * @param integer                                           $count
-     * @param integer                                           $totalCount
+     * @param \phpbrowscap\Util\Logfile\ReaderCollection $collection
+     * @param \phpbrowscap\Browscap                      $browscap
+     * @param integer                                    $line
      *
-     * @return int
+     * @throws \phpbrowscap\Exception\ReaderException
      */
-    private function handleLine(ReaderCollection $collection, Browscap $browscap, OutputInterface $output, $line, $count, $totalCount)
+    private function handleLine(ReaderCollection $collection, Browscap $browscap, $line)
     {
-        try {
-            $userAgentString = $collection->read($line);
-        } catch (ReaderException $e) {
-            return $this->outputProgress($output, 'E', $count, $totalCount);
-        }
+        $userAgentString = $collection->read($line);
 
         if (isset($this->uas[$userAgentString])) {
             $this->uas[$userAgentString]++;
@@ -269,14 +314,13 @@ class LogfileCommand extends Command
             $this->uas[$userAgentString] = 1;
         }
 
-        $browserResult = $browscap->getBrowser($userAgentString);
-        $result        = $this->getResult($browserResult);
-
-        if ($result !== '.') {
+        try {
+            $this->getResult($browscap->getBrowser($userAgentString));
+        } catch (\Exception $e) {
             $this->undefinedClients[] = $userAgentString;
-        }
 
-        return $this->outputProgress($output, $result, $count, $totalCount);
+            throw $e;
+        }
     }
 
     /**
@@ -288,19 +332,24 @@ class LogfileCommand extends Command
      *
      * @return int
      */
-    private function outputProgress(OutputInterface $output, $result, $count, $totalCount, $end = false)
+    private function outputProgress(OutputInterface $output, $result, $totalCount, $countOk, $countNok, $end = false)
     {
-        $rowLength = max(100, exec('tput cols') - 30);
-
-        if (($count % $rowLength) === 0 || $end) {
-            $formatString = '%s  %' . strlen($totalCount) . 'd / %-' . strlen($totalCount) . 'd (%3d%%)';
-            $result = $end ? str_repeat(' ', $rowLength - ($count % $rowLength)) : $result;
-            $output->writeln(sprintf($formatString, $result, $count, $totalCount, $count / $totalCount * 100));
+        if (false === strpos(strtolower(PHP_OS), 'win')) {
+            $rowLength = max(70, exec('tput cols') - 30);
         } else {
-            $output->write($result);
+            $rowLength = 70;
         }
 
-        return $count + 1;
+        if (($totalCount % $rowLength) === 0 || $end) {
+            $formatString = '  %s OK, %s NOK, Summary %s';
+            $formatString = '%s  %' . strlen($totalCount) . 'd / %-' . strlen($totalCount) . 'd (%3d%%)';
+            $result       = $end ? str_pad($result, $rowLength - ($count % $rowLength), ' ', STR_PAD_RIGHT) : $result;
+            $output->writeln(sprintf($formatString, $countOk, $countNok, $totalCount));
+
+            return;
+        }
+
+        $output->write($result);
     }
 
     /**
@@ -310,16 +359,28 @@ class LogfileCommand extends Command
      */
     private function getResult(\stdClass $result)
     {
+        if ($result->browser_type === 'unknown') {
+            throw new UnknownBrowserTypeException('unknwon browser type found');
+        }
+
         if ($result->browser_type === 'Bot/Crawler') {
             return '.';
-        } elseif ($result->browser === 'Default Browser') {
-            return 'B';
-        } elseif ($result->platform === 'unknown') {
-            return 'P';
-        } elseif ($result->device_type === 'unknown') {
-            return 'D';
-        } elseif ($result->renderingengine_name === 'unknown') {
-            return 'N';
+        }
+
+        if ($result->browser === 'Default Browser') {
+            throw new UnknownBrowserException('unknwon browser found');
+        }
+
+        if ($result->platform === 'unknown') {
+            throw new UnknownPlatformException('unknown platform found');
+        }
+
+        if ($result->device_type === 'unknown') {
+            throw new UnknownDeviceException('unknwon device type found');
+        }
+
+        if ($result->renderingengine_name === 'unknown') {
+            throw new UnknownEngineException('unknown rendering engine found');
         }
 
         return '.';
