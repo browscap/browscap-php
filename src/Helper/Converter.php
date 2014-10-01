@@ -233,10 +233,10 @@ class Converter
 
         return $this->iniVersion;
     }
-    
+
     /**
      * sets the version
-     * 
+     *
      * @param int $version
      *
      * @return \phpbrowscap\Helper\Converter
@@ -244,7 +244,7 @@ class Converter
     public function setVersion($version)
     {
         $this->iniVersion = $version;
-        
+
         return $this;
     }
 
@@ -295,7 +295,7 @@ class Converter
             $pattern     = strtolower($pattern);
             $patternhash = md5($pattern);
             $subkey      = self::getIniPartCacheSubkey($patternhash);
-            
+
             if (!isset($contents[$subkey])) {
                 $contents[$subkey] = array();
             }
@@ -359,7 +359,7 @@ class Converter
 
         foreach ($matches[0] as $match) {
             $match = strtolower($match);
-            
+
             // get the first characters for a fast search
             $tmpStart  = Pattern::getPatternStart($match);
             $tmpLength = Pattern::getPatternLength($match);
