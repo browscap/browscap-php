@@ -31,6 +31,11 @@
 namespace phpbrowscap\Command;
 
 use phpbrowscap\Browscap;
+use phpbrowscap\Exception\UnknownBrowserException;
+use phpbrowscap\Exception\UnknownBrowserTypeException;
+use phpbrowscap\Exception\UnknownDeviceException;
+use phpbrowscap\Exception\UnknownEngineException;
+use phpbrowscap\Exception\UnknownPlatformException;
 use phpbrowscap\Helper\Filesystem;
 use phpbrowscap\Util\Logfile\ReaderCollection;
 use Symfony\Component\Console\Command\Command;
@@ -175,7 +180,6 @@ class LogfileCommand extends Command
                     continue;
                 }
 
-                $count      = 1;
                 $countOk    = 0;
                 $countNok   = 0;
                 $totalCount = 1;
@@ -226,7 +230,6 @@ class LogfileCommand extends Command
                     continue;
                 }
 
-                $count      = 1;
                 $countOk    = 0;
                 $countNok   = 0;
                 $totalCount = count($lines);
@@ -302,7 +305,12 @@ class LogfileCommand extends Command
      * @param \phpbrowscap\Browscap                      $browscap
      * @param integer                                    $line
      *
-     * @throws \phpbrowscap\Exception\ReaderException
+     * @throws UnknownBrowserException
+     * @throws UnknownBrowserTypeException
+     * @throws UnknownDeviceException
+     * @throws UnknownEngineException
+     * @throws UnknownPlatformException
+     * @throws \Exception
      */
     private function handleLine(ReaderCollection $collection, Browscap $browscap, $line)
     {
@@ -326,8 +334,9 @@ class LogfileCommand extends Command
     /**
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param string                                            $result
-     * @param integer                                           $count
      * @param integer                                           $totalCount
+     * @param                                                   $countOk
+     * @param                                                   $countNok
      * @param bool                                              $end
      *
      * @return int
@@ -342,9 +351,8 @@ class LogfileCommand extends Command
 
         if (($totalCount % $rowLength) === 0 || $end) {
             $formatString = '  %s OK, %s NOK, Summary %s';
-            $formatString = '%s  %' . strlen($totalCount) . 'd / %-' . strlen($totalCount) . 'd (%3d%%)';
-            $result       = $end ? str_pad($result, $rowLength - ($count % $rowLength), ' ', STR_PAD_RIGHT) : $result;
-            $output->writeln(sprintf($formatString, $countOk, $countNok, $totalCount));
+            $result       = $end ? str_pad($result, $rowLength - ($countOk % $rowLength), ' ', STR_PAD_RIGHT) : $result;
+            $output->writeln($result . sprintf($formatString, $countOk, $countNok, $totalCount));
 
             return;
         }
