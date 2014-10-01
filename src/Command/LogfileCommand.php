@@ -192,28 +192,28 @@ class LogfileCommand extends Command
                             $internalLoader->getLine()
                         );
 
-                        $this->outputProgress($output, '.', $totalCount, $countOk, $countNok)
+                        $this->outputProgress($output, '.', $totalCount, $countOk, $countNok);
                         $countOk++;
                     } catch (ReaderException $e) {
-                        $this->outputProgress($output, 'E', $totalCount, $countOk, $countNok)
+                        $this->outputProgress($output, 'E', $totalCount, $countOk, $countNok);
                         $countNok++;
                     } catch (UnknownBrowserTypeException $e) {
-                        $this->outputProgress($output, 'T', $totalCount, $countOk, $countNok)
+                        $this->outputProgress($output, 'T', $totalCount, $countOk, $countNok);
                         $countNok++;
                     } catch (UnknownBrowserException $e) {
-                        $this->outputProgress($output, 'B', $totalCount, $countOk, $countNok)
+                        $this->outputProgress($output, 'B', $totalCount, $countOk, $countNok);
                         $countNok++;
                     } catch (UnknownPlatformException $e) {
-                        $this->outputProgress($output, 'P', $totalCount, $countOk, $countNok)
+                        $this->outputProgress($output, 'P', $totalCount, $countOk, $countNok);
                         $countNok++;
                     } catch (UnknownDeviceException $e) {
-                        $this->outputProgress($output, 'D', $totalCount, $countOk, $countNok)
+                        $this->outputProgress($output, 'D', $totalCount, $countOk, $countNok);
                         $countNok++;
                     } catch (UnknownEngineException $e) {
-                        $this->outputProgress($output, 'N', $totalCount, $countOk, $countNok)
+                        $this->outputProgress($output, 'N', $totalCount, $countOk, $countNok);
                         $countNok++;
                     } catch (\Exception $e) {
-                        $this->outputProgress($output, 'U', $totalCount, $countOk, $countNok)
+                        $this->outputProgress($output, 'U', $totalCount, $countOk, $countNok);
                         $countNok++;
                     }
 
@@ -242,28 +242,28 @@ class LogfileCommand extends Command
                             $line
                         );
 
-                        $this->outputProgress($output, '.', $totalCount, $countOk, $countNok)
+                        $this->outputProgress($output, '.', $totalCount, $countOk, $countNok);
                         $countOk++;
                     } catch (ReaderException $e) {
-                        $this->outputProgress($output, 'E', $totalCount, $countOk, $countNok)
+                        $this->outputProgress($output, 'E', $totalCount, $countOk, $countNok);
                         $countNok++;
                     } catch (UnknownBrowserTypeException $e) {
-                        $this->outputProgress($output, 'T', $totalCount, $countOk, $countNok)
+                        $this->outputProgress($output, 'T', $totalCount, $countOk, $countNok);
                         $countNok++;
                     } catch (UnknownBrowserException $e) {
-                        $this->outputProgress($output, 'B', $totalCount, $countOk, $countNok)
+                        $this->outputProgress($output, 'B', $totalCount, $countOk, $countNok);
                         $countNok++;
                     } catch (UnknownPlatformException $e) {
-                        $this->outputProgress($output, 'P', $totalCount, $countOk, $countNok)
+                        $this->outputProgress($output, 'P', $totalCount, $countOk, $countNok);
                         $countNok++;
                     } catch (UnknownDeviceException $e) {
-                        $this->outputProgress($output, 'D', $totalCount, $countOk, $countNok)
+                        $this->outputProgress($output, 'D', $totalCount, $countOk, $countNok);
                         $countNok++;
                     } catch (UnknownEngineException $e) {
-                        $this->outputProgress($output, 'N', $totalCount, $countOk, $countNok)
+                        $this->outputProgress($output, 'N', $totalCount, $countOk, $countNok);
                         $countNok++;
                     } catch (\Exception $e) {
-                        $this->outputProgress($output, 'U', $totalCount, $countOk, $countNok)
+                        $this->outputProgress($output, 'U', $totalCount, $countOk, $countNok);
                         $countNok++;
                     }
                 }
