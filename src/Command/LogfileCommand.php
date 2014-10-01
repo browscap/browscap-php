@@ -335,8 +335,8 @@ class LogfileCommand extends Command
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param string                                            $result
      * @param integer                                           $totalCount
-     * @param                                                   $countOk
-     * @param                                                   $countNok
+     * @param                                                   integer $countOk
+     * @param                                                   integer $countNok
      * @param bool                                              $end
      *
      * @return int
