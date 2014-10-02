@@ -77,7 +77,12 @@ class LogfileCommand extends Command
      */
     private $undefinedClients = array();
 
-    private $uas = array();
+    private $uas         = array();
+    private $uasWithType = array();
+    
+    private $countOk = 0;
+    private $countNok = 0;
+    private $totalCount = 0;
 
     /**
      * @param \phpbrowscap\Cache\BrowscapCache $cache
@@ -155,9 +160,11 @@ class LogfileCommand extends Command
         $loggerHelper = new LoggerHelper();
         $logger       = $loggerHelper->create($input->getOption('debug'));
 
-        $browscap = $this->getBrowscap();
-        $loader   = new IniLoader();
-
+        $browscap   = $this->getBrowscap();
+        $loader     = new IniLoader();
+        $collection = ReaderFactory::factory();
+        $fs         = new Filesystem();
+        
         $browscap
             ->setLogger($logger)
             ->setCache($this->cache)
@@ -170,7 +177,9 @@ class LogfileCommand extends Command
 
             $loader->setLocalFile($path);
             $internalLoader = $loader->getLoader();
-            $collection     = ReaderFactory::factory();
+            
+            $this->countOk  = 0;
+            $this->countNok = 0;
 
             $logger->info('Analyzing file "' . $file->getPathname() . '"');
 
@@ -179,49 +188,22 @@ class LogfileCommand extends Command
                     $logger->info('Skipping empty file "' . $file->getPathname() . '"');
                     continue;
                 }
-
-                $countOk    = 0;
-                $countNok   = 0;
-                $totalCount = 1;
-
+                
+                $this->totalCount = 1;
+                
                 while ($internalLoader->isValid()) {
-                    try {
-                        $this->handleLine(
-                            $collection,
-                            $browscap,
-                            $internalLoader->getLine()
-                        );
+                    $this->handleLine(
+                        $output,
+                        $collection,
+                        $browscap,
+                        $internalLoader->getLine()
+                    );
 
-                        $this->outputProgress($output, '.', $totalCount, $countOk, $countNok);
-                        $countOk++;
-                    } catch (ReaderException $e) {
-                        $this->outputProgress($output, 'E', $totalCount, $countOk, $countNok);
-                        $countNok++;
-                    } catch (UnknownBrowserTypeException $e) {
-                        $this->outputProgress($output, 'T', $totalCount, $countOk, $countNok);
-                        $countNok++;
-                    } catch (UnknownBrowserException $e) {
-                        $this->outputProgress($output, 'B', $totalCount, $countOk, $countNok);
-                        $countNok++;
-                    } catch (UnknownPlatformException $e) {
-                        $this->outputProgress($output, 'P', $totalCount, $countOk, $countNok);
-                        $countNok++;
-                    } catch (UnknownDeviceException $e) {
-                        $this->outputProgress($output, 'D', $totalCount, $countOk, $countNok);
-                        $countNok++;
-                    } catch (UnknownEngineException $e) {
-                        $this->outputProgress($output, 'N', $totalCount, $countOk, $countNok);
-                        $countNok++;
-                    } catch (\Exception $e) {
-                        $this->outputProgress($output, 'U', $totalCount, $countOk, $countNok);
-                        $countNok++;
-                    }
-
-                    $totalCount++;
+                    $this->totalCount++;
                 }
 
                 $internalLoader->close();
-                $totalCount--;
+                $this->totalCount--;
             } else {
                 $lines = file($path);
 
@@ -230,80 +212,147 @@ class LogfileCommand extends Command
                     continue;
                 }
 
-                $countOk    = 0;
-                $countNok   = 0;
-                $totalCount = count($lines);
+                $this->totalCount = count($lines);
 
                 foreach ($lines as $line) {
-                    try {
-                        $this->handleLine(
-                            $collection,
-                            $browscap,
-                            $line
-                        );
-
-                        $this->outputProgress($output, '.', $totalCount, $countOk, $countNok);
-                        $countOk++;
-                    } catch (ReaderException $e) {
-                        $this->outputProgress($output, 'E', $totalCount, $countOk, $countNok);
-                        $countNok++;
-                    } catch (UnknownBrowserTypeException $e) {
-                        $this->outputProgress($output, 'T', $totalCount, $countOk, $countNok);
-                        $countNok++;
-                    } catch (UnknownBrowserException $e) {
-                        $this->outputProgress($output, 'B', $totalCount, $countOk, $countNok);
-                        $countNok++;
-                    } catch (UnknownPlatformException $e) {
-                        $this->outputProgress($output, 'P', $totalCount, $countOk, $countNok);
-                        $countNok++;
-                    } catch (UnknownDeviceException $e) {
-                        $this->outputProgress($output, 'D', $totalCount, $countOk, $countNok);
-                        $countNok++;
-                    } catch (UnknownEngineException $e) {
-                        $this->outputProgress($output, 'N', $totalCount, $countOk, $countNok);
-                        $countNok++;
-                    } catch (\Exception $e) {
-                        $this->outputProgress($output, 'U', $totalCount, $countOk, $countNok);
-                        $countNok++;
-                    }
+                    $this->handleLine(
+                        $output,
+                        $collection,
+                        $browscap,
+                        $line
+                    );
                 }
             }
 
-            $this->outputProgress($output, '', $totalCount, $countOk, $countNok, true);
+            $this->outputProgress($output, '', true);
 
             arsort($this->uas, SORT_NUMERIC);
 
-            foreach ($this->uas as $agentOfLine => $count) {
-                $sql = "INSERT INTO `agents` (`agent`, `count`) VALUES ('" . addslashes($agentOfLine) . "', " . addslashes($count) . ") ON DUPLICATE KEY UPDATE `count`=`count`+" . addslashes($count) . ";\n";
-                file_put_contents($input->getArgument('output') . '/output.sql', $sql, FILE_APPEND | LOCK_EX);
+            try {
+                $fs->dumpFile($input->getArgument('output') . '/output.sql', $this->createSqlContent());
+            } catch (IOException $e) {
+                // do nothing
             }
 
-            $fs         = new Filesystem();
-            $content    = implode(PHP_EOL, array_unique($this->undefinedClients));
-            $outputFile = $input->getArgument('output') . '/output.txt';
+            try {
+                $fs->dumpFile(
+                    $input->getArgument('output') . '/output.txt', 
+                    implode(PHP_EOL, array_unique($this->undefinedClients))
+                );
+            } catch (IOException $e) {
+                // do nothing
+            }
 
             try {
-                $fs->dumpFile($outputFile, $content);
+                $fs->dumpFile(
+                    $input->getArgument('output') . '/output-with-amount.txt', 
+                    $this->createAmountContent()
+                );
+            } catch (IOException $e) {
+                // do nothing
+            }
+
+            try {
+                $fs->dumpFile(
+                    $input->getArgument('output') . '/output-with-amount-and-type.txt', 
+                    $this->createAmountTypeContent()
+                );
             } catch (IOException $e) {
                 // do nothing
             }
         }
 
-        $fs         = new Filesystem();
-        $content    = implode(PHP_EOL, array_unique($this->undefinedClients));
-        $outputFile = $input->getArgument('output') . '/output.txt';
+        try {
+            $fs->dumpFile($input->getArgument('output') . '/output.sql', $this->createSqlContent());
+        } catch (IOException $e) {
+            // do nothing
+        }
 
         try {
-            $fs->dumpFile($outputFile, $content);
+            $fs->dumpFile(
+                $input->getArgument('output') . '/output.txt', 
+                implode(PHP_EOL, array_unique($this->undefinedClients))
+            );
         } catch (IOException $e) {
             throw new \UnexpectedValueException('writing to file "' . $outputFile . '" failed', 0, $e);
         }
+
+        try {
+            $fs->dumpFile(
+                $input->getArgument('output') . '/output-with-amount.txt', 
+                $this->createAmountContent()
+            );
+        } catch (IOException $e) {
+            // do nothing
+        }
+
+        try {
+            $fs->dumpFile(
+                $input->getArgument('output') . '/output-with-amount-and-type.txt', 
+                $this->createAmountTypeContent()
+            );
+        } catch (IOException $e) {
+            // do nothing
+        }
+    }
+    
+    private function createSqlContent()
+    {
+        $content = '';
+        
+        foreach ($this->uas as $agentOfLine => $count) {
+            $content .= "INSERT INTO `agents` (`agent`, `count`) VALUES ('" . addslashes($agentOfLine) . "', " . addslashes($count) . ") ON DUPLICATE KEY UPDATE `count`=`count`+" . addslashes($count) . ";\n";
+        }
+        
+        return $content;
+    }
+    
+    private function createAmountContent()
+    {
+        $counts = array();
+        
+        foreach ($this->uasWithType as $uas) {
+            foreach ($uas as $userAgentString => $count) {
+                if (isset($counts[$userAgentString])) {
+                    $counts[$userAgentString] += $count;
+                } else {
+                    $counts[$userAgentString] = $count;
+                }
+            }
+        }
+        
+        $content = '';
+        
+        foreach ($counts as $agentOfLine => $count) {
+            $content .= "$count\t$agentOfLine\n";
+        }
+        
+        return $content;
+    }
+    
+    private function createAmountTypeContent()
+    {
+        $content = '';
+        $types   = array('T', 'B', 'P', 'D', 'N', 'U');
+        
+        foreach ($types as $type) {
+            if (!isset($this->uasWithType[$type])) {
+                continue;
+            }
+            
+            foreach ($this->uasWithType[$type] as $userAgentString => $count) {
+                $content .= "$type\t$count\t$agentOfLine\n";
+            }
+        }
+        
+        return $content;
     }
 
     /**
-     * @param \phpbrowscap\Util\Logfile\ReaderCollection $collection
-     * @param \phpbrowscap\Browscap                      $browscap
-     * @param integer                                    $line
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param \phpbrowscap\Util\Logfile\ReaderCollection        $collection
+     * @param \phpbrowscap\Browscap                             $browscap
+     * @param integer                                           $line
      *
      * @throws UnknownBrowserException
      * @throws UnknownBrowserTypeException
@@ -312,36 +361,75 @@ class LogfileCommand extends Command
      * @throws UnknownPlatformException
      * @throws \Exception
      */
-    private function handleLine(ReaderCollection $collection, Browscap $browscap, $line)
+    private function handleLine(OutputInterface $output, ReaderCollection $collection, Browscap $browscap, $line)
     {
-        $userAgentString = $collection->read($line);
+        try {
+            $userAgentString = $collection->read($line);
 
+            try {
+                $this->getResult($browscap->getBrowser($userAgentString));
+            } catch (\Exception $e) {
+                $this->undefinedClients[] = $userAgentString;
+
+                throw $e;
+            }
+
+            $type = '.';
+            $this->countOk++;
+        } catch (ReaderException $e) {
+            $type = 'E';
+            $this->countNok++;
+        } catch (UnknownBrowserTypeException $e) {
+            $type = 'T';
+            $this->countNok++;
+        } catch (UnknownBrowserException $e) {
+            $type = 'B';
+            $this->countNok++;
+        } catch (UnknownPlatformException $e) {
+            $type = 'P';
+            $this->countNok++;
+        } catch (UnknownDeviceException $e) {
+            $type = 'D';
+            $this->countNok++;
+        } catch (UnknownEngineException $e) {
+            $type = 'N';
+            $this->countNok++;
+        } catch (\Exception $e) {
+            $type = 'U';
+            $this->countNok++;
+        }
+        
+        $this->outputProgress($output, $type);
+
+        // count all useragents
         if (isset($this->uas[$userAgentString])) {
             $this->uas[$userAgentString]++;
         } else {
             $this->uas[$userAgentString] = 1;
         }
-
-        try {
-            $this->getResult($browscap->getBrowser($userAgentString));
-        } catch (\Exception $e) {
-            $this->undefinedClients[] = $userAgentString;
-
-            throw $e;
+        
+        if ('.' !== $type && 'E' !== $type) {
+            // count all undetected useragents grouped by detection error
+            if (!isset($this->uasWithType[$type])) {
+                $this->uasWithType[$type] = array();
+            }
+            
+            if (isset($this->uasWithType[$type][$userAgentString])) {
+                $this->uasWithType[$type][$userAgentString]++;
+            } else {
+                $this->uasWithType[$type][$userAgentString] = 1;
+            }
         }
     }
 
     /**
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param string                                            $result
-     * @param integer                                           $totalCount
-     * @param                                                   integer $countOk
-     * @param                                                   integer $countNok
      * @param bool                                              $end
      *
      * @return int
      */
-    private function outputProgress(OutputInterface $output, $result, $totalCount, $countOk, $countNok, $end = false)
+    private function outputProgress(OutputInterface $output, $result, $end = false)
     {
         if (false === strpos(strtolower(PHP_OS), 'win')) {
             $rowLength = max(70, exec('tput cols') - 30);
@@ -349,10 +437,13 @@ class LogfileCommand extends Command
             $rowLength = 70;
         }
 
-        if (($totalCount % $rowLength) === 0 || $end) {
+        if (($this->totalCount % $rowLength) === 0 || $end) {
             $formatString = '  %s OK, %s NOK, Summary %s';
-            $result       = $end ? str_pad($result, $rowLength - ($countOk % $rowLength), ' ', STR_PAD_RIGHT) : $result;
-            $output->writeln($result . sprintf($formatString, $countOk, $countNok, $totalCount));
+            
+            if ($end) {
+                $result = str_pad($result, $rowLength - ($this->countOk % $rowLength), ' ', STR_PAD_RIGHT);
+            }
+            $output->writeln($result . sprintf($formatString, $this->countOk, $this->countNok, $this->totalCount));
 
             return;
         }
