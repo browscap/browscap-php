@@ -356,7 +356,7 @@ class Browscap
                     $browser += $value;
                 }
 
-                if (!empty($browser[3])) {
+                if (!empty($browser[3]) && array_key_exists($browser[3], $this->_userAgents)) {
                     $browser[3] = $this->_userAgents[$browser[3]];
                 }
 
