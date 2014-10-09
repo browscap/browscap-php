@@ -41,9 +41,9 @@ class Browscap extends AbstractBrowscap
     /**
      * Current cache version
      */
-    const VERSION = '2.0.3';
+    const VERSION = '2.0.4';
 
-    const CACHE_FILE_VERSION = '2.0.3';
+    const CACHE_FILE_VERSION = '2.0.4';
 
     /**
      * Different ways to access remote and local files.
@@ -380,7 +380,7 @@ class Browscap extends AbstractBrowscap
                     $browser += $value;
                 }
 
-                if (!empty($browser[3])) {
+                if (!empty($browser[3]) && array_key_exists($browser[3], $this->_userAgents)) {
                     $browser[3] = $this->_userAgents[$browser[3]];
                 }
 
