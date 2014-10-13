@@ -84,9 +84,9 @@ class ConverterTest
      */
     public function testSetGetFilesystem()
     {
-        self::assertInstanceOf('\Symfony\Component\Filesystem\Filesystem', $this->object->getFilesystem());
+        self::assertInstanceOf('\phpbrowscap\Helper\Filesystem', $this->object->getFilesystem());
 
-        $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array(), array(), '', false);
+        $file = $this->getMock('\phpbrowscap\Helper\Filesystem', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setFilesystem($file));
         self::assertSame($file, $this->object->getFilesystem());
@@ -98,7 +98,7 @@ class ConverterTest
      */
     public function testConvertMissingFile()
     {
-        $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array('exists'), array(), '', false);
+        $file = $this->getMock('\phpbrowscap\Helper\Filesystem', array('exists'), array(), '', false);
         $file->expects(self::once())
             ->method('exists')
             ->will(self::returnValue(false));
@@ -231,7 +231,7 @@ AolVersion=0
 
         $this->root = vfsStream::setup(self::STORAGE_DIR, null, $structure);
 
-        $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array('exists'), array(), '', false);
+        $file = $this->getMock('\phpbrowscap\Helper\Filesystem', array('exists'), array(), '', false);
         $file->expects(self::once())
             ->method('exists')
             ->will(self::returnValue(false));
@@ -251,7 +251,7 @@ AolVersion=0
      */
     public function testGetIniVersion()
     {
-        $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array('exists'), array(), '', false);
+        $file = $this->getMock('\phpbrowscap\Helper\Filesystem', array('exists'), array(), '', false);
         $file->expects(self::never())
             ->method('exists')
             ->will(self::returnValue(false));
@@ -285,7 +285,7 @@ Type=';
      */
     public function testConvertString()
     {
-        $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array('exists'), array(), '', false);
+        $file = $this->getMock('\phpbrowscap\Helper\Filesystem', array('exists'), array(), '', false);
         $file->expects(self::never())
             ->method('exists')
             ->will(self::returnValue(false));
@@ -418,7 +418,7 @@ AolVersion=0
      */
     public function testConvertStringWithoutPatternFaound()
     {
-        $file = $this->getMock('\Symfony\Component\Filesystem\Filesystem', array('exists'), array(), '', false);
+        $file = $this->getMock('\phpbrowscap\Helper\Filesystem', array('exists'), array(), '', false);
         $file->expects(self::never())
             ->method('exists')
             ->will(self::returnValue(false));
