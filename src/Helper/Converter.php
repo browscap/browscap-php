@@ -30,7 +30,7 @@
 
 namespace phpbrowscap\Helper;
 
-use Symfony\Component\Filesystem\Filesystem;
+use phpbrowscap\Helper\Filesystem;
 use phpbrowscap\Exception\FileNotFoundException;
 use phpbrowscap\Cache\BrowscapCache;
 use phpbrowscap\Parser\Helper\Pattern;
@@ -81,7 +81,7 @@ class Converter
     /**
      * a filesystem helper instance
      *
-     * @var \Symfony\Component\Filesystem\Filesystem
+     * @var \phpbrowscap\Helper\Filesystem
      */
     private $filessystem = null;
 
@@ -152,7 +152,7 @@ class Converter
     /**
      * Sets a filesystem instance
      *
-     * @param \Symfony\Component\Filesystem\Filesystem $file
+     * @param \phpbrowscap\Helper\Filesystem $file
      *
      * @return \phpbrowscap\Helper\Converter
      */
@@ -166,7 +166,7 @@ class Converter
     /**
      * Returns a filesystem instance
      *
-     * @return \Symfony\Component\Filesystem\Filesystem
+     * @return \phpbrowscap\Helper\Filesystem
      */
     public function getFilesystem()
     {

@@ -79,7 +79,7 @@ class LogfileCommand extends Command
 
     private $uas         = array();
     private $uasWithType = array();
-    
+
     private $countOk = 0;
     private $countNok = 0;
     private $totalCount = 0;
@@ -164,7 +164,7 @@ class LogfileCommand extends Command
         $loader     = new IniLoader();
         $collection = ReaderFactory::factory();
         $fs         = new Filesystem();
-        
+
         $browscap
             ->setLogger($logger)
             ->setCache($this->cache)
@@ -177,7 +177,7 @@ class LogfileCommand extends Command
 
             $loader->setLocalFile($path);
             $internalLoader = $loader->getLoader();
-            
+
             $this->countOk  = 0;
             $this->countNok = 0;
 
@@ -188,9 +188,9 @@ class LogfileCommand extends Command
                     $logger->info('Skipping empty file "' . $file->getPathname() . '"');
                     continue;
                 }
-                
+
                 $this->totalCount = 1;
-                
+
                 while ($internalLoader->isValid()) {
                     $this->handleLine(
                         $output,
@@ -236,7 +236,7 @@ class LogfileCommand extends Command
 
             try {
                 $fs->dumpFile(
-                    $input->getArgument('output') . '/output.txt', 
+                    $input->getArgument('output') . '/output.txt',
                     implode(PHP_EOL, array_unique($this->undefinedClients))
                 );
             } catch (IOException $e) {
@@ -245,7 +245,7 @@ class LogfileCommand extends Command
 
             try {
                 $fs->dumpFile(
-                    $input->getArgument('output') . '/output-with-amount.txt', 
+                    $input->getArgument('output') . '/output-with-amount.txt',
                     $this->createAmountContent()
                 );
             } catch (IOException $e) {
@@ -254,7 +254,7 @@ class LogfileCommand extends Command
 
             try {
                 $fs->dumpFile(
-                    $input->getArgument('output') . '/output-with-amount-and-type.txt', 
+                    $input->getArgument('output') . '/output-with-amount-and-type.txt',
                     $this->createAmountTypeContent()
                 );
             } catch (IOException $e) {
@@ -270,7 +270,7 @@ class LogfileCommand extends Command
 
         try {
             $fs->dumpFile(
-                $input->getArgument('output') . '/output.txt', 
+                $input->getArgument('output') . '/output.txt',
                 implode(PHP_EOL, array_unique($this->undefinedClients))
             );
         } catch (IOException $e) {
@@ -279,7 +279,7 @@ class LogfileCommand extends Command
 
         try {
             $fs->dumpFile(
-                $input->getArgument('output') . '/output-with-amount.txt', 
+                $input->getArgument('output') . '/output-with-amount.txt',
                 $this->createAmountContent()
             );
         } catch (IOException $e) {
@@ -288,29 +288,31 @@ class LogfileCommand extends Command
 
         try {
             $fs->dumpFile(
-                $input->getArgument('output') . '/output-with-amount-and-type.txt', 
+                $input->getArgument('output') . '/output-with-amount-and-type.txt',
                 $this->createAmountTypeContent()
             );
         } catch (IOException $e) {
             // do nothing
         }
     }
-    
+
     private function createSqlContent()
     {
         $content = '';
         
+        arsort($this->uas, SORT_NUMERIC);
+
         foreach ($this->uas as $agentOfLine => $count) {
             $content .= "INSERT INTO `agents` (`agent`, `count`) VALUES ('" . addslashes($agentOfLine) . "', " . addslashes($count) . ") ON DUPLICATE KEY UPDATE `count`=`count`+" . addslashes($count) . ";\n";
         }
-        
+
         return $content;
     }
-    
+
     private function createAmountContent()
     {
         $counts = array();
-        
+
         foreach ($this->uasWithType as $uas) {
             foreach ($uas as $userAgentString => $count) {
                 if (isset($counts[$userAgentString])) {
@@ -320,31 +322,35 @@ class LogfileCommand extends Command
                 }
             }
         }
-        
+
         $content = '';
         
+        arsort($counts, SORT_NUMERIC);
+
         foreach ($counts as $agentOfLine => $count) {
             $content .= "$count\t$agentOfLine\n";
         }
-        
+
         return $content;
     }
-    
+
     private function createAmountTypeContent()
     {
         $content = '';
-        $types   = array('T', 'B', 'P', 'D', 'N', 'U');
-        
+        $types   = array('B', 'T', 'P', 'D', 'N', 'U');
+
         foreach ($types as $type) {
             if (!isset($this->uasWithType[$type])) {
                 continue;
             }
             
-            foreach ($this->uasWithType[$type] as $userAgentString => $count) {
+            arsort($this->uasWithType[$type], SORT_NUMERIC);
+
+            foreach ($this->uasWithType[$type] as $agentOfLine => $count) {
                 $content .= "$type\t$count\t$agentOfLine\n";
             }
         }
-        
+
         return $content;
     }
 
@@ -398,7 +404,7 @@ class LogfileCommand extends Command
             $type = 'U';
             $this->countNok++;
         }
-        
+
         $this->outputProgress($output, $type);
 
         // count all useragents
@@ -407,13 +413,13 @@ class LogfileCommand extends Command
         } else {
             $this->uas[$userAgentString] = 1;
         }
-        
+
         if ('.' !== $type && 'E' !== $type) {
             // count all undetected useragents grouped by detection error
             if (!isset($this->uasWithType[$type])) {
                 $this->uasWithType[$type] = array();
             }
-            
+
             if (isset($this->uasWithType[$type][$userAgentString])) {
                 $this->uasWithType[$type][$userAgentString]++;
             } else {
@@ -431,19 +437,17 @@ class LogfileCommand extends Command
      */
     private function outputProgress(OutputInterface $output, $result, $end = false)
     {
-        if (false === strpos(strtolower(PHP_OS), 'win')) {
-            $rowLength = max(70, exec('tput cols') - 30);
-        } else {
-            $rowLength = 70;
-        }
+        if (($this->totalCount % 70) === 0 || $end) {
+            $formatString = '  %' . strlen($this->countOk) . 'd OK, %' . strlen($this->countNok) . 'd NOK, Summary %'
+                . strlen($this->totalCount) . 'd';
 
-        if (($this->totalCount % $rowLength) === 0 || $end) {
-            $formatString = '  %s OK, %s NOK, Summary %s';
-            
             if ($end) {
-                $result = str_pad($result, $rowLength - ($this->countOk % $rowLength), ' ', STR_PAD_RIGHT);
+                $result = str_pad($result, 70 - ($this->totalCount % 70), ' ', STR_PAD_RIGHT);
             }
-            $output->writeln($result . sprintf($formatString, $this->countOk, $this->countNok, $this->totalCount));
+
+            $endString = sprintf($formatString, $this->countOk, $this->countNok, $this->totalCount);
+
+            $output->writeln($result . $endString);
 
             return;
         }
@@ -458,27 +462,27 @@ class LogfileCommand extends Command
      */
     private function getResult(\stdClass $result)
     {
-        if ($result->browser_type === 'unknown') {
-            throw new UnknownBrowserTypeException('unknwon browser type found');
-        }
-
-        if ($result->browser_type === 'Bot/Crawler') {
-            return '.';
-        }
-
-        if ($result->browser === 'Default Browser') {
+        if ('Default Browser' === $result->browser) {
             throw new UnknownBrowserException('unknwon browser found');
         }
 
-        if ($result->platform === 'unknown') {
+        if ('unknown' === $result->browser_type) {
+            throw new UnknownBrowserTypeException('unknwon browser type found');
+        }
+
+        if (in_array($result->browser_type, array('Bot/Crawler', 'Library'))) {
+            return '.';
+        }
+
+        if ('unknown' === $result->platform) {
             throw new UnknownPlatformException('unknown platform found');
         }
 
-        if ($result->device_type === 'unknown') {
+        if ('unknown' === $result->device_type) {
             throw new UnknownDeviceException('unknwon device type found');
         }
 
-        if ($result->renderingengine_name === 'unknown') {
+        if ('unknown' === $result->renderingengine_name) {
             throw new UnknownEngineException('unknown rendering engine found');
         }
 
