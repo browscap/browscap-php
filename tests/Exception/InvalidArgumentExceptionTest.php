@@ -1,8 +1,8 @@
 <?php
 
-namespace phpbrowscapTest;
+namespace phpbrowscapTest\Exception;
 
-use phpbrowscap\Browscap;
+use phpbrowscap\Exception\InvalidArgumentException;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -36,49 +36,20 @@ use phpbrowscap\Browscap;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/GaretJax/phpbrowscap/
  */
-class TestCase extends \PHPUnit_Framework_TestCase
+class InvalidArgumentExceptionTest extends \PHPUnit_Framework_TestCase
 {
-    protected $cacheDir;
-
-    public function setUp()
+    /**
+     *
+     */
+    public function testOneOfCommandArguments()
     {
-    }
+        /** @var \phpbrowscap\Exception\InvalidArgumentException $exception */
+        $exception = InvalidArgumentException::oneOfCommandArguments('http://example.org', 'Uri not reachable');
 
-    protected function createCacheDir($cache_dir = null)
-    {
-        $cacheDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'browscap_testing';
-
-        if (!is_dir($cacheDir)) {
-            if (false === @mkdir($cacheDir, 0777, true)) {
-                throw new \RuntimeException(sprintf('Unable to create the "%s" directory', $cacheDir));
-            }
-        }
-
-        $this->cacheDir = $cacheDir;
-
-        return $this->cacheDir;
-    }
-
-    protected function createBrowscap()
-    {
-        $cacheDir = $this->createCacheDir();
-
-        return new Browscap($cacheDir);
-    }
-
-    protected function removeCacheDir()
-    {
-        if (isset($this->cacheDir) && is_dir($this->cacheDir)) {
-            if (false === @rmdir($this->cacheDir)) {
-                throw new \RuntimeException(sprintf('Unable to remove the "%s" directory', $this->cacheDir));
-            }
-
-            $this->cacheDir = null;
-        }
-    }
-
-    public function tearDown()
-    {
-        $this->removeCacheDir();
+        self::assertInstanceOf('\phpbrowscap\Exception\InvalidArgumentException', $exception);
+        self::assertSame(
+            'One of the command arguments "http://example.org", "Uri not reachable" is required',
+            $exception->getMessage()
+        );
     }
 }
