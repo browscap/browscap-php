@@ -301,9 +301,9 @@ class BrowscapTest extends TestCase
 
         $browscap = new Browscap($cacheDir);
 
-        $expected = 'Browser Capabilities Project - PHP Browscap/2.0.4 URL-wrapper';
+        $expected = 'http://browscap.org/ - PHP Browscap/';
 
-        self::assertSame($expected, $method->invoke($browscap));
+        self::assertContains($expected, $method->invoke($browscap));
     }
 
     /**
