@@ -98,7 +98,7 @@ class Browscap extends AbstractBrowscap
      *
      * @var string
      */
-    public $userAgent = 'Browser Capabilities Project - PHP Browscap/%v %m';
+    public $userAgent = 'http://browscap.org/ - PHP Browscap/%v %m';
 
     /**
      * Flag to enable only lowercase indexes in the result.

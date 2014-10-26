@@ -1,58 +1,30 @@
 Browser Capabilities PHP Project
 ================================
 
-_Hacking around with PHP to have a better solution than `get_browser()`_
+This is a userland replacement for PHP's native `get_browser()` function, which is _officially supported_ by the Browser Capabilities Project.
 
 [![Build Status](https://secure.travis-ci.org/browscap/browscap-php.png?branch=master)](http://travis-ci.org/browsecap/browscap-php) [![Code Coverage](https://scrutinizer-ci.com/g/browscap/browscap-php/badges/coverage.png?s=61cb32ca83d2053ed9b140690b6e18dfa00e4639)](https://scrutinizer-ci.com/g/browscap/browscap-php/) [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/browscap/browscap-php/badges/quality-score.png?s=db1cc1699b1cb6ac6ae46754ef9612217eba5526)](https://scrutinizer-ci.com/g/browscap/browscap-php/)
 
-
-Changes
--------
-
-Please see [changelog](CHANGELOG.md) for a list of recent changes.
-
-
-Introduction
+Installation
 ------------
 
-The [browscap.ini](http://browscap.org/) file is a
-database which provides a lot of details about browsers and their capabilities, such as name,
-versions, Javascript support and so on.
+Run the command below to install via Composer
 
-The [browscap.ini](http://browscap.org/), which
-provides a lot of details about browsers and their capabilities, such as name,
-versions, Javascript support and so on.
+```shell
+composer require browscap/browscap-php
+```
 
-PHP's native [get_browser()](http://php.net/get_browser) function parses this
-file and provides you with a complete set of information about every browser's
-details, But it requires the path to the browscap.ini file to be specified in
-the php.ini [browscap](http://php.net/manual/en/ref.misc.php#ini.browscap)
-directive which is flagged as `PHP_INI_SYSTEM`.
+Then you may identify the current user agent like so:
 
-Since in most shared hosting environments you have not access to the php.ini
-file, the browscap directive cannot be modified and you are stuck with either
-and outdated database or without browscap support at all.
+```php
+use phpbrowscap\Browscap;
 
-Browscap is a standalone class for PHP >=5.3 that gets around the limitations of
-`get_browser()` and manages the whole thing.
-It offers methods to update, cache, adapt and get details about every supplied
-user agent on a standalone basis.
-It's also much faster than `get_browser()` while still returning the same results.
+$browscap = new Browscap();
+$info = $browscap->getBrowser();
+```
 
-If you can switch away from `get_browser()` then you definitely should. This implementation is very inferior
-when compared to browscap-php. Not only the pure PHP implementation is way faster, especially with opcache,
-as you can see here: https://github.com/browscap/browscap-php#features but also it is actually being updated,
-in contrary to `get_browser()`.
-
-So if there are some RAM, speed issues, or problems with ini parsing, they will most likely be fixed in browscap-php
-and WON'T in `get_browser()`.
-
-Browscap is a [Composer](https://packagist.org/packages/browscap/browscap-php) package.
-
-The Browscap.ini database now has an official site at http://browscap.org/.
-
-Quick start
------------
+Recommended Setup
+-----------------
 
 a sample using composer with taking the useragent from the global $_SERVER variable
 
@@ -78,6 +50,17 @@ If you like arrays more than the StdClass you'll get it with this change
 ```php
 $current_browser = $bc->getBrowser($the_user_agent, true);
 ```
+
+It is highly recommended that you disable the auto update functionality, and create a background cron script to perform the update. This way, you do not make another request every time. So your usual usage would look like this:
+
+```php
+use phpbrowscap\Browscap;
+
+$browscap = new Browscap($cacheDir);
+$browscap->doAutoUpdate = false;
+$info = $browscap->getBrowser();
+```
+
 
 If your projects needs more than one server, or you dont like file caches, you may use the Detector class instaed of the Browscap class.
 ```php
@@ -108,25 +91,14 @@ $bc->setLogger($logger);
 $current_browser = $bc->getBrowser();
 ```
 
-Features
---------
+And you could write a cron script such as this, to run once a day:
 
-Here is a non-exhaustive feature list of the Browscap class:
+```php
+use phpbrowscap\Browscap;
 
- * Very fast
-   * at least 3 times faster than get_browser() when not using opcache
-   * **20 or more** times faster than get_browser() when using opcache ([see tests](https://github.com/quentin389/ua-speed-tests))
- * Standalone and fully PHP configuration independent (no need for php.ini setting)
- * Fully get_browser() compatible (with some get_browser() bugs  fixed)
- * User agent auto-detection
- * Returns object or array
- * Parsed .ini file cached directly into PHP arrays (leverages opcache)
- * Accepts any .ini file (even ASP and lite versions)
- * Auto updated browscap.ini file and cache from remote server with version checking
- * Fully configurable, including configurable remote update server and update schedules
- * `PHP >= 5.3` compatible
- * Released under the MIT License
-
+$browscap = new Browscap($cacheDir);
+$browscap->updateCache();
+```
 
 Issues and feature requests
 ---------------------------
