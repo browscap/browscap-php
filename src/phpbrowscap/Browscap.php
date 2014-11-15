@@ -712,7 +712,7 @@ class Browscap extends AbstractBrowscap
         // asume that all will be ok
         if (false === file_put_contents($tmpFile, $cache)) {
             // writing to the temparary file failed
-            throw new Exception('wrting to temporary file failed');
+            throw new Exception('writing to temporary file failed');
         }
 
         if (false === rename($tmpFile, $cache_path)) {
