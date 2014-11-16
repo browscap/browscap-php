@@ -918,7 +918,7 @@ class Browscap
      * @param string cache_path_useragent Temporary useragent data location
      * @param string cache_path_patterns Temporary pattern data location
      *
-     * @var string|null
+     * @return string the PHP string to save into the cache file
      */
     protected function _buildCache($cache_path_properties, $cache_path_browsers, $cache_path_useragent, $cache_path_patterns)
     {
