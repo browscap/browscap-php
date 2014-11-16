@@ -913,7 +913,12 @@ class Browscap
     /**
      * Parses the array to cache and creates the PHP string to write to disk
      *
-     * @return string the PHP string to save into the cache file
+     * @param string cache_path_properties Temporary property data location
+     * @param string cache_path_browsers Temporary browser data location
+     * @param string cache_path_useragent Temporary useragent data location
+     * @param string cache_path_patterns Temporary pattern data location
+     *
+     * @var string|null
      */
     protected function _buildCache($cache_path_properties, $cache_path_browsers, $cache_path_useragent, $cache_path_patterns)
     {
