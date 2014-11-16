@@ -9,6 +9,14 @@
         {
             "name": "Jonathan Stoppani",
             "email": "jonathan.stoppani@gmail.com"
+        },
+        {
+            "name": "James Titcumb",
+            "email": "james@asgrim.com"
+        },
+        {
+            "name": "Thomas Mueller",
+            "email": "t_mueller_stolzenhain@yahoo.de"
         }
     ],
     "support": {
@@ -25,11 +33,6 @@
         "psr-0": {
             "phpbrowscap": "src/",
             "phpbrowscapTest": "tests/"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0.x-dev"
         }
     }
 }

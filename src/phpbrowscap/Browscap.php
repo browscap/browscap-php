@@ -41,9 +41,9 @@ class Browscap
     /**
      * Current version of the class.
      */
-    const VERSION = '2.0b';
+    const VERSION = '2.0.3';
 
-    const CACHE_FILE_VERSION = '2.0b';
+    const CACHE_FILE_VERSION = '2.0.3';
 
     /**
      * Different ways to access remote and local files.
@@ -368,7 +368,7 @@ class Browscap
 
                     $simple_match = true;
                 } else {
-                    $pattern_data = unserialize($pattern_data);
+                    $pattern_data = json_decode($pattern_data, true);
 
                     // match with numeric replacements
                     array_shift($matches);
@@ -392,10 +392,10 @@ class Browscap
                     $this->_pregUnQuote($pattern, $simple_match ? false : $matches)
                 );
 
-                $browser = $value = $browser + unserialize($this->_browsers[$key]);
+                $browser = $value = $browser + json_decode($this->_browsers[$key], true);
 
                 while (array_key_exists(3, $value)) {
-                    $value = unserialize($this->_browsers[$value[3]]);
+                    $value = json_decode($this->_browsers[$value[3]], true);
                     $browser += $value;
                 }
 
@@ -549,6 +549,7 @@ class Browscap
      *
      * Parses the ini file and updates the cache files
      *
+     * @throws Exception
      * @return bool whether the file was correctly written to the disk
      */
     public function updateCache()
@@ -556,7 +557,7 @@ class Browscap
         $lockfile = $this->cacheDir . 'cache.lock';
 
         if (file_exists($lockfile) || !touch($lockfile)) {
-            return false;
+            throw new Exception('temporary file already exists');
         }
 
         $ini_path              = $this->cacheDir . $this->iniFilename;
@@ -726,22 +727,21 @@ class Browscap
         $tmpFile = $dir . '/temp_' . md5(microtime() . basename($cache_path));
 
         // asume that all will be ok
-        $success = true;
-
         if (false === file_put_contents($tmpFile, $cache)) {
             // writing to the temparary file failed
-            $success = false;
+            throw new Exception('wrting to temporary file failed');
         }
 
         if (false === rename($tmpFile, $cache_path)) {
             // renaming file failed, remove temp file
             @unlink($tmpFile);
-            $success = false;
+
+            throw new Exception('could not rename temporary file to the cache file');
         }
 
         @unlink($lockfile);
 
-        return $success;
+        return true;
     }
 
     /**
@@ -989,19 +989,39 @@ class Browscap
             }
         }
 
-        // Get updated .ini file
-        $browscap = $this->_getRemoteData($url);
-        $browscap = explode("\n", $browscap);
-        $pattern  = self::REGEX_DELIMITER . '(' . self::VALUES_TO_QUOTE . ')="?([^"]*)"?$' . self::REGEX_DELIMITER;
-
-        // Ok, lets read the file
-        $content = '';
-        foreach ($browscap as $subject) {
-            $subject = trim($subject);
-            $content .= preg_replace($pattern, '$1="$2"', $subject) . "\n";
-        }
-
         if ($url != $path) {
+            // Check if it's possible to write to the .ini file.
+            if (is_file($path)) {
+                if (!is_writable($path)) {
+                    throw new Exception(
+                        'Could not write to "' . $path . '" (check the permissions of the current/old ini file).'
+                    );
+                }
+            } else {
+                // Test writability by creating a file only if one already doesn't exist, so we can safely delete it after the test.
+                $test_file = fopen($path, 'a');
+                if ($test_file) {
+                    fclose($test_file);
+                    unlink($path);
+                } else {
+                    throw new Exception(
+                        'Could not write to "' . $path . '" (check the permissions of the cache directory).'
+                    );
+                }
+            }
+
+            // Get updated .ini file
+            $browscap = $this->_getRemoteData($url);
+            $browscap = explode("\n", $browscap);
+            $pattern  = self::REGEX_DELIMITER . '(' . self::VALUES_TO_QUOTE . ')="?([^"]*)"?$' . self::REGEX_DELIMITER;
+
+            // Ok, lets read the file
+            $content = '';
+            foreach ($browscap as $subject) {
+                $subject = trim($subject);
+                $content .= preg_replace($pattern, '$1="$2"', $subject) . "\n";
+            }
+
             if (!file_put_contents($path, $content)) {
                 throw new Exception("Could not write .ini content to $path");
             }
@@ -1067,7 +1087,7 @@ class Browscap
             }
 
             if (is_array($value)) {
-                $value = "'" . addcslashes(serialize($value), "'") . "'";
+                $value = "'" . addcslashes(json_encode($value, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP), "'") . "'";
             } elseif (ctype_digit((string) $value)) {
                 $value = intval($value);
             } else {
@@ -1084,7 +1104,7 @@ class Browscap
      * Checks for the various possibilities offered by the current configuration
      * of PHP to retrieve external HTTP data
      *
-     * @return string the name of function to use to retrieve the file
+     * @return string|false the name of function to use to retrieve the file or false if no methods are available
      */
     protected function _getUpdateMethod()
     {
