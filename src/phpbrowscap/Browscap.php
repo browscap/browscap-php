@@ -562,10 +562,10 @@ class Browscap
 
         $ini_path              = $this->cacheDir . $this->iniFilename;
         $cache_path            = $this->cacheDir . $this->cacheFilename;
-        $cache_path_properties = $this->cacheDir . $this->cachePropertiesFilename;
-        $cache_path_browsers   = $this->cacheDir . $this->cacheBrowserFilename;
-        $cache_path_useragent  = $this->cacheDir . $this->cacheUseragentsFilename;
-        $cache_path_patterns   = $this->cacheDir . $this->cachePatternsFilename;
+        $cache_path_properties = $this->cacheDir . 'temp_' . md5(microtime() . $this->cachePropertiesFilename);
+        $cache_path_browsers   = $this->cacheDir . 'temp_' . md5(microtime() . $this->cacheBrowserFilename);
+        $cache_path_useragent  = $this->cacheDir . 'temp_' . md5(microtime() . $this->cacheUseragentsFilename);
+        $cache_path_patterns   = $this->cacheDir . 'temp_' . md5(microtime() . $this->cachePatternsFilename);
 
         // Choose the right url
         if ($this->_getUpdateMethod() == self::UPDATE_LOCAL) {
@@ -720,11 +720,11 @@ class Browscap
         unset($data_patterns);
 
         // Get the whole PHP code
-        $cache = $this->_buildCache();
+        $cache = $this->_buildCache($cache_path_properties, $cache_path_browsers, $cache_path_useragent, $cache_path_patterns);
         $dir   = dirname($cache_path);
 
         // "tempnam" did not work with VFSStream for tests
-        $tmpFile = $dir . '/temp_' . md5(time() . basename($cache_path));
+        $tmpFile = $dir . '/temp_' . md5(microtime() . basename($cache_path));
 
         // asume that all will be ok
         if (false === file_put_contents($tmpFile, $cache)) {
@@ -913,16 +913,16 @@ class Browscap
     /**
      * Parses the array to cache and creates the PHP string to write to disk
      *
+     * @param string cache_path_properties Temporary property data location
+     * @param string cache_path_browsers Temporary browser data location
+     * @param string cache_path_useragent Temporary useragent data location
+     * @param string cache_path_patterns Temporary pattern data location
+     *
      * @return string the PHP string to save into the cache file
      */
-    protected function _buildCache()
+    protected function _buildCache($cache_path_properties, $cache_path_browsers, $cache_path_useragent, $cache_path_patterns)
     {
         $cacheTpl = "<?php\n\$source_version=%s;\n\$cache_version=%s;\n\$properties=%s;\n\$browsers=%s;\n\$userAgents=%s;\n\$patterns=%s;\n";
-
-        $cache_path_properties = $this->cacheDir . $this->cachePropertiesFilename;
-        $cache_path_browsers   = $this->cacheDir . $this->cacheBrowserFilename;
-        $cache_path_useragent  = $this->cacheDir . $this->cacheUseragentsFilename;
-        $cache_path_patterns   = $this->cacheDir . $this->cachePatternsFilename;
 
         // get prepared data
         $propertiesArray = file_get_contents($cache_path_properties);
