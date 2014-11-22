@@ -1,6 +1,7 @@
 *~
-/.settings
-/.buildpath
-/.project
-/.idea
+.settings
+.buildpath
+.project
+.idea
 resources/cache*
+vendor
