@@ -1,8 +1,8 @@
 <?php
 
-namespace phpbrowscapTest\Util\LogFile;
+namespace BrowscapPHPTest\Util\LogFile;
 
-use phpbrowscap\Util\Logfile\ApacheCommonLogFormatReader;
+use BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -34,12 +34,12 @@ use phpbrowscap\Util\Logfile\ApacheCommonLogFormatReader;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/phpbrowscap/
+ * @link       https://github.com/GaretJax/BrowscapPHP/
  */
 class ApacheCommonLogFormatReaderTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \phpbrowscap\Util\Logfile\ApacheCommonLogFormatReader
+     * @var \BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader
      */
     private $object = null;
 
@@ -62,7 +62,7 @@ class ApacheCommonLogFormatReaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \phpbrowscap\Exception\ReaderException
+     * @expectedException \BrowscapPHP\Exception\ReaderException
      * @expectedExceptionMessage test
      */
     public function testReadFails()

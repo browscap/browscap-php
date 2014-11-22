@@ -1,8 +1,8 @@
 <?php
 
-namespace phpbrowscapTest\Exception;
+namespace BrowscapPHPTest\Exception;
 
-use phpbrowscap\Exception\FetcherException;
+use BrowscapPHP\Exception\FetcherException;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -34,7 +34,7 @@ use phpbrowscap\Exception\FetcherException;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/phpbrowscap/
+ * @link       https://github.com/GaretJax/BrowscapPHP/
  */
 class FetcherExceptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -43,10 +43,10 @@ class FetcherExceptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testHttpError()
     {
-        /** @var \phpbrowscap\Exception\FetcherException $exception */
+        /** @var \BrowscapPHP\Exception\FetcherException $exception */
         $exception = FetcherException::httpError('http://example.org', 'Uri not reachable');
 
-        self::assertInstanceOf('\phpbrowscap\Exception\FetcherException', $exception);
+        self::assertInstanceOf('\BrowscapPHP\Exception\FetcherException', $exception);
         self::assertSame(
             'Could not fetch HTTP resource "http://example.org": Uri not reachable',
             $exception->getMessage()

@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Cache;
+namespace BrowscapPHP\Cache;
 
 use WurflCache\Adapter\AdapterInterface;
 
@@ -82,7 +82,7 @@ class BrowscapCache
      *
      * @param \WurflCache\Adapter\AdapterInterface $adapter
      *
-     * @throws \phpbrowscap\Exception
+     * @throws \BrowscapPHP\Exception
      */
     public function __construct(AdapterInterface $adapter)
     {
@@ -97,7 +97,7 @@ class BrowscapCache
      *
      * @param \WurflCache\Adapter\AdapterInterface $adapter
      *
-     * @return \phpbrowscap\Cache\BrowscapCache
+     * @return \BrowscapPHP\Cache\BrowscapCache
      */
     public function setCacheAdapter(AdapterInterface $adapter)
     {
@@ -141,7 +141,7 @@ class BrowscapCache
      *
      * @param integer $updateInterval
      *
-     * @return \phpbrowscap\Cache\BrowscapCache
+     * @return \BrowscapPHP\Cache\BrowscapCache
      */
     public function setUpdateInterval($updateInterval)
     {

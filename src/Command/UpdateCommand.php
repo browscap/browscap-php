@@ -28,16 +28,16 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Command;
+namespace BrowscapPHP\Command;
 
-use phpbrowscap\Browscap;
+use BrowscapPHP\Browscap;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use phpbrowscap\Helper\LoggerHelper;
-use phpbrowscap\Helper\IniLoader;
-use phpbrowscap\Cache\BrowscapCache;
+use BrowscapPHP\Helper\LoggerHelper;
+use BrowscapPHP\Helper\IniLoader;
+use BrowscapPHP\Cache\BrowscapCache;
 
 /**
  * command to fetch a browscap ini file from the remote host, convert it into an array and store the content in a local
@@ -55,12 +55,12 @@ use phpbrowscap\Cache\BrowscapCache;
 class UpdateCommand extends Command
 {
     /**
-     * @var \phpbrowscap\Cache\BrowscapCache
+     * @var \BrowscapPHP\Cache\BrowscapCache
      */
     private $cache = null;
 
     /**
-     * @param \phpbrowscap\Cache\BrowscapCache $cache
+     * @param \BrowscapPHP\Cache\BrowscapCache $cache
      */
     public function __construct(BrowscapCache $cache)
     {

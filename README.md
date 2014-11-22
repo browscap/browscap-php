@@ -17,7 +17,7 @@ composer require browscap/browscap-php
 Then you may identify the current user agent like so:
 
 ```php
-use phpbrowscap\Browscap;
+use BrowscapPHP\Browscap;
 
 $browscap = new Browscap();
 $info = $browscap->getBrowser();
@@ -48,8 +48,8 @@ A sample using composer with taking the useragent from the global $_SERVER varia
 ```php
 require 'vendor/autoload.php';
 
-// The Browscap class is in the phpbrowscap namespace, so import it
-use phpbrowscap\Browscap;
+// The Browscap class is in the BrowscapPHP namespace, so import it
+use BrowscapPHP\Browscap;
 
 // Create a new Browscap object (loads or creates the cache)
 $bc = new Browscap();
@@ -92,7 +92,7 @@ $adapter = new \WurflCache\Adapter\Memcache(<your memcache configuration as arra
 $bc = new Browscap();
 $bc
     ->setCache($adapter)
-    ->update(\phpbrowscap\Helper\IniLoader::PHP_INI_FULL)
+    ->update(\BrowscapPHP\Helper\IniLoader::PHP_INI_FULL)
 ;
 ```
 

@@ -15,9 +15,9 @@
  * @license    MIT
  */
 
-namespace phpbrowscapTest\Helper;
+namespace BrowscapPHPTest\Helper;
 
-use phpbrowscap\Helper\LoggerHelper;
+use BrowscapPHP\Helper\LoggerHelper;
 
 /**
  * Class LoggerHelperTest

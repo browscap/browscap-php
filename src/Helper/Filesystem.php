@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Helper;
+namespace BrowscapPHP\Helper;
 
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem as BaseFilesystem;

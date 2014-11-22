@@ -1,8 +1,8 @@
 <?php
 
-namespace phpbrowscapTest\Exception;
+namespace BrowscapPHPTest\Exception;
 
-use phpbrowscap\Exception\FileNotFoundException;
+use BrowscapPHP\Exception\FileNotFoundException;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -34,7 +34,7 @@ use phpbrowscap\Exception\FileNotFoundException;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/phpbrowscap/
+ * @link       https://github.com/GaretJax/BrowscapPHP/
  */
 class FileNotFoundExceptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -43,10 +43,10 @@ class FileNotFoundExceptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testFileNotFound()
     {
-        /** @var \phpbrowscap\Exception\FileNotFoundException $exception */
+        /** @var \BrowscapPHP\Exception\FileNotFoundException $exception */
         $exception = FileNotFoundException::fileNotFound('test.txt');
 
-        self::assertInstanceOf('\phpbrowscap\Exception\FileNotFoundException', $exception);
+        self::assertInstanceOf('\BrowscapPHP\Exception\FileNotFoundException', $exception);
         self::assertSame(
             'File "test.txt" does not exist',
             $exception->getMessage()

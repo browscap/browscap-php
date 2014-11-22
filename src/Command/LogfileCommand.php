@@ -28,16 +28,16 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Command;
+namespace BrowscapPHP\Command;
 
-use phpbrowscap\Browscap;
-use phpbrowscap\Exception\UnknownBrowserException;
-use phpbrowscap\Exception\UnknownBrowserTypeException;
-use phpbrowscap\Exception\UnknownDeviceException;
-use phpbrowscap\Exception\UnknownEngineException;
-use phpbrowscap\Exception\UnknownPlatformException;
-use phpbrowscap\Helper\Filesystem;
-use phpbrowscap\Util\Logfile\ReaderCollection;
+use BrowscapPHP\Browscap;
+use BrowscapPHP\Exception\UnknownBrowserException;
+use BrowscapPHP\Exception\UnknownBrowserTypeException;
+use BrowscapPHP\Exception\UnknownDeviceException;
+use BrowscapPHP\Exception\UnknownEngineException;
+use BrowscapPHP\Exception\UnknownPlatformException;
+use BrowscapPHP\Helper\Filesystem;
+use BrowscapPHP\Util\Logfile\ReaderCollection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -46,12 +46,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use phpbrowscap\Exception\InvalidArgumentException;
-use phpbrowscap\Exception\ReaderException;
-use phpbrowscap\Helper\LoggerHelper;
-use phpbrowscap\Cache\BrowscapCache;
-use phpbrowscap\Util\Logfile\ReaderFactory;
-use phpbrowscap\Helper\IniLoader;
+use BrowscapPHP\Exception\InvalidArgumentException;
+use BrowscapPHP\Exception\ReaderException;
+use BrowscapPHP\Helper\LoggerHelper;
+use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Util\Logfile\ReaderFactory;
+use BrowscapPHP\Helper\IniLoader;
 
 /**
  * commands to parse a log file and parse the useragents in it
@@ -68,7 +68,7 @@ use phpbrowscap\Helper\IniLoader;
 class LogfileCommand extends Command
 {
     /**
-     * @var \phpbrowscap\Cache\BrowscapCache
+     * @var \BrowscapPHP\Cache\BrowscapCache
      */
     private $cache = null;
 
@@ -85,7 +85,7 @@ class LogfileCommand extends Command
     private $totalCount = 0;
 
     /**
-     * @param \phpbrowscap\Cache\BrowscapCache $cache
+     * @param \BrowscapPHP\Cache\BrowscapCache $cache
      */
     public function __construct(BrowscapCache $cache)
     {
@@ -148,7 +148,7 @@ class LogfileCommand extends Command
      * @param OutputInterface $output
      *
      * @throws \UnexpectedValueException
-     * @throws \phpbrowscap\Exception\InvalidArgumentException
+     * @throws \BrowscapPHP\Exception\InvalidArgumentException
      * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -356,8 +356,8 @@ class LogfileCommand extends Command
 
     /**
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param \phpbrowscap\Util\Logfile\ReaderCollection        $collection
-     * @param \phpbrowscap\Browscap                             $browscap
+     * @param \BrowscapPHP\Util\Logfile\ReaderCollection        $collection
+     * @param \BrowscapPHP\Browscap                             $browscap
      * @param integer                                           $line
      *
      * @throws UnknownBrowserException

@@ -28,14 +28,14 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Helper;
+namespace BrowscapPHP\Helper;
 
-use phpbrowscap\Helper\Filesystem;
-use phpbrowscap\Exception\FileNotFoundException;
-use phpbrowscap\Cache\BrowscapCache;
-use phpbrowscap\Parser\Helper\Pattern;
-use phpbrowscap\Parser\Ini;
-use phpbrowscap\Data\PropertyHolder;
+use BrowscapPHP\Helper\Filesystem;
+use BrowscapPHP\Exception\FileNotFoundException;
+use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Parser\Helper\Pattern;
+use BrowscapPHP\Parser\Ini;
+use BrowscapPHP\Data\PropertyHolder;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -74,14 +74,14 @@ class Converter
     /**
      * The cache instance
      *
-     * @var \phpbrowscap\Cache\BrowscapCache
+     * @var \BrowscapPHP\Cache\BrowscapCache
      */
     private $cache = null;
 
     /**
      * a filesystem helper instance
      *
-     * @var \phpbrowscap\Helper\Filesystem
+     * @var \BrowscapPHP\Helper\Filesystem
      */
     private $filessystem = null;
 
@@ -106,7 +106,7 @@ class Converter
      *
      * @param \Psr\Log\LoggerInterface $logger
      *
-     * @return \phpbrowscap\Helper\Converter
+     * @return \BrowscapPHP\Helper\Converter
      */
     public function setLogger(LoggerInterface $logger)
     {
@@ -128,9 +128,9 @@ class Converter
     /**
      * Sets a cache instance
      *
-     * @param \phpbrowscap\Cache\BrowscapCache $cache
+     * @param \BrowscapPHP\Cache\BrowscapCache $cache
      *
-     * @return \phpbrowscap\Helper\Converter
+     * @return \BrowscapPHP\Helper\Converter
      */
     public function setCache(BrowscapCache $cache)
     {
@@ -142,7 +142,7 @@ class Converter
     /**
      * Returns a cache instance
      *
-     * @return \phpbrowscap\Cache\BrowscapCache $cache
+     * @return \BrowscapPHP\Cache\BrowscapCache $cache
      */
     public function getCache()
     {
@@ -152,9 +152,9 @@ class Converter
     /**
      * Sets a filesystem instance
      *
-     * @param \phpbrowscap\Helper\Filesystem $file
+     * @param \BrowscapPHP\Helper\Filesystem $file
      *
-     * @return \phpbrowscap\Helper\Converter
+     * @return \BrowscapPHP\Helper\Converter
      */
     public function setFilesystem(Filesystem $file)
     {
@@ -166,7 +166,7 @@ class Converter
     /**
      * Returns a filesystem instance
      *
-     * @return \phpbrowscap\Helper\Filesystem
+     * @return \BrowscapPHP\Helper\Filesystem
      */
     public function getFilesystem()
     {
@@ -179,7 +179,7 @@ class Converter
 
     /**
      * @param string $iniFile
-     * @throws \phpbrowscap\Exception\FileNotFoundException
+     * @throws \BrowscapPHP\Exception\FileNotFoundException
      */
     public function convertFile($iniFile)
     {
@@ -239,7 +239,7 @@ class Converter
      *
      * @param int $version
      *
-     * @return \phpbrowscap\Helper\Converter
+     * @return \BrowscapPHP\Helper\Converter
      */
     public function setVersion($version)
     {
@@ -251,7 +251,7 @@ class Converter
     /**
      * stores the version of the ini file into cache
      *
-     * @return \phpbrowscap\Helper\Converter
+     * @return \BrowscapPHP\Helper\Converter
      */
     public function storeVersion()
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace phpbrowscapTest\Parser;
+namespace BrowscapPHPTest\Parser;
 
-use phpbrowscap\Parser\Ini;
+use BrowscapPHP\Parser\Ini;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -34,12 +34,12 @@ use phpbrowscap\Parser\Ini;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/phpbrowscap/
+ * @link       https://github.com/GaretJax/BrowscapPHP/
  */
 class IniTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \phpbrowscap\Parser\Ini
+     * @var \BrowscapPHP\Parser\Ini
      */
     private $object = null;
 
@@ -59,9 +59,9 @@ class IniTest extends \PHPUnit_Framework_TestCase
     public function testSetGetHelper()
     {
         if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
-            $helper = $this->getMock('\phpbrowscap\Parser\Helper\GetPattern', array(), array(), '', false);
+            $helper = $this->getMock('\BrowscapPHP\Parser\Helper\GetPattern', array(), array(), '', false);
         } else {
-            $helper = $this->getMock('\phpbrowscap\Parser\Helper\GetPatternLt55', array(), array(), '', false);
+            $helper = $this->getMock('\BrowscapPHP\Parser\Helper\GetPatternLt55', array(), array(), '', false);
         }
 
         self::assertSame($this->object, $this->object->setHelper($helper));
@@ -73,7 +73,7 @@ class IniTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetFormatter()
     {
-        $formatter = $this->getMock('\phpbrowscap\Formatter\PhpGetBrowser', array(), array(), '', false);
+        $formatter = $this->getMock('\BrowscapPHP\Formatter\PhpGetBrowser', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setFormatter($formatter));
         self::assertSame($formatter, $this->object->getFormatter());
@@ -84,7 +84,7 @@ class IniTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetCache()
     {
-        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array(), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setCache($cache));
         self::assertSame($cache, $this->object->getCache());

@@ -28,11 +28,11 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Command;
+namespace BrowscapPHP\Command;
 
-use phpbrowscap\Exception;
+use BrowscapPHP\Exception;
 use Symfony\Component\Console\Application;
-use phpbrowscap\Cache\BrowscapCache;
+use BrowscapPHP\Cache\BrowscapCache;
 use WurflCache\Adapter\File;
 
 chdir(dirname(dirname(__DIR__)));

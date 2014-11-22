@@ -28,9 +28,9 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Helper;
+namespace BrowscapPHP\Helper;
 
-use phpbrowscap\Exception as BaseException;
+use BrowscapPHP\Exception as BaseException;
 
 /**
  * Exception to handle errors inside the helpers
