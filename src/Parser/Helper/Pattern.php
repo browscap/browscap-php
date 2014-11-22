@@ -56,12 +56,12 @@ class Pattern
     /**
      * Gets the subkey for the pattern cache file, generated from the given string
      *
-     * @param string $string
+     * @param  string $string
      * @return string
      */
     public static function getPatternCacheSubkey($string)
     {
-        return $string[0] . $string[1];
+        return $string[0].$string[1];
     }
 
     /**
@@ -83,8 +83,8 @@ class Pattern
      * results in an array with hashes for "Mozilla/5.0", "Mozilla/5.", "Mozilla/5",
      * "Mozilla/" ... "M", so that the pattern hash is included.
      *
-     * @param string $pattern
-     * @param boolean $variants
+     * @param  string       $pattern
+     * @param  boolean      $variants
      * @return string|array
      */
     public static function getPatternStart($pattern, $variants = false)
@@ -119,7 +119,7 @@ class Pattern
      * Gets the minimum length of the patern (used in the getPatterns() method to
      * check against the user agent length)
      *
-     * @param string $pattern
+     * @param  string $pattern
      * @return int
      */
     public static function getPatternLength($pattern)
@@ -139,7 +139,7 @@ class Pattern
 
         foreach ($chars as $char_one) {
             foreach ($chars as $char_two) {
-                $subkeys[] = $char_one . $char_two;
+                $subkeys[] = $char_one.$char_two;
             }
         }
 

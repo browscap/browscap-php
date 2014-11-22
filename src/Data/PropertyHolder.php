@@ -48,7 +48,7 @@ class PropertyHolder
     /**
      * Get the type of a property
      *
-     * @param string $propertyName
+     * @param  string     $propertyName
      * @throws \Exception
      * @return string
      */
@@ -148,8 +148,8 @@ class PropertyHolder
      * Determine if the specified property is an "extra" property (that should
      * be included in the "full" versions of the files)
      *
-     * @param string $propertyName
-     * @param \Browscap\Writer\WriterInterface $writer
+     * @param  string                           $propertyName
+     * @param  \Browscap\Writer\WriterInterface $writer
      * @return boolean
      */
     public function isExtraProperty($propertyName, \Browscap\Writer\WriterInterface $writer = null)
@@ -194,8 +194,8 @@ class PropertyHolder
      * Determine if the specified property is an "extra" property (that should
      * be included in the "full" versions of the files)
      *
-     * @param string $propertyName
-     * @param \Browscap\Writer\WriterInterface $writer
+     * @param  string                           $propertyName
+     * @param  \Browscap\Writer\WriterInterface $writer
      * @return boolean
      */
     public function isOutputProperty($propertyName, \Browscap\Writer\WriterInterface $writer = null)
@@ -305,17 +305,17 @@ class PropertyHolder
             case 'Device_Pointing_Method':
                 // This property is taken from http://www.scientiamobile.com/wurflCapability
                 $allowedValues = array(
-                    'joystick', 'stylus', 'touchscreen', 'clickwheel', 'trackpad', 'trackball', 'mouse', 'unknown'
+                    'joystick', 'stylus', 'touchscreen', 'clickwheel', 'trackpad', 'trackball', 'mouse', 'unknown',
                 );
                 break;
             case 'Browser_Bits':
             case 'Platform_Bits':
                 $allowedValues = array(
-                    '0', '8', '16', '32', '64'
+                    '0', '8', '16', '32', '64',
                 );
                 break;
             default:
-                throw new \InvalidArgumentException('Property "' . $property . '" is not defined to be validated');
+                throw new \InvalidArgumentException('Property "'.$property.'" is not defined to be validated');
                 break;
         }
 
@@ -324,8 +324,8 @@ class PropertyHolder
         }
 
         throw new \InvalidArgumentException(
-            'invalid value given for Property "' . $property . '": given value "' . (string) $value . '", allowed: '
-            . json_encode($allowedValues)
+            'invalid value given for Property "'.$property.'": given value "'.(string) $value.'", allowed: '
+            .json_encode($allowedValues)
         );
     }
 }

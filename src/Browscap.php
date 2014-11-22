@@ -128,7 +128,7 @@ class Browscap
     public function getCache()
     {
         if (null === $this->cache) {
-            $resourceDirectory = __DIR__  . '/../resources/';
+            $resourceDirectory = __DIR__.'/../resources/';
 
             $cacheAdapter = new File(
                 array(File::DIR => $resourceDirectory)
@@ -157,7 +157,7 @@ class Browscap
         } else {
             throw new Exception(
                 'the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCache or '
-                . 'an instanceof of \WurflCache\Adapter\AdapterInterface',
+                .'an instanceof of \WurflCache\Adapter\AdapterInterface',
                 Exception::CACHE_INCOMPATIBLE
             );
         }
@@ -257,8 +257,8 @@ class Browscap
      * @param string $userAgent the user agent string
      *
      * @throws \BrowscapPHP\Exception
-     * @return \stdClass  the object containing the browsers details. Array if
-     *                    $return_array is set to true.
+     * @return \stdClass              the object containing the browsers details. Array if
+     *                                $return_array is set to true.
      */
     public function getBrowser($userAgent = null)
     {
@@ -283,7 +283,7 @@ class Browscap
     /**
      * reads and parses an ini file and writes the results into the cache
      *
-     * @param string $iniFile
+     * @param  string                                       $iniFile
      * @throws \BrowscapPHP\Exception\FileNotFoundException
      */
     public function convertFile($iniFile)
@@ -377,8 +377,8 @@ class Browscap
 
             $buildNumber = (int) file_get_contents('vendor/browscap/browscap/BUILD_NUMBER');
 
-            $buildFolder = 'resources/browscap-ua-test-' . $buildNumber;
-            $iniFile     = $buildFolder . '/full_php_browscap.ini';
+            $buildFolder = 'resources/browscap-ua-test-'.$buildNumber;
+            $iniFile     = $buildFolder.'/full_php_browscap.ini';
 
             mkdir($buildFolder, 0777, true);
 

@@ -256,7 +256,7 @@ class IniLoader
      * loads the ini file from a remote or local location and returns the content of the file
      *
      * @throws \BrowscapPHP\Helper\Exception
-     * @return string the content of the loaded ini file
+     * @return string                        the content of the loaded ini file
      */
     public function load()
     {
@@ -279,7 +279,7 @@ class IniLoader
      * Gets the remote file update timestamp
      *
      * @throws \BrowscapPHP\Helper\Exception
-     * @return integer the remote modification timestamp
+     * @return integer                       the remote modification timestamp
      */
     public function getMTime()
     {

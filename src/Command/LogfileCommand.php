@@ -181,11 +181,11 @@ class LogfileCommand extends Command
             $this->countOk  = 0;
             $this->countNok = 0;
 
-            $logger->info('Analyzing file "' . $file->getPathname() . '"');
+            $logger->info('Analyzing file "'.$file->getPathname().'"');
 
             if ($internalLoader->isSupportingLoadingLines()) {
                 if (!$internalLoader->init($path)) {
-                    $logger->info('Skipping empty file "' . $file->getPathname() . '"');
+                    $logger->info('Skipping empty file "'.$file->getPathname().'"');
                     continue;
                 }
 
@@ -208,7 +208,7 @@ class LogfileCommand extends Command
                 $lines = file($path);
 
                 if (empty($lines)) {
-                    $logger->info('Skipping empty file "' . $file->getPathname() . '"');
+                    $logger->info('Skipping empty file "'.$file->getPathname().'"');
                     continue;
                 }
 
@@ -229,14 +229,14 @@ class LogfileCommand extends Command
             arsort($this->uas, SORT_NUMERIC);
 
             try {
-                $fs->dumpFile($input->getArgument('output') . '/output.sql', $this->createSqlContent());
+                $fs->dumpFile($input->getArgument('output').'/output.sql', $this->createSqlContent());
             } catch (IOException $e) {
                 // do nothing
             }
 
             try {
                 $fs->dumpFile(
-                    $input->getArgument('output') . '/output.txt',
+                    $input->getArgument('output').'/output.txt',
                     implode(PHP_EOL, array_unique($this->undefinedClients))
                 );
             } catch (IOException $e) {
@@ -245,7 +245,7 @@ class LogfileCommand extends Command
 
             try {
                 $fs->dumpFile(
-                    $input->getArgument('output') . '/output-with-amount.txt',
+                    $input->getArgument('output').'/output-with-amount.txt',
                     $this->createAmountContent()
                 );
             } catch (IOException $e) {
@@ -254,7 +254,7 @@ class LogfileCommand extends Command
 
             try {
                 $fs->dumpFile(
-                    $input->getArgument('output') . '/output-with-amount-and-type.txt',
+                    $input->getArgument('output').'/output-with-amount-and-type.txt',
                     $this->createAmountTypeContent()
                 );
             } catch (IOException $e) {
@@ -263,23 +263,23 @@ class LogfileCommand extends Command
         }
 
         try {
-            $fs->dumpFile($input->getArgument('output') . '/output.sql', $this->createSqlContent());
+            $fs->dumpFile($input->getArgument('output').'/output.sql', $this->createSqlContent());
         } catch (IOException $e) {
             // do nothing
         }
 
         try {
             $fs->dumpFile(
-                $input->getArgument('output') . '/output.txt',
+                $input->getArgument('output').'/output.txt',
                 implode(PHP_EOL, array_unique($this->undefinedClients))
             );
         } catch (IOException $e) {
-            throw new \UnexpectedValueException('writing to file "' . $outputFile . '" failed', 0, $e);
+            throw new \UnexpectedValueException('writing to file "'.$outputFile.'" failed', 0, $e);
         }
 
         try {
             $fs->dumpFile(
-                $input->getArgument('output') . '/output-with-amount.txt',
+                $input->getArgument('output').'/output-with-amount.txt',
                 $this->createAmountContent()
             );
         } catch (IOException $e) {
@@ -288,7 +288,7 @@ class LogfileCommand extends Command
 
         try {
             $fs->dumpFile(
-                $input->getArgument('output') . '/output-with-amount-and-type.txt',
+                $input->getArgument('output').'/output-with-amount-and-type.txt',
                 $this->createAmountTypeContent()
             );
         } catch (IOException $e) {
@@ -305,8 +305,8 @@ class LogfileCommand extends Command
         foreach ($this->uas as $agentOfLine => $count) {
             $content .= "
                 INSERT INTO `agents` (`agent`, `count`)
-                VALUES ('" . addslashes($agentOfLine) . "', " . addslashes($count) . ")
-                ON DUPLICATE KEY UPDATE `count`=`count`+" . addslashes($count) . ";
+                VALUES ('".addslashes($agentOfLine)."', ".addslashes($count).")
+                ON DUPLICATE KEY UPDATE `count`=`count`+".addslashes($count).";
             ";
         }
 
@@ -442,8 +442,8 @@ class LogfileCommand extends Command
     private function outputProgress(OutputInterface $output, $result, $end = false)
     {
         if (($this->totalCount % 70) === 0 || $end) {
-            $formatString = '  %' . strlen($this->countOk) . 'd OK, %' . strlen($this->countNok) . 'd NOK, Summary %'
-                . strlen($this->totalCount) . 'd';
+            $formatString = '  %'.strlen($this->countOk).'d OK, %'.strlen($this->countNok).'d NOK, Summary %'
+                .strlen($this->totalCount).'d';
 
             if ($end) {
                 $result = str_pad($result, 70 - ($this->totalCount % 70), ' ', STR_PAD_RIGHT);
@@ -451,7 +451,7 @@ class LogfileCommand extends Command
 
             $endString = sprintf($formatString, $this->countOk, $this->countNok, $this->totalCount);
 
-            $output->writeln($result . $endString);
+            $output->writeln($result.$endString);
 
             return;
         }
@@ -528,10 +528,10 @@ class LogfileCommand extends Command
     {
         switch ($file->getExtension()) {
             case 'gz':
-                $path = 'compress.zlib://' . $file->getPathname();
+                $path = 'compress.zlib://'.$file->getPathname();
                 break;
             case 'bz2':
-                $path = 'compress.bzip2://' . $file->getPathname();
+                $path = 'compress.bzip2://'.$file->getPathname();
                 break;
             default:
                 $path = $file->getPathname();

@@ -43,11 +43,11 @@ class Filesystem extends BaseFilesystem
     /**
      * Atomically dumps content into a file.
      *
-     * @param  string       $filename The file to be written to.
-     * @param  string       $content  The data to write into the file.
+     * @param  string      $filename The file to be written to.
+     * @param  string      $content  The data to write into the file.
      * @param  integer     $mode     The file mode (octal). If null, file permissions are not modified
-     *                                Deprecated since version 2.3.12, to be removed in 3.0.
-     * @throws IOException            If the file cannot be written to.
+     *                               Deprecated since version 2.3.12, to be removed in 3.0.
+     * @throws IOException If the file cannot be written to.
      */
     public function dumpFile($filename, $content, $mode = 0666)
     {
@@ -60,7 +60,7 @@ class Filesystem extends BaseFilesystem
         }
 
         // "tempnam" did not work with VFSStream for tests
-        $tmpFile = dirname($filename) . '/temp_' . md5(time() . basename($filename));
+        $tmpFile = dirname($filename).'/temp_'.md5(time().basename($filename));
 
         if (false === @file_put_contents($tmpFile, $content)) {
             throw new IOException(sprintf('Failed to write file "%s".', $filename), 0, null, $filename);

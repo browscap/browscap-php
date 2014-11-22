@@ -65,7 +65,7 @@ class LoggerHelper
         if ($debug) {
             $stream = new StreamHandler('php://output', Logger::DEBUG);
             $stream->setFormatter(
-                new LineFormatter('[%datetime%] %channel%.%level_name%: %message% %extra%' . "\n")
+                new LineFormatter('[%datetime%] %channel%.%level_name%: %message% %extra%'."\n")
             );
 
             /** @var callable $memoryProcessor */
@@ -77,7 +77,7 @@ class LoggerHelper
             $logger->pushProcessor($peakMemoryProcessor);
         } else {
             $stream = new StreamHandler('php://output', Logger::INFO);
-            $stream->setFormatter(new LineFormatter('[%datetime%] %message% %extra%' . "\n"));
+            $stream->setFormatter(new LineFormatter('[%datetime%] %message% %extra%'."\n"));
 
             /** @var callable $peakMemoryProcessor */
             $peakMemoryProcessor = new MemoryPeakUsageProcessor(true);

@@ -30,7 +30,6 @@
 
 namespace BrowscapPHP\Helper;
 
-use BrowscapPHP\Helper\Filesystem;
 use BrowscapPHP\Exception\FileNotFoundException;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Parser\Helper\Pattern;
@@ -178,7 +177,7 @@ class Converter
     }
 
     /**
-     * @param string $iniFile
+     * @param  string                                       $iniFile
      * @throws \BrowscapPHP\Exception\FileNotFoundException
      */
     public function convertFile($iniFile)
@@ -225,7 +224,7 @@ class Converter
     {
         $key = $this->pregQuote(Ini::BROWSCAP_VERSION_KEY);
 
-        if (preg_match("/\.*\[" . $key . "\][^\[]*Version=(\d+)\D.*/", $iniString, $matches)) {
+        if (preg_match("/\.*\[".$key."\][^\[]*Version=(\d+)\D.*/", $iniString, $matches)) {
             if (isset($matches[1])) {
                 $this->iniVersion = (int) $matches[1];
             }
@@ -263,7 +262,7 @@ class Converter
     /**
      * Quotes a pattern from the browscap.ini file, so that it can be used in regular expressions
      *
-     * @param string $pattern
+     * @param  string $pattern
      * @return string
      */
     private function pregQuote($pattern)
@@ -310,7 +309,7 @@ class Converter
             }
             // the position has to be moved by one, because the header of the ini file
             // is also returned as a part
-            $contents[$subkey][] = $patternhash . json_encode(
+            $contents[$subkey][] = $patternhash.json_encode(
                 $browserProperties,
                 JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
             );
@@ -320,19 +319,19 @@ class Converter
         unset($iniParts);
 
         foreach ($contents as $subkey => $content) {
-            $this->getCache()->setItem('browscap.iniparts.' . $subkey, $content, true);
+            $this->getCache()->setItem('browscap.iniparts.'.$subkey, $content, true);
         }
     }
 
     /**
      * Gets the subkey for the ini parts cache file, generated from the given string
      *
-     * @param string $string
+     * @param  string $string
      * @return string
      */
     public static function getIniPartCacheSubkey($string)
     {
-        return $string[0] . $string[1];
+        return $string[0].$string[1];
     }
 
     /**
@@ -400,7 +399,7 @@ class Converter
                     $contents[$tmpSubkey] = array();
                 }
 
-                $contents[$tmpSubkey][] = $tmpStart . ' ' . $tmpJoinPatterns;
+                $contents[$tmpSubkey][] = $tmpStart.' '.$tmpJoinPatterns;
             }
         }
 
@@ -411,12 +410,12 @@ class Converter
         // triggered by the getPatterns() method.
         $subkeys = array_flip(Pattern::getAllPatternCacheSubkeys());
         foreach ($contents as $subkey => $content) {
-            $this->cache->setItem('browscap.patterns.' . $subkey, $content, true);
+            $this->cache->setItem('browscap.patterns.'.$subkey, $content, true);
             unset($subkeys[$subkey]);
         }
 
         foreach (array_keys($subkeys) as $subkey) {
-            $this->getCache()->setItem('browscap.patterns.' . $subkey, '', true);
+            $this->getCache()->setItem('browscap.patterns.'.$subkey, '', true);
         }
 
         return true;

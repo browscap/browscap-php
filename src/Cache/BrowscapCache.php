@@ -129,7 +129,7 @@ class BrowscapCache
             $version = $this->getItem('browscap.version', false, $success);
 
             if ($version !== null && $success) {
-                $this->version = (int)$version;
+                $this->version = (int) $version;
             }
         }
 
@@ -145,7 +145,7 @@ class BrowscapCache
      */
     public function setUpdateInterval($updateInterval)
     {
-        $this->getCacheAdapter()->setExpiration((int)$updateInterval);
+        $this->getCacheAdapter()->setExpiration((int) $updateInterval);
 
         return $this;
     }
@@ -162,7 +162,7 @@ class BrowscapCache
     public function getItem($cacheId, $withVersion = true, & $success = null)
     {
         if ($withVersion) {
-            $cacheId .= '.' . $this->getVersion();
+            $cacheId .= '.'.$this->getVersion();
         }
 
         if (!$this->getCacheAdapter()->hasItem($cacheId)) {
@@ -181,14 +181,15 @@ class BrowscapCache
         }
 
         $success = true;
+
         return unserialize($data['content']);
     }
 
     /**
      * save the content into an php file
      *
-     * @param string $cacheId The cache id
-     * @param mixed  $content The content to store
+     * @param string $cacheId     The cache id
+     * @param mixed  $content     The content to store
      * @param bool   $withVersion
      *
      * @return boolean whether the file was correctly written to the disk
@@ -198,11 +199,11 @@ class BrowscapCache
         // Get the whole PHP code
         $data = array(
             'cacheVersion' => self::CACHE_FILE_VERSION,
-            'content'      => serialize($content)
+            'content'      => serialize($content),
         );
 
         if ($withVersion) {
-            $cacheId .= '.' . $this->getVersion();
+            $cacheId .= '.'.$this->getVersion();
         }
 
         // Save and return
@@ -220,7 +221,7 @@ class BrowscapCache
     public function hasItem($cacheId, $withVersion = true)
     {
         if ($withVersion) {
-            $cacheId .= '.' . $this->getVersion();
+            $cacheId .= '.'.$this->getVersion();
         }
 
         return $this->getCacheAdapter()->hasItem($cacheId);
@@ -237,7 +238,7 @@ class BrowscapCache
     public function removeItem($cacheId, $withVersion = true)
     {
         if ($withVersion) {
-            $cacheId .= '.' . $this->getVersion();
+            $cacheId .= '.'.$this->getVersion();
         }
 
         return $this->getCacheAdapter()->removeItem($cacheId);

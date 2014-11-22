@@ -173,7 +173,7 @@ class Ini implements ParserInterface
      * Gets the browser data formatr for the given user agent
      * (or null if no data avaailble, no even the default browser)
      *
-     * @param string $userAgent
+     * @param  string                  $userAgent
      * @return FormatterInterface|null
      */
     public function getBrowser($userAgent)
@@ -184,7 +184,7 @@ class Ini implements ParserInterface
 
         foreach ($this->getHelper()->getPatterns($userAgent) as $patterns) {
             $result = preg_match(
-                '/^(?:' . str_replace("\t", ')|(?:', $quoterHelper->pregQuote($patterns)) . ')$/i',
+                '/^(?:'.str_replace("\t", ')|(?:', $quoterHelper->pregQuote($patterns)).')$/i',
                 $userAgent
             );
             if ($result) {
@@ -192,7 +192,7 @@ class Ini implements ParserInterface
                 $pattern = strtok($patterns, "\t");
 
                 while ($pattern !== false) {
-                    $quotedPattern = '/^' . $quoterHelper->pregQuote($pattern, '/') . '$/i';
+                    $quotedPattern = '/^'.$quoterHelper->pregQuote($pattern, '/').'$/i';
 
                     if (preg_match($quotedPattern, $userAgent)) {
                         $formatter = $this->getFormatter();
@@ -212,8 +212,8 @@ class Ini implements ParserInterface
      * Gets the settings for a given pattern (method calls itself to
      * get the data from the parent patterns)
      *
-     * @param string $pattern
-     * @param array $settings
+     * @param  string $pattern
+     * @param  array  $settings
      * @return array
      */
     private function getSettings($pattern, array $settings = array())
@@ -222,7 +222,7 @@ class Ini implements ParserInterface
         if (count($settings) === 0) {
             $quoterHelper = new Quoter();
 
-            $settings['browser_name_regex']   = '/^' . $quoterHelper->pregQuote($pattern) . '$/';
+            $settings['browser_name_regex']   = '/^'.$quoterHelper->pregQuote($pattern).'$/';
             $settings['browser_name_pattern'] = $pattern;
         }
 
@@ -251,7 +251,7 @@ class Ini implements ParserInterface
     /**
      * Gets the relevant part (array of settings) of the ini file for a given pattern.
      *
-     * @param string $pattern
+     * @param  string $pattern
      * @return array
      */
     private function getIniPart($pattern)
@@ -260,12 +260,12 @@ class Ini implements ParserInterface
         $patternhash = md5($pattern);
         $subkey      = Converter::getIniPartCacheSubkey($patternhash);
 
-        if (!$this->getCache()->hasItem('browscap.iniparts.' . $subkey, true)) {
+        if (!$this->getCache()->hasItem('browscap.iniparts.'.$subkey, true)) {
             return array();
         }
 
         $success = null;
-        $file    = $this->getCache()->getItem('browscap.iniparts.' . $subkey, true, $success);
+        $file    = $this->getCache()->getItem('browscap.iniparts.'.$subkey, true, $success);
 
         if (!$success) {
             return array();

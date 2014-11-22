@@ -69,7 +69,6 @@ namespace BrowscapPHP\Helper;
  * @license   http://opensource.org/licenses/BSD-3-Clause New BSD License
  */
 
-
 /**
  * class to help getting the user agent
  *
@@ -100,7 +99,7 @@ class Support
         'HTTP_X_OPERAMINI_PHONE_UA',
         'HTTP_X_SKYFIRE_PHONE',
         'HTTP_X_BOLT_PHONE_UA',
-        'HTTP_USER_AGENT'
+        'HTTP_USER_AGENT',
     );
 
     /**

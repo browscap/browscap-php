@@ -94,7 +94,7 @@ interface ParserInterface
      * Gets the browser data formatr for the given user agent
      * (or null if no data avaailble, no even the default browser)
      *
-     * @param string $user_agent
+     * @param  string                  $user_agent
      * @return FormatterInterface|null
      */
     public function getBrowser($user_agent);

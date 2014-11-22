@@ -130,10 +130,10 @@ class GetPattern implements GetPatternInterface
             $tmpSubkey = Pattern::getPatternCacheSubkey($tmpStart);
             $success   = null;
 
-            $file = $this->getCache()->getItem('browscap.patterns.' . $tmpSubkey, true, $success);
+            $file = $this->getCache()->getItem('browscap.patterns.'.$tmpSubkey, true, $success);
 
             if (!$success) {
-                $this->getLogger()->debug('cache key "browscap.patterns.' . $tmpSubkey . '" not found');
+                $this->getLogger()->debug('cache key "browscap.patterns.'.$tmpSubkey.'" not found');
                 continue;
             }
 
@@ -143,7 +143,7 @@ class GetPattern implements GetPatternInterface
                 $tmpBuffer = substr($buffer, 0, 32);
                 if ($tmpBuffer === $tmpStart) {
                     // get length of the pattern
-                    $len = (int)strstr(substr($buffer, 33, 4), ' ', true);
+                    $len = (int) strstr(substr($buffer, 33, 4), ' ', true);
 
                     // the user agent must be longer than the pattern without place holders
                     if ($len <= $length) {
