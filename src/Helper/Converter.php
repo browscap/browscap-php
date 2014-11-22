@@ -347,7 +347,11 @@ class Converter
         // get all relevant patterns from the INI file
         // - containing "*" or "?"
         // - not containing "*" or "?", but not having a comment
-        preg_match_all('/(?<=\[)(?:[^\r\n]*[?*][^\r\n]*)(?=\])|(?<=\[)(?:[^\r\n*?]+)(?=\])(?![^\[]*Comment=)/m', $content, $matches);
+        preg_match_all(
+            '/(?<=\[)(?:[^\r\n]*[?*][^\r\n]*)(?=\])|(?<=\[)(?:[^\r\n*?]+)(?=\])(?![^\[]*Comment=)/m',
+            $content,
+            $matches
+        );
 
         if (empty($matches[0]) || !is_array($matches[0])) {
             return false;

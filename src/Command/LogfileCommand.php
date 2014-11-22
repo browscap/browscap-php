@@ -299,11 +299,15 @@ class LogfileCommand extends Command
     private function createSqlContent()
     {
         $content = '';
-        
+
         arsort($this->uas, SORT_NUMERIC);
 
         foreach ($this->uas as $agentOfLine => $count) {
-            $content .= "INSERT INTO `agents` (`agent`, `count`) VALUES ('" . addslashes($agentOfLine) . "', " . addslashes($count) . ") ON DUPLICATE KEY UPDATE `count`=`count`+" . addslashes($count) . ";\n";
+            $content .= "
+                INSERT INTO `agents` (`agent`, `count`)
+                VALUES ('" . addslashes($agentOfLine) . "', " . addslashes($count) . ")
+                ON DUPLICATE KEY UPDATE `count`=`count`+" . addslashes($count) . ";
+            ";
         }
 
         return $content;
@@ -324,7 +328,7 @@ class LogfileCommand extends Command
         }
 
         $content = '';
-        
+
         arsort($counts, SORT_NUMERIC);
 
         foreach ($counts as $agentOfLine => $count) {
@@ -343,7 +347,7 @@ class LogfileCommand extends Command
             if (!isset($this->uasWithType[$type])) {
                 continue;
             }
-            
+
             arsort($this->uasWithType[$type], SORT_NUMERIC);
 
             foreach ($this->uasWithType[$type] as $agentOfLine => $count) {

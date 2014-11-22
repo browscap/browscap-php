@@ -183,7 +183,11 @@ class Ini implements ParserInterface
         $quoterHelper = new Quoter();
 
         foreach ($this->getHelper()->getPatterns($userAgent) as $patterns) {
-            if (preg_match('/^(?:' . str_replace("\t", ')|(?:', $quoterHelper->pregQuote($patterns)) . ')$/i', $userAgent)) {
+            $result = preg_match(
+                '/^(?:' . str_replace("\t", ')|(?:', $quoterHelper->pregQuote($patterns)) . ')$/i',
+                $userAgent
+            );
+            if ($result) {
                 // strtok() requires less memory than explode()
                 $pattern = strtok($patterns, "\t");
 
