@@ -50,5 +50,5 @@
             "BrowscapPHPTest\\": "tests/"
         }
     },
-    "bin": ["src/bin/Browscap.php"]
+    "bin": ["bin/browscap"]
 }

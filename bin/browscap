@@ -1,0 +1,45 @@
+#!/usr/bin/env php
+<?php
+
+chdir(dirname(__DIR__));
+
+$autoloadPaths = array(
+    'vendor/autoload.php',
+    '../../autoload.php',
+);
+
+$foundVendorAutoload = false;
+foreach ($autoloadPaths as $path) {
+    if (file_exists($path)) {
+        require $path;
+        $foundVendorAutoload = true;
+        break;
+    }
+}
+
+if (!$foundVendorAutoload) {
+    throw new \Exception('Could not find autoload path in any of the searched locations');
+}
+
+use BrowscapPHP\Exception;
+use Symfony\Component\Console\Application;
+use BrowscapPHP\Cache\BrowscapCache;
+use WurflCache\Adapter\File;
+use BrowscapPHP\Command;
+
+$resourceDirectory = 'resources/';
+$defaultIniFile    = 'resources/browscap.ini';
+
+$cacheAdapter = new File(array(File::DIR => $resourceDirectory));
+$cache        = new BrowscapCache($cacheAdapter);
+
+$application = new Application('browscap.php');
+$application->add(new Command\ConvertCommand($cache, $defaultIniFile));
+$application->add(new Command\UpdateCommand($cache));
+$application->add(new Command\ParserCommand($cache));
+$application->add(new Command\LogfileCommand($cache));
+$application->add(new Command\FetchCommand($defaultIniFile));
+
+ini_set('memory_limit', '256M');
+
+$application->run();
