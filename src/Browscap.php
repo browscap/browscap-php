@@ -190,13 +190,7 @@ class Browscap
             $this->setParser(new Parser\Ini());
         }
 
-        // generators are supported from PHP 5.5, so select the correct parser version to use
-        // (the version without generators requires about 2-3x the memory and is a bit slower)
-        if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
-            $helper = new Parser\Helper\GetPattern();
-        } else {
-            $helper = new Parser\Helper\GetPatternLt55();
-        }
+        $helper = new Parser\Helper\GetPattern();
 
         $helper
             ->setCache($this->getCache())
