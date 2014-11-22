@@ -3,6 +3,5 @@
 .buildpath
 .project
 .idea
-resources/cache*
 vendor
 phpunit.xml
