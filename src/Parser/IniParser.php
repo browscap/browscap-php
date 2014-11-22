@@ -158,7 +158,6 @@ class IniParser
         $currentDivision = '';
 
         for ($line = 0; $line < count($fileLines); $line++) {
-
             $currentLine       = ($fileLines[$line]);
             $currentLineLength = strlen($currentLine);
 
