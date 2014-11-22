@@ -101,7 +101,6 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
     public function testGetVersionCached()
     {
         $data = array(
-            'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
             'content'      => serialize(42)
         );
 
@@ -147,38 +146,9 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testGetItemWrongCacheVersion()
-    {
-        $data = array(
-            'cacheVersion' => null,
-            'content'      => serialize(42)
-        );
-
-        $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem'), array(), '', false);
-        $adapter
-            ->expects(self::once())
-            ->method('hasItem')
-            ->will(self::returnValue(true))
-        ;
-        $adapter
-            ->expects(self::once())
-            ->method('getItem')
-            ->will(self::returnValue($data))
-        ;
-
-        $this->object->setCacheAdapter($adapter);
-        $success = null;
-        self::assertNull($this->object->getItem('test', false, $success));
-        self::assertFalse($success);
-    }
-
-    /**
-     *
-     */
     public function testGetItemCached()
     {
         $data = array(
-            'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
             'content'      => serialize(42)
         );
 
@@ -210,7 +180,6 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
                 'browscap.version',
                 null,
                 array(
-                    'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
                     'content'      => serialize(42)
                 )
             ),
@@ -218,7 +187,6 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
                 'test.42',
                 null,
                 array(
-                    'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
                     'content'      => serialize('this is a test')
                 )
             )
@@ -264,7 +232,6 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
     public function testHasItemCachedWithVersion()
     {
         $data = array(
-            'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
             'content'      => serialize(42)
         );
 
@@ -290,7 +257,6 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
     public function testSetItemWithVersion()
     {
         $data = array(
-            'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
             'content'      => serialize(42)
         );
 
@@ -321,7 +287,6 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
     public function testRemoveItemWithVersion()
     {
         $data = array(
-            'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
             'content'      => serialize(42)
         );
 
@@ -352,7 +317,6 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
     public function testFlush()
     {
         $data = array(
-            'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
             'content'      => serialize(42)
         );
 

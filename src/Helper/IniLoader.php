@@ -47,11 +47,6 @@ use Psr\Log\LoggerInterface;
  */
 class IniLoader
 {
-    /**
-     * Current version of the class.
-     */
-    const VERSION = '3.0';
-
     const PHP_INI_LITE = 'Lite_PHP_BrowscapINI';
     const PHP_INI_FULL = 'Full_PHP_BrowscapINI';
     const PHP_INI      = 'PHP_BrowscapINI';

@@ -51,10 +51,6 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        if (version_compare(PHP_VERSION, '5.5.0') < 0) {
-            $this->markTestSkipped('not supported by this PHP version');
-        }
-
         $this->object = new GetPattern();
     }
 
@@ -90,7 +86,6 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
                 'browscap.version',
                 null,
                 array(
-                    'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
                     'content'      => serialize(42)
                 )
             ),
@@ -98,7 +93,6 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
                 'test.42',
                 null,
                 array(
-                    'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
                     'content'      => serialize('this is a test')
                 )
             )

@@ -58,11 +58,6 @@ use Psr\Log\NullLogger;
 class Browscap
 {
     /**
-     * Current version of the class.
-     */
-    const VERSION = '3.0a';
-
-    /**
      * Parser to use
      *
      * @var \BrowscapPHP\Parser\ParserInterface

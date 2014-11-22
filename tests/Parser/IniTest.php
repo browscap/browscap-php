@@ -58,11 +58,7 @@ class IniTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetHelper()
     {
-        if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
-            $helper = $this->getMock('\BrowscapPHP\Parser\Helper\GetPattern', array(), array(), '', false);
-        } else {
-            $helper = $this->getMock('\BrowscapPHP\Parser\Helper\GetPatternLt55', array(), array(), '', false);
-        }
+        $helper = $this->getMock('\BrowscapPHP\Parser\Helper\GetPattern', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setHelper($helper));
         self::assertSame($helper, $this->object->getHelper());

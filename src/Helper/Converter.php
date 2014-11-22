@@ -52,11 +52,6 @@ use Psr\Log\LoggerInterface;
 class Converter
 {
     /**
-     * Current cache version
-     */
-    const CACHE_FILE_VERSION = '3.0';
-
-    /**
      * Options for regex patterns.
      *
      * REGEX_DELIMITER: Delimiter of all the regex patterns in the whole class.

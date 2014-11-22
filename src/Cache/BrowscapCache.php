@@ -46,16 +46,6 @@ use WurflCache\Adapter\AdapterInterface;
 class BrowscapCache
 {
     /**
-     * Current version of the class.
-     */
-    const VERSION = '2.0';
-
-    /**
-     *
-     */
-    const CACHE_FILE_VERSION = '2.0';
-
-    /**
      * The cache livetime in seconds.
      *
      * @var integer
@@ -174,12 +164,6 @@ class BrowscapCache
         $success = null;
         $data    = $this->getCacheAdapter()->getItem($cacheId, $success);
 
-        if (!isset($data['cacheVersion']) || $data['cacheVersion'] !== self::CACHE_FILE_VERSION) {
-            $success = false;
-
-            return null;
-        }
-
         $success = true;
 
         return unserialize($data['content']);
@@ -198,7 +182,6 @@ class BrowscapCache
     {
         // Get the whole PHP code
         $data = array(
-            'cacheVersion' => self::CACHE_FILE_VERSION,
             'content'      => serialize($content),
         );
 
