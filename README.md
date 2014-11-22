@@ -32,15 +32,15 @@ Before you can start, you have to download the browscap.ini file and convert it 
    if the remote file has changed. If your cache gets corrupted you only need to rerun the `convert` command.
 
 ```php
-php bin/Browscap.php browscap:fetch
-php bin/Browscap.php browscap:convert
+bin/browscap browscap:fetch
+bin/browscap browscap:convert
 ```
 
 2. Download the file and convert it in one step. The downloaded file will not be stored in a local file, but there is a check
    if the remote file has changed. If your cache gets corrupted you have clean the cache and restart the process.
 
 ```php
-php bin/Browscap.php browscap:update
+bin/browscap browscap:update
 ```
 
 A sample using composer with taking the useragent from the global $_SERVER variable.
