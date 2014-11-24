@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "125debbe78c664b9431b9bb74d5ee6ce",
+    "hash": "129e47680fd59dcf208fd534f1e32685",
     "packages": [
         {
             "name": "mimmi20/file-loader",
@@ -56,16 +56,16 @@
         },
         {
             "name": "mimmi20/wurflcache",
-            "version": "1.2.4",
+            "version": "1.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mimmi20/WurflCache.git",
-                "reference": "bcc6e200a94f416e8b63591b5f365c541ffb2ee4"
+                "reference": "2d7366cb36b1a85da63e862ef806b190538be590"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mimmi20/WurflCache/zipball/bcc6e200a94f416e8b63591b5f365c541ffb2ee4",
-                "reference": "bcc6e200a94f416e8b63591b5f365c541ffb2ee4",
+                "url": "https://api.github.com/repos/mimmi20/WurflCache/zipball/2d7366cb36b1a85da63e862ef806b190538be590",
+                "reference": "2d7366cb36b1a85da63e862ef806b190538be590",
                 "shasum": ""
             },
             "require": {
@@ -113,7 +113,7 @@
                 "Wurfl",
                 "cache"
             ],
-            "time": "2014-08-24 20:33:27"
+            "time": "2014-11-22 20:59:23"
         },
         {
             "name": "monolog/monolog",

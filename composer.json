@@ -25,7 +25,7 @@
     },
     "require": {
         "php": ">=5.5.0",
-        "mimmi20/wurflcache": "1.2.*",
+        "mimmi20/wurflcache": ">=1.2.5",
         "mimmi20/file-loader": "2.0.*",
         "symfony/filesystem": "*",
         "symfony/finder": "2.4.*",
