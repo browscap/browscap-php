@@ -311,7 +311,8 @@ class Browscap
                     throw $e;
                 }
             }
-
+            
+            $cache_file = $this->cacheDir . $this->cacheFilename;
             if (!$this->_loadCache($cache_file)) {
                 throw new Exception('Cannot load this cache version - the cache format is not compatible.');
             }
