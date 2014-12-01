@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Formatter;
+namespace BrowscapPHP\Formatter;
 
 /**
  * interface for formating the output
@@ -47,7 +47,7 @@ interface FormatterInterface
     /**
      * Sets the data (done by the parser)
      *
-     * @param array $settings
+     * @param  array $settings
      * @return void
      */
     public function setData(array $settings);

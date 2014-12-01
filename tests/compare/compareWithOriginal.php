@@ -2,7 +2,7 @@
 
 chdir(dirname(dirname(__DIR__)));
 
-use phpbrowscap\Browscap;
+use BrowscapPHP\Browscap;
 
 $x = new compareWithOriginal();
 
@@ -610,11 +610,7 @@ class compareWithOriginal
             throw new Exception("There is no browscap file at {$this->browscap_ini_path} location.");
         }
 
-        if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
-            $browscap_data = parse_ini_file($this->browscap_ini_path, true, INI_SCANNER_RAW);
-        } else {
-            $browscap_data = parse_ini_file($this->browscap_ini_path, true);
-        }
+        $browscap_data = parse_ini_file($this->browscap_ini_path, true, INI_SCANNER_RAW);
 
         $browscap_data = array_keys($browscap_data);
 

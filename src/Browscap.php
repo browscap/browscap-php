@@ -27,15 +27,15 @@
  * @link       https://github.com/browscap/browscap-php/
  */
 
-namespace phpbrowscap;
+namespace BrowscapPHP;
 
-use phpbrowscap\Helper\Converter;
-use phpbrowscap\Cache\BrowscapCache;
-use phpbrowscap\Helper\Filesystem;
+use BrowscapPHP\Helper\Converter;
+use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Helper\Filesystem;
 use WurflCache\Adapter\File;
 use WurflCache\Adapter\AdapterInterface;
-use phpbrowscap\Helper\IniLoader;
-use phpbrowscap\Exception\FetcherException;
+use BrowscapPHP\Helper\IniLoader;
+use BrowscapPHP\Exception\FetcherException;
 use Browscap\Generator\BuildFullFileOnlyGenerator;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -58,28 +58,23 @@ use Psr\Log\NullLogger;
 class Browscap
 {
     /**
-     * Current version of the class.
-     */
-    const VERSION = '3.0a';
-
-    /**
      * Parser to use
      *
-     * @var \phpbrowscap\Parser\ParserInterface
+     * @var \BrowscapPHP\Parser\ParserInterface
      */
     private $parser = null;
 
     /**
      * Formatter to use
      *
-     * @var \phpbrowscap\Formatter\FormatterInterface
+     * @var \BrowscapPHP\Formatter\FormatterInterface
      */
     private $formatter = null;
 
     /**
      * The cache instance
      *
-     * @var \phpbrowscap\Cache\BrowscapCache
+     * @var \BrowscapPHP\Cache\BrowscapCache
      */
     private $cache = null;
 
@@ -97,9 +92,9 @@ class Browscap
     /**
      * Set theformatter instance to use for the getBrowser() result
      *
-     * @param \phpbrowscap\Formatter\FormatterInterface $formatter
+     * @param \BrowscapPHP\Formatter\FormatterInterface $formatter
      *
-     * @return \phpbrowscap\Browscap
+     * @return \BrowscapPHP\Browscap
      */
     public function setFormatter(Formatter\FormatterInterface $formatter)
     {
@@ -109,7 +104,7 @@ class Browscap
     }
 
     /**
-     * @return \phpbrowscap\Formatter\FormatterInterface
+     * @return \BrowscapPHP\Formatter\FormatterInterface
      */
     public function getFormatter()
     {
@@ -123,12 +118,12 @@ class Browscap
     /**
      * Gets a cache instance
      *
-     * @return \phpbrowscap\Cache\BrowscapCache
+     * @return \BrowscapPHP\Cache\BrowscapCache
      */
     public function getCache()
     {
         if (null === $this->cache) {
-            $resourceDirectory = __DIR__  . '/../resources/';
+            $resourceDirectory = __DIR__.'/../resources/';
 
             $cacheAdapter = new File(
                 array(File::DIR => $resourceDirectory)
@@ -143,10 +138,10 @@ class Browscap
     /**
      * Sets a cache instance
      *
-     * @param \phpbrowscap\Cache\BrowscapCache|\WurflCache\Adapter\AdapterInterface $cache
+     * @param \BrowscapPHP\Cache\BrowscapCache|\WurflCache\Adapter\AdapterInterface $cache
      *
-     * @throws \phpbrowscap\Exception
-     * @return \phpbrowscap\Browscap
+     * @throws \BrowscapPHP\Exception
+     * @return \BrowscapPHP\Browscap
      */
     public function setCache($cache)
     {
@@ -156,8 +151,8 @@ class Browscap
             $this->cache = new BrowscapCache($cache);
         } else {
             throw new Exception(
-                'the cache has to be an instance of \phpbrowscap\Cache\BrowscapCache or '
-                . 'an instanceof of \WurflCache\Adapter\AdapterInterface',
+                'the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCache or '
+                .'an instanceof of \WurflCache\Adapter\AdapterInterface',
                 Exception::CACHE_INCOMPATIBLE
             );
         }
@@ -168,9 +163,9 @@ class Browscap
     /**
      * Sets the parser instance to use
      *
-     * @param \phpbrowscap\Parser\ParserInterface $parser
+     * @param \BrowscapPHP\Parser\ParserInterface $parser
      *
-     * @return \phpbrowscap\Browscap
+     * @return \BrowscapPHP\Browscap
      */
     public function setParser(Parser\ParserInterface $parser)
     {
@@ -190,13 +185,7 @@ class Browscap
             $this->setParser(new Parser\Ini());
         }
 
-        // generators are supported from PHP 5.5, so select the correct parser version to use
-        // (the version without generators requires about 2-3x the memory and is a bit slower)
-        if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
-            $helper = new Parser\Helper\GetPattern();
-        } else {
-            $helper = new Parser\Helper\GetPatternLt55();
-        }
+        $helper = new Parser\Helper\GetPattern();
 
         $helper
             ->setCache($this->getCache())
@@ -218,7 +207,7 @@ class Browscap
      *
      * @param \Psr\Log\LoggerInterface $logger
      *
-     * @return \phpbrowscap\Browscap
+     * @return \BrowscapPHP\Browscap
      */
     public function setLogger(LoggerInterface $logger)
     {
@@ -246,7 +235,7 @@ class Browscap
      *
      * @param array $options
      *
-     * @return \phpbrowscap\Browscap
+     * @return \BrowscapPHP\Browscap
      */
     public function setOptions(array $options)
     {
@@ -258,13 +247,13 @@ class Browscap
     /**
      * parses the given user agent to get the information about the browser
      *
-     * if no user agent is given, it uses {@see \phpbrowscap\Helper\Support} to get it
+     * if no user agent is given, it uses {@see \BrowscapPHP\Helper\Support} to get it
      *
      * @param string $userAgent the user agent string
      *
-     * @throws \phpbrowscap\Exception
-     * @return \stdClass  the object containing the browsers details. Array if
-     *                    $return_array is set to true.
+     * @throws \BrowscapPHP\Exception
+     * @return \stdClass              the object containing the browsers details. Array if
+     *                                $return_array is set to true.
      */
     public function getBrowser($userAgent = null)
     {
@@ -289,8 +278,8 @@ class Browscap
     /**
      * reads and parses an ini file and writes the results into the cache
      *
-     * @param string $iniFile
-     * @throws \phpbrowscap\Exception\FileNotFoundException
+     * @param  string                                       $iniFile
+     * @throws \BrowscapPHP\Exception\FileNotFoundException
      */
     public function convertFile($iniFile)
     {
@@ -328,7 +317,7 @@ class Browscap
      * @param string $file       The name of the file where to store the remote content
      * @param string $remoteFile The code for the remote file to load
      *
-     * @throws \phpbrowscap\Exception\FetcherException
+     * @throws \BrowscapPHP\Exception\FetcherException
      */
     public function fetch($file, $remoteFile = IniLoader::PHP_INI)
     {
@@ -365,7 +354,7 @@ class Browscap
      *
      * @param string $remoteFile The code for the remote file to load
      *
-     * @throws \phpbrowscap\Exception\FetcherException
+     * @throws \BrowscapPHP\Exception\FetcherException
      */
     public function update($remoteFile = IniLoader::PHP_INI)
     {
@@ -383,8 +372,8 @@ class Browscap
 
             $buildNumber = (int) file_get_contents('vendor/browscap/browscap/BUILD_NUMBER');
 
-            $buildFolder = 'resources/browscap-ua-test-' . $buildNumber;
-            $iniFile     = $buildFolder . '/full_php_browscap.ini';
+            $buildFolder = 'resources/browscap-ua-test-'.$buildNumber;
+            $iniFile     = $buildFolder.'/full_php_browscap.ini';
 
             mkdir($buildFolder, 0777, true);
 

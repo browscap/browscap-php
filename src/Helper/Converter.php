@@ -28,14 +28,13 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Helper;
+namespace BrowscapPHP\Helper;
 
-use phpbrowscap\Helper\Filesystem;
-use phpbrowscap\Exception\FileNotFoundException;
-use phpbrowscap\Cache\BrowscapCache;
-use phpbrowscap\Parser\Helper\Pattern;
-use phpbrowscap\Parser\Ini;
-use phpbrowscap\Data\PropertyHolder;
+use BrowscapPHP\Exception\FileNotFoundException;
+use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Parser\Helper\Pattern;
+use BrowscapPHP\Parser\Ini;
+use BrowscapPHP\Data\PropertyHolder;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -53,11 +52,6 @@ use Psr\Log\LoggerInterface;
 class Converter
 {
     /**
-     * Current cache version
-     */
-    const CACHE_FILE_VERSION = '3.0';
-
-    /**
      * Options for regex patterns.
      *
      * REGEX_DELIMITER: Delimiter of all the regex patterns in the whole class.
@@ -74,14 +68,14 @@ class Converter
     /**
      * The cache instance
      *
-     * @var \phpbrowscap\Cache\BrowscapCache
+     * @var \BrowscapPHP\Cache\BrowscapCache
      */
     private $cache = null;
 
     /**
      * a filesystem helper instance
      *
-     * @var \phpbrowscap\Helper\Filesystem
+     * @var \BrowscapPHP\Helper\Filesystem
      */
     private $filessystem = null;
 
@@ -106,7 +100,7 @@ class Converter
      *
      * @param \Psr\Log\LoggerInterface $logger
      *
-     * @return \phpbrowscap\Helper\Converter
+     * @return \BrowscapPHP\Helper\Converter
      */
     public function setLogger(LoggerInterface $logger)
     {
@@ -128,9 +122,9 @@ class Converter
     /**
      * Sets a cache instance
      *
-     * @param \phpbrowscap\Cache\BrowscapCache $cache
+     * @param \BrowscapPHP\Cache\BrowscapCache $cache
      *
-     * @return \phpbrowscap\Helper\Converter
+     * @return \BrowscapPHP\Helper\Converter
      */
     public function setCache(BrowscapCache $cache)
     {
@@ -142,7 +136,7 @@ class Converter
     /**
      * Returns a cache instance
      *
-     * @return \phpbrowscap\Cache\BrowscapCache $cache
+     * @return \BrowscapPHP\Cache\BrowscapCache $cache
      */
     public function getCache()
     {
@@ -152,9 +146,9 @@ class Converter
     /**
      * Sets a filesystem instance
      *
-     * @param \phpbrowscap\Helper\Filesystem $file
+     * @param \BrowscapPHP\Helper\Filesystem $file
      *
-     * @return \phpbrowscap\Helper\Converter
+     * @return \BrowscapPHP\Helper\Converter
      */
     public function setFilesystem(Filesystem $file)
     {
@@ -166,7 +160,7 @@ class Converter
     /**
      * Returns a filesystem instance
      *
-     * @return \phpbrowscap\Helper\Filesystem
+     * @return \BrowscapPHP\Helper\Filesystem
      */
     public function getFilesystem()
     {
@@ -178,8 +172,8 @@ class Converter
     }
 
     /**
-     * @param string $iniFile
-     * @throws \phpbrowscap\Exception\FileNotFoundException
+     * @param  string                                       $iniFile
+     * @throws \BrowscapPHP\Exception\FileNotFoundException
      */
     public function convertFile($iniFile)
     {
@@ -225,7 +219,7 @@ class Converter
     {
         $key = $this->pregQuote(Ini::BROWSCAP_VERSION_KEY);
 
-        if (preg_match("/\.*\[" . $key . "\][^\[]*Version=(\d+)\D.*/", $iniString, $matches)) {
+        if (preg_match("/\.*\[".$key."\][^\[]*Version=(\d+)\D.*/", $iniString, $matches)) {
             if (isset($matches[1])) {
                 $this->iniVersion = (int) $matches[1];
             }
@@ -239,7 +233,7 @@ class Converter
      *
      * @param int $version
      *
-     * @return \phpbrowscap\Helper\Converter
+     * @return \BrowscapPHP\Helper\Converter
      */
     public function setVersion($version)
     {
@@ -251,7 +245,7 @@ class Converter
     /**
      * stores the version of the ini file into cache
      *
-     * @return \phpbrowscap\Helper\Converter
+     * @return \BrowscapPHP\Helper\Converter
      */
     public function storeVersion()
     {
@@ -263,7 +257,7 @@ class Converter
     /**
      * Quotes a pattern from the browscap.ini file, so that it can be used in regular expressions
      *
-     * @param string $pattern
+     * @param  string $pattern
      * @return string
      */
     private function pregQuote($pattern)
@@ -310,7 +304,7 @@ class Converter
             }
             // the position has to be moved by one, because the header of the ini file
             // is also returned as a part
-            $contents[$subkey][] = $patternhash . json_encode(
+            $contents[$subkey][] = $patternhash.json_encode(
                 $browserProperties,
                 JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
             );
@@ -320,19 +314,19 @@ class Converter
         unset($iniParts);
 
         foreach ($contents as $subkey => $content) {
-            $this->getCache()->setItem('browscap.iniparts.' . $subkey, $content, true);
+            $this->getCache()->setItem('browscap.iniparts.'.$subkey, $content, true);
         }
     }
 
     /**
      * Gets the subkey for the ini parts cache file, generated from the given string
      *
-     * @param string $string
+     * @param  string $string
      * @return string
      */
     public static function getIniPartCacheSubkey($string)
     {
-        return $string[0] . $string[1];
+        return $string[0].$string[1];
     }
 
     /**
@@ -347,7 +341,11 @@ class Converter
         // get all relevant patterns from the INI file
         // - containing "*" or "?"
         // - not containing "*" or "?", but not having a comment
-        preg_match_all('/(?<=\[)(?:[^\r\n]*[?*][^\r\n]*)(?=\])|(?<=\[)(?:[^\r\n*?]+)(?=\])(?![^\[]*Comment=)/m', $content, $matches);
+        preg_match_all(
+            '/(?<=\[)(?:[^\r\n]*[?*][^\r\n]*)(?=\])|(?<=\[)(?:[^\r\n*?]+)(?=\])(?![^\[]*Comment=)/m',
+            $content,
+            $matches
+        );
 
         if (empty($matches[0]) || !is_array($matches[0])) {
             return false;
@@ -396,7 +394,7 @@ class Converter
                     $contents[$tmpSubkey] = array();
                 }
 
-                $contents[$tmpSubkey][] = $tmpStart . ' ' . $tmpJoinPatterns;
+                $contents[$tmpSubkey][] = $tmpStart.' '.$tmpJoinPatterns;
             }
         }
 
@@ -407,12 +405,12 @@ class Converter
         // triggered by the getPatterns() method.
         $subkeys = array_flip(Pattern::getAllPatternCacheSubkeys());
         foreach ($contents as $subkey => $content) {
-            $this->cache->setItem('browscap.patterns.' . $subkey, $content, true);
+            $this->cache->setItem('browscap.patterns.'.$subkey, $content, true);
             unset($subkeys[$subkey]);
         }
 
         foreach (array_keys($subkeys) as $subkey) {
-            $this->getCache()->setItem('browscap.patterns.' . $subkey, '', true);
+            $this->getCache()->setItem('browscap.patterns.'.$subkey, '', true);
         }
 
         return true;

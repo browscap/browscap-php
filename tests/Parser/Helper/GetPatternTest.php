@@ -1,9 +1,9 @@
 <?php
 
-namespace phpbrowscapTest\Parser\Helper;
+namespace BrowscapPHPTest\Parser\Helper;
 
-use phpbrowscap\Parser\Helper\GetPattern;
-use phpbrowscap\Cache\BrowscapCache;
+use BrowscapPHP\Parser\Helper\GetPattern;
+use BrowscapPHP\Cache\BrowscapCache;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -35,12 +35,12 @@ use phpbrowscap\Cache\BrowscapCache;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/phpbrowscap/
+ * @link       https://github.com/GaretJax/BrowscapPHP/
  */
 class GetPatternTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \phpbrowscap\Parser\Helper\GetPattern
+     * @var \BrowscapPHP\Parser\Helper\GetPattern
      */
     private $object = null;
 
@@ -51,10 +51,6 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        if (version_compare(PHP_VERSION, '5.5.0') < 0) {
-            $this->markTestSkipped('not supported by this PHP version');
-        }
-
         $this->object = new GetPattern();
     }
 
@@ -63,7 +59,7 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetCache()
     {
-        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array(), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setCache($cache));
         self::assertSame($cache, $this->object->getCache());
@@ -90,7 +86,6 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
                 'browscap.version',
                 null,
                 array(
-                    'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
                     'content'      => serialize(42)
                 )
             ),
@@ -98,13 +93,12 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
                 'test.42',
                 null,
                 array(
-                    'cacheVersion' => BrowscapCache::CACHE_FILE_VERSION,
                     'content'      => serialize('this is a test')
                 )
             )
         );
 
-        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array('getItem'), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem'), array(), '', false);
         $cache
             ->expects(self::never())
             ->method('getItem')

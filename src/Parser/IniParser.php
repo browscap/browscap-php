@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Parser;
+namespace BrowscapPHP\Parser;
 
 /**
  * parses the ini data into an array of sections with their data
@@ -116,7 +116,7 @@ class IniParser
         $filename = $this->filename;
 
         if (!file_exists($filename)) {
-            throw new \phpbrowscap\Exception\InvalidArgumentException("File not found: {$filename}");
+            throw new \BrowscapPHP\Exception\InvalidArgumentException("File not found: {$filename}");
         }
 
         return file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -158,7 +158,6 @@ class IniParser
         $currentDivision = '';
 
         for ($line = 0; $line < count($fileLines); $line++) {
-
             $currentLine       = ($fileLines[$line]);
             $currentLineLength = strlen($currentLine);
 

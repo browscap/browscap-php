@@ -1,10 +1,10 @@
 <?php
-namespace phpbrowscapTest;
+namespace BrowscapPHPTest;
 
-use phpbrowscap\Browscap;
+use BrowscapPHP\Browscap;
 use WurflCache\Adapter\Memory;
-use phpbrowscap\Cache\BrowscapCache;
-use phpbrowscap\Parser\Ini;
+use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Parser\Ini;
 use Browscap\Data\DataCollection;
 use Browscap\Data\Expander;
 use Browscap\Filter\FullFilter;
@@ -181,7 +181,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             }
         }
 
-        // Now, load an INI file into phpbrowscap\Browscap for testing the UAs
+        // Now, load an INI file into BrowscapPHP\Browscap for testing the UAs
         self::$object = new Browscap();
 
         $cacheAdapter = new Memory();

@@ -28,11 +28,11 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Parser;
+namespace BrowscapPHP\Parser;
 
-use phpbrowscap\Cache\BrowscapCache;
-use phpbrowscap\Formatter\FormatterInterface;
-use phpbrowscap\Parser\Helper\GetPatternInterface;
+use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Formatter\FormatterInterface;
+use BrowscapPHP\Parser\Helper\GetPatternInterface;
 
 /**
  * the interface for the ini parser class
@@ -49,44 +49,44 @@ use phpbrowscap\Parser\Helper\GetPatternInterface;
 interface ParserInterface
 {
     /**
-     * @param \phpbrowscap\Parser\Helper\GetPatternInterface $helper
+     * @param \BrowscapPHP\Parser\Helper\GetPatternInterface $helper
      *
-     * @return \phpbrowscap\Parser\Ini
+     * @return \BrowscapPHP\Parser\Ini
      */
     public function setHelper(GetPatternInterface $helper);
 
     /**
-     * @return \phpbrowscap\Parser\Helper\GetPatternInterface
+     * @return \BrowscapPHP\Parser\Helper\GetPatternInterface
      */
     public function getHelper();
 
     /**
      * Set theformatter instance to use for the getBrowser() result
      *
-     * @param \phpbrowscap\Formatter\FormatterInterface $formatter
+     * @param \BrowscapPHP\Formatter\FormatterInterface $formatter
      *
-     * @return \phpbrowscap\Parser\Ini
+     * @return \BrowscapPHP\Parser\Ini
      */
     public function setFormatter(FormatterInterface $formatter);
 
     /**
-     * @return \phpbrowscap\Formatter\FormatterInterface
+     * @return \BrowscapPHP\Formatter\FormatterInterface
      */
     public function getFormatter();
 
     /**
      * Gets a cache instance
      *
-     * @return \phpbrowscap\Cache\BrowscapCache
+     * @return \BrowscapPHP\Cache\BrowscapCache
      */
     public function getCache();
 
     /**
      * Sets a cache instance
      *
-     * @param \phpbrowscap\Cache\BrowscapCache $cache
+     * @param \BrowscapPHP\Cache\BrowscapCache $cache
      *
-     * @return \phpbrowscap\Parser\Ini
+     * @return \BrowscapPHP\Parser\Ini
      */
     public function setCache(BrowscapCache $cache);
 
@@ -94,7 +94,7 @@ interface ParserInterface
      * Gets the browser data formatr for the given user agent
      * (or null if no data avaailble, no even the default browser)
      *
-     * @param string $user_agent
+     * @param  string                  $user_agent
      * @return FormatterInterface|null
      */
     public function getBrowser($user_agent);

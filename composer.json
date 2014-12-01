@@ -24,8 +24,8 @@
         "source": "https://github.com/browscap/browscap-php"
     },
     "require": {
-        "php": ">=5.3.0",
-        "mimmi20/wurflcache": "1.2.*",
+        "php": ">=5.5.0",
+        "mimmi20/wurflcache": ">=1.2.5",
         "mimmi20/file-loader": "2.0.*",
         "symfony/filesystem": "*",
         "symfony/finder": "2.4.*",
@@ -34,7 +34,9 @@
     },
     "require-dev": {
         "phpunit/phpunit": "*",
-        "mikey179/vfsStream": "dev-master"
+        "mikey179/vfsStream": "dev-master",
+        "squizlabs/php_codesniffer": "~1.5",
+        "fabpot/php-cs-fixer": "~1.1"
     },
     "suggest": {
         "ext-curl": "to use curl requests to get the ini file",
@@ -42,13 +44,13 @@
     },
     "autoload": {
         "psr-4": {
-            "phpbrowscap\\": "src/"
+            "BrowscapPHP\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "phpbrowscapTest\\": "tests/"
+            "BrowscapPHPTest\\": "tests/"
         }
     },
-    "bin": ["src/bin/Browscap.php"]
+    "bin": ["bin/browscap"]
 }

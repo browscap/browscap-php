@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap;
+namespace BrowscapPHP;
 
 /**
  * Browscap.ini parsing class base exception

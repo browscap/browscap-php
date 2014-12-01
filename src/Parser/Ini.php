@@ -28,14 +28,14 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Parser;
+namespace BrowscapPHP\Parser;
 
-use phpbrowscap\Cache\BrowscapCache;
-use phpbrowscap\Formatter\FormatterInterface;
-use phpbrowscap\Helper\Quoter;
-use phpbrowscap\Parser\Helper\GetPatternInterface;
-use phpbrowscap\Data\PropertyHolder;
-use phpbrowscap\Helper\Converter;
+use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Formatter\FormatterInterface;
+use BrowscapPHP\Helper\Quoter;
+use BrowscapPHP\Parser\Helper\GetPatternInterface;
+use BrowscapPHP\Data\PropertyHolder;
+use BrowscapPHP\Helper\Converter;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -60,7 +60,7 @@ class Ini implements ParserInterface
     /**
      * The cache instance
      *
-     * @var \phpbrowscap\Cache\BrowscapCache
+     * @var \BrowscapPHP\Cache\BrowscapCache
      */
     private $cache = null;
 
@@ -72,7 +72,7 @@ class Ini implements ParserInterface
     /**
      * Formatter to use
      *
-     * @var \phpbrowscap\Formatter\FormatterInterface
+     * @var \BrowscapPHP\Formatter\FormatterInterface
      */
     private $formatter = null;
 
@@ -80,9 +80,9 @@ class Ini implements ParserInterface
     private $logger = null;
 
     /**
-     * @param \phpbrowscap\Parser\Helper\GetPatternInterface $helper
+     * @param \BrowscapPHP\Parser\Helper\GetPatternInterface $helper
      *
-     * @return \phpbrowscap\Parser\Ini
+     * @return \BrowscapPHP\Parser\Ini
      */
     public function setHelper(GetPatternInterface $helper)
     {
@@ -92,7 +92,7 @@ class Ini implements ParserInterface
     }
 
     /**
-     * @return \phpbrowscap\Parser\Helper\GetPatternInterface
+     * @return \BrowscapPHP\Parser\Helper\GetPatternInterface
      */
     public function getHelper()
     {
@@ -102,9 +102,9 @@ class Ini implements ParserInterface
     /**
      * Set the formatter instance to use for the getBrowser() result
      *
-     * @param \phpbrowscap\Formatter\FormatterInterface $formatter
+     * @param \BrowscapPHP\Formatter\FormatterInterface $formatter
      *
-     * @return \phpbrowscap\Parser\Ini
+     * @return \BrowscapPHP\Parser\Ini
      */
     public function setFormatter(FormatterInterface $formatter)
     {
@@ -114,7 +114,7 @@ class Ini implements ParserInterface
     }
 
     /**
-     * @return \phpbrowscap\Formatter\FormatterInterface
+     * @return \BrowscapPHP\Formatter\FormatterInterface
      */
     public function getFormatter()
     {
@@ -124,7 +124,7 @@ class Ini implements ParserInterface
     /**
      * Gets a cache instance
      *
-     * @return \phpbrowscap\Cache\BrowscapCache
+     * @return \BrowscapPHP\Cache\BrowscapCache
      */
     public function getCache()
     {
@@ -134,9 +134,9 @@ class Ini implements ParserInterface
     /**
      * Sets a cache instance
      *
-     * @param \phpbrowscap\Cache\BrowscapCache $cache
+     * @param \BrowscapPHP\Cache\BrowscapCache $cache
      *
-     * @return \phpbrowscap\Parser\Ini
+     * @return \BrowscapPHP\Parser\Ini
      */
     public function setCache(BrowscapCache $cache)
     {
@@ -150,7 +150,7 @@ class Ini implements ParserInterface
      *
      * @param \Psr\Log\LoggerInterface $logger
      *
-     * @return \phpbrowscap\Parser\Ini
+     * @return \BrowscapPHP\Parser\Ini
      */
     public function setLogger(LoggerInterface $logger)
     {
@@ -173,7 +173,7 @@ class Ini implements ParserInterface
      * Gets the browser data formatr for the given user agent
      * (or null if no data avaailble, no even the default browser)
      *
-     * @param string $userAgent
+     * @param  string                  $userAgent
      * @return FormatterInterface|null
      */
     public function getBrowser($userAgent)
@@ -183,12 +183,16 @@ class Ini implements ParserInterface
         $quoterHelper = new Quoter();
 
         foreach ($this->getHelper()->getPatterns($userAgent) as $patterns) {
-            if (preg_match('/^(?:' . str_replace("\t", ')|(?:', $quoterHelper->pregQuote($patterns)) . ')$/i', $userAgent)) {
+            $result = preg_match(
+                '/^(?:'.str_replace("\t", ')|(?:', $quoterHelper->pregQuote($patterns)).')$/i',
+                $userAgent
+            );
+            if ($result) {
                 // strtok() requires less memory than explode()
                 $pattern = strtok($patterns, "\t");
 
                 while ($pattern !== false) {
-                    $quotedPattern = '/^' . $quoterHelper->pregQuote($pattern, '/') . '$/i';
+                    $quotedPattern = '/^'.$quoterHelper->pregQuote($pattern, '/').'$/i';
 
                     if (preg_match($quotedPattern, $userAgent)) {
                         $formatter = $this->getFormatter();
@@ -208,8 +212,8 @@ class Ini implements ParserInterface
      * Gets the settings for a given pattern (method calls itself to
      * get the data from the parent patterns)
      *
-     * @param string $pattern
-     * @param array $settings
+     * @param  string $pattern
+     * @param  array  $settings
      * @return array
      */
     private function getSettings($pattern, array $settings = array())
@@ -218,7 +222,7 @@ class Ini implements ParserInterface
         if (count($settings) === 0) {
             $quoterHelper = new Quoter();
 
-            $settings['browser_name_regex']   = '/^' . $quoterHelper->pregQuote($pattern) . '$/';
+            $settings['browser_name_regex']   = '/^'.$quoterHelper->pregQuote($pattern).'$/';
             $settings['browser_name_pattern'] = $pattern;
         }
 
@@ -247,7 +251,7 @@ class Ini implements ParserInterface
     /**
      * Gets the relevant part (array of settings) of the ini file for a given pattern.
      *
-     * @param string $pattern
+     * @param  string $pattern
      * @return array
      */
     private function getIniPart($pattern)
@@ -256,12 +260,12 @@ class Ini implements ParserInterface
         $patternhash = md5($pattern);
         $subkey      = Converter::getIniPartCacheSubkey($patternhash);
 
-        if (!$this->getCache()->hasItem('browscap.iniparts.' . $subkey, true)) {
+        if (!$this->getCache()->hasItem('browscap.iniparts.'.$subkey, true)) {
             return array();
         }
 
         $success = null;
-        $file    = $this->getCache()->getItem('browscap.iniparts.' . $subkey, true, $success);
+        $file    = $this->getCache()->getItem('browscap.iniparts.'.$subkey, true, $success);
 
         if (!$success) {
             return array();

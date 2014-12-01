@@ -28,16 +28,16 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Command;
+namespace BrowscapPHP\Command;
 
-use phpbrowscap\Browscap;
-use phpbrowscap\Exception\UnknownBrowserException;
-use phpbrowscap\Exception\UnknownBrowserTypeException;
-use phpbrowscap\Exception\UnknownDeviceException;
-use phpbrowscap\Exception\UnknownEngineException;
-use phpbrowscap\Exception\UnknownPlatformException;
-use phpbrowscap\Helper\Filesystem;
-use phpbrowscap\Util\Logfile\ReaderCollection;
+use BrowscapPHP\Browscap;
+use BrowscapPHP\Exception\UnknownBrowserException;
+use BrowscapPHP\Exception\UnknownBrowserTypeException;
+use BrowscapPHP\Exception\UnknownDeviceException;
+use BrowscapPHP\Exception\UnknownEngineException;
+use BrowscapPHP\Exception\UnknownPlatformException;
+use BrowscapPHP\Helper\Filesystem;
+use BrowscapPHP\Util\Logfile\ReaderCollection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -46,12 +46,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use phpbrowscap\Exception\InvalidArgumentException;
-use phpbrowscap\Exception\ReaderException;
-use phpbrowscap\Helper\LoggerHelper;
-use phpbrowscap\Cache\BrowscapCache;
-use phpbrowscap\Util\Logfile\ReaderFactory;
-use phpbrowscap\Helper\IniLoader;
+use BrowscapPHP\Exception\InvalidArgumentException;
+use BrowscapPHP\Exception\ReaderException;
+use BrowscapPHP\Helper\LoggerHelper;
+use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Util\Logfile\ReaderFactory;
+use BrowscapPHP\Helper\IniLoader;
 
 /**
  * commands to parse a log file and parse the useragents in it
@@ -68,7 +68,7 @@ use phpbrowscap\Helper\IniLoader;
 class LogfileCommand extends Command
 {
     /**
-     * @var \phpbrowscap\Cache\BrowscapCache
+     * @var \BrowscapPHP\Cache\BrowscapCache
      */
     private $cache = null;
 
@@ -85,7 +85,7 @@ class LogfileCommand extends Command
     private $totalCount = 0;
 
     /**
-     * @param \phpbrowscap\Cache\BrowscapCache $cache
+     * @param \BrowscapPHP\Cache\BrowscapCache $cache
      */
     public function __construct(BrowscapCache $cache)
     {
@@ -148,7 +148,7 @@ class LogfileCommand extends Command
      * @param OutputInterface $output
      *
      * @throws \UnexpectedValueException
-     * @throws \phpbrowscap\Exception\InvalidArgumentException
+     * @throws \BrowscapPHP\Exception\InvalidArgumentException
      * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -181,11 +181,11 @@ class LogfileCommand extends Command
             $this->countOk  = 0;
             $this->countNok = 0;
 
-            $logger->info('Analyzing file "' . $file->getPathname() . '"');
+            $logger->info('Analyzing file "'.$file->getPathname().'"');
 
             if ($internalLoader->isSupportingLoadingLines()) {
                 if (!$internalLoader->init($path)) {
-                    $logger->info('Skipping empty file "' . $file->getPathname() . '"');
+                    $logger->info('Skipping empty file "'.$file->getPathname().'"');
                     continue;
                 }
 
@@ -208,7 +208,7 @@ class LogfileCommand extends Command
                 $lines = file($path);
 
                 if (empty($lines)) {
-                    $logger->info('Skipping empty file "' . $file->getPathname() . '"');
+                    $logger->info('Skipping empty file "'.$file->getPathname().'"');
                     continue;
                 }
 
@@ -229,14 +229,14 @@ class LogfileCommand extends Command
             arsort($this->uas, SORT_NUMERIC);
 
             try {
-                $fs->dumpFile($input->getArgument('output') . '/output.sql', $this->createSqlContent());
+                $fs->dumpFile($input->getArgument('output').'/output.sql', $this->createSqlContent());
             } catch (IOException $e) {
                 // do nothing
             }
 
             try {
                 $fs->dumpFile(
-                    $input->getArgument('output') . '/output.txt',
+                    $input->getArgument('output').'/output.txt',
                     implode(PHP_EOL, array_unique($this->undefinedClients))
                 );
             } catch (IOException $e) {
@@ -245,7 +245,7 @@ class LogfileCommand extends Command
 
             try {
                 $fs->dumpFile(
-                    $input->getArgument('output') . '/output-with-amount.txt',
+                    $input->getArgument('output').'/output-with-amount.txt',
                     $this->createAmountContent()
                 );
             } catch (IOException $e) {
@@ -254,7 +254,7 @@ class LogfileCommand extends Command
 
             try {
                 $fs->dumpFile(
-                    $input->getArgument('output') . '/output-with-amount-and-type.txt',
+                    $input->getArgument('output').'/output-with-amount-and-type.txt',
                     $this->createAmountTypeContent()
                 );
             } catch (IOException $e) {
@@ -263,23 +263,23 @@ class LogfileCommand extends Command
         }
 
         try {
-            $fs->dumpFile($input->getArgument('output') . '/output.sql', $this->createSqlContent());
+            $fs->dumpFile($input->getArgument('output').'/output.sql', $this->createSqlContent());
         } catch (IOException $e) {
             // do nothing
         }
 
         try {
             $fs->dumpFile(
-                $input->getArgument('output') . '/output.txt',
+                $input->getArgument('output').'/output.txt',
                 implode(PHP_EOL, array_unique($this->undefinedClients))
             );
         } catch (IOException $e) {
-            throw new \UnexpectedValueException('writing to file "' . $outputFile . '" failed', 0, $e);
+            throw new \UnexpectedValueException('writing to file "'.$outputFile.'" failed', 0, $e);
         }
 
         try {
             $fs->dumpFile(
-                $input->getArgument('output') . '/output-with-amount.txt',
+                $input->getArgument('output').'/output-with-amount.txt',
                 $this->createAmountContent()
             );
         } catch (IOException $e) {
@@ -288,7 +288,7 @@ class LogfileCommand extends Command
 
         try {
             $fs->dumpFile(
-                $input->getArgument('output') . '/output-with-amount-and-type.txt',
+                $input->getArgument('output').'/output-with-amount-and-type.txt',
                 $this->createAmountTypeContent()
             );
         } catch (IOException $e) {
@@ -299,11 +299,15 @@ class LogfileCommand extends Command
     private function createSqlContent()
     {
         $content = '';
-        
+
         arsort($this->uas, SORT_NUMERIC);
 
         foreach ($this->uas as $agentOfLine => $count) {
-            $content .= "INSERT INTO `agents` (`agent`, `count`) VALUES ('" . addslashes($agentOfLine) . "', " . addslashes($count) . ") ON DUPLICATE KEY UPDATE `count`=`count`+" . addslashes($count) . ";\n";
+            $content .= "
+                INSERT INTO `agents` (`agent`, `count`)
+                VALUES ('".addslashes($agentOfLine)."', ".addslashes($count).")
+                ON DUPLICATE KEY UPDATE `count`=`count`+".addslashes($count).";
+            ";
         }
 
         return $content;
@@ -324,7 +328,7 @@ class LogfileCommand extends Command
         }
 
         $content = '';
-        
+
         arsort($counts, SORT_NUMERIC);
 
         foreach ($counts as $agentOfLine => $count) {
@@ -343,7 +347,7 @@ class LogfileCommand extends Command
             if (!isset($this->uasWithType[$type])) {
                 continue;
             }
-            
+
             arsort($this->uasWithType[$type], SORT_NUMERIC);
 
             foreach ($this->uasWithType[$type] as $agentOfLine => $count) {
@@ -356,8 +360,8 @@ class LogfileCommand extends Command
 
     /**
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param \phpbrowscap\Util\Logfile\ReaderCollection        $collection
-     * @param \phpbrowscap\Browscap                             $browscap
+     * @param \BrowscapPHP\Util\Logfile\ReaderCollection        $collection
+     * @param \BrowscapPHP\Browscap                             $browscap
      * @param integer                                           $line
      *
      * @throws UnknownBrowserException
@@ -438,8 +442,8 @@ class LogfileCommand extends Command
     private function outputProgress(OutputInterface $output, $result, $end = false)
     {
         if (($this->totalCount % 70) === 0 || $end) {
-            $formatString = '  %' . strlen($this->countOk) . 'd OK, %' . strlen($this->countNok) . 'd NOK, Summary %'
-                . strlen($this->totalCount) . 'd';
+            $formatString = '  %'.strlen($this->countOk).'d OK, %'.strlen($this->countNok).'d NOK, Summary %'
+                .strlen($this->totalCount).'d';
 
             if ($end) {
                 $result = str_pad($result, 70 - ($this->totalCount % 70), ' ', STR_PAD_RIGHT);
@@ -447,7 +451,7 @@ class LogfileCommand extends Command
 
             $endString = sprintf($formatString, $this->countOk, $this->countNok, $this->totalCount);
 
-            $output->writeln($result . $endString);
+            $output->writeln($result.$endString);
 
             return;
         }
@@ -524,10 +528,10 @@ class LogfileCommand extends Command
     {
         switch ($file->getExtension()) {
             case 'gz':
-                $path = 'compress.zlib://' . $file->getPathname();
+                $path = 'compress.zlib://'.$file->getPathname();
                 break;
             case 'bz2':
-                $path = 'compress.bzip2://' . $file->getPathname();
+                $path = 'compress.bzip2://'.$file->getPathname();
                 break;
             default:
                 $path = $file->getPathname();
