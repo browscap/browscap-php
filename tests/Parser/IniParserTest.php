@@ -1,8 +1,8 @@
 <?php
 
-namespace phpbrowscapTest\Parser;
+namespace BrowscapPHPTest\Parser;
 
-use phpbrowscap\Parser\IniParser;
+use BrowscapPHP\Parser\IniParser;
 use org\bovigo\vfs\vfsStream;
 
 /**
@@ -35,7 +35,7 @@ use org\bovigo\vfs\vfsStream;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/phpbrowscap/
+ * @link       https://github.com/GaretJax/BrowscapPHP/
  */
 class IniParserTest extends \PHPUnit_Framework_TestCase
 {

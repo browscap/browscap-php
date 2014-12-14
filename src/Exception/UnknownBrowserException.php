@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Exception;
+namespace BrowscapPHP\Exception;
 
 /**
  * Exception to show that a unknown browser was found

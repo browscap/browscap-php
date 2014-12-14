@@ -28,9 +28,9 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Parser\Helper;
+namespace BrowscapPHP\Parser\Helper;
 
-use phpbrowscap\Cache\BrowscapCache;
+use BrowscapPHP\Cache\BrowscapCache;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -50,7 +50,7 @@ class GetPattern implements GetPatternInterface
     /**
      * The cache instance
      *
-     * @var \phpbrowscap\Cache\BrowscapCache
+     * @var \BrowscapPHP\Cache\BrowscapCache
      */
     private $cache = null;
 
@@ -60,7 +60,7 @@ class GetPattern implements GetPatternInterface
     /**
      * Gets a cache instance
      *
-     * @return \phpbrowscap\Cache\BrowscapCache
+     * @return \BrowscapPHP\Cache\BrowscapCache
      */
     public function getCache()
     {
@@ -70,9 +70,9 @@ class GetPattern implements GetPatternInterface
     /**
      * Sets a cache instance
      *
-     * @param \phpbrowscap\Cache\BrowscapCache $cache
+     * @param \BrowscapPHP\Cache\BrowscapCache $cache
      *
-     * @return \phpbrowscap\Parser\Helper\GetPattern
+     * @return \BrowscapPHP\Parser\Helper\GetPattern
      */
     public function setCache(BrowscapCache $cache)
     {
@@ -86,7 +86,7 @@ class GetPattern implements GetPatternInterface
      *
      * @param \Psr\Log\LoggerInterface $logger
      *
-     * @return \phpbrowscap\Parser\Helper\GetPattern
+     * @return \BrowscapPHP\Parser\Helper\GetPattern
      */
     public function setLogger(LoggerInterface $logger)
     {

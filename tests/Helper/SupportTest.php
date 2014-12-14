@@ -1,8 +1,8 @@
 <?php
 
-namespace phpbrowscapTest\Helper;
+namespace BrowscapPHPTest\Helper;
 
-use phpbrowscap\Helper\Support;
+use BrowscapPHP\Helper\Support;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -34,7 +34,7 @@ use phpbrowscap\Helper\Support;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/phpbrowscap/
+ * @link       https://github.com/GaretJax/BrowscapPHP/
  */
 class SupportTest extends \PHPUnit_Framework_TestCase
 {

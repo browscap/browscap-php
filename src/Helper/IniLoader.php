@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Helper;
+namespace BrowscapPHP\Helper;
 
 use FileLoader\Exception as LoaderException;
 use FileLoader\Loader;
@@ -104,7 +104,7 @@ class IniLoader
      *
      * @param \Psr\Log\LoggerInterface $logger
      *
-     * @return \phpbrowscap\Helper\IniLoader
+     * @return \BrowscapPHP\Helper\IniLoader
      */
     public function setLogger(LoggerInterface $logger)
     {
@@ -128,7 +128,7 @@ class IniLoader
      *
      * @param \FileLoader\Loader $loader
      *
-     * @return \phpbrowscap\Helper\IniLoader
+     * @return \BrowscapPHP\Helper\IniLoader
      */
     public function setLoader(Loader $loader)
     {
@@ -162,8 +162,8 @@ class IniLoader
      *
      * @param string $filename the file name
      *
-     * @throws \phpbrowscap\Helper\Exception
-     * @return \phpbrowscap\Helper\IniLoader
+     * @throws \BrowscapPHP\Helper\Exception
+     * @return \BrowscapPHP\Helper\IniLoader
      */
     public function setLocalFile($filename = null)
     {
@@ -184,8 +184,8 @@ class IniLoader
      *
      * @param string $name the file name
      *
-     * @throws \phpbrowscap\Helper\Exception
-     * @return \phpbrowscap\Helper\IniLoader
+     * @throws \BrowscapPHP\Helper\Exception
+     * @return \BrowscapPHP\Helper\IniLoader
      */
     public function setRemoteFilename($name = null)
     {
@@ -250,7 +250,7 @@ class IniLoader
      *
      * loads the ini file from a remote or local location and returns the content of the file
      *
-     * @throws \phpbrowscap\Helper\Exception
+     * @throws \BrowscapPHP\Helper\Exception
      * @return string                        the content of the loaded ini file
      */
     public function load()
@@ -273,7 +273,7 @@ class IniLoader
     /**
      * Gets the remote file update timestamp
      *
-     * @throws \phpbrowscap\Helper\Exception
+     * @throws \BrowscapPHP\Helper\Exception
      * @return integer                       the remote modification timestamp
      */
     public function getMTime()

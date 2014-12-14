@@ -28,16 +28,16 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Command;
+namespace BrowscapPHP\Command;
 
-use phpbrowscap\Browscap;
+use BrowscapPHP\Browscap;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use phpbrowscap\Helper\LoggerHelper;
-use phpbrowscap\Cache\BrowscapCache;
+use BrowscapPHP\Helper\LoggerHelper;
+use BrowscapPHP\Cache\BrowscapCache;
 
 /**
  * commands to parse a given useragent
@@ -54,12 +54,12 @@ use phpbrowscap\Cache\BrowscapCache;
 class ParserCommand extends Command
 {
     /**
-     * @var \phpbrowscap\Cache\BrowscapCache
+     * @var \BrowscapPHP\Cache\BrowscapCache
      */
     private $cache = null;
 
     /**
-     * @param \phpbrowscap\Cache\BrowscapCache $cache
+     * @param \BrowscapPHP\Cache\BrowscapCache $cache
      */
     public function __construct(BrowscapCache $cache)
     {

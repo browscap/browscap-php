@@ -1,9 +1,9 @@
 <?php
 
-namespace phpbrowscapTest\Helper;
+namespace BrowscapPHPTest\Helper;
 
 use org\bovigo\vfs\vfsStream;
-use phpbrowscap\Helper\Converter;
+use BrowscapPHP\Helper\Converter;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -35,7 +35,7 @@ use phpbrowscap\Helper\Converter;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/phpbrowscap/
+ * @link       https://github.com/GaretJax/BrowscapPHP/
  */
 class ConverterTest
     extends \PHPUnit_Framework_TestCase
@@ -43,7 +43,7 @@ class ConverterTest
     const STORAGE_DIR = 'storage';
 
     /**
-     * @var \phpbrowscap\Helper\Converter
+     * @var \BrowscapPHP\Helper\Converter
      */
     private $object = null;
 
@@ -73,7 +73,7 @@ class ConverterTest
      */
     public function testSetGetCache()
     {
-        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array(), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setCache($cache));
         self::assertSame($cache, $this->object->getCache());
@@ -84,21 +84,21 @@ class ConverterTest
      */
     public function testSetGetFilesystem()
     {
-        self::assertInstanceOf('\phpbrowscap\Helper\Filesystem', $this->object->getFilesystem());
+        self::assertInstanceOf('\BrowscapPHP\Helper\Filesystem', $this->object->getFilesystem());
 
-        $file = $this->getMock('\phpbrowscap\Helper\Filesystem', array(), array(), '', false);
+        $file = $this->getMock('\BrowscapPHP\Helper\Filesystem', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setFilesystem($file));
         self::assertSame($file, $this->object->getFilesystem());
     }
 
     /**
-     * @expectedException \phpbrowscap\Exception\FileNotFoundException
+     * @expectedException \BrowscapPHP\Exception\FileNotFoundException
      * @expectedExceptionMessage testFile
      */
     public function testConvertMissingFile()
     {
-        $file = $this->getMock('\phpbrowscap\Helper\Filesystem', array('exists'), array(), '', false);
+        $file = $this->getMock('\BrowscapPHP\Helper\Filesystem', array('exists'), array(), '', false);
         $file->expects(self::once())
             ->method('exists')
             ->will(self::returnValue(false));
@@ -114,7 +114,7 @@ class ConverterTest
     }
 
     /**
-     * @expectedException \phpbrowscap\Exception\FileNotFoundException
+     * @expectedException \BrowscapPHP\Exception\FileNotFoundException
      * @expectedExceptionMessage File "vfs://storage/test.ini" does not exist
      */
     public function testConvertFile()
@@ -231,7 +231,7 @@ AolVersion=0
 
         $this->root = vfsStream::setup(self::STORAGE_DIR, null, $structure);
 
-        $file = $this->getMock('\phpbrowscap\Helper\Filesystem', array('exists'), array(), '', false);
+        $file = $this->getMock('\BrowscapPHP\Helper\Filesystem', array('exists'), array(), '', false);
         $file->expects(self::once())
             ->method('exists')
             ->will(self::returnValue(false));
@@ -251,7 +251,7 @@ AolVersion=0
      */
     public function testGetIniVersion()
     {
-        $file = $this->getMock('\phpbrowscap\Helper\Filesystem', array('exists'), array(), '', false);
+        $file = $this->getMock('\BrowscapPHP\Helper\Filesystem', array('exists'), array(), '', false);
         $file->expects(self::never())
             ->method('exists')
             ->will(self::returnValue(false));
@@ -264,7 +264,7 @@ AolVersion=0
         $this->object->setFilesystem($file);
         $this->object->setLogger($logger);
 
-        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array(), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
 
         $this->object->setCache($cache);
 
@@ -285,7 +285,7 @@ Type=';
      */
     public function testConvertString()
     {
-        $file = $this->getMock('\phpbrowscap\Helper\Filesystem', array('exists'), array(), '', false);
+        $file = $this->getMock('\BrowscapPHP\Helper\Filesystem', array('exists'), array(), '', false);
         $file->expects(self::never())
             ->method('exists')
             ->will(self::returnValue(false));
@@ -298,7 +298,7 @@ Type=';
         $this->object->setFilesystem($file);
         $this->object->setLogger($logger);
 
-        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array('setItem'), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('setItem'), array(), '', false);
         $cache->expects(self::any())
             ->method('setItem')
             ->will(self::returnValue(false));
@@ -418,7 +418,7 @@ AolVersion=0
      */
     public function testConvertStringWithoutPatternFaound()
     {
-        $file = $this->getMock('\phpbrowscap\Helper\Filesystem', array('exists'), array(), '', false);
+        $file = $this->getMock('\BrowscapPHP\Helper\Filesystem', array('exists'), array(), '', false);
         $file->expects(self::never())
             ->method('exists')
             ->will(self::returnValue(false));
@@ -431,7 +431,7 @@ AolVersion=0
         $this->object->setFilesystem($file);
         $this->object->setLogger($logger);
 
-        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array('setItem'), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('setItem'), array(), '', false);
         $cache->expects(self::any())
             ->method('setItem')
             ->will(self::returnValue(false));

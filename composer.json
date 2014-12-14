@@ -44,12 +44,12 @@
     },
     "autoload": {
         "psr-4": {
-            "phpbrowscap\\": "src/"
+            "BrowscapPHP\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "phpbrowscapTest\\": "tests/"
+            "BrowscapPHPTest\\": "tests/"
         }
     },
     "bin": ["bin/browscap"]

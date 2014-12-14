@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Util\Logfile;
+namespace BrowscapPHP\Util\Logfile;
 
 /**
  * reader to analyze the common log file of apache

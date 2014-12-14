@@ -28,9 +28,9 @@
  * @since      added with version 3.0
  */
 
-namespace phpbrowscap\Util\Logfile;
+namespace BrowscapPHP\Util\Logfile;
 
-use phpbrowscap\Exception\ReaderException;
+use BrowscapPHP\Exception\ReaderException;
 
 /**
  * abstract parent class for all readers
@@ -61,7 +61,7 @@ abstract class AbstractReader implements ReaderInterface
      * @param string $line
      *
      * @return string
-     * @throws \phpbrowscap\Exception\ReaderException
+     * @throws \BrowscapPHP\Exception\ReaderException
      */
     public function read($line)
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace phpbrowscapTest\Parser\Helper;
+namespace BrowscapPHPTest\Parser\Helper;
 
-use phpbrowscap\Parser\Helper\Pattern;
+use BrowscapPHP\Parser\Helper\Pattern;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -34,7 +34,7 @@ use phpbrowscap\Parser\Helper\Pattern;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/phpbrowscap/
+ * @link       https://github.com/GaretJax/BrowscapPHP/
  */
 class PatternTest extends \PHPUnit_Framework_TestCase
 {
