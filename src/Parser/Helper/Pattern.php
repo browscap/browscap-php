@@ -89,7 +89,7 @@ class Pattern
      */
     public static function getPatternStart($pattern, $variants = false)
     {
-        $regex   = '/^([^\*\?\s\r\n]+).*$/';
+        $regex   = '/^([^\*\?\s\r\n\\]+).*$/';
         $pattern = substr($pattern, 0, 32);
 
         if (!preg_match($regex, $pattern)) {
