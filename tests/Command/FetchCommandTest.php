@@ -1,8 +1,8 @@
 <?php
 
-namespace BrowscapPHPTest\Command;
+namespace phpbrowscapTest\Command;
 
-use BrowscapPHP\Command\FetchCommand;
+use phpbrowscap\Command\FetchCommand;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -34,12 +34,12 @@ use BrowscapPHP\Command\FetchCommand;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/BrowscapPHP/
+ * @link       https://github.com/GaretJax/phpbrowscap/
  */
 class FetchCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \BrowscapPHP\Command\FetchCommand
+     * @var \phpbrowscap\Command\FetchCommand
      */
     private $object = null;
 
@@ -61,7 +61,7 @@ class FetchCommandTest extends \PHPUnit_Framework_TestCase
     public function testConfigure()
     {
         $object = $this->getMock(
-            '\BrowscapPHP\Command\FetchCommand',
+            '\phpbrowscap\Command\FetchCommand',
             array('setName', 'setDescription', 'addArgument', 'addOption'),
             array(),
             '',
@@ -88,7 +88,7 @@ class FetchCommandTest extends \PHPUnit_Framework_TestCase
             ->will(self::returnSelf())
         ;
 
-        $class  = new \ReflectionClass('\BrowscapPHP\Command\FetchCommand');
+        $class  = new \ReflectionClass('\phpbrowscap\Command\FetchCommand');
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 
@@ -105,7 +105,7 @@ class FetchCommandTest extends \PHPUnit_Framework_TestCase
         $input  = $this->getMock('\Symfony\Component\Console\Input\ArgvInput', array(), array(), '', false);
         $output = $this->getMock('\Symfony\Component\Console\Output\ConsoleOutput', array(), array(), '', false);
 
-        $class  = new \ReflectionClass('\BrowscapPHP\Command\FetchCommand');
+        $class  = new \ReflectionClass('\phpbrowscap\Command\FetchCommand');
         $method = $class->getMethod('execute');
         $method->setAccessible(true);
 

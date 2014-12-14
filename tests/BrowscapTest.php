@@ -1,8 +1,8 @@
 <?php
 
-namespace BrowscapPHPTest;
+namespace phpbrowscapTest;
 
-use BrowscapPHP\Browscap;
+use phpbrowscap\Browscap;
 use org\bovigo\vfs\vfsStream;
 
 /**
@@ -35,14 +35,14 @@ use org\bovigo\vfs\vfsStream;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/BrowscapPHP/
+ * @link       https://github.com/GaretJax/phpbrowscap/
  */
 class BrowscapTest extends \PHPUnit_Framework_TestCase
 {
     const STORAGE_DIR = 'storage';
 
     /**
-     * @var \BrowscapPHP\Browscap
+     * @var \phpbrowscap\Browscap
      */
     private $object = null;
 
@@ -61,7 +61,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetFormatter()
     {
-        $formatter = $this->getMock('\BrowscapPHP\Formatter\PhpGetBrowser', array(), array(), '', false);
+        $formatter = $this->getMock('\phpbrowscap\Formatter\PhpGetBrowser', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setFormatter($formatter));
         self::assertSame($formatter, $this->object->getFormatter());
@@ -72,7 +72,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetCache()
     {
-        self::assertInstanceOf('\BrowscapPHP\Cache\BrowscapCache', $this->object->getCache());
+        self::assertInstanceOf('\phpbrowscap\Cache\BrowscapCache', $this->object->getCache());
     }
 
     /**
@@ -80,7 +80,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetCache()
     {
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
+        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setCache($cache));
         self::assertSame($cache, $this->object->getCache());
@@ -94,12 +94,12 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
         $cache = $this->getMock('\WurflCache\Adapter\Memory', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setCache($cache));
-        self::assertInstanceOf('\BrowscapPHP\Cache\BrowscapCache', $this->object->getCache());
+        self::assertInstanceOf('\phpbrowscap\Cache\BrowscapCache', $this->object->getCache());
     }
 
     /**
-     * @expectedException \BrowscapPHP\Exception
-     * @expectedExceptionMessage the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCache or an instanceof of \WurflCache\Adapter\AdapterInterface
+     * @expectedException \phpbrowscap\Exception
+     * @expectedExceptionMessage the cache has to be an instance of \phpbrowscap\Cache\BrowscapCache or an instanceof of \WurflCache\Adapter\AdapterInterface
      */
     public function testSetGetCacheWithWrongType()
     {
@@ -111,7 +111,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetParser()
     {
-        self::assertInstanceOf('\BrowscapPHP\Parser\Ini', $this->object->getParser());
+        self::assertInstanceOf('\phpbrowscap\Parser\Ini', $this->object->getParser());
     }
 
     /**
@@ -120,7 +120,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
     public function testSetGetParser()
     {
         $parser = $this->getMock(
-            '\BrowscapPHP\Parser\Ini',
+            '\phpbrowscap\Parser\Ini',
             array('setHelper', 'setFormatter', 'setCache', 'setLogger'),
             array(),
             '',
@@ -189,14 +189,14 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
         $browserObject->parent = 'something';
         $browserObject->comment = 'an comment';
 
-        $formatter = $this->getMock('\BrowscapPHP\Formatter\PhpGetBrowser', array('getData'), array(), '', false);
+        $formatter = $this->getMock('\phpbrowscap\Formatter\PhpGetBrowser', array('getData'), array(), '', false);
         $formatter
             ->expects(self::once())
             ->method('getData')
             ->will(self::returnValue($browserObject))
         ;
 
-        $parser = $this->getMock('\BrowscapPHP\Parser\Ini', array('getBrowser'), array(), '', false);
+        $parser = $this->getMock('\phpbrowscap\Parser\Ini', array('getBrowser'), array(), '', false);
         $parser
             ->expects(self::once())
             ->method('getBrowser')
@@ -219,14 +219,14 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
         $browserObject->parent = 'something';
         $browserObject->comment = 'an comment';
 
-        $formatter = $this->getMock('\BrowscapPHP\Formatter\PhpGetBrowser', array('getData'), array(), '', false);
+        $formatter = $this->getMock('\phpbrowscap\Formatter\PhpGetBrowser', array('getData'), array(), '', false);
         $formatter
             ->expects(self::once())
             ->method('getData')
             ->will(self::returnValue($browserObject))
         ;
 
-        $parser = $this->getMock('\BrowscapPHP\Parser\Ini', array('getBrowser'), array(), '', false);
+        $parser = $this->getMock('\phpbrowscap\Parser\Ini', array('getBrowser'), array(), '', false);
         $parser
             ->expects(self::once())
             ->method('getBrowser')
@@ -245,14 +245,14 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetBrowserWithDefaultResult()
     {
-        $formatter = $this->getMock('\BrowscapPHP\Formatter\PhpGetBrowser', array('getData'), array(), '', false);
+        $formatter = $this->getMock('\phpbrowscap\Formatter\PhpGetBrowser', array('getData'), array(), '', false);
         $formatter
             ->expects(self::once())
             ->method('getData')
             ->will(self::returnValue(null))
         ;
 
-        $parser = $this->getMock('\BrowscapPHP\Parser\Ini', array('getBrowser'), array(), '', false);
+        $parser = $this->getMock('\phpbrowscap\Parser\Ini', array('getBrowser'), array(), '', false);
         $parser
             ->expects(self::once())
             ->method('getBrowser')

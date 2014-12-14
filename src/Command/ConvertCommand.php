@@ -28,16 +28,16 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Command;
+namespace phpbrowscap\Command;
 
-use BrowscapPHP\Browscap;
+use phpbrowscap\Browscap;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use BrowscapPHP\Helper\LoggerHelper;
-use BrowscapPHP\Cache\BrowscapCache;
+use phpbrowscap\Helper\LoggerHelper;
+use phpbrowscap\Cache\BrowscapCache;
 
 /**
  * command to convert a downloaded Browscap ini file and write it to the cache
@@ -54,7 +54,7 @@ use BrowscapPHP\Cache\BrowscapCache;
 class ConvertCommand extends Command
 {
     /**
-     * @var \BrowscapPHP\Cache\BrowscapCache
+     * @var \phpbrowscap\Cache\BrowscapCache
      */
     private $cache = null;
 
@@ -64,7 +64,7 @@ class ConvertCommand extends Command
     private $defaultIniFile;
 
     /**
-     * @param \BrowscapPHP\Cache\BrowscapCache $cache
+     * @param \phpbrowscap\Cache\BrowscapCache $cache
      * @param string                           $defaultIniFile
      */
     public function __construct(BrowscapCache $cache, $defaultIniFile)

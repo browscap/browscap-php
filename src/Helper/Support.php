@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Helper;
+namespace phpbrowscap\Helper;
 
 /**
  * PHP version 5.3

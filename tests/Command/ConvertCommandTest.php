@@ -1,9 +1,9 @@
 <?php
 
-namespace BrowscapPHPTest\Command;
+namespace phpbrowscapTest\Command;
 
-use BrowscapPHP\Command\ConvertCommand;
-use BrowscapPHP\Cache\BrowscapCache;
+use phpbrowscap\Command\ConvertCommand;
+use phpbrowscap\Cache\BrowscapCache;
 use WurflCache\Adapter\Memory;
 
 /**
@@ -36,12 +36,12 @@ use WurflCache\Adapter\Memory;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/BrowscapPHP/
+ * @link       https://github.com/GaretJax/phpbrowscap/
  */
 class ConvertCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \BrowscapPHP\Command\ConvertCommand
+     * @var \phpbrowscap\Command\ConvertCommand
      */
     private $object = null;
 
@@ -65,7 +65,7 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
     public function testConfigure()
     {
         $object = $this->getMock(
-            '\BrowscapPHP\Command\ConvertCommand',
+            '\phpbrowscap\Command\ConvertCommand',
             array('setName', 'setDescription', 'addArgument', 'addOption'),
             array(),
             '',
@@ -92,7 +92,7 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
             ->will(self::returnSelf())
         ;
 
-        $class  = new \ReflectionClass('\BrowscapPHP\Command\ConvertCommand');
+        $class  = new \ReflectionClass('\phpbrowscap\Command\ConvertCommand');
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 
@@ -107,7 +107,7 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
         $input  = $this->getMock('\Symfony\Component\Console\Input\ArgvInput', array(), array(), '', false);
         $output = $this->getMock('\Symfony\Component\Console\Output\ConsoleOutput', array(), array(), '', false);
 
-        $class  = new \ReflectionClass('\BrowscapPHP\Command\ConvertCommand');
+        $class  = new \ReflectionClass('\phpbrowscap\Command\ConvertCommand');
         $method = $class->getMethod('execute');
         $method->setAccessible(true);
 

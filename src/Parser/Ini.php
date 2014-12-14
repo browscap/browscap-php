@@ -28,14 +28,14 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Parser;
+namespace phpbrowscap\Parser;
 
-use BrowscapPHP\Cache\BrowscapCache;
-use BrowscapPHP\Formatter\FormatterInterface;
-use BrowscapPHP\Helper\Quoter;
-use BrowscapPHP\Parser\Helper\GetPatternInterface;
-use BrowscapPHP\Data\PropertyHolder;
-use BrowscapPHP\Helper\Converter;
+use phpbrowscap\Cache\BrowscapCache;
+use phpbrowscap\Formatter\FormatterInterface;
+use phpbrowscap\Helper\Quoter;
+use phpbrowscap\Parser\Helper\GetPatternInterface;
+use phpbrowscap\Data\PropertyHolder;
+use phpbrowscap\Helper\Converter;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -60,7 +60,7 @@ class Ini implements ParserInterface
     /**
      * The cache instance
      *
-     * @var \BrowscapPHP\Cache\BrowscapCache
+     * @var \phpbrowscap\Cache\BrowscapCache
      */
     private $cache = null;
 
@@ -72,7 +72,7 @@ class Ini implements ParserInterface
     /**
      * Formatter to use
      *
-     * @var \BrowscapPHP\Formatter\FormatterInterface
+     * @var \phpbrowscap\Formatter\FormatterInterface
      */
     private $formatter = null;
 
@@ -80,9 +80,9 @@ class Ini implements ParserInterface
     private $logger = null;
 
     /**
-     * @param \BrowscapPHP\Parser\Helper\GetPatternInterface $helper
+     * @param \phpbrowscap\Parser\Helper\GetPatternInterface $helper
      *
-     * @return \BrowscapPHP\Parser\Ini
+     * @return \phpbrowscap\Parser\Ini
      */
     public function setHelper(GetPatternInterface $helper)
     {
@@ -92,7 +92,7 @@ class Ini implements ParserInterface
     }
 
     /**
-     * @return \BrowscapPHP\Parser\Helper\GetPatternInterface
+     * @return \phpbrowscap\Parser\Helper\GetPatternInterface
      */
     public function getHelper()
     {
@@ -102,9 +102,9 @@ class Ini implements ParserInterface
     /**
      * Set the formatter instance to use for the getBrowser() result
      *
-     * @param \BrowscapPHP\Formatter\FormatterInterface $formatter
+     * @param \phpbrowscap\Formatter\FormatterInterface $formatter
      *
-     * @return \BrowscapPHP\Parser\Ini
+     * @return \phpbrowscap\Parser\Ini
      */
     public function setFormatter(FormatterInterface $formatter)
     {
@@ -114,7 +114,7 @@ class Ini implements ParserInterface
     }
 
     /**
-     * @return \BrowscapPHP\Formatter\FormatterInterface
+     * @return \phpbrowscap\Formatter\FormatterInterface
      */
     public function getFormatter()
     {
@@ -124,7 +124,7 @@ class Ini implements ParserInterface
     /**
      * Gets a cache instance
      *
-     * @return \BrowscapPHP\Cache\BrowscapCache
+     * @return \phpbrowscap\Cache\BrowscapCache
      */
     public function getCache()
     {
@@ -134,9 +134,9 @@ class Ini implements ParserInterface
     /**
      * Sets a cache instance
      *
-     * @param \BrowscapPHP\Cache\BrowscapCache $cache
+     * @param \phpbrowscap\Cache\BrowscapCache $cache
      *
-     * @return \BrowscapPHP\Parser\Ini
+     * @return \phpbrowscap\Parser\Ini
      */
     public function setCache(BrowscapCache $cache)
     {
@@ -150,7 +150,7 @@ class Ini implements ParserInterface
      *
      * @param \Psr\Log\LoggerInterface $logger
      *
-     * @return \BrowscapPHP\Parser\Ini
+     * @return \phpbrowscap\Parser\Ini
      */
     public function setLogger(LoggerInterface $logger)
     {

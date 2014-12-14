@@ -28,16 +28,16 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Command;
+namespace phpbrowscap\Command;
 
-use BrowscapPHP\Browscap;
+use phpbrowscap\Browscap;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use BrowscapPHP\Helper\LoggerHelper;
-use BrowscapPHP\Helper\IniLoader;
+use phpbrowscap\Helper\LoggerHelper;
+use phpbrowscap\Helper\IniLoader;
 
 /**
  * command to fetch a browscap ini file from the remote host and store the content in a local file

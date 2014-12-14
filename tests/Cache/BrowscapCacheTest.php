@@ -1,8 +1,8 @@
 <?php
 
-namespace BrowscapPHPTest\Cache;
+namespace phpbrowscapTest\Cache;
 
-use BrowscapPHP\Cache\BrowscapCache;
+use phpbrowscap\Cache\BrowscapCache;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -34,12 +34,12 @@ use BrowscapPHP\Cache\BrowscapCache;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/BrowscapPHP/
+ * @link       https://github.com/GaretJax/phpbrowscap/
  */
 class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \BrowscapPHP\Cache\BrowscapCache
+     * @var \phpbrowscap\Cache\BrowscapCache
      */
     private $object = null;
 

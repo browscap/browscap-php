@@ -1,8 +1,8 @@
 <?php
 
-namespace BrowscapPHPTest\Parser;
+namespace phpbrowscapTest\Parser;
 
-use BrowscapPHP\Parser\Ini;
+use phpbrowscap\Parser\Ini;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -34,12 +34,12 @@ use BrowscapPHP\Parser\Ini;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/BrowscapPHP/
+ * @link       https://github.com/GaretJax/phpbrowscap/
  */
 class IniTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \BrowscapPHP\Parser\Ini
+     * @var \phpbrowscap\Parser\Ini
      */
     private $object = null;
 
@@ -58,7 +58,7 @@ class IniTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetHelper()
     {
-        $helper = $this->getMock('\BrowscapPHP\Parser\Helper\GetPattern', array(), array(), '', false);
+        $helper = $this->getMock('\phpbrowscap\Parser\Helper\GetPattern', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setHelper($helper));
         self::assertSame($helper, $this->object->getHelper());
@@ -69,7 +69,7 @@ class IniTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetFormatter()
     {
-        $formatter = $this->getMock('\BrowscapPHP\Formatter\PhpGetBrowser', array(), array(), '', false);
+        $formatter = $this->getMock('\phpbrowscap\Formatter\PhpGetBrowser', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setFormatter($formatter));
         self::assertSame($formatter, $this->object->getFormatter());
@@ -80,7 +80,7 @@ class IniTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetCache()
     {
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
+        $cache = $this->getMock('\phpbrowscap\Cache\BrowscapCache', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setCache($cache));
         self::assertSame($cache, $this->object->getCache());

@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Formatter;
+namespace phpbrowscap\Formatter;
 
 /**
  * interface for formating the output

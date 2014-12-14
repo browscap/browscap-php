@@ -1,9 +1,9 @@
 <?php
 
-namespace BrowscapPHPTest\Helper;
+namespace phpbrowscapTest\Helper;
 
 use FileLoader\Exception as LoaderException;
-use BrowscapPHP\Helper\IniLoader;
+use phpbrowscap\Helper\IniLoader;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -35,12 +35,12 @@ use BrowscapPHP\Helper\IniLoader;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/BrowscapPHP/
+ * @link       https://github.com/GaretJax/phpbrowscap/
  */
 class IniLoaderTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \BrowscapPHP\Helper\IniLoader
+     * @var \phpbrowscap\Helper\IniLoader
      */
     private $object = null;
 
@@ -83,7 +83,7 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \BrowscapPHP\Helper\Exception
+     * @expectedException \phpbrowscap\Helper\Exception
      * @expectedExceptionMessage the filename can not be empty
      */
     public function testSetMissingRemoteFilename()
@@ -100,7 +100,7 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \BrowscapPHP\Helper\Exception
+     * @expectedException \phpbrowscap\Helper\Exception
      * @expectedExceptionMessage the filename can not be empty
      */
     public function testSetMissingLocalFile()
@@ -197,7 +197,7 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \BrowscapPHP\Helper\Exception
+     * @expectedException \phpbrowscap\Helper\Exception
      * @expectedExceptionMessage could not load the data file
      */
     public function testLoadException()
@@ -282,7 +282,7 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \BrowscapPHP\Helper\Exception
+     * @expectedException \phpbrowscap\Helper\Exception
      * @expectedExceptionMessage could not load the new version
      */
     public function testGetMTimeException()

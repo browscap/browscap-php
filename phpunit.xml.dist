@@ -2,7 +2,7 @@
 
 <phpunit bootstrap="tests/bootstrap.php">
     <testsuites>
-        <testsuite name="BrowscapPHP Test Suite">
+        <testsuite name="phpbrowscap Test Suite">
             <directory>tests/</directory>
         </testsuite>
     </testsuites>

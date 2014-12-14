@@ -1,8 +1,8 @@
 <?php
 
-namespace BrowscapPHPTest\Exception;
+namespace phpbrowscapTest\Exception;
 
-use BrowscapPHP\Exception\InvalidArgumentException;
+use phpbrowscap\Exception\InvalidArgumentException;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -34,7 +34,7 @@ use BrowscapPHP\Exception\InvalidArgumentException;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/BrowscapPHP/
+ * @link       https://github.com/GaretJax/phpbrowscap/
  */
 class InvalidArgumentExceptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -43,10 +43,10 @@ class InvalidArgumentExceptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testOneOfCommandArguments()
     {
-        /** @var \BrowscapPHP\Exception\InvalidArgumentException $exception */
+        /** @var \phpbrowscap\Exception\InvalidArgumentException $exception */
         $exception = InvalidArgumentException::oneOfCommandArguments('http://example.org', 'Uri not reachable');
 
-        self::assertInstanceOf('\BrowscapPHP\Exception\InvalidArgumentException', $exception);
+        self::assertInstanceOf('\phpbrowscap\Exception\InvalidArgumentException', $exception);
         self::assertSame(
             'One of the command arguments "http://example.org", "Uri not reachable" is required',
             $exception->getMessage()

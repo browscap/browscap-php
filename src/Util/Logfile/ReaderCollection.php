@@ -28,9 +28,9 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Util\Logfile;
+namespace phpbrowscap\Util\Logfile;
 
-use BrowscapPHP\Exception\ReaderException;
+use phpbrowscap\Exception\ReaderException;
 
 /**
  * reader collection class
@@ -46,16 +46,16 @@ use BrowscapPHP\Exception\ReaderException;
 class ReaderCollection implements ReaderInterface
 {
     /**
-     * @var \BrowscapPHP\Util\Logfile\AbstractReader[]
+     * @var \phpbrowscap\Util\Logfile\AbstractReader[]
      */
     private $readers = array();
 
     /**
      * adds a new reader to this collection
      *
-     * @param \BrowscapPHP\Util\Logfile\AbstractReader $reader
+     * @param \phpbrowscap\Util\Logfile\AbstractReader $reader
      *
-     * @return \BrowscapPHP\Util\Logfile\ReaderCollection
+     * @return \phpbrowscap\Util\Logfile\ReaderCollection
      */
     public function addReader(AbstractReader $reader)
     {
@@ -84,7 +84,7 @@ class ReaderCollection implements ReaderInterface
      * @param string $line
      *
      * @return string
-     * @throws \BrowscapPHP\Exception\ReaderException
+     * @throws \phpbrowscap\Exception\ReaderException
      */
     public function read($line)
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace BrowscapPHPTest\Util\LogFile;
+namespace phpbrowscapTest\Util\LogFile;
 
-use BrowscapPHP\Util\Logfile\ReaderCollection;
+use phpbrowscap\Util\Logfile\ReaderCollection;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -34,12 +34,12 @@ use BrowscapPHP\Util\Logfile\ReaderCollection;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/BrowscapPHP/
+ * @link       https://github.com/GaretJax/phpbrowscap/
  */
 class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \BrowscapPHP\Util\Logfile\ReaderCollection
+     * @var \phpbrowscap\Util\Logfile\ReaderCollection
      */
     private $object = null;
 
@@ -58,7 +58,7 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testaddReader()
     {
-        $reader = $this->getMock('\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader', array(), array(), '', false);
+        $reader = $this->getMock('\phpbrowscap\Util\Logfile\ApacheCommonLogFormatReader', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->addReader($reader));
     }
@@ -69,7 +69,7 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
     public function testTestSuccessFull()
     {
         $reader = $this->getMock(
-            '\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader',
+            '\phpbrowscap\Util\Logfile\ApacheCommonLogFormatReader',
             array('test'),
             array(),
             '',
@@ -92,7 +92,7 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
     public function testTestNotSuccessFull()
     {
         $reader = $this->getMock(
-            '\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader',
+            '\phpbrowscap\Util\Logfile\ApacheCommonLogFormatReader',
             array('test'),
             array(),
             '',
@@ -115,7 +115,7 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
     public function testReadSuccessFull()
     {
         $reader = $this->getMock(
-            '\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader',
+            '\phpbrowscap\Util\Logfile\ApacheCommonLogFormatReader',
             array('test', 'read'),
             array(),
             '',
@@ -138,13 +138,13 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \BrowscapPHP\Exception\ReaderException
+     * @expectedException \phpbrowscap\Exception\ReaderException
      * @expectedExceptionMessage Cannot extract user agent string from line "Test"
      */
     public function testReadNotSuccessFull()
     {
         $reader = $this->getMock(
-            '\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader',
+            '\phpbrowscap\Util\Logfile\ApacheCommonLogFormatReader',
             array('test', 'read'),
             array(),
             '',

@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Exception;
+namespace phpbrowscap\Exception;
 
 /**
  * Exception to show that a unknown platform was found

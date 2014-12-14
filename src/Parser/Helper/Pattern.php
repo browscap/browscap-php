@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Parser\Helper;
+namespace phpbrowscap\Parser\Helper;
 
 /**
  * includes general functions for the work with patterns

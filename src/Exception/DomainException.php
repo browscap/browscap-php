@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Exception;
+namespace phpbrowscap\Exception;
 
 use DomainException as BaseDomainException;
 

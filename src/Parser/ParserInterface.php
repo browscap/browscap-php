@@ -28,11 +28,11 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Parser;
+namespace phpbrowscap\Parser;
 
-use BrowscapPHP\Cache\BrowscapCache;
-use BrowscapPHP\Formatter\FormatterInterface;
-use BrowscapPHP\Parser\Helper\GetPatternInterface;
+use phpbrowscap\Cache\BrowscapCache;
+use phpbrowscap\Formatter\FormatterInterface;
+use phpbrowscap\Parser\Helper\GetPatternInterface;
 
 /**
  * the interface for the ini parser class
@@ -49,44 +49,44 @@ use BrowscapPHP\Parser\Helper\GetPatternInterface;
 interface ParserInterface
 {
     /**
-     * @param \BrowscapPHP\Parser\Helper\GetPatternInterface $helper
+     * @param \phpbrowscap\Parser\Helper\GetPatternInterface $helper
      *
-     * @return \BrowscapPHP\Parser\Ini
+     * @return \phpbrowscap\Parser\Ini
      */
     public function setHelper(GetPatternInterface $helper);
 
     /**
-     * @return \BrowscapPHP\Parser\Helper\GetPatternInterface
+     * @return \phpbrowscap\Parser\Helper\GetPatternInterface
      */
     public function getHelper();
 
     /**
      * Set theformatter instance to use for the getBrowser() result
      *
-     * @param \BrowscapPHP\Formatter\FormatterInterface $formatter
+     * @param \phpbrowscap\Formatter\FormatterInterface $formatter
      *
-     * @return \BrowscapPHP\Parser\Ini
+     * @return \phpbrowscap\Parser\Ini
      */
     public function setFormatter(FormatterInterface $formatter);
 
     /**
-     * @return \BrowscapPHP\Formatter\FormatterInterface
+     * @return \phpbrowscap\Formatter\FormatterInterface
      */
     public function getFormatter();
 
     /**
      * Gets a cache instance
      *
-     * @return \BrowscapPHP\Cache\BrowscapCache
+     * @return \phpbrowscap\Cache\BrowscapCache
      */
     public function getCache();
 
     /**
      * Sets a cache instance
      *
-     * @param \BrowscapPHP\Cache\BrowscapCache $cache
+     * @param \phpbrowscap\Cache\BrowscapCache $cache
      *
-     * @return \BrowscapPHP\Parser\Ini
+     * @return \phpbrowscap\Parser\Ini
      */
     public function setCache(BrowscapCache $cache);
 

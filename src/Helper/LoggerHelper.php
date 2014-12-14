@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Helper;
+namespace phpbrowscap\Helper;
 
 use Monolog\ErrorHandler;
 use Monolog\Formatter\LineFormatter;

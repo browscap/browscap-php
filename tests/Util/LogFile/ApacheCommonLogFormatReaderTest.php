@@ -1,8 +1,8 @@
 <?php
 
-namespace BrowscapPHPTest\Util\LogFile;
+namespace phpbrowscapTest\Util\LogFile;
 
-use BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader;
+use phpbrowscap\Util\Logfile\ApacheCommonLogFormatReader;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -34,12 +34,12 @@ use BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/BrowscapPHP/
+ * @link       https://github.com/GaretJax/phpbrowscap/
  */
 class ApacheCommonLogFormatReaderTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader
+     * @var \phpbrowscap\Util\Logfile\ApacheCommonLogFormatReader
      */
     private $object = null;
 
@@ -62,14 +62,14 @@ class ApacheCommonLogFormatReaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \BrowscapPHP\Exception\ReaderException
+     * @expectedException \phpbrowscap\Exception\ReaderException
      * @expectedExceptionMessage test
      */
     public function testReadFails()
     {
         $this->object->read('test');
     }
-    
+
     /**
      * data provider for the function testTestOk
      */
@@ -79,10 +79,10 @@ class ApacheCommonLogFormatReaderTest extends \PHPUnit_Framework_TestCase
             array('87.139.99.29 - - 6 0 - - [07/Aug/2014:18:36:10 +0200] - "-" 408 - "-" "-" - www.geld.de'),
         );
     }
-    
+
     /**
      * @dataProvider regexproviderOk
-     * 
+     *
      * @param string $ua
      */
     public function testTestOk($ua)

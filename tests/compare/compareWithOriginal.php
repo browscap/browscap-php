@@ -2,7 +2,7 @@
 
 chdir(dirname(dirname(__DIR__)));
 
-use BrowscapPHP\Browscap;
+use phpbrowscap\Browscap;
 
 $x = new compareWithOriginal();
 

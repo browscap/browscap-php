@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Util\Logfile;
+namespace phpbrowscap\Util\Logfile;
 
 /**
  * abstract parent class for all readers
@@ -47,7 +47,7 @@ class ReaderFactory
     private static $readers = array();
 
     /**
-     * @return \BrowscapPHP\Util\Logfile\ReaderCollection
+     * @return \phpbrowscap\Util\Logfile\ReaderCollection
      */
     public static function factory()
     {

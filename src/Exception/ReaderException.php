@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Exception;
+namespace phpbrowscap\Exception;
 
 /**
  * Exception to handle errors while reading a log file

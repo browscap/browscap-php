@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Util\Logfile;
+namespace phpbrowscap\Util\Logfile;
 
 /**
  * interface for all readers

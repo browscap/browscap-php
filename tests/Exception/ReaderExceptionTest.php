@@ -1,8 +1,8 @@
 <?php
 
-namespace BrowscapPHPTest\Exception;
+namespace phpbrowscapTest\Exception;
 
-use BrowscapPHP\Exception\ReaderException;
+use phpbrowscap\Exception\ReaderException;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -34,7 +34,7 @@ use BrowscapPHP\Exception\ReaderException;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/BrowscapPHP/
+ * @link       https://github.com/GaretJax/phpbrowscap/
  */
 class ReaderExceptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -43,10 +43,10 @@ class ReaderExceptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testUserAgentParserError()
     {
-        /** @var \BrowscapPHP\Exception\ReaderException $exception */
+        /** @var \phpbrowscap\Exception\ReaderException $exception */
         $exception = ReaderException::userAgentParserError(42);
 
-        self::assertInstanceOf('\BrowscapPHP\Exception\ReaderException', $exception);
+        self::assertInstanceOf('\phpbrowscap\Exception\ReaderException', $exception);
         self::assertSame(
             'Cannot extract user agent string from line "42"',
             $exception->getMessage()

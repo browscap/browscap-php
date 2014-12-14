@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Formatter;
+namespace phpbrowscap\Formatter;
 
 /**
  * formatter to output the data like the native get_browser function
@@ -111,7 +111,7 @@ class PhpGetBrowser implements FormatterInterface
      *
      * @param array $settings
      *
-     * @return \BrowscapPHP\Formatter\PhpGetBrowser
+     * @return \phpbrowscap\Formatter\PhpGetBrowser
      */
     public function setData(array $settings)
     {

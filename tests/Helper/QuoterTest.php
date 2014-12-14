@@ -1,8 +1,8 @@
 <?php
 
-namespace BrowscapPHPTest\Helper;
+namespace phpbrowscapTest\Helper;
 
-use BrowscapPHP\Helper\Quoter;
+use phpbrowscap\Helper\Quoter;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -34,12 +34,12 @@ use BrowscapPHP\Helper\Quoter;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/BrowscapPHP/
+ * @link       https://github.com/GaretJax/phpbrowscap/
  */
 class QuoterTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \BrowscapPHP\Helper\Quoter
+     * @var \phpbrowscap\Helper\Quoter
      */
     private $quoter = null;
 

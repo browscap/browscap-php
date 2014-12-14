@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Data;
+namespace phpbrowscap\Data;
 
 /**
  * Class PropertyHolder

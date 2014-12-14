@@ -21,11 +21,11 @@ if (!$foundVendorAutoload) {
     throw new \Exception('Could not find autoload path in any of the searched locations');
 }
 
-use BrowscapPHP\Exception;
+use phpbrowscap\Exception;
 use Symfony\Component\Console\Application;
-use BrowscapPHP\Cache\BrowscapCache;
+use phpbrowscap\Cache\BrowscapCache;
 use WurflCache\Adapter\File;
-use BrowscapPHP\Command;
+use phpbrowscap\Command;
 
 $resourceDirectory = 'resources/';
 $defaultIniFile    = 'resources/browscap.ini';

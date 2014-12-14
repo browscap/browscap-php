@@ -1,8 +1,8 @@
 <?php
 
-namespace BrowscapPHPTest\Util\LogFile;
+namespace phpbrowscapTest\Util\LogFile;
 
-use BrowscapPHP\Util\Logfile\ReaderFactory;
+use phpbrowscap\Util\Logfile\ReaderFactory;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -34,7 +34,7 @@ use BrowscapPHP\Util\Logfile\ReaderFactory;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/BrowscapPHP/
+ * @link       https://github.com/GaretJax/phpbrowscap/
  */
 class ReaderFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -45,6 +45,6 @@ class ReaderFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $collection = ReaderFactory::factory('test');
 
-        self::assertInstanceOf('\BrowscapPHP\Util\Logfile\ReaderCollection', $collection);
+        self::assertInstanceOf('\phpbrowscap\Util\Logfile\ReaderCollection', $collection);
     }
 }

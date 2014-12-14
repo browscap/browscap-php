@@ -28,7 +28,7 @@
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Helper;
+namespace phpbrowscap\Helper;
 
 /**
  * class to help quoting strings for using a regex
