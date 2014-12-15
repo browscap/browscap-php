@@ -1,7 +1,2 @@
 *~
-.settings
-.buildpath
-.project
-.idea
-vendor
-phpunit.xml
+vendor/

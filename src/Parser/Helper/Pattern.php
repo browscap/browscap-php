@@ -45,15 +45,6 @@ namespace BrowscapPHP\Parser\Helper;
 class Pattern
 {
     /**
-     * Number of pattern to combine for a faster regular expression search.
-     *
-     * @important The number of patterns that can be processed in one step
-     *            is limited by the internal regular expression limits.
-     * @var int
-     */
-    private static $joinPatterns = 100;
-
-    /**
      * Gets the subkey for the pattern cache file, generated from the given string
      *
      * @param  string $string

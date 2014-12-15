@@ -246,8 +246,6 @@ class IniLoader
     }
 
     /**
-     * XXX save
-     *
      * loads the ini file from a remote or local location and returns the content of the file
      *
      * @throws \BrowscapPHP\Helper\Exception
