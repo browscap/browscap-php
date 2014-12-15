@@ -61,13 +61,10 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $libProperties = get_object_vars(get_browser('x'));
         $bcProperties  = get_object_vars(self::$object->getBrowser('x'));
 
-        unset($bcProperties['Parents']);
-        unset($bcProperties['browser_name']);
-        unset($libProperties['browser_name']);
-        unset($libProperties['renderingengine_description']);
+        $doNotCompare = array('parents', 'browser_name', 'renderingengine_description');
 
-        $libPropertyKeys = array_map('strtolower', array_keys($libProperties));
-        $bcPropertyKeys  = array_map('strtolower', array_keys($bcProperties));
+        $libPropertyKeys = array_diff(array_map('strtolower', array_keys($libProperties)), $doNotCompare);
+        $bcPropertyKeys  = array_diff(array_map('strtolower', array_keys($bcProperties)), $doNotCompare);
 
         self::assertSame(
             $libPropertyKeys,
@@ -99,6 +96,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerUserAgent
+     * @depends testCheckProperties
      *
      * @param string $userAgent
      */
