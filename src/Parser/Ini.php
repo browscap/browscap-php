@@ -187,21 +187,24 @@ class Ini implements ParserInterface
                 '/^(?:'.str_replace("\t", ')|(?:', $quoterHelper->pregQuote($patterns)).')$/i',
                 $userAgent
             );
-            if ($result) {
-                // strtok() requires less memory than explode()
-                $pattern = strtok($patterns, "\t");
 
-                while ($pattern !== false) {
-                    $quotedPattern = '/^'.$quoterHelper->pregQuote($pattern, '/').'$/i';
+            if (!$result) {
+                continue;
+            }
 
-                    if (preg_match($quotedPattern, $userAgent)) {
-                        $formatter = $this->getFormatter();
-                        $formatter->setData($this->getSettings($pattern));
-                        break 2;
-                    }
+            // strtok() requires less memory than explode()
+            $pattern = strtok($patterns, "\t");
 
-                    $pattern = strtok("\t");
+            while ($pattern !== false) {
+                $quotedPattern = '/^'.$quoterHelper->pregQuote($pattern, '/').'$/i';
+
+                if (preg_match($quotedPattern, $userAgent)) {
+                    $formatter = $this->getFormatter();
+                    $formatter->setData($this->getSettings($pattern));
+                    break 2;
                 }
+
+                $pattern = strtok("\t");
             }
         }
 

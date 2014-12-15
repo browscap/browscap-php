@@ -136,7 +136,7 @@ class PhpGetBrowser implements FormatterInterface
 
             if (array_key_exists($key, $this->settings)) {
                 $output->$key = $this->settings[$key];
-            } else {
+            } elseif ('parent' !== $key) {
                 $output->$key = $this->defaultproperties[$property];
             }
         }
