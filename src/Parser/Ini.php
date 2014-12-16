@@ -184,7 +184,7 @@ class Ini implements ParserInterface
 
         foreach ($this->getHelper()->getPatterns($userAgent) as $patterns) {
             $result = preg_match(
-                '/^(?:'.str_replace("\t", ')|(?:', $quoterHelper->pregQuote($patterns)).')$/i',
+                '/^(?:'.str_replace("\t", ')|(?:', $quoterHelper->pregQuote($patterns, '/')).')$/i',
                 $userAgent
             );
 

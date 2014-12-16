@@ -109,16 +109,14 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $libProperties = get_object_vars(get_browser('x'));
         $bcProperties  = get_object_vars(self::$object->getBrowser('x'));
 
-        $doNotCompare = array('renderingengine_description');
+        $libPropertyKeys = array_keys($libProperties);
+        $bcPropertyKeys  = array_keys($bcProperties);
 
-        $libPropertyKeys = array_diff(array_keys($libProperties), $doNotCompare);
-        $bcPropertyKeys  = array_diff(array_keys($bcProperties), $doNotCompare);
+        $diff = array_diff($libPropertyKeys, $bcPropertyKeys);
 
-        self::assertSame(
-            $libPropertyKeys,
-            $bcPropertyKeys,
-            'the properties found by "get_browser()" differ from found by "Browser::getBrowser()"'
-        );
+        if (!empty($diff)) {
+            $this->fail('the properties found by "get_browser()" differ from found by "Browser::getBrowser()"');
+        }
 
         foreach (array_keys($bcProperties) as $bcProp) {
             self::assertArrayHasKey(
@@ -150,10 +148,14 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $bcResult  = self::$object->getBrowser($userAgent);
 
         foreach (array_keys($this->properties) as $bcProp) {
+            if (in_array($bcProp, array('browser_name_regex', 'browser_name_pattern', 'Parent'))) {
+                continue;
+            }
+
             $bcProp = strtolower($bcProp);
 
-            $libValue = $libResult->{$bcProp};
-            $bcValue  = $bcResult->{$bcProp};
+            $libValue = (string) $libResult->{$bcProp};
+            $bcValue  = (string) $bcResult->{$bcProp};
 
             self::assertSame(
                 $libValue,
@@ -204,6 +206,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             array('Outlook-Express/7.0 (MSIE 7.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; McAfee; AskTbORJ/5.15.23.36191; TmstmpExt)'),
             array('SAMSUNG-SGH-A867/A867UCHJ3 SHP/VPP/R5 NetFront/35 SMM-MMS/1.2.0 profile/MIDP-2.0 configuration/CLDC-1.1 UP.Link/6.3.0.0.0'),
             array('WordPress/3.5.1; http://greenconsulting.ecolivingfan.info'),
+            array('Der gro\\xdfe BilderSauger 2.00u'),
             array('\\x22Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)\\x22'),
         );
     }
