@@ -173,8 +173,8 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 
             $libProp = strtolower($bcProp);
 
-            $libValue = $libResult->{$libProp};
-            $bcValue  = $bcResult->{$bcProp};
+            $libValue = (string) $libResult->{$libProp};
+            $bcValue  = (string) $bcResult->{$bcProp};
 
             self::assertSame(
                 $libValue,
