@@ -22,7 +22,55 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
     /**
      * @var array
      */
-    private $properties = array();
+    private $properties = array(
+        'browser_name_regex'          => null,
+        'browser_name_pattern'        => null,
+        'Parent'                      => null,
+        'Comment'                     => 'Default Browser',
+        'Browser'                     => 'Default Browser',
+        'Browser_Type'                => 'unknown',
+        'Browser_Bits'                => '0',
+        'Browser_Maker'               => 'unknown',
+        'Browser_Modus'               => 'unknown',
+        'Version'                     => '0.0',
+        'MajorVer'                    => '0',
+        'MinorVer'                    => '0',
+        'Platform'                    => 'unknown',
+        'Platform_Version'            => 'unknown',
+        'Platform_Description'        => 'unknown',
+        'Platform_Bits'               => '0',
+        'Platform_Maker'              => 'unknown',
+        'Alpha'                       => 'false',
+        'Beta'                        => 'false',
+        'Win16'                       => 'false',
+        'Win32'                       => 'false',
+        'Win64'                       => 'false',
+        'Frames'                      => 'false',
+        'IFrames'                     => 'false',
+        'Tables'                      => 'false',
+        'Cookies'                     => 'false',
+        'BackgroundSounds'            => 'false',
+        'JavaScript'                  => 'false',
+        'VBScript'                    => 'false',
+        'JavaApplets'                 => 'false',
+        'ActiveXControls'             => 'false',
+        'isMobileDevice'              => 'false',
+        'isTablet'                    => 'false',
+        'isSyndicationReader'         => 'false',
+        'Crawler'                     => 'false',
+        'CssVersion'                  => '0',
+        'AolVersion'                  => '0',
+        'Device_Name'                 => 'unknown',
+        'Device_Maker'                => 'unknown',
+        'Device_Type'                 => 'unknown',
+        'Device_Pointing_Method'      => 'unknown',
+        'Device_Code_Name'            => 'unknown',
+        'Device_Brand_Name'           => 'unknown',
+        'RenderingEngine_Name'        => 'unknown',
+        'RenderingEngine_Version'     => 'unknown',
+        'RenderingEngine_Description' => 'unknown',
+        'RenderingEngine_Maker'       => 'unknown',
+    );
 
     /**
      * This method is called before the first test of this test class is run.
@@ -93,10 +141,6 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
                 'Property `' . $bcProp . '` from Browscap doesn\'t match anything in get_browser.'
             );
 
-            if ('browser_name_regex' != $bcProp) {
-                $this->properties[$bcProp] = strtolower($bcProp);
-            }
-
             unset($libProperties[strtolower($bcProp)]);
         }
 
@@ -121,10 +165,6 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
     {
         $libResult = get_browser($userAgent);
         $bcResult  = $this->object->getBrowser($userAgent);
-
-        if (empty($this->properties)) {
-            $this->markTestSkipped('no properties defined to compare');
-        }
 
         foreach ($this->properties as $bcProp => $libProp) {
             $libValue = $libResult->{$libProp};
