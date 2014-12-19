@@ -87,10 +87,6 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         self::assertSame($libPropertyKeys, $bcPropertyKeys);
 
         foreach (array_keys($bcProperties) as $bcProp) {
-            if (in_array($bcProp, array('browser_name', 'browser_name_regex', 'browser_name_pattern'))) {
-                //continue;
-            }
-
             self::assertArrayHasKey(
                 strtolower($bcProp),
                 $libProperties,
@@ -114,30 +110,31 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerUserAgent
+     * @depends      testCheckProperties
+     *
+     * @param string $userAgent
+     *
+     * @throws \Exception
+     * @throws \phpbrowscap\Exception
      */
     public function testCompare($userAgent)
     {
         $libResult = get_browser($userAgent);
         $bcResult  = $this->object->getBrowser($userAgent);
 
-        if ($userAgent == Browscap::BROWSCAP_VERSION_KEY) {
-            self::assertSame(
-                $libResult->version,
-                $this->object->getSourceVersion(),
-                'Source file version incorrect: ' . $libResult->version . ' != '
-                . $this->object->getSourceVersion()
-            );
-        } else {
-            foreach ($this->properties as $bcProp => $libProp) {
-                $libValue = $libResult->{$libProp};
-                $bcValue  = $bcResult->{$bcProp};
+        if (empty($this->properties)) {
+            $this->markTestSkipped('no properties defined to compare');
+        }
 
-                self::assertSame(
-                    $libValue,
-                    $bcValue,
-                    $bcProp . ': ' . $libValue . ' != ' . $bcValue
-                );
-            }
+        foreach ($this->properties as $bcProp => $libProp) {
+            $libValue = $libResult->{$libProp};
+            $bcValue  = $bcResult->{$bcProp};
+
+            self::assertSame(
+                $libValue,
+                $bcValue,
+                $bcProp . ': ' . $libValue . ' != ' . $bcValue
+            );
         }
     }
 
@@ -182,6 +179,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             array('Outlook-Express/7.0 (MSIE 7.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; McAfee; AskTbORJ/5.15.23.36191; TmstmpExt)'),
             array('SAMSUNG-SGH-A867/A867UCHJ3 SHP/VPP/R5 NetFront/35 SMM-MMS/1.2.0 profile/MIDP-2.0 configuration/CLDC-1.1 UP.Link/6.3.0.0.0'),
             array('WordPress/3.5.1; http://greenconsulting.ecolivingfan.info'),
+            array('Der gro\\xdfe BilderSauger 2.00u'),
             array('\\x22Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)\\x22'),
         );
     }
