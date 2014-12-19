@@ -166,8 +166,10 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $libResult = get_browser($userAgent);
         $bcResult  = $this->object->getBrowser($userAgent);
 
+        $doNotCheck = array('browser_name_regex', 'browser_name_pattern', 'Parent', 'RenderingEngine_Description');
+
         foreach (array_keys($this->properties) as $bcProp) {
-            if (in_array($bcProp, array('browser_name_regex', 'browser_name_pattern', 'Parent'))) {
+            if (in_array($bcProp, $doNotCheck)) {
                 continue;
             }
 
