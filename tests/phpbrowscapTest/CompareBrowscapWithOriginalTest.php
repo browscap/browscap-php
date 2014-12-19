@@ -167,6 +167,10 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $bcResult  = $this->object->getBrowser($userAgent);
 
         foreach (array_keys($this->properties) as $bcProp) {
+            if (in_array($bcProp, array('browser_name_regex', 'browser_name_pattern', 'Parent'))) {
+                continue;
+            }
+
             $libProp = strtolower($bcProp);
 
             $libValue = $libResult->{$libProp};
