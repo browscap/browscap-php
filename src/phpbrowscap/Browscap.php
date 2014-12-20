@@ -36,10 +36,10 @@ namespace phpbrowscap;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/GaretJax/phpbrowscap/
  */
-class Browscap extends AbstractBrowscap
+class Browscap
 {
     /**
-     * Current cache version
+     * Current version of the class.
      */
     const VERSION = '2.0.4';
 
@@ -57,6 +57,29 @@ class Browscap extends AbstractBrowscap
     const UPDATE_FSOCKOPEN = 'socket';
     const UPDATE_CURL = 'cURL';
     const UPDATE_LOCAL = 'local';
+
+    /**
+     * Options for regex patterns.
+     *
+     * REGEX_DELIMITER: Delimiter of all the regex patterns in the whole class.
+     * REGEX_MODIFIERS: Regex modifiers.
+     */
+    const REGEX_DELIMITER = '@';
+    const REGEX_MODIFIERS = 'i';
+    const COMPRESSION_PATTERN_START = '@';
+    const COMPRESSION_PATTERN_DELIMITER = '|';
+
+    /**
+     * The values to quote in the ini file
+     */
+    const VALUES_TO_QUOTE = 'Browser|Parent';
+
+    const BROWSCAP_VERSION_KEY = 'GJK_Browscap_Version';
+
+    /**
+     * The headers to be sent for checking the version and requesting the file.
+     */
+    const REQUEST_HEADERS = "GET %s HTTP/1.0\r\nHost: %s\r\nUser-Agent: %s\r\nConnection: Close\r\n\r\n";
 
     /**
      * Options for auto update capabilities
@@ -124,34 +147,6 @@ class Browscap extends AbstractBrowscap
      * @var string
      */
     public $cacheFilename = 'cache.php';
-
-    /**
-     * Where to store the temporary property data (while generating the cache data)?
-     *
-     * @var string|null
-     */
-    public $cachePropertiesFilename;
-
-    /**
-     * Where to store the temporary browser data (while generating the cache data)?
-     *
-     * @var string|null
-     */
-    public $cacheBrowserFilename;
-
-    /**
-     * Where to store the temporary useragent data (while generating the cache data)?
-     *
-     * @var string|null
-     */
-    public $cacheUseragentsFilename;
-
-    /**
-     * Where to store the temporary pattern data (while generating the cache data)?
-     *
-     * @var string|null
-     */
-    public $cachePatternsFilename;
 
     /**
      * Where to store the downloaded ini file.
@@ -244,21 +239,6 @@ class Browscap extends AbstractBrowscap
             $this->cacheDir = $cache_dir;
         }
 
-        // if not set, automatically set file names for temporary files that are used while creating the cache
-        // (derived from main cache file: 'cachefile.php' -> 'cachefile.part.php')
-        if ($this->cachePropertiesFilename === null) {
-            $this->cachePropertiesFilename = substr($this->cacheFilename, 0, -4) . '.properties.php';
-        }
-        if ($this->cacheBrowserFilename === null) {
-            $this->cacheBrowserFilename = substr($this->cacheFilename, 0, -4) . '.browser.php';
-        }
-        if ($this->cacheUseragentsFilename === null) {
-            $this->cacheUseragentsFilename = substr($this->cacheFilename, 0, -4) . '.useragents.php';
-        }
-        if ($this->cachePatternsFilename === null) {
-            $this->cachePatternsFilename = substr($this->cacheFilename, 0, -4) . '.patterns.php';
-        }
-
         $this->cacheDir .= DIRECTORY_SEPARATOR;
     }
 
@@ -336,12 +316,8 @@ class Browscap extends AbstractBrowscap
             }
         }
 
-        $quoterHelper = new Helper\Quoter();
-        $browser      = array();
-
+        $browser = array();
         foreach ($this->_patterns as $pattern => $pattern_data) {
-            $matches = array();
-
             if (preg_match($pattern . 'i', $user_agent, $matches)) {
                 if (1 == count($matches)) {
                     // standard match
@@ -349,7 +325,7 @@ class Browscap extends AbstractBrowscap
 
                     $simple_match = true;
                 } else {
-                    $pattern_data = json_decode($pattern_data, true);
+                    $pattern_data = unserialize($pattern_data);
 
                     // match with numeric replacements
                     array_shift($matches);
@@ -370,13 +346,13 @@ class Browscap extends AbstractBrowscap
                 $browser = array(
                     $user_agent, // Original useragent
                     trim(strtolower($pattern), self::REGEX_DELIMITER),
-                    $quoterHelper->pregUnQuote($pattern, $simple_match ? false : $matches)
+                    $this->_pregUnQuote($pattern, $simple_match ? false : $matches)
                 );
 
-                $browser = $value = $browser + json_decode($this->_browsers[$key], true);
+                $browser = $value = $browser + unserialize($this->_browsers[$key]);
 
                 while (array_key_exists(3, $value)) {
-                    $value = json_decode($this->_browsers[$value[3]], true);
+                    $value = unserialize($this->_browsers[$value[3]]);
                     $browser += $value;
                 }
 
@@ -541,12 +517,8 @@ class Browscap extends AbstractBrowscap
             throw new Exception('temporary file already exists');
         }
 
-        $ini_path              = $this->cacheDir . $this->iniFilename;
-        $cache_path            = $this->cacheDir . $this->cacheFilename;
-        $cache_path_properties = $this->cacheDir . $this->cachePropertiesFilename;
-        $cache_path_browsers   = $this->cacheDir . $this->cacheBrowserFilename;
-        $cache_path_useragent  = $this->cacheDir . $this->cacheUseragentsFilename;
-        $cache_path_patterns   = $this->cacheDir . $this->cachePatternsFilename;
+        $ini_path   = $this->cacheDir . $this->iniFilename;
+        $cache_path = $this->cacheDir . $this->cacheFilename;
 
         // Choose the right url
         if ($this->_getUpdateMethod() == self::UPDATE_LOCAL) {
@@ -568,96 +540,33 @@ class Browscap extends AbstractBrowscap
 
         unset($browsers['DefaultProperties']['RenderingEngine_Description']);
 
-        $tmp_user_agents = array_keys($browsers);
-        $sorterHelper    = new Helper\Sorter();
-
-        usort($tmp_user_agents, array($sorterHelper, 'compareBcStrings'));
-
-        $user_agents_keys = array_flip($tmp_user_agents);
-
-        // convert to SplFixedArray (requires less memory)
-        $tmp_user_agents       = \SplFixedArray::fromArray($tmp_user_agents);
-        $tmp_user_agents_count = $tmp_user_agents->count();
-
-        // get user agent data
-        $data_user_agents = array();
-        for ($i = 0, $j = $tmp_user_agents_count; $i < $j; $i++) {
-            if (!empty($browsers[$tmp_user_agents[$i]]['Parent'])) {
-                $parent = $browsers[$tmp_user_agents[$i]]['Parent'];
-
-                if (isset($user_agents_keys[$parent])) {
-                    $parent_key = $user_agents_keys[$parent];
-
-                    $browsers[$tmp_user_agents[$i]]['Parent'] = $parent_key;
-                    $data_user_agents[$parent_key . '.0']     = $tmp_user_agents[$parent_key];
-                }
-            }
-        }
-
-        // unset unnecessary variable(s) to optimize memory usage
-        unset($user_agents_keys);
-
-        // save data in temporary file
-        file_put_contents($cache_path_useragent, $this->_array2string($data_user_agents), LOCK_EX);
-
-        // unset unnecessary variable(s) to optimize memory usage
-        unset($data_user_agents);
-
-        // get property data
-        $data_properties = array_keys($browsers['DefaultProperties']);
+        $this->_properties = array_keys($browsers['DefaultProperties']);
 
         array_unshift(
-            $data_properties,
+            $this->_properties,
             'browser_name',
             'browser_name_regex',
             'browser_name_pattern',
             'Parent'
         );
 
-        $properties_keys = array_flip($data_properties);
-        // save data in temporary file
-        file_put_contents($cache_path_properties, $this->_array2string($data_properties), LOCK_EX);
+        $tmp_user_agents = array_keys($browsers);
 
-        // unset unnecessary variable(s) to optimize memory usage
-        unset($data_properties);
+        usort($tmp_user_agents, array($this, 'compareBcStrings'));
 
-        // get browser data
-        $data_browsers = array();
-        for ($i = 0, $j = $tmp_user_agents_count; $i < $j; $i++) {
-            $browser = array();
-            foreach ($browsers[$tmp_user_agents[$i]] as $key => $value) {
-                if (!isset($properties_keys[$key])) {
-                    continue;
-                }
+        $user_agents_keys = array_flip($tmp_user_agents);
+        $properties_keys  = array_flip($this->_properties);
 
-                $key           = $properties_keys[$key];
-                $browser[$key] = $value;
-            }
-
-            unset($browsers[$tmp_user_agents[$i]]);
-            $data_browsers[] = $browser;
-        }
-
-        // unset unnecessary variable(s) to optimize memory usage
-        unset($browsers, $properties_keys);
-
-        // save data in temporary file
-        file_put_contents($cache_path_browsers, $this->_array2string($data_browsers), LOCK_EX);
-
-        // unset unnecessary variable(s) to optimize memory usage
-        unset($data_browsers);
-
-        // prepare patterns
         $tmp_patterns = array();
-        $quoterHelper = new Helper\Quoter();
 
-        for ($i = 0, $j = $tmp_user_agents_count; $i < $j; $i++) {
-            if (empty($browsers[$tmp_user_agents[$i]]['Comment'])
-                || false !== strpos($tmp_user_agents[$i], '*')
-                || false !== strpos($tmp_user_agents[$i], '?')
+        foreach ($tmp_user_agents as $i => $user_agent) {
+
+            if (empty($browsers[$user_agent]['Comment'])
+                || false !== strpos($user_agent, '*')
+                || false !== strpos($user_agent, '?')
             ) {
+                $pattern = $this->_pregQuote($user_agent);
 
-                $pattern       = $quoterHelper->pregQuote($tmp_user_agents[$i]);
                 $matches_count = preg_match_all('@\d@', $pattern, $matches);
 
                 if (!$matches_count) {
@@ -672,35 +581,46 @@ class Browscap extends AbstractBrowscap
                     $tmp_patterns[$compressed_pattern][$i] = $matches[0];
                 }
             }
+
+            if (!empty($browsers[$user_agent]['Parent'])) {
+                $parent = $browsers[$user_agent]['Parent'];
+
+                $parent_key = $user_agents_keys[$parent];
+
+                $browsers[$user_agent]['Parent']       = $parent_key;
+                $this->_userAgents[$parent_key . '.0'] = $tmp_user_agents[$parent_key];
+            };
+
+            $browser = array();
+            foreach ($browsers[$user_agent] as $key => $value) {
+                if (!isset($properties_keys[$key])) {
+                    continue;
+                }
+
+                $key           = $properties_keys[$key];
+                $browser[$key] = $value;
+            }
+
+            $this->_browsers[] = $browser;
         }
 
-        // unset unnecessary variable(s) to optimize memory usage
+        // reducing memory usage by unsetting $tmp_user_agents
         unset($tmp_user_agents);
 
-        // get pattern data
-        $data_patterns = array();
         foreach ($tmp_patterns as $pattern => $pattern_data) {
             if (is_int($pattern_data)) {
-                $data_patterns[$pattern] = $pattern_data;
-            } elseif (2 === count($pattern_data)) {
+                $this->_patterns[$pattern] = $pattern_data;
+            } elseif (2 == count($pattern_data)) {
                 end($pattern_data);
-                $data_patterns[$pattern_data['first']] = key($pattern_data);
+                $this->_patterns[$pattern_data['first']] = key($pattern_data);
             } else {
                 unset($pattern_data['first']);
 
-                $data_patterns[$pattern] = $this->deduplicateCompressionPattern($pattern_data, $pattern);
+                $pattern_data = $this->deduplicateCompressionPattern($pattern_data, $pattern);
+
+                $this->_patterns[$pattern] = $pattern_data;
             }
-            unset($tmp_patterns[$pattern]);
         }
-
-        // unset unnecessary variable(s) to optimize memory usage
-        unset($tmp_patterns, $pattern_data);
-
-        // save data in temporary file
-        file_put_contents($cache_path_patterns, $this->_array2string($data_patterns), LOCK_EX);
-
-        // unset unnecessary variable(s) to optimize memory usage
-        unset($data_patterns);
 
         // Get the whole PHP code
         $cache = $this->_buildCache();
@@ -718,7 +638,6 @@ class Browscap extends AbstractBrowscap
         if (false === rename($tmpFile, $cache_path)) {
             // renaming file failed, remove temp file
             @unlink($tmpFile);
-            @unlink($lockfile);
 
             throw new Exception('could not rename temporary file to the cache file');
         }
@@ -726,6 +645,137 @@ class Browscap extends AbstractBrowscap
         @unlink($lockfile);
 
         return true;
+    }
+
+    /**
+     * @param string $a
+     * @param string $b
+     *
+     * @return int
+     */
+    protected function compareBcStrings($a, $b)
+    {
+        $a_len = strlen($a);
+        $b_len = strlen($b);
+
+        if ($a_len > $b_len) {
+            return -1;
+        }
+
+        if ($a_len < $b_len) {
+            return 1;
+        }
+
+        $a_len = strlen(str_replace(array('*', '?'), '', $a));
+        $b_len = strlen(str_replace(array('*', '?'), '', $b));
+
+        if ($a_len > $b_len) {
+            return -1;
+        }
+
+        if ($a_len < $b_len) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    /**
+     * That looks complicated...
+     *
+     * All numbers are taken out into $matches, so we check if any of those numbers are identical
+     * in all the $matches and if they are we restore them to the $pattern, removing from the $matches.
+     * This gives us patterns with "(\d)" only in places that differ for some matches.
+     *
+     * @param array  $matches
+     * @param string $pattern
+     *
+     * @return array of $matches
+     */
+    protected function deduplicateCompressionPattern($matches, &$pattern)
+    {
+        $tmp_matches = $matches;
+        $first_match = array_shift($tmp_matches);
+        $differences = array();
+
+        foreach ($tmp_matches as $some_match) {
+            $differences += array_diff_assoc($first_match, $some_match);
+        }
+
+        $identical = array_diff_key($first_match, $differences);
+
+        $prepared_matches = array();
+
+        foreach ($matches as $i => $some_match) {
+            $key = self::COMPRESSION_PATTERN_START
+                . implode(self::COMPRESSION_PATTERN_DELIMITER, array_diff_assoc($some_match, $identical));
+
+            $prepared_matches[$key] = $i;
+        }
+
+        $pattern_parts = explode('(\d)', $pattern);
+
+        foreach ($identical as $position => $value) {
+            $pattern_parts[$position + 1] = $pattern_parts[$position] . $value . $pattern_parts[$position + 1];
+            unset($pattern_parts[$position]);
+        }
+
+        $pattern = implode('(\d)', $pattern_parts);
+
+        return $prepared_matches;
+    }
+
+    /**
+     * Converts browscap match patterns into preg match patterns.
+     *
+     * @param string $user_agent
+     *
+     * @return string
+     */
+    protected function _pregQuote($user_agent)
+    {
+        $pattern = preg_quote($user_agent, self::REGEX_DELIMITER);
+
+        // the \\x replacement is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
+
+        return self::REGEX_DELIMITER
+            . '^'
+            . str_replace(array('\*', '\?', '\\x'), array('.*', '.', '\\\\x'), $pattern)
+            . '$'
+            . self::REGEX_DELIMITER;
+    }
+
+    /**
+     * Converts preg match patterns back to browscap match patterns.
+     *
+     * @param string        $pattern
+     * @param array|boolean $matches
+     *
+     * @return string
+     */
+    protected function _pregUnQuote($pattern, $matches)
+    {
+        // list of escaped characters: http://www.php.net/manual/en/function.preg-quote.php
+        // to properly unescape '?' which was changed to '.', I replace '\.' (real dot) with '\?', then change '.' to '?' and then '\?' to '.'.
+        $search  = array(
+            '\\' . self::REGEX_DELIMITER, '\\.', '\\\\', '\\+', '\\[', '\\^', '\\]', '\\$', '\\(', '\\)', '\\{', '\\}',
+            '\\=', '\\!', '\\<', '\\>', '\\|', '\\:', '\\-', '.*', '.', '\\?'
+        );
+        $replace = array(
+            self::REGEX_DELIMITER, '\\?', '\\', '+', '[', '^', ']', '$', '(', ')', '{', '}', '=', '!', '<', '>', '|',
+            ':', '-', '*', '?', '.'
+        );
+
+        $result = substr(str_replace($search, $replace, $pattern), 2, -2);
+
+        if ($matches) {
+            foreach ($matches as $one_match) {
+                $num_pos = strpos($result, '(\d)');
+                $result  = substr_replace($result, $one_match, $num_pos, 4);
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -772,24 +822,11 @@ class Browscap extends AbstractBrowscap
     {
         $cacheTpl = "<?php\n\$source_version=%s;\n\$cache_version=%s;\n\$properties=%s;\n\$browsers=%s;\n\$userAgents=%s;\n\$patterns=%s;\n";
 
-        $cache_path_properties = $this->cacheDir . $this->cachePropertiesFilename;
-        $cache_path_browsers   = $this->cacheDir . $this->cacheBrowserFilename;
-        $cache_path_useragent  = $this->cacheDir . $this->cacheUseragentsFilename;
-        $cache_path_patterns   = $this->cacheDir . $this->cachePatternsFilename;
+        $propertiesArray = $this->_array2string($this->_properties);
+        $patternsArray   = $this->_array2string($this->_patterns);
+        $userAgentsArray = $this->_array2string($this->_userAgents);
+        $browsersArray   = $this->_array2string($this->_browsers);
 
-        // get prepared data
-        $propertiesArray = file_get_contents($cache_path_properties);
-        $patternsArray   = file_get_contents($cache_path_patterns);
-        $userAgentsArray = file_get_contents($cache_path_useragent);
-        $browsersArray   = file_get_contents($cache_path_browsers);
-
-        // delete temporary files
-        unlink($cache_path_properties);
-        unlink($cache_path_patterns);
-        unlink($cache_path_useragent);
-        unlink($cache_path_browsers);
-
-        // return PHP cache file content
         return sprintf(
             $cacheTpl,
             "'" . $this->_source_version . "'",
@@ -945,7 +982,7 @@ class Browscap extends AbstractBrowscap
             }
 
             if (is_array($value)) {
-                $value = "'" . addcslashes(json_encode($value, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP), "'") . "'";
+                $value = "'" . addcslashes(serialize($value), "'") . "'";
             } elseif (ctype_digit((string) $value)) {
                 $value = intval($value);
             } else {
@@ -1105,4 +1142,19 @@ class Browscap extends AbstractBrowscap
 
         return $ua;
     }
+}
+
+/**
+ * Browscap.ini parsing class exception
+ *
+ * @package    Browscap
+ * @author     Jonathan Stoppani <jonathan@stoppani.name>
+ * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
+ * @version    1.0
+ * @license    http://www.opensource.org/licenses/MIT MIT License
+ * @link       https://github.com/GaretJax/phpbrowscap/
+ */
+class Exception extends \Exception
+{
+    // nothing to do here
 }

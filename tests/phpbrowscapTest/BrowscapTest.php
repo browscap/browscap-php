@@ -40,6 +40,14 @@ use ReflectionClass;
 class BrowscapTest extends TestCase
 {
     /**
+     * @expectedException \PHPUnit_Framework_Error_Warning
+     */
+    public function testConstructorFails()
+    {
+        new Browscap();
+    }
+
+    /**
      * @expectedException \phpbrowscap\Exception
      * @expectedExceptionMessage You have to provide a path to read/store the browscap cache file
      */
@@ -236,7 +244,7 @@ class BrowscapTest extends TestCase
 
         $browscap = new Browscap($cacheDir);
 
-        $result = 'array(' . "\n" . '\'a\'=>1,' . "\n" . '\'b\'=>\'abc\',' . "\n" . '1=>\'cde\',' . "\n" . '\'def\',' . "\n" . '\'["abc",1,2]\'' . "\n" . ')';
+        $result = 'array(' . "\n" . '\'a\'=>1,' . "\n" . '\'b\'=>\'abc\',' . "\n" . '1=>\'cde\',' . "\n" . '\'def\',' . "\n" . '\'a:3:{i:0;s:3:"abc";i:1;i:1;i:2;i:2;}\'' . "\n" . ')';
 
         self::assertSame($result, $method->invoke($browscap, array('a' => 1, 'b' => 'abc', '1.0' => 'cde', 1 => 'def', 2 => array('abc', 1, 2))));
     }
@@ -296,5 +304,68 @@ class BrowscapTest extends TestCase
         $expected = 'http://browscap.org/ - PHP Browscap/';
 
         self::assertContains($expected, $method->invoke($browscap));
+    }
+
+    /**
+     *
+     */
+    public function testPregQuote()
+    {
+        $cacheDir = $this->createCacheDir();
+
+        $class = new ReflectionClass('\\phpbrowscap\\Browscap');
+        $method = $class->getMethod('_pregQuote');
+        $method->setAccessible(true);
+
+        $browscap = new Browscap($cacheDir);
+
+        $expected = '@^Mozilla/.\.0 \(compatible; Ask Jeeves/Teoma.*\)$@';
+
+        self::assertSame($expected, $method->invoke($browscap, 'Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)'));
+    }
+
+    /**
+     *
+     */
+    public function testPregUnQuote()
+    {
+        $cacheDir = $this->createCacheDir();
+
+        $class = new ReflectionClass('\\phpbrowscap\\Browscap');
+        $method = $class->getMethod('_pregUnQuote');
+        $method->setAccessible(true);
+
+        $browscap = new Browscap($cacheDir);
+
+        $expected = 'Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)';
+
+        self::assertSame($expected, $method->invoke($browscap, '@^Mozilla/.\.0 \(compatible; Ask Jeeves/Teoma.*\)$@', array()));
+    }
+
+    /**
+     * @dataProvider dataCompareBcStrings
+     */
+    public function testCompareBcStrings($a, $b, $expected)
+    {
+        $cacheDir = $this->createCacheDir();
+
+        $class = new ReflectionClass('\\phpbrowscap\\Browscap');
+        $method = $class->getMethod('compareBcStrings');
+        $method->setAccessible(true);
+
+        $browscap = new Browscap($cacheDir);
+
+        self::assertSame($expected, $method->invoke($browscap, $a, $b));
+    }
+
+    public function dataCompareBcStrings()
+    {
+        return array(
+            array('Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)', 'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)', 1),
+            array('Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)', 'Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)', -1),
+            array('Mozilla/5.0 (Danger hiptop 3.*; U; rv:1.7.*) Gecko/*', 'Mozilla/5.0 (Danger hiptop 3.0; U; rv:1.7.*) Gecko/*', 1),
+            array('Mozilla/5.0 (Danger hiptop 3.0; U; rv:1.7.*) Gecko/*', 'Mozilla/5.0 (Danger hiptop 3.*; U; rv:1.7.*) Gecko/*', -1),
+            array('Mozilla/5.0 (Danger hiptop 3.0; U; rv:1.7.*) Gecko/*', 'Mozilla/5.0 (Danger hiptop 3.0; U; rv:1.7.*) Gecko/*', 0)
+        );
     }
 }
