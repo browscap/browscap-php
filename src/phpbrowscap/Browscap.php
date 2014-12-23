@@ -249,6 +249,37 @@ class Browscap
     {
         return $this->_source_version;
     }
+    
+    /**
+     * @return bool
+     */
+    public function shouldCacheBeUpdated ()
+    {
+        // Load the cache at the first request
+        if ($this->_cacheLoaded) {
+            return false;
+        } else {
+            $cache_file = $this->cacheDir . $this->cacheFilename;
+            $ini_file   = $this->cacheDir . $this->iniFilename;
+
+            // Set the interval only if needed
+            if ($this->doAutoUpdate && file_exists($ini_file)) {
+                $interval = time() - filemtime($ini_file);
+            } else {
+                $interval = 0;
+            }
+
+            $shouldBeUpdated = true;
+
+            if (file_exists($cache_file) && file_exists($ini_file) && ($interval <= $this->updateInterval)) {
+                if ($this->_loadCache($cache_file)) {
+                    $shouldBeUpdated = false;
+                }
+            }
+            
+            return $shouldBeUpdated;
+        }
+    }
 
     /**
      * XXX parse
@@ -264,46 +295,26 @@ class Browscap
      */
     public function getBrowser($user_agent = null, $return_array = false)
     {
-        // Load the cache at the first request
-        if (!$this->_cacheLoaded) {
+        if ($this->shouldCacheBeUpdated()) {
+            try {
+                $this->updateCache();
+            } catch (Exception $e) {
+                if (file_exists($ini_file)) {
+                    // Adjust the filemtime to the $errorInterval
+                    touch($ini_file, time() - $this->updateInterval + $this->errorInterval);
+                } elseif ($this->silent) {
+                    // Return an array if silent mode is active and the ini db doesn't exsist
+                    return array();
+                }
+
+                if (!$this->silent) {
+                    throw $e;
+                }
+            }
+            
             $cache_file = $this->cacheDir . $this->cacheFilename;
-            $ini_file   = $this->cacheDir . $this->iniFilename;
-
-            // Set the interval only if needed
-            if ($this->doAutoUpdate && file_exists($ini_file)) {
-                $interval = time() - filemtime($ini_file);
-            } else {
-                $interval = 0;
-            }
-
-            $update_cache = true;
-
-            if (file_exists($cache_file) && file_exists($ini_file) && ($interval <= $this->updateInterval)) {
-                if ($this->_loadCache($cache_file)) {
-                    $update_cache = false;
-                }
-            }
-
-            if ($update_cache) {
-                try {
-                    $this->updateCache();
-                } catch (Exception $e) {
-                    if (file_exists($ini_file)) {
-                        // Adjust the filemtime to the $errorInterval
-                        touch($ini_file, time() - $this->updateInterval + $this->errorInterval);
-                    } elseif ($this->silent) {
-                        // Return an array if silent mode is active and the ini db doesn't exsist
-                        return array();
-                    }
-
-                    if (!$this->silent) {
-                        throw $e;
-                    }
-                }
-
-                if (!$this->_loadCache($cache_file)) {
-                    throw new Exception('Cannot load this cache version - the cache format is not compatible.');
-                }
+            if (!$this->_loadCache($cache_file)) {
+                throw new Exception('Cannot load this cache version - the cache format is not compatible.');
             }
         }
 
