@@ -1493,6 +1493,7 @@
         "mikey179/vfsstream": 20
     },
     "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": {
         "php": ">=5.5.0"
     },
