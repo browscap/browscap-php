@@ -249,7 +249,7 @@ class Browscap
     {
         return $this->_source_version;
     }
-    
+
     /**
      * @return bool
      */
@@ -258,27 +258,27 @@ class Browscap
         // Load the cache at the first request
         if ($this->_cacheLoaded) {
             return false;
-        } else {
-            $cache_file = $this->cacheDir . $this->cacheFilename;
-            $ini_file   = $this->cacheDir . $this->iniFilename;
-
-            // Set the interval only if needed
-            if ($this->doAutoUpdate && file_exists($ini_file)) {
-                $interval = time() - filemtime($ini_file);
-            } else {
-                $interval = 0;
-            }
-
-            $shouldBeUpdated = true;
-
-            if (file_exists($cache_file) && file_exists($ini_file) && ($interval <= $this->updateInterval)) {
-                if ($this->_loadCache($cache_file)) {
-                    $shouldBeUpdated = false;
-                }
-            }
-            
-            return $shouldBeUpdated;
         }
+
+        $cache_file = $this->cacheDir . $this->cacheFilename;
+        $ini_file   = $this->cacheDir . $this->iniFilename;
+
+        // Set the interval only if needed
+        if ($this->doAutoUpdate && file_exists($ini_file)) {
+            $interval = time() - filemtime($ini_file);
+        } else {
+            $interval = 0;
+        }
+
+        $shouldBeUpdated = true;
+
+        if (file_exists($cache_file) && file_exists($ini_file) && ($interval <= $this->updateInterval)) {
+            if ($this->_loadCache($cache_file)) {
+                $shouldBeUpdated = false;
+            }
+        }
+
+        return $shouldBeUpdated;
     }
 
     /**
@@ -299,6 +299,8 @@ class Browscap
             try {
                 $this->updateCache();
             } catch (Exception $e) {
+                $ini_file = $this->cacheDir . $this->iniFilename;
+
                 if (file_exists($ini_file)) {
                     // Adjust the filemtime to the $errorInterval
                     touch($ini_file, time() - $this->updateInterval + $this->errorInterval);
@@ -311,7 +313,7 @@ class Browscap
                     throw $e;
                 }
             }
-            
+
             $cache_file = $this->cacheDir . $this->cacheFilename;
             if (!$this->_loadCache($cache_file)) {
                 throw new Exception('Cannot load this cache version - the cache format is not compatible.');
