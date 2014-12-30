@@ -527,7 +527,7 @@ class Browscap
         $lockfile = $this->cacheDir . 'cache.lock';
 
         if (file_exists($lockfile) || !touch($lockfile)) {
-            throw new Exception('temporary file already exists');
+            throw new Exception(sprintf('temporary file %s already exists', $lockfile));
         }
 
         $ini_path   = $this->cacheDir . $this->iniFilename;
