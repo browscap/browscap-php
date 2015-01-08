@@ -89,7 +89,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $objectIniPath = ini_get('browscap');
 
         if (!is_file($objectIniPath)) {
-            throw new \RuntimeException('browscap not defined in php.ini');
+            self::markTestSkipped('browscap not defined in php.ini');
         }
 
         // Now, load an INI file into BrowscapPHP\Browscap for testing the UAs
