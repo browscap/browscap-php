@@ -29,12 +29,12 @@
 
 namespace BrowscapPHP;
 
-use Browscap\Generator\BuildFullFileOnlyGenerator;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Exception\FetcherException;
 use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\Filesystem;
 use BrowscapPHP\Helper\IniLoader;
+use Browscap\Generator\BuildFullFileOnlyGenerator;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use WurflCache\Adapter\AdapterInterface;

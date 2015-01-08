@@ -1,17 +1,8 @@
 <?php
 namespace BrowscapPHPTest;
 
-use Browscap\Data\DataCollection;
-use Browscap\Data\Expander;
-use Browscap\Filter\FullFilter;
-use Browscap\Formatter\PhpFormatter;
-use Browscap\Helper\CollectionCreator;
-use Browscap\Writer\IniWriter;
-use Browscap\Writer\WriterCollection;
 use BrowscapPHP\Browscap;
 use BrowscapPHP\Cache\BrowscapCache;
-use Monolog\Handler\NullHandler;
-use Monolog\Logger;
 use WurflCache\Adapter\Memory;
 
 /**
