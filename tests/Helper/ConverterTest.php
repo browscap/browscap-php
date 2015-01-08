@@ -37,8 +37,7 @@ use BrowscapPHP\Helper\Converter;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/GaretJax/BrowscapPHP/
  */
-class ConverterTest
-    extends \PHPUnit_Framework_TestCase
+class ConverterTest extends \PHPUnit_Framework_TestCase
 {
     const STORAGE_DIR = 'storage';
 
