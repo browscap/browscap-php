@@ -31,13 +31,13 @@
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\Browscap;
+use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Helper\IniLoader;
+use BrowscapPHP\Helper\LoggerHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use BrowscapPHP\Helper\LoggerHelper;
-use BrowscapPHP\Helper\IniLoader;
-use BrowscapPHP\Cache\BrowscapCache;
 
 /**
  * command to fetch a browscap ini file from the remote host, convert it into an array and store the content in a local

@@ -31,13 +31,19 @@
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\Browscap;
+use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Exception\InvalidArgumentException;
+use BrowscapPHP\Exception\ReaderException;
 use BrowscapPHP\Exception\UnknownBrowserException;
 use BrowscapPHP\Exception\UnknownBrowserTypeException;
 use BrowscapPHP\Exception\UnknownDeviceException;
 use BrowscapPHP\Exception\UnknownEngineException;
 use BrowscapPHP\Exception\UnknownPlatformException;
 use BrowscapPHP\Helper\Filesystem;
+use BrowscapPHP\Helper\IniLoader;
+use BrowscapPHP\Helper\LoggerHelper;
 use BrowscapPHP\Util\Logfile\ReaderCollection;
+use BrowscapPHP\Util\Logfile\ReaderFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -46,12 +52,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use BrowscapPHP\Exception\InvalidArgumentException;
-use BrowscapPHP\Exception\ReaderException;
-use BrowscapPHP\Helper\LoggerHelper;
-use BrowscapPHP\Cache\BrowscapCache;
-use BrowscapPHP\Util\Logfile\ReaderFactory;
-use BrowscapPHP\Helper\IniLoader;
 
 /**
  * commands to parse a log file and parse the useragents in it

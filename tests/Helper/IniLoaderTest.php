@@ -2,8 +2,8 @@
 
 namespace BrowscapPHPTest\Helper;
 
-use FileLoader\Exception as LoaderException;
 use BrowscapPHP\Helper\IniLoader;
+use FileLoader\Exception as LoaderException;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities

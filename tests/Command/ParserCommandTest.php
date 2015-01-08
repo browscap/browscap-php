@@ -2,8 +2,8 @@
 
 namespace BrowscapPHPTest\Command;
 
-use BrowscapPHP\Command\ParserCommand;
 use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Command\ParserCommand;
 use WurflCache\Adapter\Memory;
 
 /**

@@ -2,8 +2,8 @@
 
 namespace BrowscapPHPTest\Helper;
 
-use org\bovigo\vfs\vfsStream;
 use BrowscapPHP\Helper\Converter;
+use org\bovigo\vfs\vfsStream;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities

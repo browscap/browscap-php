@@ -31,11 +31,11 @@
 namespace BrowscapPHP\Parser;
 
 use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Data\PropertyHolder;
 use BrowscapPHP\Formatter\FormatterInterface;
+use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\Quoter;
 use BrowscapPHP\Parser\Helper\GetPatternInterface;
-use BrowscapPHP\Data\PropertyHolder;
-use BrowscapPHP\Helper\Converter;
 use Psr\Log\LoggerInterface;
 
 /**

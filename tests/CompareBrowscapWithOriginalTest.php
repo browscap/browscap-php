@@ -1,10 +1,6 @@
 <?php
 namespace BrowscapPHPTest;
 
-use BrowscapPHP\Browscap;
-use WurflCache\Adapter\Memory;
-use BrowscapPHP\Cache\BrowscapCache;
-use BrowscapPHP\Parser\Ini;
 use Browscap\Data\DataCollection;
 use Browscap\Data\Expander;
 use Browscap\Filter\FullFilter;
@@ -12,8 +8,11 @@ use Browscap\Formatter\PhpFormatter;
 use Browscap\Helper\CollectionCreator;
 use Browscap\Writer\IniWriter;
 use Browscap\Writer\WriterCollection;
+use BrowscapPHP\Browscap;
+use BrowscapPHP\Cache\BrowscapCache;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
+use WurflCache\Adapter\Memory;
 
 /**
  * Compares get_browser results for all matches in browscap.ini with results from Browscap class.
