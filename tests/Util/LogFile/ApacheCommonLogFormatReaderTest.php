@@ -69,7 +69,7 @@ class ApacheCommonLogFormatReaderTest extends \PHPUnit_Framework_TestCase
     {
         $this->object->read('test');
     }
-    
+
     /**
      * data provider for the function testTestOk
      */
@@ -79,10 +79,10 @@ class ApacheCommonLogFormatReaderTest extends \PHPUnit_Framework_TestCase
             array('87.139.99.29 - - 6 0 - - [07/Aug/2014:18:36:10 +0200] - "-" 408 - "-" "-" - www.geld.de'),
         );
     }
-    
+
     /**
      * @dataProvider regexproviderOk
-     * 
+     *
      * @param string $ua
      */
     public function testTestOk($ua)

@@ -29,16 +29,16 @@
 
 namespace BrowscapPHP;
 
-use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Cache\BrowscapCache;
-use BrowscapPHP\Helper\Filesystem;
-use WurflCache\Adapter\File;
-use WurflCache\Adapter\AdapterInterface;
-use BrowscapPHP\Helper\IniLoader;
 use BrowscapPHP\Exception\FetcherException;
+use BrowscapPHP\Helper\Converter;
+use BrowscapPHP\Helper\Filesystem;
+use BrowscapPHP\Helper\IniLoader;
 use Browscap\Generator\BuildFullFileOnlyGenerator;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use WurflCache\Adapter\AdapterInterface;
+use WurflCache\Adapter\File;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities

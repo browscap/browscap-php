@@ -2,8 +2,8 @@
 
 namespace BrowscapPHPTest\Command;
 
-use BrowscapPHP\Command\LogfileCommand;
 use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Command\LogfileCommand;
 use WurflCache\Adapter\Memory;
 use org\bovigo\vfs\vfsStream;
 

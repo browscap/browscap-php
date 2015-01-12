@@ -2,6 +2,6 @@
 .settings
 .buildpath
 .project
-.idea
-vendor
+.idea/
+vendor/
 phpunit.xml

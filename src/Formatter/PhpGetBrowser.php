@@ -131,13 +131,13 @@ class PhpGetBrowser implements FormatterInterface
     {
         $output = new \stdClass();
 
-        foreach ($this->defaultproperties as $property => $defaultValue) {
+        foreach (array_keys($this->defaultproperties) as $property) {
             $key = strtolower($property);
 
             if (array_key_exists($key, $this->settings)) {
                 $output->$key = $this->settings[$key];
-            } else {
-                $output->$key = $defaultValue;
+            } elseif ('parent' !== $key) {
+                $output->$key = $this->defaultproperties[$property];
             }
         }
 

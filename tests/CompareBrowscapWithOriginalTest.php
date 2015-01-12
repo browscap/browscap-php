@@ -2,18 +2,8 @@
 namespace BrowscapPHPTest;
 
 use BrowscapPHP\Browscap;
-use WurflCache\Adapter\Memory;
 use BrowscapPHP\Cache\BrowscapCache;
-use BrowscapPHP\Parser\Ini;
-use Browscap\Data\DataCollection;
-use Browscap\Data\Expander;
-use Browscap\Filter\FullFilter;
-use Browscap\Formatter\PhpFormatter;
-use Browscap\Helper\CollectionCreator;
-use Browscap\Writer\IniWriter;
-use Browscap\Writer\WriterCollection;
-use Monolog\Handler\NullHandler;
-use Monolog\Logger;
+use WurflCache\Adapter\Memory;
 
 /**
  * Compares get_browser results for all matches in browscap.ini with results from Browscap class.
@@ -29,7 +19,55 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
     /**
      * @var array
      */
-    private $properties = array();
+    private $properties = array(
+        'browser_name_regex'          => null,
+        'browser_name_pattern'        => null,
+        'Parent'                      => null,
+        'Comment'                     => 'Default Browser',
+        'Browser'                     => 'Default Browser',
+        'Browser_Type'                => 'unknown',
+        'Browser_Bits'                => '0',
+        'Browser_Maker'               => 'unknown',
+        'Browser_Modus'               => 'unknown',
+        'Version'                     => '0.0',
+        'MajorVer'                    => '0',
+        'MinorVer'                    => '0',
+        'Platform'                    => 'unknown',
+        'Platform_Version'            => 'unknown',
+        'Platform_Description'        => 'unknown',
+        'Platform_Bits'               => '0',
+        'Platform_Maker'              => 'unknown',
+        'Alpha'                       => 'false',
+        'Beta'                        => 'false',
+        'Win16'                       => 'false',
+        'Win32'                       => 'false',
+        'Win64'                       => 'false',
+        'Frames'                      => 'false',
+        'IFrames'                     => 'false',
+        'Tables'                      => 'false',
+        'Cookies'                     => 'false',
+        'BackgroundSounds'            => 'false',
+        'JavaScript'                  => 'false',
+        'VBScript'                    => 'false',
+        'JavaApplets'                 => 'false',
+        'ActiveXControls'             => 'false',
+        'isMobileDevice'              => 'false',
+        'isTablet'                    => 'false',
+        'isSyndicationReader'         => 'false',
+        'Crawler'                     => 'false',
+        'CssVersion'                  => '0',
+        'AolVersion'                  => '0',
+        'Device_Name'                 => 'unknown',
+        'Device_Maker'                => 'unknown',
+        'Device_Type'                 => 'unknown',
+        'Device_Pointing_Method'      => 'unknown',
+        'Device_Code_Name'            => 'unknown',
+        'Device_Brand_Name'           => 'unknown',
+        'RenderingEngine_Name'        => 'unknown',
+        'RenderingEngine_Version'     => 'unknown',
+        'RenderingEngine_Description' => 'unknown',
+        'RenderingEngine_Maker'       => 'unknown',
+    );
 
     /**
      * This method is called before the first test of this test class is run.
@@ -38,147 +76,10 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
      */
     public static function setUpBeforeClass()
     {
-        self::markTestSkipped('not ready');
+        $objectIniPath = ini_get('browscap');
 
-        if (class_exists('\Browscap\Browscap')) {
-            // First, generate the INI files
-            $resourceFolder = __DIR__ . '/../vendor/browscap/browscap/resources';
-
-            $logger = new Logger('browscap');
-            $logger->pushHandler(new NullHandler(Logger::DEBUG));
-
-            $collectionCreator = new CollectionCreator();
-
-            $collection = new DataCollection('test');
-            $collection->setLogger($logger);
-
-            $expander = new Expander();
-            $expander
-                ->setDataCollection($collection)
-                ->setLogger($logger)
-            ;
-
-            $collectionCreator
-                ->setLogger($logger)
-                ->setDataCollection($collection)
-                ->createDataCollection($resourceFolder)
-            ;
-
-            $writerCollection = new WriterCollection();
-            $fullFilter       = new FullFilter();
-
-            $fullPhpWriter = new IniWriter($objectIniPath);
-            $formatter     = new PhpFormatter();
-            $fullPhpWriter
-                ->setLogger($logger)
-                ->setFormatter($formatter->setFilter($fullFilter))
-                ->setFilter($fullFilter)
-            ;
-            $writerCollection->addWriter($fullPhpWriter);
-
-            $comments = array(
-                'Provided courtesy of http://browscap.org/',
-                'Created on ' . $collection->getGenerationDate()->format('l, F j, Y \a\t h:i A T'),
-                'Keep up with the latest goings-on with the project:',
-                'Follow us on Twitter <https://twitter.com/browscap>, or...',
-                'Like us on Facebook <https://facebook.com/browscap>, or...',
-                'Collaborate on GitHub <https://github.com/browscap>, or...',
-                'Discuss on Google Groups <https://groups.google.com/forum/#!forum/browscap>.'
-            );
-
-            $writerCollection
-                ->fileStart()
-                ->renderHeader($comments)
-                ->renderVersion('test', $collection)
-            ;
-
-            $writerCollection->renderAllDivisionsHeader($collection);
-
-            $division = $collection->getDefaultProperties();
-
-            $writerCollection->renderDivisionHeader($division->getName());
-
-            $ua       = $division->getUserAgents();
-            $sections = array($ua[0]['userAgent'] => $ua[0]['properties']);
-
-            foreach ($sections as $sectionName => $section) {
-                $writerCollection
-                    ->renderSectionHeader($sectionName)
-                    ->renderSectionBody($section, $collection, $sections)
-                    ->renderSectionFooter()
-                ;
-            }
-
-            $writerCollection->renderDivisionFooter();
-
-            foreach ($collection->getDivisions() as $division) {
-                /** @var \Browscap\Data\Division $division */
-                $writerCollection->setSilent($division);
-
-                $versions = $division->getVersions();
-
-                foreach ($versions as $version) {
-                    list($majorVer, $minorVer) = $expander->getVersionParts($version);
-
-                    $userAgents = json_encode($division->getUserAgents());
-                    $userAgents = $expander->parseProperty($userAgents, $majorVer, $minorVer);
-                    $userAgents = json_decode($userAgents, true);
-
-                    $divisionName = $expander->parseProperty($division->getName(), $majorVer, $minorVer);
-
-                    $writerCollection->renderDivisionHeader($divisionName);
-
-                    $sections = $expander->expand($division, $majorVer, $minorVer, $divisionName);
-
-                    foreach ($sections as $sectionName => $section) {
-                        $writerCollection
-                            ->renderSectionHeader($sectionName)
-                            ->renderSectionBody($section, $collection, $sections)
-                            ->renderSectionFooter()
-                        ;
-                    }
-
-                    $writerCollection->renderDivisionFooter();
-
-                    unset($userAgents, $divisionName, $majorVer, $minorVer);
-                }
-            }
-
-            $division = $collection->getDefaultBrowser();
-
-            $writerCollection->renderDivisionHeader($division->getName());
-
-            $ua       = $division->getUserAgents();
-            $sections = array(
-                $ua[0]['userAgent'] => array_merge(
-                    array('Parent' => 'DefaultProperties'),
-                    $ua[0]['properties']
-                )
-            );
-
-            foreach ($sections as $sectionName => $section) {
-                $writerCollection
-                    ->renderSectionHeader($sectionName)
-                    ->renderSectionBody($section, $collection, $sections)
-                    ->renderSectionFooter()
-                ;
-            }
-
-            $writerCollection
-                ->renderDivisionFooter()
-                ->renderAllDivisionsFooter()
-            ;
-
-            $writerCollection
-                ->fileEnd()
-                ->close()
-            ;
-        } else {
-            $objectIniPath = ini_get('browscap');
-
-            if (!is_file($objectIniPath)) {
-                $this->markTestSkipped('browscap not defined in php.ini');
-            }
+        if (!is_file($objectIniPath)) {
+            self::markTestSkipped('browscap not defined in php.ini');
         }
 
         // Now, load an INI file into BrowscapPHP\Browscap for testing the UAs
@@ -193,48 +94,26 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         ;
     }
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-    }
-
     public function testCheckProperties()
     {
         $libProperties = get_object_vars(get_browser('x'));
         $bcProperties  = get_object_vars(self::$object->getBrowser('x'));
 
-        unset($bcProperties['Parents']);
-        unset($bcProperties['browser_name']);
-        unset($libProperties['browser_name']);
-        unset($libProperties['renderingengine_description']);
+        $libPropertyKeys = array_keys($libProperties);
+        $bcPropertyKeys  = array_keys($bcProperties);
 
-        $libPropertyKeys = array_map('strtolower', array_keys($libProperties));
-        $bcPropertyKeys  = array_map('strtolower', array_keys($bcProperties));
+        $diff = array_diff($libPropertyKeys, $bcPropertyKeys);
 
-        self::assertSame(
-            $libPropertyKeys,
-            $bcPropertyKeys,
-            'the properties found by "get_browser()" differ from found by "Browser::getBrowser()"'
-        );
+        if (!empty($diff)) {
+            $this->fail('the properties found by "get_browser()" differ from found by "Browser::getBrowser()"');
+        }
 
         foreach (array_keys($bcProperties) as $bcProp) {
-            if (in_array($bcProp, array('browser_name', 'browser_name_regex', 'browser_name_pattern'))) {
-                //continue;
-            }
-
             self::assertArrayHasKey(
                 strtolower($bcProp),
                 $libProperties,
                 'Property `' . $bcProp . '` from Browscap doesn\'t match anything in get_browser.'
             );
-
-            if ('browser_name_regex' != $bcProp) {
-                $this->properties[$bcProp] = strtolower($bcProp);
-            }
 
             unset($libProperties[strtolower($bcProp)]);
         }
@@ -249,30 +128,30 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerUserAgent
+     * @depends testCheckProperties
+     *
+     * @param string $userAgent
      */
     public function testCompare($userAgent)
     {
         $libResult = get_browser($userAgent);
         $bcResult  = self::$object->getBrowser($userAgent);
 
-        if ($userAgent == Ini::BROWSCAP_VERSION_KEY) {
-            self::assertSame(
-                $libResult->version,
-                self::$object->getSourceVersion(),
-                'Source file version incorrect: ' . $libResult->version . ' != '
-                //. self::$object->getSourceVersion()
-            );
-        } else {
-            foreach ($this->properties as $bcProp => $libProp) {
-                $libValue = $libResult->{$libProp};
-                $bcValue  = $bcResult->{$bcProp};
-
-                self::assertSame(
-                    $libValue,
-                    $bcValue,
-                    $bcProp . ': ' . $libValue . ' != ' . $bcValue
-                );
+        foreach (array_keys($this->properties) as $bcProp) {
+            if (in_array($bcProp, array('browser_name_regex', 'browser_name_pattern', 'Parent'))) {
+                continue;
             }
+
+            $bcProp = strtolower($bcProp);
+
+            $libValue = (string) $libResult->{$bcProp};
+            $bcValue  = (string) $bcResult->{$bcProp};
+
+            self::assertSame(
+                $libValue,
+                $bcValue,
+                $bcProp . ': ' . $libValue . ' != ' . $bcValue
+            );
         }
     }
 
@@ -317,6 +196,8 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             array('Outlook-Express/7.0 (MSIE 7.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; McAfee; AskTbORJ/5.15.23.36191; TmstmpExt)'),
             array('SAMSUNG-SGH-A867/A867UCHJ3 SHP/VPP/R5 NetFront/35 SMM-MMS/1.2.0 profile/MIDP-2.0 configuration/CLDC-1.1 UP.Link/6.3.0.0.0'),
             array('WordPress/3.5.1; http://greenconsulting.ecolivingfan.info'),
+            array('Der gro\\xdfe BilderSauger 2.00u'),
+            array('\\x22Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)\\x22'),
         );
     }
 }

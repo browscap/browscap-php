@@ -31,11 +31,11 @@
 namespace BrowscapPHP\Parser;
 
 use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Data\PropertyHolder;
 use BrowscapPHP\Formatter\FormatterInterface;
+use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\Quoter;
 use BrowscapPHP\Parser\Helper\GetPatternInterface;
-use BrowscapPHP\Data\PropertyHolder;
-use BrowscapPHP\Helper\Converter;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -184,24 +184,27 @@ class Ini implements ParserInterface
 
         foreach ($this->getHelper()->getPatterns($userAgent) as $patterns) {
             $result = preg_match(
-                '/^(?:'.str_replace("\t", ')|(?:', $quoterHelper->pregQuote($patterns)).')$/i',
+                '/^(?:'.str_replace("\t", ')|(?:', $quoterHelper->pregQuote($patterns, '/')).')$/i',
                 $userAgent
             );
-            if ($result) {
-                // strtok() requires less memory than explode()
-                $pattern = strtok($patterns, "\t");
 
-                while ($pattern !== false) {
-                    $quotedPattern = '/^'.$quoterHelper->pregQuote($pattern, '/').'$/i';
+            if (!$result) {
+                continue;
+            }
 
-                    if (preg_match($quotedPattern, $userAgent)) {
-                        $formatter = $this->getFormatter();
-                        $formatter->setData($this->getSettings($pattern));
-                        break 2;
-                    }
+            // strtok() requires less memory than explode()
+            $pattern = strtok($patterns, "\t");
 
-                    $pattern = strtok("\t");
+            while ($pattern !== false) {
+                $quotedPattern = '/^'.$quoterHelper->pregQuote($pattern, '/').'$/i';
+
+                if (preg_match($quotedPattern, $userAgent)) {
+                    $formatter = $this->getFormatter();
+                    $formatter->setData($this->getSettings($pattern));
+                    break 2;
                 }
+
+                $pattern = strtok("\t");
             }
         }
 

@@ -30,11 +30,11 @@
 
 namespace BrowscapPHP\Helper;
 
-use BrowscapPHP\Exception\FileNotFoundException;
 use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Data\PropertyHolder;
+use BrowscapPHP\Exception\FileNotFoundException;
 use BrowscapPHP\Parser\Helper\Pattern;
 use BrowscapPHP\Parser\Ini;
-use BrowscapPHP\Data\PropertyHolder;
 use Psr\Log\LoggerInterface;
 
 /**

@@ -3,7 +3,6 @@
 namespace BrowscapPHPTest\Parser\Helper;
 
 use BrowscapPHP\Parser\Helper\GetPattern;
-use BrowscapPHP\Cache\BrowscapCache;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities

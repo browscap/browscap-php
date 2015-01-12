@@ -294,8 +294,10 @@ class PropertyHolder
                     'TV Device',
                     'Tablet',
                     'Mobile Phone',
+                    'Smartphone',    // actual mobile phone with touchscreen
+                    'Feature Phone', // older mobile phone
                     'Mobile Device',
-                    'FonePad', // Tablet sized device with the capability to make phone calls
+                    'FonePad',       // Tablet sized device with the capability to make phone calls
                     'Desktop',
                     'Ebook Reader',
                     'Car Entertainment System',
@@ -305,17 +307,17 @@ class PropertyHolder
             case 'Device_Pointing_Method':
                 // This property is taken from http://www.scientiamobile.com/wurflCapability
                 $allowedValues = array(
-                    'joystick', 'stylus', 'touchscreen', 'clickwheel', 'trackpad', 'trackball', 'mouse', 'unknown',
+                    'joystick', 'stylus', 'touchscreen', 'clickwheel', 'trackpad', 'trackball', 'mouse', 'unknown'
                 );
                 break;
             case 'Browser_Bits':
             case 'Platform_Bits':
                 $allowedValues = array(
-                    '0', '8', '16', '32', '64',
+                    '0', '8', '16', '32', '64'
                 );
                 break;
             default:
-                throw new \InvalidArgumentException('Property "'.$property.'" is not defined to be validated');
+                throw new \InvalidArgumentException('Property "' . $property . '" is not defined to be validated');
                 break;
         }
 
