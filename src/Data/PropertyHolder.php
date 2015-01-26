@@ -145,126 +145,6 @@ class PropertyHolder
     }
 
     /**
-     * Determine if the specified property is an "extra" property (that should
-     * be included in the "full" versions of the files)
-     *
-     * @param  string                           $propertyName
-     * @param  \Browscap\Writer\WriterInterface $writer
-     * @return boolean
-     */
-    public function isExtraProperty($propertyName, \Browscap\Writer\WriterInterface $writer = null)
-    {
-        if (null !== $writer && in_array($writer->getType(), array('csv', 'xml'))) {
-            $additionalProperties = array('PropertyName', 'MasterParent', 'LiteMode');
-
-            if (in_array($propertyName, $additionalProperties)) {
-                return false;
-            }
-        }
-
-        $extraProperties = array(
-            'Browser_Type',
-            'Browser_Bits',
-            'Browser_Maker',
-            'Browser_Modus',
-            'Platform_Name',
-            'Platform_Bits',
-            'Platform_Maker',
-            'Device_Code_Name',
-            'Device_Brand_Name',
-            'Device_Name',
-            'Device_Maker',
-            'Device_Type',
-            'Device_Pointing_Method',
-            'Platform_Description',
-            'RenderingEngine_Name',
-            'RenderingEngine_Version',
-            'RenderingEngine_Description',
-            'RenderingEngine_Maker',
-        );
-
-        if (in_array($propertyName, $extraProperties)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Determine if the specified property is an "extra" property (that should
-     * be included in the "full" versions of the files)
-     *
-     * @param  string                           $propertyName
-     * @param  \Browscap\Writer\WriterInterface $writer
-     * @return boolean
-     */
-    public function isOutputProperty($propertyName, \Browscap\Writer\WriterInterface $writer = null)
-    {
-        $outputProperties = array(
-            'Comment',
-            'Browser',
-            'Browser_Maker',
-            'Browser_Modus',
-            'Platform',
-            'Platform_Name',
-            'Platform_Description',
-            'Device_Name',
-            'Platform_Maker',
-            'Device_Code_Name',
-            'Device_Maker',
-            'Device_Brand_Name',
-            'RenderingEngine_Name',
-            'RenderingEngine_Description',
-            'RenderingEngine_Maker',
-            'Parent',
-            'Browser_Type',
-            'Device_Type',
-            'Device_Pointing_Method',
-            'Browser_Bits',
-            'Platform_Bits',
-            'Platform_Version',
-            'RenderingEngine_Version',
-            'Version',
-            'CssVersion',
-            'AolVersion',
-            'MajorVer',
-            'MinorVer',
-            'Alpha',
-            'Beta',
-            'Win16',
-            'Win32',
-            'Win64',
-            'Frames',
-            'IFrames',
-            'Tables',
-            'Cookies',
-            'BackgroundSounds',
-            'JavaScript',
-            'VBScript',
-            'JavaApplets',
-            'ActiveXControls',
-            'isMobileDevice',
-            'isTablet',
-            'isSyndicationReader',
-            'Crawler',
-        );
-
-        if (in_array($propertyName, $outputProperties)) {
-            return true;
-        }
-
-        if (null !== $writer && in_array($writer->getType(), array('csv', 'xml'))) {
-            $additionalProperties = array('PropertyName', 'MasterParent', 'LiteMode');
-
-            if (in_array($propertyName, $additionalProperties)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * @param string $property
      * @param string $value
      *
@@ -301,6 +181,7 @@ class PropertyHolder
                     'Desktop',
                     'Ebook Reader',
                     'Car Entertainment System',
+                    'Digital Camera',
                     'unknown',
                 );
                 break;
