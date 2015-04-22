@@ -530,7 +530,7 @@ class Browscap
         if (false === $lockRes) {
             throw new Exception(sprintf('error opening lockfile %s', $lockfile));
         }
-        if(false === flock($lockRes, LOCK_EX | LOCK_NB)) {
+        if (false === flock($lockRes, LOCK_EX | LOCK_NB)) {
             throw new Exception(sprintf('error locking lockfile %s', $lockfile));
         }
 
@@ -646,11 +646,11 @@ class Browscap
         $tmpFile = $dir . '/temp_' . md5(time() . basename($cache_path));
 
         // asume that all will be ok
-        if (false === ($fileRes=fopen($tmpFile, 'w+'))) {
+        if (false === ($fileRes = fopen($tmpFile, 'w+'))) {
             // opening the temparary file failed
             throw new Exception('opening temporary file failed');
         }
-        if(false === $this->_buildCache($fileRes)) {
+        if (false === $this->_buildCache($fileRes)) {
             // writing to the temparary file failed
             throw new Exception('writing to temporary file failed');
         }
@@ -845,7 +845,7 @@ class Browscap
      */
     protected function _buildCache($fileRes)
     {
-        if(false === fwrite($fileRes, sprintf(
+        if (false === fwrite($fileRes, sprintf(
             "<?php\n\$source_version=%s;\n\$cache_version=%s",
             "'" . $this->_source_version . "'",
             "'" . self::CACHE_FILE_VERSION . "'"
@@ -854,39 +854,39 @@ class Browscap
             return false;
         }
         
-        if(false === fwrite($fileRes, ";\n\$properties=")) {
+        if (false === fwrite($fileRes, ";\n\$properties=")) {
             // write error
             return false;
         }
-        if(false === $this->_array2string($this->_properties, $fileRes)) {
+        if (false === $this->_array2string($this->_properties, $fileRes)) {
             // write error
             return false;
         }
-        if(false === fwrite($fileRes, ";\n\$browsers=")) {
+        if (false === fwrite($fileRes, ";\n\$browsers=")) {
             // write error
             return false;
         }
-        if(false === $this->_array2string($this->_browsers, $fileRes)) {
+        if (false === $this->_array2string($this->_browsers, $fileRes)) {
             // write error
             return false;
         }
-        if(false === fwrite($fileRes, ";\n\$userAgents=")) {
+        if (false === fwrite($fileRes, ";\n\$userAgents=")) {
             // write error
             return false;
         }
-        if(false === $this->_array2string($this->_userAgents, $fileRes)) {
+        if (false === $this->_array2string($this->_userAgents, $fileRes)) {
             // write error
             return false;
         }
-        if(false === fwrite($fileRes, ";\n\$patterns=")) {
+        if (false === fwrite($fileRes, ";\n\$patterns=")) {
             // write error
             return false;
         }
-        if(false === $this->_array2string($this->_patterns, $fileRes)) {
+        if (false === $this->_array2string($this->_patterns, $fileRes)) {
             // write error
             return false;
         }
-        if(false === fwrite($fileRes, ";\n")) {
+        if (false === fwrite($fileRes, ";\n")) {
             // write error
             return false;
         }
@@ -1027,7 +1027,7 @@ class Browscap
      */
     protected function _array2string($array, $fileRes)
     {
-        if(false === fwrite($fileRes, "array(\n")) {
+        if (false === fwrite($fileRes, "array(\n")) {
             // write error
             return false;
         }
@@ -1048,12 +1048,12 @@ class Browscap
                 $value = "'" . str_replace("'", "\'", $value) . "'";
             }
 
-            if(false === fwrite($fileRes, $key . $value . ",\n")) {
+            if (false === fwrite($fileRes, $key . $value . ",\n")) {
                 // write error
                 return false;
             }
         }
-        if(false === fwrite($fileRes, "\n)")) {
+        if (false === fwrite($fileRes, "\n)")) {
             // write error
             return false;
         }
