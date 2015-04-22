@@ -253,9 +253,12 @@ class BrowscapTest extends TestCase
             throw new \RuntimeException(sprintf('Unable to create temporary file "%s"', $tmpFile));
         }
         
-        self::assertSame($result, $method->invoke($browscap, array('a' => 1, 'b' => 'abc', '1.0' => 'cde', 1 => 'def', 2 => array('abc', 1, 2)), $fileRes));
+        self::assertTrue($method->invoke($browscap, array('a' => 1, 'b' => 'abc', '1.0' => 'cde', 1 => 'def', 2 => array('abc', 1, 2)), $fileRes));
         
         fclose($fileRes);
+        
+        self::assertSame($result, file_get_contents($tmpFile));
+        
         unlink($tmpFile);
     }
 
