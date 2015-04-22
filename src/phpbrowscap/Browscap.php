@@ -526,8 +526,12 @@ class Browscap
     {
         $lockfile = $this->cacheDir . 'cache.lock';
 
-        if (file_exists($lockfile) || !touch($lockfile)) {
-            throw new Exception(sprintf('temporary file %s already exists', $lockfile));
+        $lockRes = fopen($lockfile, 'w+');
+        if (false === $lockRes) {
+            throw new Exception(sprintf('error opening lockfile %s', $lockfile));
+        }
+        if(false === flock($lockRes, LOCK_EX | LOCK_NB)) {
+            throw new Exception(sprintf('error locking lockfile %s', $lockfile));
         }
 
         $ini_path   = $this->cacheDir . $this->iniFilename;
@@ -635,18 +639,22 @@ class Browscap
             }
         }
 
-        // Get the whole PHP code
-        $cache = $this->_buildCache();
+        // Write out new cache file
         $dir   = dirname($cache_path);
 
         // "tempnam" did not work with VFSStream for tests
         $tmpFile = $dir . '/temp_' . md5(time() . basename($cache_path));
 
         // asume that all will be ok
-        if (false === file_put_contents($tmpFile, $cache)) {
+        if (false === ($fileRes=fopen($tmpFile, 'w+'))) {
+            // opening the temparary file failed
+            throw new Exception('opening temporary file failed');
+        }
+        if(false === $this->_buildCache($fileRes)) {
             // writing to the temparary file failed
             throw new Exception('writing to temporary file failed');
         }
+        fclose($fileRes);
 
         if (false === rename($tmpFile, $cache_path)) {
             // renaming file failed, remove temp file
@@ -655,6 +663,8 @@ class Browscap
             throw new Exception('could not rename temporary file to the cache file');
         }
 
+        @flock($lockRes, LOCK_UN);
+        @fclose($lockRes);
         @unlink($lockfile);
 
         return true;
@@ -827,28 +837,61 @@ class Browscap
     }
 
     /**
-     * Parses the array to cache and creates the PHP string to write to disk
+     * Parses the array to cache and writes the resulting PHP string to disk
      *
-     * @return string the PHP string to save into the cache file
+     * @param ressource $fileRes File ressource to write to
+     * 
+     * @return boolean False on write error, true otherwise
      */
-    protected function _buildCache()
+    protected function _buildCache($fileRes)
     {
-        $cacheTpl = "<?php\n\$source_version=%s;\n\$cache_version=%s;\n\$properties=%s;\n\$browsers=%s;\n\$userAgents=%s;\n\$patterns=%s;\n";
-
-        $propertiesArray = $this->_array2string($this->_properties);
-        $patternsArray   = $this->_array2string($this->_patterns);
-        $userAgentsArray = $this->_array2string($this->_userAgents);
-        $browsersArray   = $this->_array2string($this->_browsers);
-
-        return sprintf(
-            $cacheTpl,
+        if(false === fwrite($fileRes, sprintf(
+            "<?php\n\$source_version=%s;\n\$cache_version=%s",
             "'" . $this->_source_version . "'",
-            "'" . self::CACHE_FILE_VERSION . "'",
-            $propertiesArray,
-            $browsersArray,
-            $userAgentsArray,
-            $patternsArray
-        );
+            "'" . self::CACHE_FILE_VERSION . "'"
+        ))) {
+            // write error
+            return false;
+        }
+        
+        if(false === fwrite($fileRes, ";\n\$properties=")) {
+            // write error
+            return false;
+        }
+        if(false === $this->_array2string($this->_properties, $fileRes)) {
+            // write error
+            return false;
+        }
+        if(false === fwrite($fileRes, ";\n\$browsers=")) {
+            // write error
+            return false;
+        }
+        if(false === $this->_array2string($this->_browsers, $fileRes)) {
+            // write error
+            return false;
+        }
+        if(false === fwrite($fileRes, ";\n\$userAgents=")) {
+            // write error
+            return false;
+        }
+        if(false === $this->_array2string($this->_userAgents, $fileRes)) {
+            // write error
+            return false;
+        }
+        if(false === fwrite($fileRes, ";\n\$patterns=")) {
+            // write error
+            return false;
+        }
+        if(false === $this->_array2string($this->_patterns, $fileRes)) {
+            // write error
+            return false;
+        }
+        if(false === fwrite($fileRes, ";\n")) {
+            // write error
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -978,13 +1021,16 @@ class Browscap
      * convert strings to numbers.
      *
      * @param array $array the array to parse and convert
+     * @param ressource $fileRes Ressource to write the parsed string to
      *
-     * @return string the array parsed into a PHP string
+     * @return boolean False on write error, true otherwise
      */
-    protected function _array2string($array)
+    protected function _array2string($array, $fileRes)
     {
-        $strings = array();
-
+        if(false === fwrite($fileRes, "array(\n")) {
+            // write error
+            return false;
+        }
         foreach ($array as $key => $value) {
             if (is_int($key)) {
                 $key = '';
@@ -1002,10 +1048,17 @@ class Browscap
                 $value = "'" . str_replace("'", "\'", $value) . "'";
             }
 
-            $strings[] = $key . $value;
+            if(false === fwrite($fileRes, $key . $value . ",\n")) {
+                // write error
+                return false;
+            }
+        }
+        if(false === fwrite($fileRes, "\n)")) {
+            // write error
+            return false;
         }
 
-        return "array(\n" . implode(",\n", $strings) . "\n)";
+        return true;
     }
 
     /**
