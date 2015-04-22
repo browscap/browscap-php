@@ -244,7 +244,7 @@ class BrowscapTest extends TestCase
 
         $browscap = new Browscap($cacheDir);
 
-        $result = 'array(' . "\n" . '\'a\'=>1,' . "\n" . '\'b\'=>\'abc\',' . "\n" . '1=>\'cde\',' . "\n" . '\'def\',' . "\n" . '\'a:3:{i:0;s:3:"abc";i:1;i:1;i:2;i:2;}\'' . "\n" . ')';
+        $result = 'array(' . "\n" . '\'a\'=>1,' . "\n" . '\'b\'=>\'abc\',' . "\n" . '1=>\'cde\',' . "\n" . '\'def\',' . "\n" . '\'a:3:{i:0;s:3:"abc";i:1;i:1;i:2;i:2;}\',' . "\n" . "\n" . ')';
 
         // "tempnam" did not work with VFSStream for tests
         $tmpFile = $cacheDir . '/temp_test_' . md5(time());
