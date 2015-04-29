@@ -36,12 +36,12 @@
   },
   "autoload": {
     "psr-0": {
-      "phpbrowscap//": "src/"
+      "phpbrowscap\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-0": {
-      "phpbrowscapTest//": "tests/"
+      "phpbrowscapTest\\": "tests/"
     }
   }
 }
