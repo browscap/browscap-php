@@ -1,38 +1,47 @@
 {
-    "name": "browscap/browscap-php",
-    "type": "library",
-    "description": "Standalone replacement for php's native get_browser() function",
-    "keywords": ["get_browser", "browser", "capabilities", "user agent"],
-    "homepage": "https://github.com/browscap/browscap-php",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Jonathan Stoppani",
-            "email": "jonathan.stoppani@gmail.com"
-        },
-        {
-            "name": "James Titcumb",
-            "email": "james@asgrim.com"
-        },
-        {
-            "name": "Thomas Mueller",
-            "email": "t_mueller_stolzenhain@yahoo.de"
-        }
-    ],
-    "support": {
-        "issues": "https://github.com/browscap/browscap-php/issues",
-        "source": "https://github.com/browscap/browscap-php"
+  "name": "browscap/browscap-php",
+  "type": "library",
+  "description": "Standalone replacement for php's native get_browser() function",
+  "keywords": [
+    "get_browser",
+    "browser",
+    "capabilities",
+    "user agent"
+  ],
+  "homepage": "https://github.com/browscap/browscap-php",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jonathan Stoppani",
+      "email": "jonathan.stoppani@gmail.com"
     },
-    "require": {
-        "php": ">=5.3.0"
+    {
+      "name": "James Titcumb",
+      "email": "james@asgrim.com"
     },
-    "require-dev": {
-        "phpunit/phpunit": "*"
-    },
-    "autoload": {
-        "psr-0": {
-            "phpbrowscap": "src/",
-            "phpbrowscapTest": "tests/"
-        }
+    {
+      "name": "Thomas Mueller",
+      "email": "t_mueller_stolzenhain@yahoo.de"
     }
+  ],
+  "support": {
+    "issues": "https://github.com/browscap/browscap-php/issues",
+    "source": "https://github.com/browscap/browscap-php"
+  },
+  "require": {
+    "php": ">=5.3.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "autoload": {
+    "psr-0": {
+      "phpbrowscap\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-0": {
+      "phpbrowscapTest\\": "tests/"
+    }
+  }
 }
