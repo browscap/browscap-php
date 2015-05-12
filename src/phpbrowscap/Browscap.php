@@ -338,7 +338,12 @@ class Browscap
 
                     $simple_match = true;
                 } else {
-                    $pattern_data = unserialize($pattern_data);
+                    if (is_string($pattern_data)) {
+                        $pattern_data = unserialize($pattern_data);
+                    } elseif(!is_string($pattern_data) && !is_array($pattern_data)) {
+                        // something was wrong
+                        continue;
+                    }
 
                     // match with numeric replacements
                     array_shift($matches);
