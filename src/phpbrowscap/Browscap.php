@@ -253,7 +253,7 @@ class Browscap
     /**
      * @return bool
      */
-    public function shouldCacheBeUpdated ()
+    public function shouldCacheBeUpdated()
     {
         // Load the cache at the first request
         if ($this->_cacheLoaded) {
@@ -313,11 +313,11 @@ class Browscap
                     throw $e;
                 }
             }
+        }
 
-            $cache_file = $this->cacheDir . $this->cacheFilename;
-            if (!$this->_loadCache($cache_file)) {
-                throw new Exception('Cannot load this cache version - the cache format is not compatible.');
-            }
+        $cache_file = $this->cacheDir . $this->cacheFilename;
+        if (!$this->_loadCache($cache_file)) {
+            throw new Exception('Cannot load cache file - the cache format is not compatible.');
         }
 
         // Automatically detect the useragent
@@ -340,7 +340,7 @@ class Browscap
                 } else {
                     if (is_string($pattern_data)) {
                         $pattern_data = unserialize($pattern_data);
-                    } elseif(!is_string($pattern_data) && !is_array($pattern_data)) {
+                    } elseif (!is_string($pattern_data) && !is_array($pattern_data)) {
                         // something was wrong
                         continue;
                     }
@@ -389,6 +389,10 @@ class Browscap
                 $value = true;
             } elseif ($value === 'false') {
                 $value = false;
+            }
+
+            if (!isset($this->_properties[$key])) {
+                continue;
             }
 
             $tmp_key = $this->_properties[$key];
@@ -540,7 +544,7 @@ class Browscap
 
         // Choose the right url
         if ($this->_getUpdateMethod() == self::UPDATE_LOCAL) {
-            $url = $this->localFile;
+            $url = realpath($this->localFile);
         } else {
             $url = $this->remoteIniUrl;
         }
@@ -575,7 +579,10 @@ class Browscap
         $user_agents_keys = array_flip($tmp_user_agents);
         $properties_keys  = array_flip($this->_properties);
 
-        $tmp_patterns = array();
+        $tmp_patterns      = array();
+        $this->_browsers   = array();
+        $this->_userAgents = array();
+        $this->_patterns   = array();
 
         foreach ($tmp_user_agents as $i => $user_agent) {
 
@@ -610,13 +617,12 @@ class Browscap
             };
 
             $browser = array();
-            foreach ($browsers[$user_agent] as $key => $value) {
-                if (!isset($properties_keys[$key])) {
+            foreach ($browsers[$user_agent] as $propertyName => $propertyValue) {
+                if (!isset($properties_keys[$propertyName])) {
                     continue;
                 }
 
-                $key           = $properties_keys[$key];
-                $browser[$key] = $value;
+                $browser[$properties_keys[$propertyName]] = $propertyValue;
             }
 
             $this->_browsers[] = $browser;
@@ -884,6 +890,11 @@ class Browscap
      */
     protected function _getRemoteIniFile($url, $path)
     {
+        // local and remote file are the same, no update possible
+        if ($url == $path) {
+            return false;
+        }
+
         // Check version
         if (file_exists($path) && filesize($path)) {
             $local_tmstp = filemtime($path);
@@ -894,7 +905,7 @@ class Browscap
                 $remote_tmstp = $this->_getRemoteMTime();
             }
 
-            if ($remote_tmstp < $local_tmstp) {
+            if ($remote_tmstp <= $local_tmstp) {
                 // No update needed, return
                 touch($path);
 
@@ -902,42 +913,43 @@ class Browscap
             }
         }
 
-        if ($url != $path) {
-            // Check if it's possible to write to the .ini file.
-            if (is_file($path)) {
-                if (!is_writable($path)) {
-                    throw new Exception(
-                        'Could not write to "' . $path . '" (check the permissions of the current/old ini file).'
-                    );
-                }
+        // Check if it's possible to write to the .ini file.
+        if (is_file($path)) {
+            if (!is_writable($path)) {
+                throw new Exception(
+                    'Could not write to "' . $path . '" (check the permissions of the current/old ini file).'
+                );
+            }
+        } else {
+            // Test writability by creating a file only if one already doesn't exist, so we can safely delete it after
+            // the test.
+            $test_file = fopen($path, 'a');
+            if ($test_file) {
+                fclose($test_file);
+                unlink($path);
             } else {
-                // Test writability by creating a file only if one already doesn't exist, so we can safely delete it after the test.
-                $test_file = fopen($path, 'a');
-                if ($test_file) {
-                    fclose($test_file);
-                    unlink($path);
-                } else {
-                    throw new Exception(
-                        'Could not write to "' . $path . '" (check the permissions of the cache directory).'
-                    );
-                }
+                throw new Exception(
+                    'Could not write to "' . $path . '" (check the permissions of the cache directory).'
+                );
             }
+        }
 
-            // Get updated .ini file
-            $browscap = $this->_getRemoteData($url);
-            $browscap = explode("\n", $browscap);
-            $pattern  = self::REGEX_DELIMITER . '(' . self::VALUES_TO_QUOTE . ')="?([^"]*)"?$' . self::REGEX_DELIMITER;
+        // Get updated .ini file
+        $content = $this->_getRemoteData($url);
 
-            // Ok, lets read the file
-            $content = '';
-            foreach ($browscap as $subject) {
-                $subject = trim($subject);
-                $content .= preg_replace($pattern, '$1="$2"', $subject) . "\n";
-            }
+        if (!is_string($content) || strlen($content) < 1) {
+            throw new Exception('Could not load .ini content from "' . $url . '"');
+        }
 
-            if (!file_put_contents($path, $content)) {
-                throw new Exception("Could not write .ini content to $path");
-            }
+        if (false !== strpos('rate limit', $content)) {
+            throw new Exception(
+                'Could not load .ini content from "' . $url . '" because the rate limit is exeeded for your IP'
+            );
+        }
+
+        if (!file_put_contents($path, $content)) {
+            throw new Exception('Could not write .ini content to "' . $path . '"');
+
         }
 
         return true;
