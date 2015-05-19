@@ -338,12 +338,7 @@ class Browscap
 
                     $simple_match = true;
                 } else {
-                    if (is_string($pattern_data)) {
-                        $pattern_data = unserialize($pattern_data);
-                    } elseif (!is_string($pattern_data) && !is_array($pattern_data)) {
-                        // something was wrong
-                        continue;
-                    }
+                    $pattern_data = unserialize($pattern_data);
 
                     // match with numeric replacements
                     array_shift($matches);
@@ -389,10 +384,6 @@ class Browscap
                 $value = true;
             } elseif ($value === 'false') {
                 $value = false;
-            }
-
-            if (!isset($this->_properties[$key])) {
-                continue;
             }
 
             $tmp_key = $this->_properties[$key];
