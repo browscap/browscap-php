@@ -316,7 +316,7 @@ class Browscap
         }
 
         $cache_file = $this->cacheDir . $this->cacheFilename;
-        if (!$this->_loadCache($cache_file)) {
+        if (!$this->_cacheLoaded && !$this->_loadCache($cache_file)) {
             throw new Exception('Cannot load cache file - the cache format is not compatible.');
         }
 
@@ -658,6 +658,7 @@ class Browscap
         }
 
         @unlink($lockfile);
+        $this->_cacheLoaded = false;
 
         return true;
     }
