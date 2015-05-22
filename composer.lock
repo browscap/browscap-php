@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5bac65a10a91953de3c44d0cdb3f7cde",
+    "hash": "71bb5912113d1c02233273b85c5b2b52",
     "packages": [
         {
             "name": "mimmi20/file-loader",
@@ -228,32 +228,37 @@
         },
         {
             "name": "symfony/console",
-            "version": "v2.4.10",
+            "version": "v2.6.6",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "39dd1c85ffdfc3c5fb008019dd027af05f64ec36"
+                "reference": "5b91dc4ed5eb08553f57f6df04c4730a73992667"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/39dd1c85ffdfc3c5fb008019dd027af05f64ec36",
-                "reference": "39dd1c85ffdfc3c5fb008019dd027af05f64ec36",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/5b91dc4ed5eb08553f57f6df04c4730a73992667",
+                "reference": "5b91dc4ed5eb08553f57f6df04c4730a73992667",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "require-dev": {
-                "symfony/event-dispatcher": "~2.1"
+                "psr/log": "~1.0",
+                "symfony/event-dispatcher": "~2.1",
+                "symfony/phpunit-bridge": "~2.7",
+                "symfony/process": "~2.1"
             },
             "suggest": {
-                "symfony/event-dispatcher": ""
+                "psr/log": "For using the console logger",
+                "symfony/event-dispatcher": "",
+                "symfony/process": ""
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.4-dev"
+                    "dev-master": "2.6-dev"
                 }
             },
             "autoload": {
@@ -277,7 +282,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2014-09-22 08:51:05"
+            "time": "2015-03-30 15:54:10"
         },
         {
             "name": "symfony/filesystem",
@@ -331,26 +336,29 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v2.4.10",
+            "version": "v2.6.6",
             "target-dir": "Symfony/Component/Finder",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Finder.git",
-                "reference": "cd03920154bc6669f64fbabb803d24cc8629964c"
+                "reference": "5dbe2e73a580618f5b4880fda93406eed25de251"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/cd03920154bc6669f64fbabb803d24cc8629964c",
-                "reference": "cd03920154bc6669f64fbabb803d24cc8629964c",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/5dbe2e73a580618f5b4880fda93406eed25de251",
+                "reference": "5dbe2e73a580618f5b4880fda93406eed25de251",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
+            "require-dev": {
+                "symfony/phpunit-bridge": "~2.7"
+            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.4-dev"
+                    "dev-master": "2.6-dev"
                 }
             },
             "autoload": {
@@ -374,7 +382,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "http://symfony.com",
-            "time": "2014-09-27 08:35:25"
+            "time": "2015-03-30 15:54:10"
         }
     ],
     "packages-dev": [
@@ -434,16 +442,16 @@
         },
         {
             "name": "fabpot/php-cs-fixer",
-            "version": "v1.7",
+            "version": "v1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/PHP-CS-Fixer.git",
-                "reference": "6425aeb97ab921371182712a18c280d546e7769b"
+                "reference": "93c723fe0c50ed54292006e7249a4c1173cf5847"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/6425aeb97ab921371182712a18c280d546e7769b",
-                "reference": "6425aeb97ab921371182712a18c280d546e7769b",
+                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/93c723fe0c50ed54292006e7249a4c1173cf5847",
+                "reference": "93c723fe0c50ed54292006e7249a4c1173cf5847",
                 "shasum": ""
             },
             "require": {
@@ -483,8 +491,8 @@
                     "email": "fabien@symfony.com"
                 }
             ],
-            "description": "A script to automatically fix Symfony Coding Standard",
-            "time": "2015-04-16 07:21:30"
+            "description": "A tool to automatically fix PHP code style",
+            "time": "2015-05-04 17:06:20"
         },
         {
             "name": "mikey179/vfsStream",

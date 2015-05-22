@@ -28,8 +28,8 @@
         "mimmi20/wurflcache": ">=1.2.5",
         "mimmi20/file-loader": "2.0.*",
         "symfony/filesystem": "*",
-        "symfony/finder": "2.4.*",
-        "symfony/console": "2.4.*",
+        "symfony/finder": "~2.6",
+        "symfony/console": "~2.6",
         "monolog/monolog": "1.*"
     },
     "require-dev": {
