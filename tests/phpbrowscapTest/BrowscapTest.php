@@ -244,9 +244,22 @@ class BrowscapTest extends TestCase
 
         $browscap = new Browscap($cacheDir);
 
-        $result = 'array(' . "\n" . '\'a\'=>1,' . "\n" . '\'b\'=>\'abc\',' . "\n" . '1=>\'cde\',' . "\n" . '\'def\',' . "\n" . '\'a:3:{i:0;s:3:"abc";i:1;i:1;i:2;i:2;}\'' . "\n" . ')';
+        $result = 'array(' . "\n" . '\'a\'=>1,' . "\n" . '\'b\'=>\'abc\',' . "\n" . '1=>\'cde\',' . "\n" . '\'def\',' . "\n" . '\'a:3:{i:0;s:3:"abc";i:1;i:1;i:2;i:2;}\',' . "\n" . "\n" . ')';
 
-        self::assertSame($result, $method->invoke($browscap, array('a' => 1, 'b' => 'abc', '1.0' => 'cde', 1 => 'def', 2 => array('abc', 1, 2))));
+        // "tempnam" did not work with VFSStream for tests
+        $tmpFile = $cacheDir . '/temp_test_' . md5(time());
+
+        if (false == ($fileRes = fopen($tmpFile, 'w+'))) {
+            throw new \RuntimeException(sprintf('Unable to create temporary file "%s"', $tmpFile));
+        }
+        
+        self::assertTrue($method->invoke($browscap, array('a' => 1, 'b' => 'abc', '1.0' => 'cde', 1 => 'def', 2 => array('abc', 1, 2)), $fileRes));
+        
+        fclose($fileRes);
+        
+        self::assertSame($result, file_get_contents($tmpFile));
+        
+        unlink($tmpFile);
     }
 
     /**
