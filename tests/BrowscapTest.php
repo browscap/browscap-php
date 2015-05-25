@@ -267,6 +267,28 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * tests if an exception is thrown if no file name was given
+     *
+     * @expectedException \BrowscapPHP\Exception
+     * @expectedExceptionMessage an error occured while setting the local file
+     */
+    public function testConvertEmptyFile()
+    {
+        $this->object->convertFile(null);
+    }
+
+    /**
+     * tests if an exception is thrown if no file name was given
+     *
+     * @expectedException \BrowscapPHP\Exception
+     * @expectedExceptionMessage an error occured while converting the local file into the cache
+     */
+    public function testConvertNotReadableFile()
+    {
+        $this->object->convertFile('/this/file/does/not/exist');
+    }
+
+    /**
      *
      */
     public function testConvertFile()
