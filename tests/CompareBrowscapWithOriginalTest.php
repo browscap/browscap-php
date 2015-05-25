@@ -76,8 +76,6 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
      */
     public static function setUpBeforeClass()
     {
-        self::markTestSkipped('skip');
-
         $objectIniPath = ini_get('browscap');
 
         if (!is_file($objectIniPath)) {
