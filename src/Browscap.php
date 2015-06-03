@@ -417,12 +417,12 @@ class Browscap
             ;
 
             $internalLoader = $loader->getLoader();
+            $success        = null;
 
-            $cachedVersion = $this->getCache()->getItem('browscap.version', false);
-            $cachedTime    = $this->getCache()->getItem('browscap.time', false);
-            $remoteTime    = $loader->getMTime();
+            $cachedTime = $this->getCache()->getItem('browscap.time', false, $success);
+            $remoteTime = $loader->getMTime();
 
-            if ($remoteTime <= $cachedTime) {
+            if ($success && $cachedTime && $remoteTime <= $cachedTime) {
                 // no newer version available
                 return;
             }
@@ -436,9 +436,11 @@ class Browscap
 
             $this->getLogger()->debug('finished fetching remote file');
 
-            $iniVersion = $converter->getIniVersion($content);
+            $iniVersion    = $converter->getIniVersion($content);
+            $success       = null;
+            $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
 
-            if ($iniVersion > $cachedVersion) {
+            if (!$success || $iniVersion > $cachedVersion) {
                 $converter
                     ->storeVersion()
                     ->convertString($content)
