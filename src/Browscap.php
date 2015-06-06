@@ -92,6 +92,11 @@ class Browscap
     private $options = array();
 
     /**
+     * @var \BrowscapPHP\Helper\IniLoader
+     */
+    private $loader = null;
+
+    /**
      * Set theformatter instance to use for the getBrowser() result
      *
      * @param \BrowscapPHP\Formatter\FormatterInterface $formatter
@@ -247,6 +252,26 @@ class Browscap
     }
 
     /**
+     * @return \BrowscapPHP\Helper\IniLoader
+     */
+    public function getLoader()
+    {
+        if (null === $this->loader) {
+            $this->loader = new IniLoader();
+        }
+
+        return $this->loader;
+    }
+
+    /**
+     * @param \BrowscapPHP\Helper\IniLoader $loader
+     */
+    public function setLoader(IniLoader $loader)
+    {
+        $this->loader = $loader;
+    }
+
+    /**
      * parses the given user agent to get the information about the browser
      *
      * if no user agent is given, it uses {@see \BrowscapPHP\Helper\Support} to get it
@@ -333,8 +358,7 @@ class Browscap
      */
     public function fetch($file, $remoteFile = IniLoader::PHP_INI)
     {
-        $loader = new IniLoader();
-        $loader
+        $this->getLoader()
             ->setRemoteFilename($remoteFile)
             ->setOptions($this->options)
             ->setLogger($this->getLogger())
@@ -342,11 +366,11 @@ class Browscap
 
         $this->getLogger()->debug('started fetching remote file');
 
-        $content = $loader->load();
+        $content = $this->getLoader()->load();
 
-        if ($content === false) {
+        if (false === $content) {
             $error = error_get_last();
-            throw FetcherException::httpError($loader->getRemoteIniUrl(), $error['message']);
+            throw FetcherException::httpError($this->getLoader()->getRemoteIniUrl(), $error['message']);
         }
 
         $this->getLogger()->debug('finished fetching remote file');
@@ -409,38 +433,47 @@ class Browscap
             unlink($iniFile);
             rmdir($buildFolder);
         } else {
-            $loader = new IniLoader();
-            $loader
+            $this->getLoader()
                 ->setRemoteFilename($remoteFile)
                 ->setOptions($this->options)
                 ->setLogger($this->getLogger())
             ;
 
-            $internalLoader = $loader->getLoader();
-            $success        = null;
+            $success       = null;
+            $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
 
-            $cachedTime = $this->getCache()->getItem('browscap.time', false, $success);
-            $remoteTime = $loader->getMTime();
+            try {
+                $remoteVersion = $this->getLoader()->getRemoteVersion();
+            } catch (Helper\Exception $e) {
+                $this->getLogger()->warning($e);
 
-            if ($success && $cachedTime && $remoteTime <= $cachedTime) {
+                $remoteVersion = null;
+                $success       = false;
+            }
+
+            if ($success && $cachedVersion && $remoteVersion && $remoteVersion <= $cachedVersion) {
                 // no newer version available
                 return;
             }
 
-            $content = $loader->load();
+            $internalLoader = $this->getLoader()->getLoader();
 
-            if ($content === false) {
+            try {
+                $content = $this->getLoader()->load();
+            } catch (Helper\Exception $e) {
+                throw new FetcherException('an error occured while loading remote data', 0, $e);
+            }
+
+            if (false === $content) {
                 $error = error_get_last();
                 throw FetcherException::httpError($internalLoader->getUri(), $error['message']);
             }
 
             $this->getLogger()->debug('finished fetching remote file');
 
-            $iniVersion    = $converter->getIniVersion($content);
-            $success       = null;
-            $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
+            $iniVersion = $converter->getIniVersion($content);
 
-            if (!$success || $iniVersion > $cachedVersion) {
+            if ($iniVersion > $cachedVersion) {
                 $converter
                     ->storeVersion()
                     ->convertString($content)

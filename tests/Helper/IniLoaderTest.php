@@ -124,6 +124,9 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
         $this->object->setRemoteFilename(IniLoader::PHP_INI_LITE);
         self::assertSame('http://browscap.org/stream?q=Lite_PHP_BrowscapINI', $this->object->getRemoteIniUrl());
 
+        $this->object->setRemoteFilename(IniLoader::PHP_INI);
+        self::assertSame('http://browscap.org/stream?q=PHP_BrowscapINI', $this->object->getRemoteIniUrl());
+
         $this->object->setRemoteFilename(IniLoader::PHP_INI_FULL);
         self::assertSame('http://browscap.org/stream?q=Full_PHP_BrowscapINI', $this->object->getRemoteIniUrl());
     }
@@ -133,7 +136,7 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetRemoteVerUrl()
     {
-        self::assertSame('http://browscap.org/version', $this->object->getRemoteVerUrl());
+        self::assertSame('http://browscap.org/version', $this->object->getRemoteTimeUrl());
     }
 
     /**
@@ -246,15 +249,15 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $loader = $this->getMock(
             '\FileLoader\Loader',
-            array('getMTime', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout'),
+            array('load', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout'),
             array(),
             '',
             false
         );
         $loader
             ->expects(self::once())
-            ->method('getMTime')
-            ->will(self::returnValue(42))
+            ->method('load')
+            ->will(self::returnValue('Mon, 01 Jun 2015 08:53:57 +0000'))
         ;
         $loader
             ->expects(self::once())
@@ -278,25 +281,25 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setLogger($logger);
 
-        self::assertSame(42, $this->object->getMTime());
+        self::assertSame(1433148837, $this->object->getMTime());
     }
 
     /**
      * @expectedException \BrowscapPHP\Helper\Exception
-     * @expectedExceptionMessage could not load the new version
+     * @expectedExceptionMessage could not load the new remote time
      */
     public function testGetMTimeException()
     {
         $loader = $this->getMock(
             '\FileLoader\Loader',
-            array('getMTime', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout'),
+            array('load', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout'),
             array(),
             '',
             false
         );
         $loader
             ->expects(self::once())
-            ->method('getMTime')
+            ->method('load')
             ->will(self::throwException(new LoaderException()))
         ;
         $loader
@@ -322,5 +325,90 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
         $this->object->setLogger($logger);
 
         $this->object->getMTime();
+    }
+
+    /**
+     *
+     */
+    public function testGetRemoteVersion()
+    {
+        $loader = $this->getMock(
+            '\FileLoader\Loader',
+            array('load', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout'),
+            array(),
+            '',
+            false
+        );
+        $loader
+            ->expects(self::once())
+            ->method('load')
+            ->will(self::returnValue('6003'))
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('setRemoteDataUrl')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('setRemoteVerUrl')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('setTimeout')
+            ->will(self::returnSelf())
+        ;
+
+        $this->object->setLoader($loader);
+
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+
+        $this->object->setLogger($logger);
+
+        self::assertSame(6003, $this->object->getRemoteVersion());
+    }
+
+    /**
+     * @expectedException \BrowscapPHP\Helper\Exception
+     * @expectedExceptionMessage could not load the new version
+     */
+    public function testGetRemoteVersionException()
+    {
+        $loader = $this->getMock(
+            '\FileLoader\Loader',
+            array('load', 'setRemoteDataUrl', 'setRemoteVerUrl', 'setTimeout'),
+            array(),
+            '',
+            false
+        );
+        $loader
+            ->expects(self::once())
+            ->method('load')
+            ->will(self::throwException(new LoaderException()))
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('setRemoteDataUrl')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('setRemoteVerUrl')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('setTimeout')
+            ->will(self::returnSelf())
+        ;
+
+        $this->object->setLoader($loader);
+
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+
+        $this->object->setLogger($logger);
+
+        $this->object->getRemoteVersion();
     }
 }
