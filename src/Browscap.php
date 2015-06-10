@@ -29,12 +29,14 @@
 
 namespace BrowscapPHP;
 
+use Browscap\Generator\BuildGenerator;
+use Browscap\Helper\CollectionCreator;
+use Browscap\Writer\Factory\PhpWriterFactory;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Exception\FetcherException;
 use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\Filesystem;
 use BrowscapPHP\Helper\IniLoader;
-use Browscap\Generator\BuildFullFileOnlyGenerator;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use WurflCache\Adapter\AdapterInterface;
@@ -278,21 +280,31 @@ class Browscap
     /**
      * reads and parses an ini file and writes the results into the cache
      *
-     * @param  string                                       $iniFile
-     * @throws \BrowscapPHP\Exception\FileNotFoundException
+     * @param  string $iniFile
+     *
+     * @throws \BrowscapPHP\Exception
      */
     public function convertFile($iniFile)
     {
         $loader = new IniLoader();
-        $loader->setLocalFile($iniFile);
+
+        try {
+            $loader->setLocalFile($iniFile);
+        } catch (Helper\Exception $e) {
+            throw new Exception('an error occured while setting the local file', 0, $e);
+        }
 
         $converter = new Converter();
-
         $converter
             ->setLogger($this->getLogger())
             ->setCache($this->getCache())
-            ->convertString($loader->load())
         ;
+
+        try {
+            $converter->convertString($loader->load());
+        } catch (Helper\Exception $e) {
+            throw new Exception('an error occured while converting the local file into the cache', 0, $e);
+        }
     }
 
     /**
@@ -377,10 +389,15 @@ class Browscap
 
             mkdir($buildFolder, 0777, true);
 
-            $builder = new BuildFullFileOnlyGenerator($resourceFolder, $buildFolder);
-            $builder
+            $writerCollectionFactory = new PhpWriterFactory();
+            $writerCollection        = $writerCollectionFactory->createCollection($this->getLogger(), $buildFolder);
+
+            $buildGenerator = new BuildGenerator($resourceFolder, $buildFolder);
+            $buildGenerator
                 ->setLogger($this->getLogger())
-                ->run($buildNumber, $iniFile)
+                ->setCollectionCreator(new CollectionCreator())
+                ->setWriterCollection($writerCollection)
+                ->run($buildNumber, false)
             ;
 
             $converter

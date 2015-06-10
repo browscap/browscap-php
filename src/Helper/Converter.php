@@ -410,7 +410,7 @@ class Converter
         }
 
         foreach (array_keys($subkeys) as $subkey) {
-            $this->getCache()->setItem('browscap.patterns.'.$subkey, '', true);
+            $this->getCache()->setItem('browscap.patterns.'.$subkey, array(), true);
         }
 
         return true;

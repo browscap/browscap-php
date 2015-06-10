@@ -137,6 +137,11 @@ class GetPattern implements GetPatternInterface
                 continue;
             }
 
+            if (!is_array($file) || !count($file)) {
+                $this->getLogger()->debug('cache key "browscap.patterns.'.$tmpSubkey.'" was empty');
+                continue;
+            }
+
             $found = false;
 
             foreach ($file as $buffer) {
