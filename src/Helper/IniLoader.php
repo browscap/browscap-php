@@ -54,14 +54,15 @@ class IniLoader
     /**
      * Options for update capabilities
      *
-     * $remoteVerUrl: The location to use to check out if a new version of the
+     * $remoteTimeUrl: The location to use to check out if a new version of the
      *                browscap.ini file is available.
      * $remoteIniUrl: The location from which download the ini file.
      *                The placeholder for the file should be represented by a %s.
      * $timeout:      The timeout for the requests.
      */
-    private $remoteIniUrl = 'http://browscap.org/stream?q=%q';
-    private $remoteVerUrl = 'http://browscap.org/version';
+    private $remoteIniUrl  = 'http://browscap.org/stream?q=%q';
+    private $remoteTimeUrl = 'http://browscap.org/version';
+    private $remoteVersionUrl = 'http://browscap.org/version-number';
     private $timeout = 5;
 
     /**
@@ -216,9 +217,19 @@ class IniLoader
      *
      * @return string
      */
-    public function getRemoteVerUrl()
+    public function getRemoteTimeUrl()
     {
-        return $this->remoteVerUrl;
+        return $this->remoteTimeUrl;
+    }
+
+    /**
+     * returns the of the remote location for checking the version of the ini file
+     *
+     * @return string
+     */
+    public function getRemoteVersionUrl()
+    {
+        return $this->remoteVersionUrl;
     }
 
     /**
@@ -256,7 +267,7 @@ class IniLoader
         $internalLoader = $this->getLoader();
         $internalLoader
             ->setRemoteDataUrl($this->getRemoteIniUrl())
-            ->setRemoteVerUrl($this->getRemoteVerUrl())
+            ->setRemoteVerUrl($this->getRemoteTimeUrl())
             ->setTimeout($this->getTimeout())
         ;
 
@@ -279,13 +290,45 @@ class IniLoader
         $internalLoader = $this->getLoader();
         $internalLoader
             ->setRemoteDataUrl($this->getRemoteIniUrl())
-            ->setRemoteVerUrl($this->getRemoteVerUrl())
+            ->setRemoteVerUrl($this->getRemoteTimeUrl())
             ->setTimeout($this->getTimeout())
         ;
 
         try {
             // Get updated timestamp
-            return $internalLoader->getMTime();
+            $remoteDatetime = $internalLoader->load();
+        } catch (LoaderException $exception) {
+            throw new Exception('could not load the new remote time', 0, $exception);
+        }
+
+        $rfcDate   = \DateTime::createFromFormat(\DateTime::RFC2822, $remoteDatetime);
+        $timestamp = ($rfcDate instanceof \DateTime ? $rfcDate->getTimestamp() : (int) $remoteDatetime);
+
+        if (!$timestamp) {
+            throw new Exception('Bad datetime format from ' . $this->getRemoteTimeUrl(), Exception::INVALID_DATETIME);
+        }
+
+        return $timestamp;
+    }
+
+    /**
+     * Gets the remote file update timestamp
+     *
+     * @throws \BrowscapPHP\Helper\Exception
+     * @return integer                       the remote modification timestamp
+     */
+    public function getRemoteVersion()
+    {
+        $internalLoader = $this->getLoader();
+        $internalLoader
+            ->setRemoteDataUrl($this->getRemoteIniUrl())
+            ->setRemoteVerUrl($this->getRemoteVersionUrl())
+            ->setTimeout($this->getTimeout())
+        ;
+
+        try {
+            // Get updated timestamp
+            return (int) $internalLoader->load();
         } catch (LoaderException $exception) {
             throw new Exception('could not load the new version', 0, $exception);
         }
