@@ -101,7 +101,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $objectIniPath = ini_get('browscap');
 
         if (!is_file($objectIniPath)) {
-            $this->markTestSkipped('browscap not defined in php.ini');
+            self::markTestSkipped('browscap not defined in php.ini');
         }
 
         $this->object            = new Browscap(self::$cacheDir);
@@ -109,14 +109,19 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
+     * This method is called after the last test of this test class is run.
+     *
+     * @since Method available since Release 3.4.0
      */
-    protected function tearDown()
+    public static function tearDownAfterClass()
     {
-        unset($this->object);
+        if (isset(self::$cacheDir) && is_dir(self::$cacheDir)) {
+            if (false === @rmdir(self::$cacheDir)) {
+                throw new \RuntimeException(sprintf('Unable to remove the "%s" directory', self::$cacheDir));
+            }
 
-        parent::tearDown();
+            self::$cacheDir = null;
+        }
     }
 
     public function testCheckProperties()
