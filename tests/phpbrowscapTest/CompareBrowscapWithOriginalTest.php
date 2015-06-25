@@ -108,22 +108,6 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $this->object->localFile = $objectIniPath;
     }
 
-    /**
-     * This method is called after the last test of this test class is run.
-     *
-     * @since Method available since Release 3.4.0
-     */
-    public static function tearDownAfterClass()
-    {
-        if (isset(self::$cacheDir) && is_dir(self::$cacheDir)) {
-            if (false === @rmdir(self::$cacheDir)) {
-                throw new \RuntimeException(sprintf('Unable to remove the "%s" directory', self::$cacheDir));
-            }
-
-            self::$cacheDir = null;
-        }
-    }
-
     public function testCheckProperties()
     {
         $libProperties = get_object_vars(get_browser('x'));
