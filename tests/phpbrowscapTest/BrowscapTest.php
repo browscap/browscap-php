@@ -252,13 +252,13 @@ class BrowscapTest extends TestCase
         if (false == ($fileRes = fopen($tmpFile, 'w+'))) {
             throw new \RuntimeException(sprintf('Unable to create temporary file "%s"', $tmpFile));
         }
-        
+
         self::assertTrue($method->invoke($browscap, array('a' => 1, 'b' => 'abc', '1.0' => 'cde', 1 => 'def', 2 => array('abc', 1, 2)), $fileRes));
-        
+
         fclose($fileRes);
-        
+
         self::assertSame($result, file_get_contents($tmpFile));
-        
+
         unlink($tmpFile);
     }
 
@@ -379,6 +379,76 @@ class BrowscapTest extends TestCase
             array('Mozilla/5.0 (Danger hiptop 3.*; U; rv:1.7.*) Gecko/*', 'Mozilla/5.0 (Danger hiptop 3.0; U; rv:1.7.*) Gecko/*', 1),
             array('Mozilla/5.0 (Danger hiptop 3.0; U; rv:1.7.*) Gecko/*', 'Mozilla/5.0 (Danger hiptop 3.*; U; rv:1.7.*) Gecko/*', -1),
             array('Mozilla/5.0 (Danger hiptop 3.0; U; rv:1.7.*) Gecko/*', 'Mozilla/5.0 (Danger hiptop 3.0; U; rv:1.7.*) Gecko/*', 0)
+        );
+    }
+
+    /**
+     * @dataProvider dataSanitizeContent
+     */
+    public function testSanitizeContent($content, $expected)
+    {
+        $cacheDir = $this->createCacheDir();
+
+        $class = new ReflectionClass('\\phpbrowscap\\Browscap');
+        $method = $class->getMethod('sanitizeContent');
+        $method->setAccessible(true);
+
+        $browscap = new Browscap($cacheDir);
+
+        self::assertSame($expected, $method->invoke($browscap, $content));
+    }
+
+    public function dataSanitizeContent()
+    {
+        return array(
+            array(
+            '[GJK_Browscap_Version]
+Version=6004
+Released=Wed, 10 Jun 2015 07:48:33 +0000
+Format=asp\'?><?php exit(\'\'); ?>
+Type=',
+            '[GJK_Browscap_Version]
+Version=6004
+Released=Wed, 10 Jun 2015 07:48:33 +0000
+Format=asp\'
+Type=',
+            ),
+            array(
+            '[GJK_Browscap_Version]
+Version=6004
+Released=Wed, 10 Jun 2015 07:48:33 +0000
+Format=asp\'?><?php
+Type=',
+            '[GJK_Browscap_Version]
+Version=6004
+Released=Wed, 10 Jun 2015 07:48:33 +0000
+Format=asp\'php
+Type=',
+            ),
+            array(
+                '[GJK_Browscap_Version]
+Version=6004
+Released=Wed, 10 Jun 2015 07:48:33 +0000
+Format=asp\'?><?= exit(\'\'); ?>
+Type=',
+                '[GJK_Browscap_Version]
+Version=6004
+Released=Wed, 10 Jun 2015 07:48:33 +0000
+Format=asp\'
+Type=',
+            ),
+            array(
+                '[GJK_Browscap_Version]
+Version=6004
+Released=Wed, 10 Jun 2015 07:48:33 +0000
+Format=asp\'?><% exit(\'\'); %>
+Type=',
+                '[GJK_Browscap_Version]
+Version=6004
+Released=Wed, 10 Jun 2015 07:48:33 +0000
+Format=asp\'
+Type=',
+            ),
         );
     }
 }

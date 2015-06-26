@@ -101,22 +101,11 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $objectIniPath = ini_get('browscap');
 
         if (!is_file($objectIniPath)) {
-            $this->markTestSkipped('browscap not defined in php.ini');
+            self::markTestSkipped('browscap not defined in php.ini');
         }
 
         $this->object            = new Browscap(self::$cacheDir);
         $this->object->localFile = $objectIniPath;
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-        unset($this->object);
-
-        parent::tearDown();
     }
 
     public function testCheckProperties()

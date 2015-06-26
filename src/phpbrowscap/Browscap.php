@@ -843,7 +843,7 @@ class Browscap
      * Parses the array to cache and writes the resulting PHP string to disk
      *
      * @param ressource $fileRes File ressource to write to
-     * 
+     *
      * @return boolean False on write error, true otherwise
      */
     protected function _buildCache($fileRes)
@@ -856,7 +856,7 @@ class Browscap
             // write error
             return false;
         }
-        
+
         if (false === fwrite($fileRes, ";\n\$properties=")) {
             // write error
             return false;
@@ -982,12 +982,29 @@ class Browscap
             );
         }
 
+        // replace opening and closing php and asp tags
+        $content = $this->sanitizeContent($content);
+
         if (!file_put_contents($path, $content)) {
             throw new Exception('Could not write .ini content to "' . $path . '"');
 
         }
 
         return true;
+    }
+
+    /**
+     * @param string $content
+     *
+     * @return mixed
+     */
+    protected function sanitizeContent($content)
+    {
+        // replace everything between opening and closing php and asp tags
+        $content = preg_replace('/<[?%].*[?%]>/', '', $content);
+
+        // replace opening and closing php and asp tags
+        return str_replace(array('<?', '<%', '?>', '%>'), '', $content);
     }
 
     /**
