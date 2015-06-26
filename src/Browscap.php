@@ -376,6 +376,8 @@ class Browscap
         $this->getLogger()->debug('finished fetching remote file');
         $this->getLogger()->debug('started storing remote file into local file');
 
+        $content = $this->sanitizeContent($content);
+
         $fs = new Filesystem();
         $fs->dumpFile($file, $content);
 
@@ -471,6 +473,8 @@ class Browscap
 
             $this->getLogger()->debug('finished fetching remote file');
 
+            $content = $this->sanitizeContent($content);
+
             $iniVersion = $converter->getIniVersion($content);
 
             if ($iniVersion > $cachedVersion) {
@@ -480,5 +484,19 @@ class Browscap
                 ;
             }
         }
+    }
+
+    /**
+     * @param string $content
+     *
+     * @return mixed
+     */
+    private function sanitizeContent($content)
+    {
+        // replace everything between opening and closing php and asp tags
+        $content = preg_replace('/<[?%].*[?%]>/', '', $content);
+
+        // replace opening and closing php and asp tags
+        return str_replace(array('<?', '<%', '?>', '%>'), '', $content);
     }
 }

@@ -709,6 +709,253 @@ AolVersion=0
     }
 
     /**
+     *
+     */
+    public function testFetchSanitizeOK()
+    {
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $this->object->setLogger($logger);
+
+        $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+
+[GJK_Browscap_Version]
+Version=5031\'?><?php
+Released=Mon, 30 Jun 2014 17:55:58 +0200\'?><?= exit(\'test\'); ?>
+Format=ASP\'?><% exit(\'test\'); %>
+Type=\'?><?php exit(\'\'); ?>
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; DefaultProperties
+
+[DefaultProperties]
+
+Comment=DefaultProperties
+Browser=DefaultProperties
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=false
+Beta=false
+Win16=false
+Win32=false
+Win64=false
+Frames=false
+IFrames=false
+Tables=false
+Cookies=false
+BackgroundSounds=false
+JavaScript=false
+VBScript=false
+JavaApplets=false
+ActiveXControls=false
+isMobileDevice=false
+isTablet=false
+isSyndicationReader=false
+Crawler=false
+CssVersion=0
+AolVersion=0
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Ask
+
+[Ask]
+
+Parent=DefaultProperties
+Comment=Ask
+Browser=Ask
+Frames=1
+IFrames=1
+Tables=1
+Crawler=1
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=
+Beta=
+Win16=
+Win32=
+Win64=
+Cookies=
+BackgroundSounds=
+JavaScript=
+VBScript=
+JavaApplets=
+ActiveXControls=
+isMobileDevice=
+isTablet=
+isSyndicationReader=
+CssVersion=0
+AolVersion=0
+
+[Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)]
+
+Parent=Ask
+Browser=Teoma
+Comment=Ask
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=
+Beta=
+Win16=
+Win32=
+Win64=
+Frames=1
+IFrames=1
+Tables=1
+Cookies=
+BackgroundSounds=
+JavaScript=
+VBScript=
+JavaApplets=
+ActiveXControls=
+isMobileDevice=
+isTablet=
+isSyndicationReader=
+Crawler=1
+CssVersion=0
+AolVersion=0
+';
+
+        $expected = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+
+[GJK_Browscap_Version]
+Version=5031\'php
+Released=Mon, 30 Jun 2014 17:55:58 +0200\'
+Format=ASP\'
+Type=\'
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; DefaultProperties
+
+[DefaultProperties]
+
+Comment=DefaultProperties
+Browser=DefaultProperties
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=false
+Beta=false
+Win16=false
+Win32=false
+Win64=false
+Frames=false
+IFrames=false
+Tables=false
+Cookies=false
+BackgroundSounds=false
+JavaScript=false
+VBScript=false
+JavaApplets=false
+ActiveXControls=false
+isMobileDevice=false
+isTablet=false
+isSyndicationReader=false
+Crawler=false
+CssVersion=0
+AolVersion=0
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Ask
+
+[Ask]
+
+Parent=DefaultProperties
+Comment=Ask
+Browser=Ask
+Frames=1
+IFrames=1
+Tables=1
+Crawler=1
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=
+Beta=
+Win16=
+Win32=
+Win64=
+Cookies=
+BackgroundSounds=
+JavaScript=
+VBScript=
+JavaApplets=
+ActiveXControls=
+isMobileDevice=
+isTablet=
+isSyndicationReader=
+CssVersion=0
+AolVersion=0
+
+[Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)]
+
+Parent=Ask
+Browser=Teoma
+Comment=Ask
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=
+Beta=
+Win16=
+Win32=
+Win64=
+Frames=1
+IFrames=1
+Tables=1
+Cookies=
+BackgroundSounds=
+JavaScript=
+VBScript=
+JavaApplets=
+ActiveXControls=
+isMobileDevice=
+isTablet=
+isSyndicationReader=
+Crawler=1
+CssVersion=0
+AolVersion=0
+';
+
+        $loader = $this->getMock('\BrowscapPHP\Helper\IniLoader', array('setRemoteFilename', 'setOptions', 'setLogger', 'load'), array(), '', false);
+        $loader
+            ->expects(self::once())
+            ->method('setRemoteFilename')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('setOptions')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('setLogger')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('load')
+            ->will(self::returnValue($content))
+        ;
+
+        $this->object->setLoader($loader);
+
+        $this->object->fetch(IniLoader::PHP_INI);
+
+        self::assertSame($expected, file_get_contents(IniLoader::PHP_INI));
+    }
+
+    /**
      * @expectedException \BrowscapPHP\Exception\FetcherException
      * @expectedExceptionMessage Could not fetch HTTP resource "http://browscap.org/stream?q=PHP_BrowscapINI":
      */

@@ -105,7 +105,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $diff = array_diff($libPropertyKeys, $bcPropertyKeys);
 
         if (!empty($diff)) {
-            $this->fail('the properties found by "get_browser()" differ from found by "Browser::getBrowser()"');
+            self::fail('the properties found by "get_browser()" differ from found by "Browser::getBrowser()"');
         }
 
         foreach (array_keys($bcProperties) as $bcProp) {
