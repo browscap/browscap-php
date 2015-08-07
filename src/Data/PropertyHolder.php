@@ -165,6 +165,7 @@ class PropertyHolder
                     'Email Client',
                     'Bot/Crawler',
                     'Application',
+                    'Tool',
                     'unknown',
                 );
                 break;
