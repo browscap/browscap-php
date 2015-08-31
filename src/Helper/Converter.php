@@ -34,6 +34,7 @@ use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Data\PropertyHolder;
 use BrowscapPHP\Exception\FileNotFoundException;
 use BrowscapPHP\Parser\Helper\Pattern;
+use BrowscapPHP\Parser\Helper\SubKey;
 use BrowscapPHP\Parser\Ini;
 use Psr\Log\LoggerInterface;
 
@@ -217,9 +218,10 @@ class Converter
      */
     public function getIniVersion($iniString)
     {
-        $key = $this->pregQuote(Ini::BROWSCAP_VERSION_KEY);
+        $quoterHelper = new Quoter();
+        $key          = $quoterHelper->pregQuote(Ini::BROWSCAP_VERSION_KEY);
 
-        if (preg_match("/\.*\[".$key."\][^\[]*Version=(\d+)\D.*/", $iniString, $matches)) {
+        if (preg_match('/\.*\[' . $key . '\][^\[]*Version=(\d+)\D.*/', $iniString, $matches)) {
             if (isset($matches[1])) {
                 $this->iniVersion = (int) $matches[1];
             }
@@ -255,21 +257,6 @@ class Converter
     }
 
     /**
-     * Quotes a pattern from the browscap.ini file, so that it can be used in regular expressions
-     *
-     * @param  string $pattern
-     * @return string
-     */
-    private function pregQuote($pattern)
-    {
-        $pattern = preg_quote($pattern, '/');
-
-        // The \\x replacement is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
-        // @source https://github.com/browscap/browscap-php
-        return str_replace(array('\*', '\?', '\\x'), array('.*', '.', '\\\\x'), $pattern);
-    }
-
-    /**
      * Creates new ini part cache files
      * @param string $content
      */
@@ -288,7 +275,7 @@ class Converter
         foreach ($patternpositions as $position => $pattern) {
             $pattern     = strtolower($pattern);
             $patternhash = md5($pattern);
-            $subkey      = self::getIniPartCacheSubkey($patternhash);
+            $subkey      = SubKey::getPatternCacheSubkey($patternhash);
 
             if (!isset($contents[$subkey])) {
                 $contents[$subkey] = array();
@@ -313,20 +300,16 @@ class Converter
         unset($patternpositions);
         unset($iniParts);
 
+        $subkeys = array_flip(SubKey::getAllPatternCacheSubkeys());
         foreach ($contents as $subkey => $content) {
-            $this->getCache()->setItem('browscap.iniparts.'.$subkey, $content, true);
+            $subkey = (string) $subkey;
+            $this->getCache()->setItem('browscap.iniparts.' . $subkey, $content, true);
+            unset($subkeys[$subkey]);
         }
-    }
 
-    /**
-     * Gets the subkey for the ini parts cache file, generated from the given string
-     *
-     * @param  string $string
-     * @return string
-     */
-    public static function getIniPartCacheSubkey($string)
-    {
-        return $string[0].$string[1];
+        foreach (array_keys($subkeys) as $subkey) {
+            $this->getCache()->setItem('browscap.iniparts.' . $subkey, array(), true);
+        }
     }
 
     /**
@@ -370,7 +353,22 @@ class Converter
             if (!isset($data[$tmpStart])) {
                 $data[$tmpStart] = array();
             }
-            $data[$tmpStart][] = $match;
+
+            $quoterHelper = new Quoter();
+            $match        = $quoterHelper->pregQuote($match);
+
+            // Check if the pattern contains digits - in this case we replace them with a digit regular expression,
+            // so that very similar patterns (e.g. only with different browser version numbers) can be compressed.
+            // This helps to speed up the first (and most expensive) part of the pattern search a lot.
+            if (strpbrk($match, '0123456789') !== false) {
+                $compressedPattern = preg_replace('/\d/', '[\d]', $match);
+                if (!in_array($compressedPattern, $data[$tmpStart])) {
+                    $data[$tmpStart][] = $compressedPattern;
+                }
+            } else {
+                $data[$tmpStart][] = $match;
+            }
+            //$data[$tmpStart][] = $match;
         }
 
         unset($matches);
@@ -388,7 +386,7 @@ class Converter
                     array_slice($tmpPatterns, ($i * $this->joinPatterns), $this->joinPatterns)
                 );
 
-                $tmpSubkey = Pattern::getPatternCacheSubkey($tmpStart);
+                $tmpSubkey = SubKey::getPatternCacheSubkey($tmpStart);
 
                 if (!isset($contents[$tmpSubkey])) {
                     $contents[$tmpSubkey] = array();
@@ -403,14 +401,15 @@ class Converter
         // write cache files. important: also write empty cache files for
         // unused patterns, so that the regeneration is not unnecessarily
         // triggered by the getPatterns() method.
-        $subkeys = array_flip(Pattern::getAllPatternCacheSubkeys());
+        $subkeys = array_flip(SubKey::getAllPatternCacheSubkeys());
         foreach ($contents as $subkey => $content) {
-            $this->cache->setItem('browscap.patterns.'.$subkey, $content, true);
+            $subkey = (string) $subkey;
+            $this->cache->setItem('browscap.patterns.' . $subkey, $content, true);
             unset($subkeys[$subkey]);
         }
 
         foreach (array_keys($subkeys) as $subkey) {
-            $this->getCache()->setItem('browscap.patterns.'.$subkey, array(), true);
+            $this->getCache()->setItem('browscap.patterns.' . $subkey, array(), true);
         }
 
         return true;

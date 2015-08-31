@@ -41,14 +41,6 @@ class PatternTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testGetPatternCacheSubkey()
-    {
-        self::assertSame('ab', Pattern::getPatternCacheSubkey('abcd'));
-    }
-
-    /**
-     *
-     */
     public function testGetPatternStartWithoutVariants()
     {
         $pattern = '[Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)]
@@ -143,15 +135,5 @@ AolVersion=0
     public function testGetPatternLength()
     {
         self::assertSame(4, Pattern::getPatternLength('abcd'));
-    }
-
-    /**
-     *
-     */
-    public function testGetAllPatternCacheSubkeys()
-    {
-        $result = Pattern::getAllPatternCacheSubkeys();
-        self::assertInternalType('array', $result);
-        self::assertSame(256, count($result));
     }
 }

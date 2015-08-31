@@ -127,7 +127,7 @@ class GetPattern implements GetPatternInterface
         // get patterns, first for the given browser and if that is not found,
         // for the default browser (with a special key)
         foreach ($starts as $tmpStart) {
-            $tmpSubkey = Pattern::getPatternCacheSubkey($tmpStart);
+            $tmpSubkey = SubKey::getPatternCacheSubkey($tmpStart);
             $success   = null;
 
             $file = $this->getCache()->getItem('browscap.patterns.'.$tmpSubkey, true, $success);

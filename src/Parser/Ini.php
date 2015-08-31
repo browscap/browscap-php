@@ -36,6 +36,7 @@ use BrowscapPHP\Formatter\FormatterInterface;
 use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\Quoter;
 use BrowscapPHP\Parser\Helper\GetPatternInterface;
+use BrowscapPHP\Parser\Helper\SubKey;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -178,13 +179,12 @@ class Ini implements ParserInterface
      */
     public function getBrowser($userAgent)
     {
-        $userAgent    = strtolower($userAgent);
-        $formatter    = null;
-        $quoterHelper = new Quoter();
+        $userAgent = strtolower($userAgent);
+        $formatter = null;
 
         foreach ($this->getHelper()->getPatterns($userAgent) as $patterns) {
             $result = preg_match(
-                '/^(?:'.str_replace("\t", ')|(?:', $quoterHelper->pregQuote($patterns, '/')).')$/i',
+                '/^(?:'.str_replace("\t", ')|(?:', $patterns).')$/i',
                 $userAgent
             );
 
@@ -196,12 +196,29 @@ class Ini implements ParserInterface
             $pattern = strtok($patterns, "\t");
 
             while ($pattern !== false) {
-                $quotedPattern = '/^'.$quoterHelper->pregQuote($pattern, '/').'$/i';
+                $pattern       = str_replace('[\d]', '(\d)', $pattern);
+                $quotedPattern = '/^' . $pattern . '$/i';
 
-                if (preg_match($quotedPattern, $userAgent)) {
-                    $formatter = $this->getFormatter();
-                    $formatter->setData($this->getSettings($pattern));
-                    break 2;
+                if (preg_match($quotedPattern, $userAgent, $matches)) {
+                    // Insert the digits back into the pattern, so that we can search the settings for it
+                    if (count($matches) > 1) {
+                        array_shift($matches);
+                        foreach ($matches as $one_match) {
+                            $numPos  = strpos($pattern, '(\d)');
+                            $pattern = substr_replace($pattern, $one_match, $numPos, 4);
+                        }
+                    }
+
+                    // Try to get settings - as digits have been replaced to speed up the pattern search (up to 90 faster),
+                    // we won't always find the data in the first step - so check if settings have been found and if not,
+                    // search for the next pattern.
+                    $settings = $this->getSettings($pattern);
+
+                    if (count($settings) > 0) {
+                        $formatter = $this->getFormatter();
+                        $formatter->setData($settings);
+                        break 2;
+                    }
                 }
 
                 $pattern = strtok("\t");
@@ -221,31 +238,44 @@ class Ini implements ParserInterface
      */
     private function getSettings($pattern, array $settings = array())
     {
+        $quoterHelper = new Quoter();
+        // The pattern has been pre-quoted on generation to speed up the pattern search,
+        // but for this check we need the unquoted version
+        $unquotedPattern = $quoterHelper->pregUnQuote($pattern);
+
+        // Try to get settings for the pattern
+        $addedSettings = $this->getIniPart($unquotedPattern);
+
         // set some additional data
         if (count($settings) === 0) {
-            $quoterHelper = new Quoter();
-
-            $settings['browser_name_regex']   = '/^'.$quoterHelper->pregQuote($pattern).'$/';
-            $settings['browser_name_pattern'] = $pattern;
+            // The optimization with replaced digits get can now result in setting searches, for which we
+            // won't find a result - so only add the pattern information, is settings have been found.
+            //
+            // If not an empty array will be returned and the calling function can easily check if a pattern
+            // has been found.
+            if (count($addedSettings) > 0) {
+                $settings['browser_name_regex']   = '/^' . $pattern . '$/';
+                $settings['browser_name_pattern'] = $unquotedPattern;
+            }
+            //$settings['browser_name_regex']   = '/^'.$quoterHelper->pregQuote($pattern).'$/';
+            //$settings['browser_name_pattern'] = $pattern;
         }
 
-        $add_settings = $this->getIniPart($pattern);
-
         // check if parent pattern set, only keep the first one
-        $parent_pattern = null;
-        if (isset($add_settings['Parent'])) {
-            $parent_pattern = $add_settings['Parent'];
+        $parentPattern = null;
+        if (isset($addedSettings['Parent'])) {
+            $parentPattern = $addedSettings['Parent'];
 
             if (isset($settings['Parent'])) {
-                unset($add_settings['Parent']);
+                unset($addedSettings['Parent']);
             }
         }
 
         // merge settings
-        $settings += $add_settings;
+        $settings += $addedSettings;
 
-        if ($parent_pattern !== null) {
-            return $this->getSettings($parent_pattern, $settings);
+        if ($parentPattern !== null) {
+            return $this->getSettings($quoterHelper->pregQuote($parentPattern), $settings);
         }
 
         return $settings;
@@ -261,7 +291,7 @@ class Ini implements ParserInterface
     {
         $pattern     = strtolower($pattern);
         $patternhash = md5($pattern);
-        $subkey      = Converter::getIniPartCacheSubkey($patternhash);
+        $subkey      = SubKey::getPatternCacheSubkey($patternhash);
 
         if (!$this->getCache()->hasItem('browscap.iniparts.'.$subkey, true)) {
             return array();

@@ -72,6 +72,7 @@ class PropertyHolder
             'RenderingEngine_Maker',
             'Parent',
             'PropertyName',
+            'CDF',
         );
 
         if (in_array($propertyName, $stringProperties)) {
