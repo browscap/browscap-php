@@ -300,7 +300,7 @@ class Converter
         unset($patternpositions);
         unset($iniParts);
 
-        $subkeys = array_flip(SubKey::getAllPatternCacheSubkeys());
+        $subkeys = array_flip(SubKey::getAllIniPartCacheSubKeys());
         foreach ($contents as $subkey => $content) {
             $subkey = (string) $subkey;
             $this->getCache()->setItem('browscap.iniparts.' . $subkey, $content, true);

@@ -99,6 +99,8 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $libProperties = get_object_vars(get_browser('x'));
         $bcProperties  = get_object_vars(self::$object->getBrowser('x'));
 
+        unset($libProperties['parent'], $bcProperties['parent']);
+
         $libPropertyKeys = array_keys($libProperties);
         $bcPropertyKeys  = array_keys($bcProperties);
 
@@ -108,7 +110,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             self::fail('the properties found by "get_browser()" differ from found by "Browser::getBrowser()"');
         }
 
-        foreach (array_keys($bcProperties) as $bcProp) {
+        foreach ($bcPropertyKeys as $bcProp) {
             self::assertArrayHasKey(
                 strtolower($bcProp),
                 $libProperties,
@@ -144,13 +146,26 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 
             $bcProp = strtolower($bcProp);
 
+            self::assertClassHasAttribute(
+                $bcProp,
+                $libResult,
+                'Actual library result does not have "' . $bcProp . '" property'
+            );
+
+            self::assertClassHasAttribute(
+                $bcProp,
+                $bcResult,
+                'Actual browscap result does not have "' . $bcProp . '" property'
+            );
+
             $libValue = (string) $libResult->{$bcProp};
             $bcValue  = (string) $bcResult->{$bcProp};
 
             self::assertSame(
                 $libValue,
                 $bcValue,
-                $bcProp . ': ' . $libValue . ' != ' . $bcValue
+                'Expected actual "' . $bcProp . '" to be "' . $libValue . '" (was "' . $bcValue
+                . '"; for useragent: ' . $userAgent .')'
             );
         }
     }

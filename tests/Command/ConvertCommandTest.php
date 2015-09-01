@@ -104,7 +104,22 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $input  = $this->getMock('\Symfony\Component\Console\Input\ArgvInput', array(), array(), '', false);
+        $input         = $this->getMock('\Symfony\Component\Console\Input\ArgvInput', array(), array(), '', false);
+        $objectIniPath = ini_get('browscap');
+
+        if (!is_file($objectIniPath)) {
+            $this->setExpectedException(
+                '\BrowscapPHP\Exception',
+                'an error occured while converting the local file into the cache'
+            );
+        } else {
+            $input
+                ->expects(self::exactly(2))
+                ->method('getArgument')
+                ->with('file')
+                ->will(self::returnValue($objectIniPath))
+            ;
+        }
         $output = $this->getMock('\Symfony\Component\Console\Output\ConsoleOutput', array(), array(), '', false);
 
         $class  = new \ReflectionClass('\BrowscapPHP\Command\ConvertCommand');

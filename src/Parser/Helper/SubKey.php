@@ -52,7 +52,7 @@ class SubKey
      */
     public static function getPatternCacheSubkey($string)
     {
-        return $string[0].$string[1].$string[2];
+        return $string[0].$string[1];
     }
 
     /**
@@ -67,12 +67,42 @@ class SubKey
 
         foreach ($chars as $char_one) {
             foreach ($chars as $char_two) {
-                foreach ($chars as $char_three) {
-                    $subkeys[] = $char_one . $char_two . $char_three;
-                }
+                $subkeys[] = $char_one . $char_two;
             }
         }
 
         return $subkeys;
+    }
+
+    /**
+     * Gets the sub key for the ini parts cache file, generated from the given string
+     *
+     * @param string $string
+     * @return string
+     */
+    public static function getIniPartCacheSubKey($string)
+    {
+        return $string[0] . $string[1] . $string[2];
+    }
+
+    /**
+     * Gets all sub keys for the inipart cache files
+     *
+     * @return array
+     */
+    public static function getAllIniPartCacheSubKeys()
+    {
+        $subKeys = array();
+        $chars   = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
+
+        foreach ($chars as $charOne) {
+            foreach ($chars as $charTwo) {
+                foreach ($chars as $charThree) {
+                    $subKeys[] = $charOne . $charTwo . $charThree;
+                }
+            }
+        }
+
+        return $subKeys;
     }
 }

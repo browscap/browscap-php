@@ -291,7 +291,7 @@ class Ini implements ParserInterface
     {
         $pattern     = strtolower($pattern);
         $patternhash = md5($pattern);
-        $subkey      = SubKey::getPatternCacheSubkey($patternhash);
+        $subkey      = SubKey::getIniPartCacheSubKey($patternhash);
 
         if (!$this->getCache()->hasItem('browscap.iniparts.'.$subkey, true)) {
             return array();

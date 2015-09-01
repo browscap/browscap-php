@@ -43,7 +43,7 @@ class SubKeyTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetPatternCacheSubkey()
     {
-        self::assertSame('abc', SubKey::getPatternCacheSubkey('abcd'));
+        self::assertSame('ab', SubKey::getPatternCacheSubkey('abcd'));
     }
 
     /**
@@ -53,6 +53,6 @@ class SubKeyTest extends \PHPUnit_Framework_TestCase
     {
         $result = SubKey::getAllPatternCacheSubkeys();
         self::assertInternalType('array', $result);
-        self::assertSame(4096, count($result));
+        self::assertSame(256, count($result));
     }
 }
