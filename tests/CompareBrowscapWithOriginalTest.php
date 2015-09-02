@@ -110,20 +110,27 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             self::fail('the properties found by "get_browser()" differ from found by "Browser::getBrowser()"');
         }
 
-        foreach ($bcPropertyKeys as $bcProp) {
+        foreach (array_keys($this->properties) as $bcProp) {
+            $bcProp = strtolower($bcProp);
+
+            if (in_array($bcProp, array('browser_name_regex', 'browser_name_pattern', 'parent'))) {
+                unset($libProperties[$bcProp]);
+                continue;
+            }
+
             self::assertArrayHasKey(
-                strtolower($bcProp),
+                $bcProp,
                 $libProperties,
                 'Property `' . $bcProp . '` from Browscap doesn\'t match anything in get_browser.'
             );
 
-            unset($libProperties[strtolower($bcProp)]);
+            unset($libProperties[$bcProp]);
         }
 
         self::assertSame(
             0,
             count($libProperties),
-            'There are ' . count($libProperties) . '(' . implode(', ', array_keys($libProperties))
+            'There are ' . count($libProperties) . '(' . implode(', ', $libPropertyKeys)
             . ') properties in get_browser that do not match those in Browscap.'
         );
     }
@@ -146,13 +153,13 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 
             $bcProp = strtolower($bcProp);
 
-            self::assertClassHasAttribute(
+            self::assertObjectHasAttribute(
                 $bcProp,
                 $libResult,
                 'Actual library result does not have "' . $bcProp . '" property'
             );
 
-            self::assertClassHasAttribute(
+            self::assertObjectHasAttribute(
                 $bcProp,
                 $bcResult,
                 'Actual browscap result does not have "' . $bcProp . '" property'
@@ -165,7 +172,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
                 $libValue,
                 $bcValue,
                 'Expected actual "' . $bcProp . '" to be "' . $libValue . '" (was "' . $bcValue
-                . '"; for useragent: ' . $userAgent .')'
+                . '"; used pattern: ' . $bcResult->browser_name_pattern .')'
             );
         }
     }
