@@ -9,7 +9,7 @@ php:
 
 os:
   - linux
-  - osx
+#  - osx -- disabled, bug created in https://github.com/browscap/browscap-php/issues/96
 
 before_script:
   - wget http://browscap.org/stream?q=Full_PHP_BrowsCapINI -O /tmp/browscap.ini
