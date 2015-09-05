@@ -6,3 +6,4 @@ vendor/
 composer.phar
 composer.lock
 resources/
+PHP_BrowscapINI

@@ -17,10 +17,10 @@ matrix:
 before_script:
   - mkdir resources
   - travis_retry composer self-update
-  - if [ "`phpenv version-name`" == "5.3" ] || [ "`phpenv version-name`" == "5.4" ]; wget http://browscap.org/stream?q=Full_PHP_BrowsCapINI -O ./resources/full_php_browscap.ini; fi
-  - if [ "`phpenv version-name`" != "5.3" ] && [ "`phpenv version-name`" != "5.4" ]; travis_retry composer require --no-update --prefer-source browscap/browscap:dev-master; fi
+  - if [ "`phpenv version-name`" == "5.3" ] || [ "`phpenv version-name`" == "5.4" ]; then wget http://browscap.org/stream?q=Full_PHP_BrowsCapINI -O ./resources/full_php_browscap.ini; fi
+  - if [ "`phpenv version-name`" != "5.3" ] && [ "`phpenv version-name`" != "5.4" ]; then travis_retry composer require --no-update --prefer-source browscap/browscap:dev-master; fi
   - travis_retry composer install -o --prefer-source
-  - if [ "`phpenv version-name`" != "5.3" ] && [ "`phpenv version-name`" != "5.4" ]; php vendor/browscap/browscap/bin/browscap build --output ../../../resources/ test; fi
+  - if [ "`phpenv version-name`" != "5.3" ] && [ "`phpenv version-name`" != "5.4" ]; then php vendor/browscap/browscap/bin/browscap build --output ../../../resources/ test; fi
 
 script:
   - php -d zend.enable_gc=0 -d browscap=./resources/full_php_browscap.ini vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --colors --verbose
