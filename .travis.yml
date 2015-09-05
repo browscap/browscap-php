@@ -18,7 +18,7 @@ before_script:
   - php vendor/browscap/browscap/bin/browscap build --output ../../../resources/ test
 
 script:
-  - php -d zend.enable_gc=0 -d browscap=/tmp/browscap.ini vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --colors --verbose
+  - php -d zend.enable_gc=0 -d browscap=./resources/full_php_browscap.ini vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --colors --verbose
 
 after_script:
   - rm -rf resources
