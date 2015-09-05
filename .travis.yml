@@ -10,14 +10,18 @@ php:
   - hhvm
 
 before_script:
-  - wget http://browscap.org/stream?q=Full_PHP_BrowsCapINI -O /tmp/browscap.ini
-  - composer self-update
-  - composer install -o --prefer-source
+  #- wget http://browscap.org/stream?q=Full_PHP_BrowsCapINI -O /tmp/browscap.ini
+  - travis_retry composer self-update
+  - travis_retry composer install -o --prefer-source
+  - travis_retry composer require --no-update --prefer-source browscap/browscap:dev-master
+  - mkdir resources
+  - php vendor/browscap/browscap/bin/browscap build --output ../../../resources/ test
 
 script:
   - php -d zend.enable_gc=0 -d browscap=/tmp/browscap.ini vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --colors --verbose
 
 after_script:
+  - rm -rf resources
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
