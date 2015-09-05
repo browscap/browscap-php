@@ -36,6 +36,7 @@ use BrowscapPHP\Formatter\FormatterInterface;
 use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\Quoter;
 use BrowscapPHP\Parser\Helper\GetPatternInterface;
+use BrowscapPHP\Parser\Helper\Pattern;
 use BrowscapPHP\Parser\Helper\SubKey;
 use Psr\Log\LoggerInterface;
 
@@ -181,10 +182,15 @@ class Ini implements ParserInterface
     {
         $userAgent = strtolower($userAgent);
         $formatter = null;
+        $starts = Pattern::getPatternStart($userAgent, true);
+
+        // add special key to fall back to the default browser
+        $starts[] = str_repeat('z', 32);
 
         foreach ($this->getHelper()->getPatterns($userAgent) as $patterns) {
+            $usedMatch = '/^(?:'.str_replace("\t", ')|(', $patterns).')$/i';
             $result = preg_match(
-                '/^(?:'.str_replace("\t", ')|(?:', $patterns).')$/i',
+                $usedMatch,
                 $userAgent
             );
 
@@ -239,6 +245,7 @@ class Ini implements ParserInterface
     private function getSettings($pattern, array $settings = array())
     {
         $quoterHelper = new Quoter();
+
         // The pattern has been pre-quoted on generation to speed up the pattern search,
         // but for this check we need the unquoted version
         $unquotedPattern = $quoterHelper->pregUnQuote($pattern);
@@ -257,8 +264,6 @@ class Ini implements ParserInterface
                 $settings['browser_name_regex']   = '/^' . $pattern . '$/';
                 $settings['browser_name_pattern'] = $unquotedPattern;
             }
-            //$settings['browser_name_regex']   = '/^'.$quoterHelper->pregQuote($pattern).'$/';
-            //$settings['browser_name_pattern'] = $pattern;
         }
 
         // check if parent pattern set, only keep the first one
@@ -291,14 +296,13 @@ class Ini implements ParserInterface
     {
         $pattern     = strtolower($pattern);
         $patternhash = md5($pattern);
-        $subkey      = SubKey::getIniPartCacheSubKey($patternhash);
 
-        if (!$this->getCache()->hasItem('browscap.iniparts.'.$subkey, true)) {
+        if (!$this->getCache()->hasItem('browscap.iniparts.'.$patternhash, true)) {
             return array();
         }
 
         $success = null;
-        $file    = $this->getCache()->getItem('browscap.iniparts.'.$subkey, true, $success);
+        $file    = $this->getCache()->getItem('browscap.iniparts.'.$patternhash, true, $success);
 
         if (!$success) {
             return array();
@@ -306,18 +310,16 @@ class Ini implements ParserInterface
 
         $return = array();
         foreach ($file as $buffer) {
-            if (substr($buffer, 0, 32) === $patternhash) {
-                $return = json_decode(substr($buffer, 32), true);
+            $return = json_decode($buffer, true);
 
-                foreach (array_keys($return) as $property) {
-                    $return[$property] = $this->formatPropertyValue(
-                        $return[$property],
-                        $property
-                    );
-                }
-
-                break;
+            foreach (array_keys($return) as $property) {
+                $return[$property] = $this->formatPropertyValue(
+                    $return[$property],
+                    $property
+                );
             }
+
+            break;
         }
 
         return $return;

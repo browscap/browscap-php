@@ -119,7 +119,6 @@ class GetPattern implements GetPatternInterface
     public function getPatterns($userAgent)
     {
         $starts = Pattern::getPatternStart($userAgent, true);
-        $length = Pattern::getPatternLength($userAgent);
 
         // add special key to fall back to the default browser
         $starts[] = str_repeat('z', 32);
@@ -127,38 +126,27 @@ class GetPattern implements GetPatternInterface
         // get patterns, first for the given browser and if that is not found,
         // for the default browser (with a special key)
         foreach ($starts as $tmpStart) {
-            $tmpSubkey = SubKey::getPatternCacheSubkey($tmpStart);
-            $success   = null;
+            if (!$this->getCache()->hasItem('browscap.patterns.'.$tmpStart, true)) {
+                $this->getLogger()->debug('cache key "browscap.patterns.'.$tmpStart.'" not found');
+                continue;
+            }
 
-            $file = $this->getCache()->getItem('browscap.patterns.'.$tmpSubkey, true, $success);
+            $success = null;
+
+            $patterns = $this->getCache()->getItem('browscap.patterns.'.$tmpStart, true, $success);
 
             if (!$success) {
-                $this->getLogger()->debug('cache key "browscap.patterns.'.$tmpSubkey.'" not found');
+                $this->getLogger()->debug('cache key "browscap.patterns.'.$tmpStart.'" not found');
                 continue;
             }
 
-            if (!is_array($file) || !count($file)) {
-                $this->getLogger()->debug('cache key "browscap.patterns.'.$tmpSubkey.'" was empty');
+            if (!is_array($patterns) || !count($patterns)) {
+                $this->getLogger()->debug('cache key "browscap.patterns.'.$tmpStart.'" was empty');
                 continue;
             }
 
-            $found = false;
-
-            foreach ($file as $buffer) {
-                $tmpBuffer = substr($buffer, 0, 32);
-                if ($tmpBuffer === $tmpStart) {
-                    // get length of the pattern
-                    $len = (int) strstr(substr($buffer, 33, 4), ' ', true);
-
-                    // the user agent must be longer than the pattern without place holders
-                    if ($len <= $length) {
-                        list(, $patterns) = explode(' ', $buffer, 2);
-                        yield trim($patterns);
-                    }
-                    $found = true;
-                } elseif ($found === true) {
-                    break;
-                }
+            foreach ($patterns as $tmpJoinPatterns) {
+                yield trim($tmpJoinPatterns);
             }
         }
 

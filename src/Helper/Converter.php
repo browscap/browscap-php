@@ -275,10 +275,9 @@ class Converter
         foreach ($patternpositions as $position => $pattern) {
             $pattern     = strtolower($pattern);
             $patternhash = md5($pattern);
-            $subkey      = SubKey::getPatternCacheSubkey($patternhash);
 
-            if (!isset($contents[$subkey])) {
-                $contents[$subkey] = array();
+            if (!isset($contents[$patternhash])) {
+                $contents[$patternhash] = array();
             }
 
             $browserProperties = parse_ini_string($iniParts[($position + 1)]);
@@ -291,7 +290,7 @@ class Converter
             }
             // the position has to be moved by one, because the header of the ini file
             // is also returned as a part
-            $contents[$subkey][] = $patternhash.json_encode(
+            $contents[$patternhash][] = json_encode(
                 $browserProperties,
                 JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
             );
@@ -300,15 +299,8 @@ class Converter
         unset($patternpositions);
         unset($iniParts);
 
-        $subkeys = array_flip(SubKey::getAllIniPartCacheSubKeys());
-        foreach ($contents as $subkey => $content) {
-            $subkey = (string) $subkey;
-            $this->getCache()->setItem('browscap.iniparts.' . $subkey, $content, true);
-            unset($subkeys[$subkey]);
-        }
-
-        foreach (array_keys($subkeys) as $subkey) {
-            $this->getCache()->setItem('browscap.iniparts.' . $subkey, array(), true);
+        foreach ($contents as $patternhash => $content) {
+            $this->getCache()->setItem('browscap.iniparts.' . $patternhash, $content, true);
         }
     }
 
@@ -342,7 +334,7 @@ class Converter
             $match = strtolower($match);
 
             // get the first characters for a fast search
-            $tmpStart  = Pattern::getPatternStart($match);
+            $tmpStart  = Pattern::getPatternStart($match, false);
             $tmpLength = Pattern::getPatternLength($match);
 
             // special handling of default entry
@@ -362,13 +354,13 @@ class Converter
             // This helps to speed up the first (and most expensive) part of the pattern search a lot.
             if (strpbrk($match, '0123456789') !== false) {
                 $compressedPattern = preg_replace('/\d/', '[\d]', $match);
+
                 if (!in_array($compressedPattern, $data[$tmpStart])) {
                     $data[$tmpStart][] = $compressedPattern;
                 }
             } else {
                 $data[$tmpStart][] = $match;
             }
-            //$data[$tmpStart][] = $match;
         }
 
         unset($matches);
@@ -378,39 +370,22 @@ class Converter
         // array with pattern strings instead of an large array with single patterns) and also enables
         // us to search for multiple patterns in one preg_match call for a fast first search
         // (3-10 faster), followed by a detailed search for each single pattern.
-        $contents = array();
         foreach ($data as $tmpStart => $tmpPatterns) {
+            $patterns = array();
+
             for ($i = 0, $j = ceil(count($tmpPatterns) / $this->joinPatterns); $i < $j; $i++) {
                 $tmpJoinPatterns = implode(
                     "\t",
                     array_slice($tmpPatterns, ($i * $this->joinPatterns), $this->joinPatterns)
                 );
 
-                $tmpSubkey = SubKey::getPatternCacheSubkey($tmpStart);
-
-                if (!isset($contents[$tmpSubkey])) {
-                    $contents[$tmpSubkey] = array();
-                }
-
-                $contents[$tmpSubkey][] = $tmpStart.' '.$tmpJoinPatterns;
+                $patterns[] = $tmpJoinPatterns;
             }
+
+            $this->cache->setItem('browscap.patterns.' . $tmpStart, $patterns, true);
         }
 
         unset($data);
-
-        // write cache files. important: also write empty cache files for
-        // unused patterns, so that the regeneration is not unnecessarily
-        // triggered by the getPatterns() method.
-        $subkeys = array_flip(SubKey::getAllPatternCacheSubkeys());
-        foreach ($contents as $subkey => $content) {
-            $subkey = (string) $subkey;
-            $this->cache->setItem('browscap.patterns.' . $subkey, $content, true);
-            unset($subkeys[$subkey]);
-        }
-
-        foreach (array_keys($subkeys) as $subkey) {
-            $this->getCache()->setItem('browscap.patterns.' . $subkey, array(), true);
-        }
 
         return true;
     }
