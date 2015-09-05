@@ -1007,7 +1007,7 @@ AolVersion=0
 
         $cache = $this->getMock('\WurflCache\Adapter\Memory', array('getItem'), array(), '', false);
         $cache
-            ->expects(self::never())
+            ->expects(self::any())
             ->method('getItem')
             ->will(self::returnValueMap($map))
         ;
