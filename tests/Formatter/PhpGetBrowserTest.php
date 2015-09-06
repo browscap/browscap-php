@@ -1,8 +1,8 @@
 <?php
 
-namespace phpbrowscapTest;
+namespace BrowscapPHPTest\Formatter;
 
-use phpbrowscap\Browscap;
+use BrowscapPHP\Formatter\PhpGetBrowser;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -34,65 +34,39 @@ use phpbrowscap\Browscap;
  * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
  * @version    1.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/phpbrowscap/
+ * @link       https://github.com/GaretJax/BrowscapPHP/
  */
-class TestCase extends \PHPUnit_Framework_TestCase
+class PhpGetBrowserTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var string
+     * @var \Browscap\Fotmatter\PhpGetBrowser
      */
-    protected $cacheDir;
+    private $object = null;
 
     /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
+     *
      */
-    protected function setUp()
+    public function setUp()
     {
-    }
-
-    protected function createCacheDir()
-    {
-        $cacheDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'browscap_testing';
-
-        if (!is_dir($cacheDir)) {
-            if (false === @mkdir($cacheDir, 0777, true)) {
-                throw new \RuntimeException(sprintf('Unable to create the "%s" directory', $cacheDir));
-            }
-        }
-
-        $this->cacheDir = $cacheDir;
-
-        return $this->cacheDir;
-    }
-
-    protected function createBrowscap()
-    {
-        $cacheDir = $this->createCacheDir();
-
-        return new Browscap($cacheDir);
+        $this->object = new PhpGetBrowser();
     }
 
     /**
-     * removes the temporary cache directory
+     *
      */
-    protected function removeCacheDir()
+    public function testSetGetData()
     {
-        if (isset($this->cacheDir) && is_dir($this->cacheDir)) {
-            if (false === @rmdir($this->cacheDir)) {
-                throw new \RuntimeException(sprintf('Unable to remove the "%s" directory', $this->cacheDir));
-            }
+        $data = array(
+            'Browser' => 'test',
+            'Comment' => 'TestComment',
+        );
 
-            $this->cacheDir = null;
-        }
-    }
-
-    /**
-     * Tears down the fixture, for example, close a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-        $this->removeCacheDir();
+        self::assertSame($this->object, $this->object->setData($data));
+        $return = $this->object->getData();
+        self::assertInstanceOf('\stdClass', $return);
+        self::assertSame('test', $return->browser);
+        self::assertSame('TestComment', $return->comment);
     }
 }

@@ -1,6 +1,7 @@
-vendor/
-.idea/
-.buildpath
+*~
 .settings
+.buildpath
 .project
-composer.phar
+.idea/
+vendor/
+phpunit.xml

@@ -1,7 +1,9 @@
 <?php
-namespace phpbrowscapTest;
+namespace BrowscapPHPTest;
 
-use phpbrowscap\Browscap;
+use BrowscapPHP\Browscap;
+use BrowscapPHP\Cache\BrowscapCache;
+use WurflCache\Adapter\Memory;
 
 /**
  * Compares get_browser results for all matches in browscap.ini with results from Browscap class.
@@ -12,12 +14,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
     /**
      * @var Browscap
      */
-    private $object = null;
-
-    /**
-     * @var string
-     */
-    private static $cacheDir = null;
+    private static $object = null;
 
     /**
      * @var array
@@ -79,49 +76,37 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
      */
     public static function setUpBeforeClass()
     {
-        $cacheDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'browscap_testing';
-
-        if (!is_dir($cacheDir)) {
-            if (false === @mkdir($cacheDir, 0777, true)) {
-                throw new \RuntimeException(sprintf('Unable to create the "%s" directory', $cacheDir));
-            }
-        }
-
-        self::$cacheDir = $cacheDir;
-    }
-
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-
         $objectIniPath = ini_get('browscap');
 
         if (!is_file($objectIniPath)) {
             self::markTestSkipped('browscap not defined in php.ini');
         }
 
-        $this->object            = new Browscap(self::$cacheDir);
-        $this->object->localFile = $objectIniPath;
+        // Now, load an INI file into BrowscapPHP\Browscap for testing the UAs
+        self::$object = new Browscap();
+
+        $cacheAdapter = new Memory();
+        $cache        = new BrowscapCache($cacheAdapter);
+
+        self::$object
+            ->setCache($cache)
+            ->convertFile($objectIniPath)
+        ;
     }
 
     public function testCheckProperties()
     {
         $libProperties = get_object_vars(get_browser('x'));
-        $bcProperties  = get_object_vars($this->object->getBrowser('x'));
+        $bcProperties  = get_object_vars(self::$object->getBrowser('x'));
 
-        unset($bcProperties['Parents']);
-        unset($bcProperties['browser_name']);
-        unset($libProperties['browser_name']);
-        unset($libProperties['renderingengine_description']);
+        $libPropertyKeys = array_keys($libProperties);
+        $bcPropertyKeys  = array_keys($bcProperties);
 
-        $libPropertyKeys = array_map('strtolower', array_keys($libProperties));
-        $bcPropertyKeys  = array_map('strtolower', array_keys($bcProperties));
+        $diff = array_diff($libPropertyKeys, $bcPropertyKeys);
 
-        self::assertSame($libPropertyKeys, $bcPropertyKeys);
+        if (!empty($diff)) {
+            self::fail('the properties found by "get_browser()" differ from found by "Browser::getBrowser()"');
+        }
 
         foreach (array_keys($bcProperties) as $bcProp) {
             self::assertArrayHasKey(
@@ -143,28 +128,23 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerUserAgent
-     * @depends      testCheckProperties
+     * @depends testCheckProperties
      *
      * @param string $userAgent
-     *
-     * @throws \Exception
-     * @throws \phpbrowscap\Exception
      */
     public function testCompare($userAgent)
     {
         $libResult = get_browser($userAgent);
-        $bcResult  = $this->object->getBrowser($userAgent);
-
-        $doNotCheck = array('browser_name_regex', 'browser_name_pattern', 'Parent', 'RenderingEngine_Description');
+        $bcResult  = self::$object->getBrowser($userAgent);
 
         foreach (array_keys($this->properties) as $bcProp) {
-            if (in_array($bcProp, $doNotCheck)) {
+            if (in_array($bcProp, array('browser_name_regex', 'browser_name_pattern', 'Parent'))) {
                 continue;
             }
 
-            $libProp = strtolower($bcProp);
+            $bcProp = strtolower($bcProp);
 
-            $libValue = (string) $libResult->{$libProp};
+            $libValue = (string) $libResult->{$bcProp};
             $bcValue  = (string) $bcResult->{$bcProp};
 
             self::assertSame(
