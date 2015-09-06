@@ -4,3 +4,6 @@ vendor/
 .settings
 .project
 composer.phar
+composer.lock
+resources/
+PHP_BrowscapINI
