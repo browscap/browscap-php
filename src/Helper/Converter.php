@@ -298,7 +298,8 @@ class Converter
 
             if (!is_array($browserProperties)) {
                 $this->getLogger()->error(
-                    'data found which could not parsed as ini string: "' . $iniParts[($position + 1)] . '"'
+                    'data found which could not parsed as ini string: "' . $iniParts[($position + 1)]
+                    . '"; the parsing result was "' . print_r($browserProperties, true) . '"'
                 );
                 continue;
             }
