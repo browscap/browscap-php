@@ -294,7 +294,7 @@ class Converter
                 $contents[$subkey] = array();
             }
 
-            $browserProperties = @parse_ini_string($iniParts[($position + 1)]);
+            $browserProperties = parse_ini_string($iniParts[($position + 1)], INI_SCANNER_RAW);
 
             if (!is_array($browserProperties)) {
                 $this->getLogger()->error(
