@@ -34,7 +34,6 @@ use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Data\PropertyHolder;
 use BrowscapPHP\Exception\FileNotFoundException;
 use BrowscapPHP\Parser\Helper\Pattern;
-use BrowscapPHP\Parser\Helper\SubKey;
 use BrowscapPHP\Parser\Ini;
 use Psr\Log\LoggerInterface;
 
