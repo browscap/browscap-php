@@ -336,8 +336,6 @@ class Browscap
      * reads and parses an ini string and writes the results into the cache
      *
      * @param string $iniString
-     *
-     * @throws \BrowscapPHP\Exception
      */
     public function convertString($iniString)
     {
@@ -346,13 +344,8 @@ class Browscap
         $converter
             ->setLogger($this->getLogger())
             ->setCache($this->getCache())
+            ->convertString($iniString)
         ;
-
-        try {
-            $converter->convertString($iniString);
-        } catch (Helper\Exception $e) {
-            throw new Exception('an error occured while converting the data string into the cache', 0, $e);
-        }
     }
 
     /**
