@@ -283,7 +283,7 @@ class Converter
 
         // split the ini file into sections and save the data in one line with a hash of the beloging
         // pattern (filtered in the previous step)
-        $iniParts = preg_split('/\[[^\r\n]+\]/', $content);var_dump($iniParts);
+        $iniParts = preg_split('/\[[^\r\n]+\]/', $content);
         $contents = array();
         foreach ($patternpositions as $position => $pattern) {
             $pattern     = strtolower($pattern);
