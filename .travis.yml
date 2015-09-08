@@ -13,7 +13,7 @@ os:
 
 cache:
   directories:
-  - $HOME/resources
+  - $TRAVIS_BUILD_DIR/resources
 
 before_script:
   - .travis-scripts/cache-browscap.sh
