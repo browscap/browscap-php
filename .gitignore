@@ -6,3 +6,4 @@
 vendor/
 phpunit.xml
 PHP_BrowscapINI
+resources
