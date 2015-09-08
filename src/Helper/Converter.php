@@ -33,6 +33,7 @@ namespace BrowscapPHP\Helper;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Exception\FileNotFoundException;
 use BrowscapPHP\IniParser\IniParser;
+use BrowscapPHP\Parser\Helper\SubKey;
 use BrowscapPHP\Parser\Ini;
 use Psr\Log\LoggerInterface;
 
