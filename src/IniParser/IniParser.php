@@ -34,6 +34,7 @@ use BrowscapPHP\Data\PropertyFormatter;
 use BrowscapPHP\Data\PropertyHolder;
 use BrowscapPHP\Helper\Quoter;
 use BrowscapPHP\Parser\Helper\Pattern;
+use BrowscapPHP\Parser\Helper\SubKey;
 
 /**
  * Ini parser class (compatible with PHP 5.3+)
@@ -56,7 +57,7 @@ class IniParser
      *            is limited by the internal regular expression limits.
      * @var int
      */
-    private $joinPatterns = 100;
+    CONST COUNT_PATTERN = 100;
 
     /**
      * Creates new ini part cache files
@@ -85,9 +86,10 @@ class IniParser
         foreach ($patternpositions as $position => $pattern) {
             $pattern     = strtolower($pattern);
             $patternhash = Pattern::getHashForParts($pattern);
+            $subkey      = SubKey::getIniPartCacheSubKey($patternhash);
 
-            if (!isset($contents[$patternhash])) {
-                $contents[$patternhash] = array();
+            if (!isset($contents[$subkey])) {
+                $contents[$subkey] = array();
             }
 
             $browserProperties = parse_ini_string($iniParts[($position + 1)]);
@@ -98,9 +100,10 @@ class IniParser
                     $property
                 );
             }
+
             // the position has to be moved by one, because the header of the ini file
             // is also returned as a part
-            $contents[$patternhash][] = json_encode(
+            $contents[$subkey][] = $patternhash.json_encode(
                 $browserProperties,
                 JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
             );
@@ -109,8 +112,19 @@ class IniParser
         unset($patternpositions);
         unset($iniParts);
 
-        foreach ($contents as $patternhash => $content) {
-            yield array($patternhash => $content);
+        $subkeys = array_flip(SubKey::getAllIniPartCacheSubKeys());
+        foreach ($contents as $subkey => $content) {
+            $subkey = (string) $subkey;
+
+            yield array($subkey => $content);
+
+            unset($subkeys[$subkey]);
+        }
+
+        foreach (array_keys($subkeys) as $subkey) {
+            $subkey = (string) $subkey;
+
+            yield array($subkey => array());
         }
 
         yield false;
@@ -139,6 +153,8 @@ class IniParser
             return;
         }
 
+        $quoterHelper = new Quoter();
+
         // build an array to structure the data. this requires some memory, but we need this step to be able to
         // sort the data in the way we need it (see below).
         $data = array();
@@ -146,13 +162,18 @@ class IniParser
         foreach ($matches[0] as $match) {
             $pattern     = strtolower($match);
             $patternhash = Pattern::getHashForPattern($pattern, false);
+            $tmpLength   = Pattern::getPatternLength($match);
+
+            // special handling of default entry
+            if ($tmpLength === 0) {
+                $patternhash = str_repeat('z', 32);
+            }
 
             if (!isset($data[$patternhash])) {
                 $data[$patternhash] = array();
             }
 
-            $quoterHelper = new Quoter();
-            $pattern      = $quoterHelper->pregQuote($pattern);
+            $pattern = $quoterHelper->pregQuote($pattern);
 
             // Check if the pattern contains digits - in this case we replace them with a digit regular expression,
             // so that very similar patterns (e.g. only with different browser version numbers) can be compressed.
@@ -166,6 +187,16 @@ class IniParser
             } else {
                 $data[$patternhash][] = $pattern;
             }
+
+            if (strpbrk($match, '0123456789') !== false) {
+                $compressedPattern = preg_replace('/\d/', '[\d]', $match);
+
+                if (!isset($data[$patternhash][$compressedPattern])) {
+                    $data[$patternhash][$compressedPattern] = $compressedPattern;
+                }
+            } else {
+                $data[$patternhash][$match] = $match;
+            }
         }
 
         unset($matches);
@@ -175,22 +206,40 @@ class IniParser
         // array with pattern strings instead of an large array with single patterns) and also enables
         // us to search for multiple patterns in one preg_match call for a fast first search
         // (3-10 faster), followed by a detailed search for each single pattern.
+        $contents = array();
         foreach ($data as $patternhash => $tmpPatterns) {
-            $patterns = array();
-
-            for ($i = 0, $j = ceil(count($tmpPatterns) / $this->joinPatterns); $i < $j; $i++) {
+            for ($i = 0, $j = ceil(count($tmpPatterns) / self::COUNT_PATTERN); $i < $j; $i++) {
                 $tmpJoinPatterns = implode(
                     "\t",
-                    array_slice($tmpPatterns, ($i * $this->joinPatterns), $this->joinPatterns)
+                    array_slice($tmpPatterns, ($i * self::COUNT_PATTERN), self::COUNT_PATTERN)
                 );
 
-                $patterns[] = $tmpJoinPatterns;
-            }
+                $tmpSubkey = SubKey::getPatternCacheSubkey($patternhash);
 
-            yield array($patternhash => $patterns);
+                if (!isset($contents[$tmpSubkey])) {
+                    $contents[$tmpSubkey] = array();
+                }
+
+                $contents[$tmpSubkey][] = $patternhash.' '.$tmpJoinPatterns;
+            }
         }
 
         unset($data);
+
+        $subkeys = array_flip(SubKey::getAllPatternCacheSubkeys());
+        foreach ($contents as $subkey => $content) {
+            $subkey = (string) $subkey;
+
+            yield array($subkey => $content);
+
+            unset($subkeys[$subkey]);
+        }
+
+        foreach (array_keys($subkeys) as $subkey) {
+            $subkey = (string) $subkey;
+
+            yield array($subkey => array());
+        }
 
         yield false;
     }

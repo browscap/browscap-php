@@ -33,6 +33,7 @@ namespace BrowscapPHP\Helper;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Exception\FileNotFoundException;
 use BrowscapPHP\IniParser\IniParser;
+use BrowscapPHP\Parser\Helper\Pattern;
 use BrowscapPHP\Parser\Helper\SubKey;
 use BrowscapPHP\Parser\Ini;
 use Psr\Log\LoggerInterface;
@@ -310,109 +311,6 @@ class Converter
         foreach (array_keys($subkeys) as $subkey) {
             $this->getCache()->setItem('browscap.iniparts.' . $subkey, array(), true);
         }
-    }
-
-    /**
-     * Creates new pattern cache files
-     *
-     * @param string $content
-     *
-     * @return bool
-     */
-    private function createPatterns($content)
-    {
-        // get all relevant patterns from the INI file
-        // - containing "*" or "?"
-        // - not containing "*" or "?", but not having a comment
-        preg_match_all(
-            '/(?<=\[)(?:[^\r\n]*[?*][^\r\n]*)(?=\])|(?<=\[)(?:[^\r\n*?]+)(?=\])(?![^\[]*Comment=)/m',
-            $content,
-            $matches
-        );
-
-        if (empty($matches[0]) || !is_array($matches[0])) {
-            return false;
-        }
-
-        // build an array to structure the data. this requires some memory, but we need this step to be able to
-        // sort the data in the way we need it (see below).
-        $data = array();
-
-        foreach ($matches[0] as $match) {
-            $match = strtolower($match);
-
-            // get the first characters for a fast search
-            $tmpStart  = Pattern::getPatternStart($match);
-            $tmpLength = Pattern::getPatternLength($match);
-
-            // special handling of default entry
-            if ($tmpLength === 0) {
-                $tmpStart = str_repeat('z', 32);
-            }
-
-            if (!isset($data[$tmpStart])) {
-                $data[$tmpStart] = array();
-            }
-
-            $quoterHelper = new Quoter();
-            $match        = $quoterHelper->pregQuote($match);
-
-            // Check if the pattern contains digits - in this case we replace them with a digit regular expression,
-            // so that very similar patterns (e.g. only with different browser version numbers) can be compressed.
-            // This helps to speed up the first (and most expensive) part of the pattern search a lot.
-            if (strpbrk($match, '0123456789') !== false) {
-                $compressedPattern = preg_replace('/\d/', '[\d]', $match);
-                if (!in_array($compressedPattern, $data[$tmpStart])) {
-                    $data[$tmpStart][] = $compressedPattern;
-                }
-            } else {
-                $data[$tmpStart][] = $match;
-            }
-            //$data[$tmpStart][] = $match;
-        }
-
-        unset($matches);
-
-        // write optimized file (grouped by the first character of the has, generated from the pattern
-        // start) with multiple patterns joined by tabs. this is to speed up loading of the data (small
-        // array with pattern strings instead of an large array with single patterns) and also enables
-        // us to search for multiple patterns in one preg_match call for a fast first search
-        // (3-10 faster), followed by a detailed search for each single pattern.
-        $contents = array();
-        foreach ($data as $tmpStart => $tmpPatterns) {
-            for ($i = 0, $j = ceil(count($tmpPatterns) / $this->joinPatterns); $i < $j; $i++) {
-                $tmpJoinPatterns = implode(
-                    "\t",
-                    array_slice($tmpPatterns, ($i * $this->joinPatterns), $this->joinPatterns)
-                );
-
-                $tmpSubkey = SubKey::getPatternCacheSubkey($tmpStart);
-
-                if (!isset($contents[$tmpSubkey])) {
-                    $contents[$tmpSubkey] = array();
-                }
-
-                $contents[$tmpSubkey][] = $tmpStart.' '.$tmpJoinPatterns;
-            }
-        }
-
-        unset($data);
-
-        // write cache files. important: also write empty cache files for
-        // unused patterns, so that the regeneration is not unnecessarily
-        // triggered by the getPatterns() method.
-        $subkeys = array_flip(SubKey::getAllPatternCacheSubkeys());
-        foreach ($contents as $subkey => $content) {
-            $subkey = (string) $subkey;
-            $this->cache->setItem('browscap.patterns.' . $subkey, $content, true);
-            unset($subkeys[$subkey]);
-        }
-
-        foreach (array_keys($subkeys) as $subkey) {
-            $this->getCache()->setItem('browscap.patterns.' . $subkey, array(), true);
-        }
-
-        return true;
     }
 
     /**

@@ -31,6 +31,7 @@
 namespace BrowscapPHP\Parser;
 
 use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Data\PropertyFormatter;
 use BrowscapPHP\Data\PropertyHolder;
 use BrowscapPHP\Formatter\FormatterInterface;
 use BrowscapPHP\Helper\Quoter;
@@ -239,6 +240,7 @@ class Ini implements ParserInterface
     private function getSettings($pattern, array $settings = array())
     {
         $quoterHelper = new Quoter();
+        
         // The pattern has been pre-quoted on generation to speed up the pattern search,
         // but for this check we need the unquoted version
         $unquotedPattern = $quoterHelper->pregUnQuote($pattern);
@@ -257,8 +259,6 @@ class Ini implements ParserInterface
                 $settings['browser_name_regex']   = '/^' . $pattern . '$/';
                 $settings['browser_name_pattern'] = $unquotedPattern;
             }
-            //$settings['browser_name_regex']   = '/^'.$quoterHelper->pregQuote($pattern).'$/';
-            //$settings['browser_name_pattern'] = $pattern;
         }
 
         // check if parent pattern set, only keep the first one
@@ -304,13 +304,17 @@ class Ini implements ParserInterface
             return array();
         }
 
+        $propertyHolder    = new PropertyHolder();
+        $propertyFormatter = new PropertyFormatter();
+        $propertyFormatter->setPropertyHolder($propertyHolder);
+
         $return = array();
         foreach ($file as $buffer) {
             if (substr($buffer, 0, 32) === $patternhash) {
                 $return = json_decode(substr($buffer, 32), true);
 
                 foreach (array_keys($return) as $property) {
-                    $return[$property] = $this->formatPropertyValue(
+                    $return[$property] = $propertyFormatter->formatPropertyValue(
                         $return[$property],
                         $property
                     );
@@ -321,43 +325,5 @@ class Ini implements ParserInterface
         }
 
         return $return;
-    }
-
-    /**
-     * formats the name of a property
-     *
-     * @param string $value
-     * @param string $property
-     *
-     * @return string
-     */
-    private function formatPropertyValue($value, $property)
-    {
-        $valueOutput    = $value;
-        $propertyHolder = new PropertyHolder();
-
-        switch ($propertyHolder->getPropertyType($property)) {
-            case PropertyHolder::TYPE_BOOLEAN:
-                if (true === $value || $value === 'true' || $value === '1') {
-                    $valueOutput = true;
-                } elseif (false === $value || $value === 'false' || $value === '') {
-                    $valueOutput = false;
-                } else {
-                    $valueOutput = '';
-                }
-                break;
-            case PropertyHolder::TYPE_IN_ARRAY:
-                try {
-                    $valueOutput = $propertyHolder->checkValueInArray($property, $value);
-                } catch (\InvalidArgumentException $ex) {
-                    $valueOutput = '';
-                }
-                break;
-            default:
-                // nothing t do here
-                break;
-        }
-
-        return $valueOutput;
     }
 }
