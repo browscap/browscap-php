@@ -25,7 +25,7 @@ before_script:
   - travis_retry composer install -o --prefer-source
 
 script:
-  - php -d browscap=$TRAVIS_BUILD_DIR/resources/full_php_browscap.ini vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --colors --verbose
+  - php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --colors --verbose
   - php vendor/bin/phpcs --standard=psr2 -pn src tests
 
 after_script:
