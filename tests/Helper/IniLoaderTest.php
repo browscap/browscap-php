@@ -62,6 +62,7 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetLoader()
     {
+        /** @var \FileLoader\Loader $loader */
         $loader = $this->getMock('\FileLoader\Loader', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setLoader($loader));
@@ -76,6 +77,7 @@ class IniLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetLogger()
     {
+        /** @var \Monolog\Logger $logger */
         $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setLogger($logger));

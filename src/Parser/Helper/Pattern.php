@@ -67,7 +67,7 @@ class Pattern
      * @param  boolean      $variants
      * @return string|array
      */
-    public static function getPatternStart($pattern, $variants = false)
+    public static function getHashForPattern($pattern, $variants = false)
     {
         $regex   = '/^([^\*\?\s\r\n\\\\]+).*$/';
         $pattern = substr($pattern, 0, 32);
@@ -94,6 +94,18 @@ class Pattern
         }
 
         return md5($string);
+    }
+
+    /**
+     * returns a hash for one pattern
+     *
+     * @param $pattern
+     *
+     * @return string
+     */
+    public static function getHashForParts($pattern)
+    {
+        return md5($pattern);
     }
 
     /**

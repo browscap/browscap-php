@@ -50,6 +50,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
+        /** @var \WurflCache\Adapter\File $adapter */
         $adapter = $this->getMock('\WurflCache\Adapter\File', array(), array(), '', false);
 
         $this->object = new BrowscapCache($adapter);
@@ -60,6 +61,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetCacheAdapter()
     {
+        /** @var \WurflCache\Adapter\Memcache $adapter */
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setCacheAdapter($adapter));
@@ -79,6 +81,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetVersionNotCached()
     {
+        /** @var \WurflCache\Adapter\Memcache $adapter */
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem'), array(), '', false);
         $adapter
             ->expects(self::once())

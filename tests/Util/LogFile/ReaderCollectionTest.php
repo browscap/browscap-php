@@ -58,6 +58,7 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testaddReader()
     {
+        /** @var \BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader $reader */
         $reader = $this->getMock('\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->addReader($reader));
@@ -68,6 +69,7 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testTestSuccessFull()
     {
+        /** @var \BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader $reader */
         $reader = $this->getMock(
             '\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader',
             array('test'),
@@ -91,6 +93,7 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testTestNotSuccessFull()
     {
+        /** @var \BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader $reader */
         $reader = $this->getMock(
             '\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader',
             array('test'),

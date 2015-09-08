@@ -74,7 +74,7 @@ Crawler=1
 CssVersion=0
 AolVersion=0
 ';
-        self::assertSame('235cb78c730de50ce5ba6a0c1784b16b', Pattern::getPatternStart($pattern, false));
+        self::assertSame('235cb78c730de50ce5ba6a0c1784b16b', Pattern::getHashForPattern($pattern, false));
     }
 
     /**
@@ -126,7 +126,7 @@ AolVersion=0
             9 => 'd41d8cd98f00b204e9800998ecf8427e',
         );
 
-        self::assertSame($expected, Pattern::getPatternStart($pattern, true));
+        self::assertSame($expected, Pattern::getHashForPattern($pattern, true));
     }
 
     /**
@@ -135,5 +135,16 @@ AolVersion=0
     public function testGetPatternLength()
     {
         self::assertSame(4, Pattern::getPatternLength('abcd'));
+    }
+
+    /**
+     *
+     */
+    public function testGetHashForParts()
+    {
+        self::assertSame(
+            '529f1ddb64ea27d5cc6fc8ce8048d9e7',
+            Pattern::getHashForParts('mozilla/5.0 (*linux i686*rv:0.9*) gecko*')
+        );
     }
 }

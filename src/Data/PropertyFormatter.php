@@ -21,79 +21,76 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Util\Logfile
+ * @package    Parser
  * @copyright  1998-2014 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Util\Logfile;
-
-use BrowscapPHP\Exception\ReaderException;
+namespace BrowscapPHP\Data;
 
 /**
- * reader collection class
+ * Ini parser class (compatible with PHP 5.3+)
  *
  * @category   Browscap-PHP
- * @package    Command
- * @author     Dave Olsen, http://dmolsen.com
+ * @package    Parser
+ * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
+ * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
  * @version    3.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  */
-class ReaderCollection implements ReaderInterface
+class PropertyFormatter
 {
     /**
-     * @var \BrowscapPHP\Util\Logfile\AbstractReader[]
+     * @var PropertyHolder
      */
-    private $readers = array();
+    private $propertyHolder = null;
 
     /**
-     * adds a new reader to this collection
-     *
-     * @param \BrowscapPHP\Util\Logfile\ReaderInterface $reader
-     *
-     * @return \BrowscapPHP\Util\Logfile\ReaderCollection
+     * @param PropertyHolder $propertyHolder
      */
-    public function addReader(ReaderInterface $reader)
+    public function setPropertyHolder(PropertyHolder $propertyHolder)
     {
-        $this->readers[] = $reader;
-
-        return $this;
+        $this->propertyHolder = $propertyHolder;
     }
 
     /**
-     * @param string $line
+     * formats the name of a property
      *
-     * @return bool
-     */
-    public function test($line)
-    {
-        foreach ($this->readers as $reader) {
-            if ($reader->test($line)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param string $line
+     * @param string $value
+     * @param string $property
      *
      * @return string
-     * @throws \BrowscapPHP\Exception\ReaderException
      */
-    public function read($line)
+    public function formatPropertyValue($value, $property)
     {
-        foreach ($this->readers as $reader) {
-            if ($reader->test($line)) {
-                return $reader->read($line);
-            }
+        $valueOutput = $value;
+
+        switch ($this->propertyHolder->getPropertyType($property)) {
+            case PropertyHolder::TYPE_BOOLEAN:
+                if (true === $value || $value === 'true' || $value === '1') {
+                    $valueOutput = true;
+                } elseif (false === $value || $value === 'false' || $value === '') {
+                    $valueOutput = false;
+                } else {
+                    $valueOutput = '';
+                }
+                break;
+            case PropertyHolder::TYPE_IN_ARRAY:
+                try {
+                    $valueOutput = $this->propertyHolder->checkValueInArray($property, $value);
+                } catch (\InvalidArgumentException $ex) {
+                    $valueOutput = '';
+                }
+                break;
+            default:
+                // nothing t do here
+                break;
         }
 
-        throw ReaderException::userAgentParserError($line);
+        return $valueOutput;
     }
 }

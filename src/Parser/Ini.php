@@ -33,11 +33,9 @@ namespace BrowscapPHP\Parser;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Data\PropertyHolder;
 use BrowscapPHP\Formatter\FormatterInterface;
-use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\Quoter;
 use BrowscapPHP\Parser\Helper\GetPatternInterface;
 use BrowscapPHP\Parser\Helper\Pattern;
-use BrowscapPHP\Parser\Helper\SubKey;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -182,10 +180,6 @@ class Ini implements ParserInterface
     {
         $userAgent = strtolower($userAgent);
         $formatter = null;
-        $starts = Pattern::getPatternStart($userAgent, true);
-
-        // add special key to fall back to the default browser
-        $starts[] = str_repeat('z', 32);
 
         foreach ($this->getHelper()->getPatterns($userAgent) as $patterns) {
             $usedMatch = '/^(?:'.str_replace("\t", ')|(', $patterns).')$/i';
@@ -295,7 +289,7 @@ class Ini implements ParserInterface
     private function getIniPart($pattern)
     {
         $pattern     = strtolower($pattern);
-        $patternhash = md5($pattern);
+        $patternhash = Pattern::getHashForParts($pattern);
 
         if (!$this->getCache()->hasItem('browscap.iniparts.'.$patternhash, true)) {
             return array();

@@ -118,7 +118,7 @@ class GetPattern implements GetPatternInterface
      */
     public function getPatterns($userAgent)
     {
-        $starts = Pattern::getPatternStart($userAgent, true);
+        $starts = Pattern::getHashForPattern($userAgent, true);
 
         // add special key to fall back to the default browser
         $starts[] = str_repeat('z', 32);

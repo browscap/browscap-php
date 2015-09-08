@@ -61,6 +61,7 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetLogger()
     {
+        /** @var \Monolog\Logger $logger */
         $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setLogger($logger));
@@ -72,6 +73,7 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetCache()
     {
+        /** @var \BrowscapPHP\Cache\BrowscapCache $cache */
         $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setCache($cache));
@@ -85,6 +87,7 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
     {
         self::assertInstanceOf('\BrowscapPHP\Helper\Filesystem', $this->object->getFilesystem());
 
+        /** @var \BrowscapPHP\Helper\Filesystem $file */
         $file = $this->getMock('\BrowscapPHP\Helper\Filesystem', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setFilesystem($file));
