@@ -5,5 +5,6 @@
 .idea/
 vendor/
 phpunit.xml
+composer.lock
 PHP_BrowscapINI
 resources

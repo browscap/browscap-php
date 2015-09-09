@@ -294,7 +294,15 @@ class Converter
                 $contents[$subkey] = array();
             }
 
-            $browserProperties = parse_ini_string($iniParts[($position + 1)]);
+            $browserProperties = @parse_ini_string($iniParts[($position + 1)], INI_SCANNER_RAW);
+
+            if (!is_array($browserProperties)) {
+                $this->getLogger()->error(
+                    'data found which could not parsed as ini string: "' . $iniParts[($position + 1)]
+                    . '"; the parsing result was "' . print_r($browserProperties, true) . '"'
+                );
+                continue;
+            }
 
             foreach (array_keys($browserProperties) as $property) {
                 $browserProperties[$property] = $this->formatPropertyValue(
