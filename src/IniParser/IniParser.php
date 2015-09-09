@@ -57,7 +57,7 @@ class IniParser
      *            is limited by the internal regular expression limits.
      * @var int
      */
-    CONST COUNT_PATTERN = 100;
+    CONST COUNT_PATTERN = 50;
 
     /**
      * Creates new ini part cache files
@@ -92,7 +92,7 @@ class IniParser
                 $contents[$subkey] = array();
             }
 
-            $browserProperties = parse_ini_string($iniParts[($position + 1)]);
+            $browserProperties = parse_ini_string($iniParts[($position + 1)], INI_SCANNER_RAW);
 
             foreach (array_keys($browserProperties) as $property) {
                 $browserProperties[$property] = $propertyFormatter->formatPropertyValue(
@@ -126,8 +126,6 @@ class IniParser
 
             yield array($subkey => array());
         }
-
-        yield false;
     }
 
     /**
@@ -149,7 +147,7 @@ class IniParser
         );
 
         if (empty($matches[0]) || !is_array($matches[0])) {
-            yield false;
+            yield array();
             return;
         }
 
@@ -159,10 +157,9 @@ class IniParser
         // sort the data in the way we need it (see below).
         $data = array();
 
-        foreach ($matches[0] as $match) {
-            $pattern     = strtolower($match);
+        foreach ($matches[0] as $pattern) {
             $patternhash = Pattern::getHashForPattern($pattern, false);
-            $tmpLength   = Pattern::getPatternLength($match);
+            $tmpLength   = Pattern::getPatternLength($pattern);
 
             // special handling of default entry
             if ($tmpLength === 0) {
@@ -181,21 +178,11 @@ class IniParser
             if (strpbrk($pattern, '0123456789') !== false) {
                 $compressedPattern = preg_replace('/\d/', '[\d]', $pattern);
 
-                if (!isset($data[$patternhash][$compressedPattern])) {
-                    $data[$patternhash][$compressedPattern] = $compressedPattern;
+                if (!in_array($compressedPattern, $data[$patternhash])) {
+                    $data[$patternhash][] = $compressedPattern;
                 }
             } else {
                 $data[$patternhash][] = $pattern;
-            }
-
-            if (strpbrk($match, '0123456789') !== false) {
-                $compressedPattern = preg_replace('/\d/', '[\d]', $match);
-
-                if (!isset($data[$patternhash][$compressedPattern])) {
-                    $data[$patternhash][$compressedPattern] = $compressedPattern;
-                }
-            } else {
-                $data[$patternhash][$match] = $match;
             }
         }
 
@@ -208,19 +195,23 @@ class IniParser
         // (3-10 faster), followed by a detailed search for each single pattern.
         $contents = array();
         foreach ($data as $patternhash => $tmpPatterns) {
+            if (empty($tmpPatterns)) {
+                continue;
+            }
+
+            $subkey = SubKey::getPatternCacheSubkey($patternhash);
+
+            if (!isset($contents[$subkey])) {
+                $contents[$subkey] = array();
+            }
+
             for ($i = 0, $j = ceil(count($tmpPatterns) / self::COUNT_PATTERN); $i < $j; $i++) {
                 $tmpJoinPatterns = implode(
                     "\t",
                     array_slice($tmpPatterns, ($i * self::COUNT_PATTERN), self::COUNT_PATTERN)
                 );
 
-                $tmpSubkey = SubKey::getPatternCacheSubkey($patternhash);
-
-                if (!isset($contents[$tmpSubkey])) {
-                    $contents[$tmpSubkey] = array();
-                }
-
-                $contents[$tmpSubkey][] = $patternhash.' '.$tmpJoinPatterns;
+                $contents[$subkey][] = $patternhash.' '.$tmpJoinPatterns;
             }
         }
 
@@ -240,7 +231,5 @@ class IniParser
 
             yield array($subkey => array());
         }
-
-        yield false;
     }
 }

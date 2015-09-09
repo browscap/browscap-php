@@ -184,12 +184,11 @@ class Ini implements ParserInterface
         $formatter = null;
 
         foreach ($this->getHelper()->getPatterns($userAgent) as $patterns) {
-            $result = preg_match(
-                '/^(?:'.str_replace("\t", ')|(?:', $patterns).')$/i',
-                $userAgent
-            );
+            $patternToMatch = '/^(?:'.str_replace("\t", ')|(?:', $patterns).')$/i';
+            print_r($userAgent . "\n");
+            print_r($patternToMatch . "\n");
 
-            if (!$result) {
+            if (!preg_match($patternToMatch, $userAgent)) {
                 continue;
             }
 

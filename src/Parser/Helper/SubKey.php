@@ -65,9 +65,9 @@ class SubKey
         $subkeys = array();
         $chars   = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
 
-        foreach ($chars as $char_one) {
-            foreach ($chars as $char_two) {
-                $subkeys[] = $char_one . $char_two;
+        foreach ($chars as $charOne) {
+            foreach ($chars as $charTwo) {
+                $subkeys[] = $charOne . $charTwo;
             }
         }
 

@@ -33,8 +33,6 @@ namespace BrowscapPHP\Helper;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Exception\FileNotFoundException;
 use BrowscapPHP\IniParser\IniParser;
-use BrowscapPHP\Parser\Helper\Pattern;
-use BrowscapPHP\Parser\Helper\SubKey;
 use BrowscapPHP\Parser\Ini;
 use Psr\Log\LoggerInterface;
 
@@ -192,8 +190,8 @@ class Converter
         $this->getLogger()->info('start creating patterns from the ini data');
 
         foreach ($iniParser->createPatterns($iniString) as $patternsHashList) {
-            foreach ($patternsHashList as $patternhash => $patterns) {
-                $this->cache->setItem('browscap.patterns.' . $patternhash, $patterns, true);
+            foreach ($patternsHashList as $subkey => $content) {
+                $this->cache->setItem('browscap.patterns.' . $subkey, $content, true);
             }
         }
 
@@ -202,8 +200,8 @@ class Converter
         $this->getLogger()->info('start creating data from the ini data');
 
         foreach ($iniParser->createIniParts($iniString) as $patternsContentList) {
-            foreach ($patternsContentList as $patternhash => $content) {
-                $this->getCache()->setItem('browscap.iniparts.' . $patternhash, $content, true);
+            foreach ($patternsContentList as $subkey => $content) {
+                $this->getCache()->setItem('browscap.iniparts.' . $subkey, $content, true);
             }
         }
 
@@ -255,99 +253,5 @@ class Converter
         $this->getCache()->setItem('browscap.version', $this->iniVersion, false);
 
         return $this;
-    }
-
-    /**
-     * Creates new ini part cache files
-     * @param string $content
-     */
-    private function createIniParts($content)
-    {
-        // get all patterns from the ini file in the correct order,
-        // so that we can calculate with index number of the resulting array,
-        // which part to use when the ini file is splitted into its sections.
-        preg_match_all('/(?<=\[)(?:[^\r\n]+)(?=\])/m', $content, $patternpositions);
-        $patternpositions = $patternpositions[0];
-
-        // split the ini file into sections and save the data in one line with a hash of the beloging
-        // pattern (filtered in the previous step)
-        $iniParts = preg_split('/\[[^\r\n]+\]/', $content);
-        $contents = array();
-        foreach ($patternpositions as $position => $pattern) {
-            $pattern     = strtolower($pattern);
-            $patternhash = md5($pattern);
-            $subkey      = SubKey::getPatternCacheSubkey($patternhash);
-
-            if (!isset($contents[$subkey])) {
-                $contents[$subkey] = array();
-            }
-
-            $browserProperties = parse_ini_string($iniParts[($position + 1)]);
-
-            foreach (array_keys($browserProperties) as $property) {
-                $browserProperties[$property] = $this->formatPropertyValue(
-                    $browserProperties[$property],
-                    $property
-                );
-            }
-            // the position has to be moved by one, because the header of the ini file
-            // is also returned as a part
-            $contents[$subkey][] = $patternhash.json_encode(
-                $browserProperties,
-                JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
-            );
-        }
-
-        unset($patternpositions);
-        unset($iniParts);
-
-        $subkeys = array_flip(SubKey::getAllIniPartCacheSubKeys());
-        foreach ($contents as $subkey => $content) {
-            $subkey = (string) $subkey;
-            $this->getCache()->setItem('browscap.iniparts.' . $subkey, $content, true);
-            unset($subkeys[$subkey]);
-        }
-
-        foreach (array_keys($subkeys) as $subkey) {
-            $this->getCache()->setItem('browscap.iniparts.' . $subkey, array(), true);
-        }
-    }
-
-    /**
-     * formats the name of a property
-     *
-     * @param string $value
-     * @param string $property
-     *
-     * @return string
-     */
-    private function formatPropertyValue($value, $property)
-    {
-        $valueOutput    = $value;
-        $propertyHolder = new PropertyHolder();
-
-        switch ($propertyHolder->getPropertyType($property)) {
-            case PropertyHolder::TYPE_BOOLEAN:
-                if (true === $value || $value === 'true' || $value === '1') {
-                    $valueOutput = 'true';
-                } elseif (false === $value || $value === 'false' || $value === '') {
-                    $valueOutput = 'false';
-                } else {
-                    $valueOutput = '';
-                }
-                break;
-            case PropertyHolder::TYPE_IN_ARRAY:
-                try {
-                    $valueOutput = $propertyHolder->checkValueInArray($property, $value);
-                } catch (\InvalidArgumentException $ex) {
-                    $valueOutput = '';
-                }
-                break;
-            default:
-                // nothing t do here
-                break;
-        }
-
-        return $valueOutput;
     }
 }
