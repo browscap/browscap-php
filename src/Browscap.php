@@ -432,8 +432,8 @@ class Browscap
                 ->convertFile($iniFile)
             ;
 
-            unlink($iniFile);
-            rmdir($buildFolder);
+            $filesystem = new Filesystem();
+            $filesystem->remove($buildFolder);
         } else {
             $this->getLoader()
                 ->setRemoteFilename($remoteFile)
