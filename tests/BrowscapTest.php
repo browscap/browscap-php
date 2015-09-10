@@ -929,7 +929,13 @@ CssVersion=0
 AolVersion=0
 ';
 
-        $loader = $this->getMock('\BrowscapPHP\Helper\IniLoader', array('setRemoteFilename', 'setOptions', 'setLogger', 'load'), array(), '', false);
+        $loader = $this->getMock(
+            '\BrowscapPHP\Helper\IniLoader',
+            array('setRemoteFilename', 'setOptions', 'setLogger', 'load'),
+            array(),
+            '',
+            false
+        );
         $loader
             ->expects(self::once())
             ->method('setRemoteFilename')
@@ -964,10 +970,23 @@ AolVersion=0
      */
     public function testUpdate()
     {
+        if (class_exists('\Browscap\Browscap')) {
+            self::markTestSkipped(
+                'if the \Browscap\Browscap class is available the browscap.ini file is not updated from a remote '
+                . 'location'
+            );
+        }
+
         $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
         $this->object->setLogger($logger);
 
-        $loader = $this->getMock('\BrowscapPHP\Helper\IniLoader', array('setRemoteFilename', 'setOptions', 'setLogger', 'load'), array(), '', false);
+        $loader = $this->getMock(
+            '\BrowscapPHP\Helper\IniLoader',
+            array('setRemoteFilename', 'setOptions', 'setLogger', 'load'),
+            array(),
+            '',
+            false
+        );
         $loader
             ->expects(self::once())
             ->method('setRemoteFilename')
@@ -1010,7 +1029,7 @@ AolVersion=0
 
         $cache = $this->getMock('\WurflCache\Adapter\Memory', array('getItem'), array(), '', false);
         $cache
-            ->expects(self::never())
+            ->expects(self::any())
             ->method('getItem')
             ->will(self::returnValueMap($map))
         ;
