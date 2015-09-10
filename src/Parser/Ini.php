@@ -184,11 +184,12 @@ class Ini implements ParserInterface
         $formatter = null;
 
         foreach ($this->getHelper()->getPatterns($userAgent) as $patterns) {
+            var_dump(__CLASS__ . '::' . __FUNCTION__, $userAgent, $patterns);
             $patternToMatch = '/^(?:'.str_replace("\t", ')|(?:', $patterns).')$/i';
             print_r($userAgent . "\n");
             print_r($patternToMatch . "\n");
 
-            if (!preg_match($patternToMatch, $userAgent)) {
+            if (!preg_match($patternToMatch, $userAgent)) {var_dump(__CLASS__ . '::' . __FUNCTION__, 'pattern not found');
                 continue;
             }
 
@@ -212,8 +213,9 @@ class Ini implements ParserInterface
                     // Try to get settings - as digits have been replaced to speed up the pattern search (up to 90 faster),
                     // we won't always find the data in the first step - so check if settings have been found and if not,
                     // search for the next pattern.
+                    var_dump(__CLASS__ . '::' . __FUNCTION__, $pattern);
                     $settings = $this->getSettings($pattern);
-
+                    var_dump(__CLASS__ . '::' . __FUNCTION__, $pattern, $settings);
                     if (count($settings) > 0) {
                         $formatter = $this->getFormatter();
                         $formatter->setData($settings);
@@ -246,7 +248,7 @@ class Ini implements ParserInterface
 
         // Try to get settings for the pattern
         $addedSettings = $this->getIniPart($unquotedPattern);
-
+        var_dump(__CLASS__ . '::' . __FUNCTION__, $pattern, $unquotedPattern, $addedSettings);
         // set some additional data
         if (count($settings) === 0) {
             // The optimization with replaced digits get can now result in setting searches, for which we

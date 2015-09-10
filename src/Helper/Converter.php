@@ -190,6 +190,7 @@ class Converter
         $this->getLogger()->info('start creating patterns from the ini data');
 
         foreach ($iniParser->createPatterns($iniString) as $patternsHashList) {
+            var_dump(__CLASS__ . '::' . __FUNCTION__, $patternsHashList);
             foreach ($patternsHashList as $subkey => $content) {
                 $this->cache->setItem('browscap.patterns.' . $subkey, $content, true);
             }
@@ -200,6 +201,7 @@ class Converter
         $this->getLogger()->info('start creating data from the ini data');
 
         foreach ($iniParser->createIniParts($iniString) as $patternsContentList) {
+            var_dump(__CLASS__ . '::' . __FUNCTION__, $patternsContentList);
             foreach ($patternsContentList as $subkey => $content) {
                 $this->getCache()->setItem('browscap.iniparts.' . $subkey, $content, true);
             }

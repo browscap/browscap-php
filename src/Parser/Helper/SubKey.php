@@ -67,7 +67,7 @@ class SubKey
 
         foreach ($chars as $charOne) {
             foreach ($chars as $charTwo) {
-                $subkeys[] = $charOne . $charTwo;
+                $subkeys[$charOne . $charTwo] = '';
             }
         }
 

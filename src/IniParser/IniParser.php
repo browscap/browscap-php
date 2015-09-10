@@ -84,9 +84,11 @@ class IniParser
         $propertyFormatter->setPropertyHolder($propertyHolder);
 
         foreach ($patternpositions as $position => $pattern) {
+            var_dump(__CLASS__ . '::' . __FUNCTION__, $pattern);
             $pattern     = strtolower($pattern);
             $patternhash = Pattern::getHashForParts($pattern);
             $subkey      = SubKey::getIniPartCacheSubKey($patternhash);
+            var_dump(__CLASS__ . '::' . __FUNCTION__, $pattern, $patternhash, $subkey);
 
             if (!isset($contents[$subkey])) {
                 $contents[$subkey] = array();
@@ -115,7 +117,7 @@ class IniParser
         $subkeys = array_flip(SubKey::getAllIniPartCacheSubKeys());
         foreach ($contents as $subkey => $content) {
             $subkey = (string) $subkey;
-
+            var_dump(__CLASS__ . '::' . __FUNCTION__, $subkey, $content);
             yield array($subkey => $content);
 
             unset($subkeys[$subkey]);
@@ -160,6 +162,7 @@ class IniParser
         foreach ($matches[0] as $pattern) {
             $patternhash = Pattern::getHashForPattern($pattern, false);
             $tmpLength   = Pattern::getPatternLength($pattern);
+            var_dump(__CLASS__ . '::' . __FUNCTION__, $pattern, $patternhash);
 
             // special handling of default entry
             if ($tmpLength === 0) {
@@ -200,7 +203,7 @@ class IniParser
             }
 
             $subkey = SubKey::getPatternCacheSubkey($patternhash);
-
+            var_dump(__CLASS__ . '::' . __FUNCTION__, $patternhash, $subkey);
             if (!isset($contents[$subkey])) {
                 $contents[$subkey] = array();
             }
@@ -212,15 +215,16 @@ class IniParser
                 );
 
                 $contents[$subkey][] = $patternhash.' '.$tmpJoinPatterns;
+                var_dump(__CLASS__ . '::' . __FUNCTION__, $subkey, $patternhash.' '.$tmpJoinPatterns);
             }
         }
 
         unset($data);
 
-        $subkeys = array_flip(SubKey::getAllPatternCacheSubkeys());
+        $subkeys = SubKey::getAllPatternCacheSubkeys();
         foreach ($contents as $subkey => $content) {
             $subkey = (string) $subkey;
-
+            var_dump(__CLASS__ . '::' . __FUNCTION__, $subkey, $content);
             yield array($subkey => $content);
 
             unset($subkeys[$subkey]);
