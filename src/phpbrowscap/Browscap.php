@@ -612,78 +612,56 @@ class Browscap
             'Parent'
         );
 
-        $tmp_user_agents = array_keys($browsers);
+        $tmpUserAgents = array_keys($browsers);
 
         if (!$actLikeNewVersion) {
-            usort($tmp_user_agents, array($this, 'compareBcStrings'));
+            usort($tmpUserAgents, array($this, 'compareBcStrings'));
         }
 
-        $user_agents_keys = array_flip($tmp_user_agents);
-        $properties_keys  = array_flip($this->_properties);
-        $tmp_patterns     = array();
+        $userAgentsKeys = array_flip($tmpUserAgents);
+        $propertiesKeys = array_flip($this->_properties);
+        $tmpPatterns    = array();
 
-        foreach ($tmp_user_agents as $i => $user_agent) {
+        foreach ($tmpUserAgents as $i => $userAgent) {
+            $properties = $browsers[$userAgent];
 
-            if (empty($browsers[$user_agent]['Comment']) || false !== strpos($user_agent, '*') || false !== strpos(
-                    $user_agent,
-                    '?'
-                )
+            if (empty($properties['Comment'])
+                || false !== strpos($userAgent, '*')
+                || false !== strpos($userAgent, '?')
             ) {
-                $pattern = $this->_pregQuote($user_agent);
+                $pattern = $this->_pregQuote($userAgent);
 
                 $matches_count = preg_match_all('@\d@', $pattern, $matches);
 
                 if (!$matches_count) {
-                    $tmp_patterns[$pattern] = $i;
+                    $tmpPatterns[$pattern] = $i;
                 } else {
                     $compressed_pattern = preg_replace('@\d@', '(\d)', $pattern);
 
-                    if (!isset($tmp_patterns[$compressed_pattern])) {
-                        $tmp_patterns[$compressed_pattern] = array('first' => $pattern);
+                    if (!isset($tmpPatterns[$compressed_pattern])) {
+                        $tmpPatterns[$compressed_pattern] = array('first' => $pattern);
                     }
 
-                    $tmp_patterns[$compressed_pattern][$i] = $matches[0];
+                    $tmpPatterns[$compressed_pattern][$i] = $matches[0];
                 }
             }
 
-            if (!empty($browsers[$user_agent]['Parent'])) {
-                $parent = $browsers[$user_agent]['Parent'];
+            if (!empty($properties['Parent'])) {
+                $parent = $properties['Parent'];
 
-                $parent_key = $user_agents_keys[$parent];
+                $parentKey = $userAgentsKeys[$parent];
 
-                $browsers[$user_agent]['Parent']       = $parent_key;
-                $this->_userAgents[$parent_key . '.0'] = $tmp_user_agents[$parent_key];
+                $properties['Parent']                 = $parentKey;
+                $this->_userAgents[$parentKey . '.0'] = $tmpUserAgents[$parentKey];
             };
 
-            $browser = array();
-            foreach ($browsers[$user_agent] as $propertyName => $propertyValue) {
-                if (!isset($properties_keys[$propertyName])) {
-                    continue;
-                }
-
-                $browser[$properties_keys[$propertyName]] = $propertyValue;
-            }
-
-            $this->_browsers[] = $browser;
+            $this->_browsers[] = $this->resortProperties($properties, $propertiesKeys);
         }
 
         // reducing memory usage by unsetting $tmp_user_agents
-        unset($tmp_user_agents);
+        unset($tmpUserAgents);
 
-        foreach ($tmp_patterns as $pattern => $pattern_data) {
-            if (is_int($pattern_data)) {
-                $this->_patterns[$pattern] = $pattern_data;
-            } elseif (2 == count($pattern_data)) {
-                end($pattern_data);
-                $this->_patterns[$pattern_data['first']] = key($pattern_data);
-            } else {
-                unset($pattern_data['first']);
-
-                $pattern_data = $this->deduplicateCompressionPattern($pattern_data, $pattern);
-
-                $this->_patterns[$pattern] = $pattern_data;
-            }
-        }
+        $this->_patterns = $this->deduplicatePattern($tmpPatterns);
     }
 
     /**
@@ -695,39 +673,39 @@ class Browscap
      */
     protected function createCacheNewWay($iniContent)
     {
-        $matches           = array();
-        $pattern_positions = array();
+        $matches          = array();
+        $patternPositions = array();
 
         // get all patterns from the ini file in the correct order,
         // so that we can calculate with index number of the resulting array,
         // which part to use when the ini file is split into its sections.
-        preg_match_all('/(?<=\[)(?:[^\r\n]+)(?=\])/m', $iniContent, $pattern_positions);
+        preg_match_all('/(?<=\[)(?:[^\r\n]+)(?=\])/m', $iniContent, $patternPositions);
 
-        if (!isset($pattern_positions[0])) {
+        if (!isset($patternPositions[0])) {
             throw new Exception('could not extract patterns from ini file');
         }
 
-        $pattern_positions = $pattern_positions[0];
+        $patternPositions = $patternPositions[0];
 
-        if (!count($pattern_positions)) {
+        if (!count($patternPositions)) {
             throw new Exception('no patterns were found inside the ini file');
         }
 
         // split the ini file into sections and save the data in one line with a hash of the belonging
         // pattern (filtered in the previous step)
-        $ini_parts        = preg_split('/\[[^\r\n]+\]/', $iniContent);
-        $tmp_patterns     = array();
-        $properties_keys  = array();
-        $user_agents_keys = array_flip($pattern_positions);
+        $iniParts       = preg_split('/\[[^\r\n]+\]/', $iniContent);
+        $tmpPatterns    = array();
+        $propertiesKeys = array();
+        $userAgentsKeys = array_flip($patternPositions);
 
-        foreach ($pattern_positions as $position => $user_agent) {
-            if ('GJK_Browscap_Version' === $user_agent) {
+        foreach ($patternPositions as $position => $userAgent) {
+            if ('GJK_Browscap_Version' === $userAgent) {
                 continue;
             }
 
-            $properties = parse_ini_string($ini_parts[($position + 1)], true, INI_SCANNER_RAW);
+            $properties = parse_ini_string($iniParts[($position + 1)], true, INI_SCANNER_RAW);
 
-            if ('DefaultProperties' === $user_agent) {
+            if ('DefaultProperties' === $userAgent) {
                 $this->_properties = array_keys($properties);
 
                 array_unshift(
@@ -738,65 +716,94 @@ class Browscap
                     'Parent'
                 );
 
-                $properties_keys = array_flip($this->_properties);
+                $propertiesKeys = array_flip($this->_properties);
             }
 
             if (empty($properties['Comment'])
-                || false !== strpos($user_agent, '*')
-                || false !== strpos($user_agent, '?')
+                || false !== strpos($userAgent, '*')
+                || false !== strpos($userAgent, '?')
             ) {
-                $pattern       = $this->_pregQuote($user_agent);
+                $pattern       = $this->_pregQuote($userAgent);
                 $matches_count = preg_match_all('@\d@', $pattern, $matches);
                 $i             = $position - 1;
 
                 if (!$matches_count) {
-                    $tmp_patterns[$pattern] = $i;
+                    $tmpPatterns[$pattern] = $i;
                 } else {
-                    $compressed_pattern = preg_replace('@\d@', '(\d)', $pattern);
+                    $compressedPattern = preg_replace('@\d@', '(\d)', $pattern);
 
-                    if (!isset($tmp_patterns[$compressed_pattern])) {
-                        $tmp_patterns[$compressed_pattern] = array('first' => $pattern);
+                    if (!isset($tmpPatterns[$compressedPattern])) {
+                        $tmpPatterns[$compressedPattern] = array('first' => $pattern);
                     }
 
-                    $tmp_patterns[$compressed_pattern][$i] = $matches[0];
+                    $tmpPatterns[$compressedPattern][$i] = $matches[0];
                 }
             }
 
             if (!empty($properties['Parent'])) {
-                $parent = $properties['Parent'];
+                $parent    = $properties['Parent'];
+                $parentKey = $userAgentsKeys[$parent];
 
-                $parent_key = $user_agents_keys[$parent];
-
-                $properties['Parent']                        = $parent_key - 1;
-                $this->_userAgents[($parent_key - 1) . '.0'] = $pattern_positions[$parent_key];
+                $properties['Parent']                       = $parentKey - 1;
+                $this->_userAgents[($parentKey - 1) . '.0'] = $patternPositions[$parentKey];
             };
 
-            $browser = array();
-            foreach ($properties as $propertyName => $propertyValue) {
-                if (!isset($properties_keys[$propertyName])) {
-                    continue;
-                }
+            $this->_browsers[] = $this->resortProperties($properties, $propertiesKeys);
 
-                $browser[$properties_keys[$propertyName]] = $propertyValue;
-            }
-
-            $this->_browsers[] = $browser;
+            unset($position, $userAgent);
         }
 
-        foreach ($tmp_patterns as $pattern => $pattern_data) {
-            if (is_int($pattern_data)) {
-                $this->_patterns[$pattern] = $pattern_data;
-            } elseif (2 == count($pattern_data)) {
-                end($pattern_data);
-                $this->_patterns[$pattern_data['first']] = key($pattern_data);
+        $this->_patterns = $this->deduplicatePattern($tmpPatterns);
+    }
+
+    /**
+     * @param array $properties
+     * @param array $propertiesKeys
+     *
+     * @return array
+     */
+    protected function resortProperties(array $properties, array $propertiesKeys)
+    {
+        $browser = array();
+
+        foreach ($properties as $propertyName => $propertyValue) {
+            if (!isset($propertiesKeys[$propertyName])) {
+                continue;
+            }
+
+            $browser[$propertiesKeys[$propertyName]] = $propertyValue;
+        }
+
+        return $browser;
+    }
+
+    /**
+     * @param array $tmpPatterns
+     *
+     * @return array
+     */
+    protected function deduplicatePattern(array $tmpPatterns)
+    {
+        $patternList = array();
+
+        foreach ($tmpPatterns as $pattern => $patternData) {
+            if (is_int($patternData)) {
+                $data = $patternData;
+            } elseif (2 == count($patternData)) {
+                end($patternData);
+
+                $pattern = $patternData['first'];
+                $data    = key($patternData);
             } else {
-                unset($pattern_data['first']);
+                unset($patternData['first']);
 
-                $pattern_data = $this->deduplicateCompressionPattern($pattern_data, $pattern);
-
-                $this->_patterns[$pattern] = $pattern_data;
+                $data = $this->deduplicateCompressionPattern($patternData, $pattern);
             }
+
+            $patternList[self::REGEX_DELIMITER . '^' . $pattern . '$' . self::REGEX_DELIMITER] = $data;
         }
+
+        return $patternList;
     }
 
     /**
@@ -891,11 +898,11 @@ class Browscap
 
         // the \\x replacement is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
 
-        return self::REGEX_DELIMITER . '^' . str_replace(
+        return str_replace(
             array('\*', '\?', '\\x'),
             array('.*', '.', '\\\\x'),
             $pattern
-        ) . '$' . self::REGEX_DELIMITER;
+        );
     }
 
     /**
@@ -909,7 +916,8 @@ class Browscap
     protected function _pregUnQuote($pattern, $matches)
     {
         // list of escaped characters: http://www.php.net/manual/en/function.preg-quote.php
-        // to properly unescape '?' which was changed to '.', I replace '\.' (real dot) with '\?', then change '.' to '?' and then '\?' to '.'.
+        // to properly unescape '?' which was changed to '.', I replace '\.' (real dot) with '\?',
+        // then change '.' to '?' and then '\?' to '.'.
         $search  = array(
             '\\' . self::REGEX_DELIMITER,
             '\\.',
@@ -1009,7 +1017,7 @@ class Browscap
     /**
      * Parses the array to cache and writes the resulting PHP string to disk
      *
-     * @param ressource $fileRes File ressource to write to
+     * @param resource $fileRes File ressource to write to
      *
      * @return boolean False on write error, true otherwise
      */
@@ -1216,8 +1224,8 @@ class Browscap
      * var_export one as the internal PHP function does not strip whitespace or
      * convert strings to numbers.
      *
-     * @param array     $array   the array to parse and convert
-     * @param ressource $fileRes Ressource to write the parsed string to
+     * @param array    $array   the array to parse and convert
+     * @param resource $fileRes Ressource to write the parsed string to
      *
      * @return boolean False on write error, true otherwise
      */

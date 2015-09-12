@@ -8,3 +8,5 @@ composer.lock
 resources/
 PHP_BrowscapINI
 ergebnis.txt
+tests/data/*
+!tests/data/testdata.ini
