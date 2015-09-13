@@ -164,7 +164,11 @@ class BrowscapCache
         $success = null;
         $data    = $this->getCacheAdapter()->getItem($cacheId, $success);
 
-        $success = true;
+        if (!isset($data['content'])) {
+            $success = false;
+
+            return null;
+        }
 
         return unserialize($data['content']);
     }
@@ -182,7 +186,7 @@ class BrowscapCache
     {
         // Get the whole PHP code
         $data = array(
-            'content'      => serialize($content),
+            'content' => serialize($content),
         );
 
         if ($withVersion) {

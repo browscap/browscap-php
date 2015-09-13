@@ -8,3 +8,4 @@ phpunit.xml
 composer.lock
 PHP_BrowscapINI
 resources
+ergebnis.txt

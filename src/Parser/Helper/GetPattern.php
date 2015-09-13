@@ -54,7 +54,11 @@ class GetPattern implements GetPatternInterface
      */
     private $cache = null;
 
-    /** @var \Psr\Log\LoggerInterface */
+    /**
+     * a logger instance
+     *
+     * @var \Psr\Log\LoggerInterface
+     */
     private $logger = null;
 
     /**
@@ -123,21 +127,30 @@ class GetPattern implements GetPatternInterface
 
         // add special key to fall back to the default browser
         $starts[] = str_repeat('z', 32);
+        var_dump(__CLASS__ . '::' . __FUNCTION__, $userAgent, $starts);
 
         // get patterns, first for the given browser and if that is not found,
         // for the default browser (with a special key)
         foreach ($starts as $tmpStart) {
             $tmpSubkey = SubKey::getPatternCacheSubkey($tmpStart);
+            var_dump(__CLASS__ . '::' . __FUNCTION__, $tmpSubkey);
+            if (!$this->getCache()->hasItem('browscap.patterns.'.$tmpSubkey, true)) {
+                var_dump(__CLASS__ . '::' . __FUNCTION__, 'pattern not found for subkey ' . $tmpSubkey);
+                $this->getLogger()->debug('cache key "browscap.patterns.'.$tmpSubkey.'" not found');
+                continue;
+            }
             $success   = null;
 
             $file = $this->getCache()->getItem('browscap.patterns.'.$tmpSubkey, true, $success);
 
             if (!$success) {
+                var_dump(__CLASS__ . '::' . __FUNCTION__, 'pattern not found for subkey ' . $tmpSubkey . ' (2)');
                 $this->getLogger()->debug('cache key "browscap.patterns.'.$tmpSubkey.'" not found');
                 continue;
             }
 
             if (!is_array($file) || !count($file)) {
+                var_dump(__CLASS__ . '::' . __FUNCTION__, 'pattern was empty for subkey ' . $tmpSubkey . ' type: ' . gettype($file));
                 $this->getLogger()->debug('cache key "browscap.patterns.'.$tmpSubkey.'" was empty');
                 continue;
             }
@@ -146,6 +159,7 @@ class GetPattern implements GetPatternInterface
 
             foreach ($file as $buffer) {
                 $tmpBuffer = substr($buffer, 0, 32);
+
                 if ($tmpBuffer === $tmpStart) {
                     // get length of the pattern
                     $len = (int) strstr(substr($buffer, 33, 4), ' ', true);

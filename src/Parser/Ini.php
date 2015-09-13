@@ -184,10 +184,10 @@ class Ini implements ParserInterface
         $formatter = null;
 
         foreach ($this->getHelper()->getPatterns($userAgent) as $patterns) {
-            var_dump(__CLASS__ . '::' . __FUNCTION__, $userAgent, $patterns);
+            //var_dump(__CLASS__ . '::' . __FUNCTION__, $userAgent, $patterns);
             $patternToMatch = '/^(?:'.str_replace("\t", ')|(?:', $patterns).')$/i';
-            print_r($userAgent . "\n");
-            print_r($patternToMatch . "\n");
+            //print_r($userAgent . "\n");
+            //print_r($patternToMatch . "\n");continue;
 
             if (!preg_match($patternToMatch, $userAgent)) {var_dump(__CLASS__ . '::' . __FUNCTION__, 'pattern not found');
                 continue;
@@ -199,8 +199,11 @@ class Ini implements ParserInterface
             while ($pattern !== false) {
                 $pattern       = str_replace('[\d]', '(\d)', $pattern);
                 $quotedPattern = '/^' . $pattern . '$/i';
+                $matches       = array();
 
                 if (preg_match($quotedPattern, $userAgent, $matches)) {
+                    var_dump(__CLASS__ . '::' . __FUNCTION__, 1, "$pattern matched", $quotedPattern);
+
                     // Insert the digits back into the pattern, so that we can search the settings for it
                     if (count($matches) > 1) {
                         array_shift($matches);
@@ -213,9 +216,8 @@ class Ini implements ParserInterface
                     // Try to get settings - as digits have been replaced to speed up the pattern search (up to 90 faster),
                     // we won't always find the data in the first step - so check if settings have been found and if not,
                     // search for the next pattern.
-                    var_dump(__CLASS__ . '::' . __FUNCTION__, $pattern);
                     $settings = $this->getSettings($pattern);
-                    var_dump(__CLASS__ . '::' . __FUNCTION__, $pattern, $settings);
+                    var_dump(__CLASS__ . '::' . __FUNCTION__, 2, $userAgent, $pattern, $settings);
                     if (count($settings) > 0) {
                         $formatter = $this->getFormatter();
                         $formatter->setData($settings);
@@ -293,8 +295,10 @@ class Ini implements ParserInterface
         $pattern     = strtolower($pattern);
         $patternhash = Pattern::getHashForParts($pattern);
         $subkey      = SubKey::getIniPartCacheSubKey($patternhash);
-
+        var_dump(__CLASS__ . '::' . __FUNCTION__, $pattern, $patternhash, $subkey);
         if (!$this->getCache()->hasItem('browscap.iniparts.'.$subkey, true)) {
+            $this->getLogger()->debug('cache key "browscap.iniparts.'.$subkey.'" not found');
+            var_dump(__CLASS__ . '::' . __FUNCTION__, 'settings not found for subkey ' . $subkey);
             return array();
         }
 
@@ -302,6 +306,14 @@ class Ini implements ParserInterface
         $file    = $this->getCache()->getItem('browscap.iniparts.'.$subkey, true, $success);
 
         if (!$success) {
+            $this->getLogger()->debug('cache key "browscap.iniparts.'.$subkey.'" not found');
+            var_dump(__CLASS__ . '::' . __FUNCTION__, 'cache key "browscap.iniparts.'.$subkey.'" not found (2)');
+            return array();
+        }
+
+        if (!is_array($file) || !count($file)) {
+            $this->getLogger()->debug('cache key "browscap.iniparts.'.$subkey.'" was empty');
+            var_dump(__CLASS__ . '::' . __FUNCTION__, 'cache key "browscap.iniparts.'.$subkey.'" was empty type:' . gettype($file));
             return array();
         }
 

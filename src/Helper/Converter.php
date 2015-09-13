@@ -187,12 +187,22 @@ class Converter
     {
         $iniParser = new IniParser();
 
+        list($patterns, $browsers, $contents) = $iniParser->createCacheNewWay($iniString);
+        print_r($contents);
+        print_r($patterns);
+        print_r($browsers);
+        exit;
+
         $this->getLogger()->info('start creating patterns from the ini data');
 
         foreach ($iniParser->createPatterns($iniString) as $patternsHashList) {
             var_dump(__CLASS__ . '::' . __FUNCTION__, $patternsHashList);
+            print_r($patternsHashList);
             foreach ($patternsHashList as $subkey => $content) {
-                $this->cache->setItem('browscap.patterns.' . $subkey, $content, true);
+                if (!$this->cache->setItem('browscap.patterns.' . $subkey, $content, true)) {
+                    var_dump(__CLASS__ . '::' . __FUNCTION__, 'could not write pattern data "' . $subkey . '" to the cache');
+                    $this->getLogger()->error('could not write pattern data "' . $subkey . '" to the cache');
+                }
             }
         }
 
@@ -202,8 +212,12 @@ class Converter
 
         foreach ($iniParser->createIniParts($iniString) as $patternsContentList) {
             var_dump(__CLASS__ . '::' . __FUNCTION__, $patternsContentList);
+            print_r($patternsContentList);
             foreach ($patternsContentList as $subkey => $content) {
-                $this->getCache()->setItem('browscap.iniparts.' . $subkey, $content, true);
+                if (!$this->getCache()->setItem('browscap.iniparts.' . $subkey, $content, true)) {
+                    var_dump(__CLASS__ . '::' . __FUNCTION__, 'could not write property data "' . $subkey . '" to the cache');
+                    $this->getLogger()->error('could not write property data "' . $subkey . '" to the cache');
+                }
             }
         }
 

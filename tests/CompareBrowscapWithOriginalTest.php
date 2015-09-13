@@ -87,6 +87,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 
         $cacheAdapter = new Memory();
         $cache        = new BrowscapCache($cacheAdapter);
+        $cache->flush();
 
         self::$object
             ->setCache($cache)
@@ -94,6 +95,9 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         ;
     }
 
+    /**
+     * @group compare
+     */
     public function testCheckProperties()
     {
         $libProperties = get_object_vars(get_browser('x'));
@@ -138,6 +142,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider providerUserAgent
      * @depends testCheckProperties
+     * @group compare
      *
      * @param string $userAgent
      */
@@ -180,6 +185,10 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
     public function providerUserAgent()
     {
         return array(
+            array('Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.68 Safari/537.36'),
+        );
+        /*
+        return array(
             array('BlackBerry7100i/4.1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/103'),
             array('check_http/v1.4.15 (nagios-plugins 1.4.15)'),
             array('facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'),
@@ -221,5 +230,6 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             array('Der gro\\xdfe BilderSauger 2.00u'),
             array('\\x22Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)\\x22'),
         );
+        /**/
     }
 }
