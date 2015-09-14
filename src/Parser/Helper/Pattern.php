@@ -69,14 +69,15 @@ class Pattern
      */
     public static function getHashForPattern($pattern, $variants = false)
     {
-        $regex   = '/^([^\*\?\s\r\n\\\\]+).*$/';
+        $regex   = '/^([^\.\*\?\s\r\n\\\\]+).*$/';
         $pattern = substr($pattern, 0, 32);
+        $matches = array();
 
-        if (!preg_match($regex, $pattern)) {
+        if (!preg_match($regex, $pattern, $matches) || !isset($matches[1])) {
             return ($variants ? array(md5('')) : md5(''));
         }
 
-        $string = preg_replace($regex, '\\1', $pattern);
+        $string = $matches[1];
 
         if (true === $variants) {
             $patternStarts = array();
