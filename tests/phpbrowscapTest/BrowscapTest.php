@@ -338,7 +338,7 @@ class BrowscapTest
 
         $browscap = new Browscap($cacheDir);
 
-        $expected = '@^Mozilla/.\.0 \(compatible; Ask Jeeves/Teoma.*\)$@';
+        $expected = 'Mozilla/.\.0 \(compatible; Ask Jeeves/Teoma.*\)';
 
         self::assertSame($expected, $method->invoke($browscap, 'Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)'));
     }

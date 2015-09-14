@@ -121,7 +121,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $libPropertyKeys = array_map('strtolower', array_keys($libProperties));
         $bcPropertyKeys  = array_map('strtolower', array_keys($bcProperties));
 
-        self::assertSame($libPropertyKeys, $bcPropertyKeys);
+        self::assertEquals($libPropertyKeys, $bcPropertyKeys);
 
         foreach (array_keys($bcProperties) as $bcProp) {
             self::assertArrayHasKey(
