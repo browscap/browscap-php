@@ -116,8 +116,6 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         unset($bcProperties['Parents']);
         unset($bcProperties['browser_name']);
         unset($libProperties['browser_name']);
-        //unset($libProperties['renderingengine_description']);
-        //unset($bcProperties['renderingengine_description']);
 
         $libPropertyKeys = array_map('strtolower', array_keys($libProperties));
         $bcPropertyKeys  = array_map('strtolower', array_keys($bcProperties));
@@ -171,7 +169,9 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             self::assertSame(
                 $libValue,
                 $bcValue,
-                $bcProp . ': ' . $libValue . ' != ' . $bcValue
+                'Expected actual "' . $bcProp . '" to be "' . (string) $libValue . '" (was "'
+                . (string) $bcValue
+                . '"; used pattern: ' . (string) $bcResult->browser_name_pattern .')'
             );
         }
     }
