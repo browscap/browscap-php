@@ -116,7 +116,8 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         unset($bcProperties['Parents']);
         unset($bcProperties['browser_name']);
         unset($libProperties['browser_name']);
-        unset($libProperties['renderingengine_description']);
+        //unset($libProperties['renderingengine_description']);
+        //unset($bcProperties['renderingengine_description']);
 
         $libPropertyKeys = array_map('strtolower', array_keys($libProperties));
         $bcPropertyKeys  = array_map('strtolower', array_keys($bcProperties));
