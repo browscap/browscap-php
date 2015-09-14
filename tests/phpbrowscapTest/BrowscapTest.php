@@ -547,16 +547,16 @@ Type=',
         $newMethod->invoke($browscap, $content);
 
         $newProperties = $varProp->getValue($browscap);
-        self::assertEquals($properties, $newProperties);
+        self::assertSame($properties, $newProperties);
 
         $newBrowsers = $varBrow->getValue($browscap);
-        self::assertEquals($browsers, $newBrowsers);
+        self::assertSame($browsers, $newBrowsers);
 
         $newUserAgents = $varUas->getValue($browscap);
-        self::assertEquals($userAgents, $newUserAgents);
+        self::assertSame($userAgents, $newUserAgents);
 
         $newPatterns = $varPatt->getValue($browscap);
-        self::assertEquals($patterns, $newPatterns);
+        self::assertSame($patterns, $newPatterns);
     }
 
     public function dataCtreateCache()
