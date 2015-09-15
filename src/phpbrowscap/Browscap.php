@@ -586,10 +586,9 @@ class Browscap
 
     /**
      * creates the cache content
-
      *
-*@param string $iniContent The content of the downloaded ini file
-     * @param bool $actLikeNewVersion
+     * @param string $iniContent The content of the downloaded ini file
+     * @param bool   $actLikeNewVersion
      */
     protected function createCacheOldWay($iniContent, $actLikeNewVersion = false)
     {
@@ -614,9 +613,7 @@ class Browscap
 
         $tmpUserAgents = array_keys($browsers);
 
-        if (!$actLikeNewVersion) {
-            usort($tmpUserAgents, array($this, 'compareBcStrings'));
-        }
+        usort($tmpUserAgents, array($this, 'compareBcStrings'));
 
         $userAgentsKeys = array_flip($tmpUserAgents);
         $propertiesKeys = array_flip($this->_properties);
@@ -673,7 +670,6 @@ class Browscap
      */
     protected function createCacheNewWay($iniContent)
     {
-        $matches          = array();
         $patternPositions = array();
 
         // get all patterns from the ini file in the correct order,
@@ -699,35 +695,45 @@ class Browscap
         $userAgentsKeys = array_flip($patternPositions);
 
         foreach ($patternPositions as $position => $userAgent) {
+            if ('DefaultProperties' !== $userAgent) {
+                continue;
+            }
+
+            $properties = parse_ini_string($iniParts[($position + 1)], true, INI_SCANNER_RAW);
+
+            $this->_properties = array_keys($properties);
+
+            array_unshift(
+                $this->_properties,
+                'browser_name',
+                'browser_name_regex',
+                'browser_name_pattern',
+                'Parent'
+            );
+
+            $propertiesKeys = array_flip($this->_properties);
+            break;
+        }
+
+        uasort($patternPositions, array($this, 'compareBcStrings'));
+
+        foreach ($patternPositions as $position => $userAgent) {
             if ('GJK_Browscap_Version' === $userAgent) {
                 continue;
             }
 
             $properties = parse_ini_string($iniParts[($position + 1)], true, INI_SCANNER_RAW);
 
-            if ('DefaultProperties' === $userAgent) {
-                $this->_properties = array_keys($properties);
-
-                array_unshift(
-                    $this->_properties,
-                    'browser_name',
-                    'browser_name_regex',
-                    'browser_name_pattern',
-                    'Parent'
-                );
-
-                $propertiesKeys = array_flip($this->_properties);
-            }
-
             if (empty($properties['Comment'])
                 || false !== strpos($userAgent, '*')
                 || false !== strpos($userAgent, '?')
             ) {
-                $pattern       = $this->_pregQuote($userAgent);
-                $matches_count = preg_match_all('@\d@', $pattern, $matches);
-                $i             = $position - 1;
+                $pattern      = $this->_pregQuote($userAgent);
+                $matches      = array();
+                $countMatches = preg_match_all('@\d@', $pattern, $matches);
+                $i            = $position - 1;
 
-                if (!$matches_count) {
+                if (!$countMatches) {
                     $tmpPatterns[$pattern] = $i;
                 } else {
                     $compressedPattern = preg_replace('@\d@', '(\d)', $pattern);

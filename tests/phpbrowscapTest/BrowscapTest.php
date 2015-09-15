@@ -546,16 +546,16 @@ Type=',
 
         $newMethod->invoke($browscap, $content);
 
-        $newProperties = $varProp->getValue($browscap);
+        $newProperties = $varNewProp->getValue($browscap);
         self::assertSame($properties, $newProperties);
 
-        $newBrowsers = $varBrow->getValue($browscap);
+        $newBrowsers = $varNewBrow->getValue($browscap);
         self::assertSame($browsers, $newBrowsers);
 
-        $newUserAgents = $varUas->getValue($browscap);
+        $newUserAgents = $varNewUas->getValue($browscap);
         self::assertSame($userAgents, $newUserAgents);
 
-        $newPatterns = $varPatt->getValue($browscap);
+        $newPatterns = $varNewPatt->getValue($browscap);
         self::assertSame($patterns, $newPatterns);
     }
 
