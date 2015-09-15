@@ -550,7 +550,9 @@ Type=',
         self::assertSame($properties, $newProperties);
 
         $newBrowsers = $varNewBrow->getValue($browscap);
-        self::assertSame($browsers, $newBrowsers);
+        //print_r($browsers);
+        //print_r($newBrowsers);
+        self::assertEquals($browsers, $newBrowsers);
 
         $newUserAgents = $varNewUas->getValue($browscap);
         self::assertSame($userAgents, $newUserAgents);
