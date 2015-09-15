@@ -693,13 +693,10 @@ class Browscap
         $tmpPatterns    = array();
         $propertiesKeys = array();
         $userAgentsKeys = array_flip($patternPositions);
+        $matches        = array();
 
-        foreach ($patternPositions as $position => $userAgent) {
-            if ('DefaultProperties' !== $userAgent) {
-                continue;
-            }
-
-            $properties = parse_ini_string($iniParts[($position + 1)], true, INI_SCANNER_RAW);
+        if (preg_match('/.*\[DefaultProperties\]([^[]*).*/', $iniContent, $matches)) {
+            $properties = parse_ini_string($matches[1], true, INI_SCANNER_RAW);
 
             $this->_properties = array_keys($properties);
 
@@ -712,7 +709,6 @@ class Browscap
             );
 
             $propertiesKeys = array_flip($this->_properties);
-            break;
         }
 
         uasort($patternPositions, array($this, 'compareBcStrings'));
