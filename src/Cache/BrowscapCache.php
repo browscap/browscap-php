@@ -114,7 +114,7 @@ class BrowscapCache
     public function getVersion()
     {
         if ($this->version === null) {
-            $success = null;
+            $success = true;
 
             $version = $this->getItem('browscap.version', false, $success);
 

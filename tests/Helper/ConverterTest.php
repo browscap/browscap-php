@@ -425,7 +425,7 @@ AolVersion=0
             ->method('exists')
             ->will(self::returnValue(false));
 
-        $logger = $this->getMock('\Monolog\Logger', array('info'), array(), '', false);
+        $logger = $this->getMock('\Monolog\Logger', array('info'), array(), '');
         $logger->expects(self::exactly(4))
             ->method('info')
             ->will(self::returnValue(false));

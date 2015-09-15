@@ -103,10 +103,6 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetVersionCached()
     {
-        $data = array(
-            'content'      => serialize(42)
-        );
-
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem'), array(), '', false);
         $adapter
             ->expects(self::once())
@@ -116,11 +112,32 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
         $adapter
             ->expects(self::once())
             ->method('getItem')
-            ->will(self::returnValue($data))
+            ->will(self::returnCallback(array($this, 'return42')))
         ;
 
         $this->object->setCacheAdapter($adapter);
         self::assertSame(42, $this->object->getVersion());
+    }
+
+    public function return42($cacheId, & $success = null)
+    {
+        $success = true;
+
+        switch ($cacheId) {
+            case 'test.42':
+                $data = array(
+                    'content' => serialize('this is a test')
+                );
+                break;
+            case 'browscap.version':
+            case 'test':
+            default:
+                $data = array(
+                    'content' => serialize(42)
+                );
+        }
+
+        return $data;
     }
 
     /**
@@ -151,10 +168,6 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetItemCached()
     {
-        $data = array(
-            'content'      => serialize(42)
-        );
-
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem'), array(), '', false);
         $adapter
             ->expects(self::once())
@@ -164,7 +177,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
         $adapter
             ->expects(self::once())
             ->method('getItem')
-            ->will(self::returnValue($data))
+            ->will(self::returnCallback(array($this, 'return42')))
         ;
 
         $this->object->setCacheAdapter($adapter);
@@ -178,23 +191,6 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetItemCachedWithVersion()
     {
-        $map = array(
-            array(
-                'browscap.version',
-                null,
-                array(
-                    'content'      => serialize(42)
-                )
-            ),
-            array(
-                'test.42',
-                null,
-                array(
-                    'content'      => serialize('this is a test')
-                )
-            )
-        );
-
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem'), array(), '', false);
         $adapter
             ->expects(self::exactly(2))
@@ -204,7 +200,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
         $adapter
             ->expects(self::exactly(2))
             ->method('getItem')
-            ->will(self::returnValueMap($map))
+            ->will(self::returnCallback(array($this, 'return42')))
         ;
 
         $this->object->setCacheAdapter($adapter);
@@ -234,10 +230,6 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
      */
     public function testHasItemCachedWithVersion()
     {
-        $data = array(
-            'content'      => serialize(42)
-        );
-
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem'), array(), '', false);
         $adapter
             ->expects(self::exactly(2))
@@ -247,7 +239,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
         $adapter
             ->expects(self::once())
             ->method('getItem')
-            ->will(self::returnValue($data))
+            ->will(self::returnCallback(array($this, 'return42')))
         ;
 
         $this->object->setCacheAdapter($adapter);
@@ -259,10 +251,6 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetItemWithVersion()
     {
-        $data = array(
-            'content'      => serialize(42)
-        );
-
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem', 'setItem'), array(), '', false);
         $adapter
             ->expects(self::once())
@@ -272,7 +260,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
         $adapter
             ->expects(self::once())
             ->method('getItem')
-            ->will(self::returnValue($data))
+            ->will(self::returnCallback(array($this, 'return42')))
         ;
         $adapter
             ->expects(self::once())
@@ -289,10 +277,6 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
      */
     public function testRemoveItemWithVersion()
     {
-        $data = array(
-            'content'      => serialize(42)
-        );
-
         $adapter = $this->getMock('\WurflCache\Adapter\Memcache', array('hasItem', 'getItem', 'removeItem'), array(), '', false);
         $adapter
             ->expects(self::once())
@@ -302,7 +286,7 @@ class BrowscapCacheTest extends \PHPUnit_Framework_TestCase
         $adapter
             ->expects(self::once())
             ->method('getItem')
-            ->will(self::returnValue($data))
+            ->will(self::returnCallback(array($this, 'return42')))
         ;
         $adapter
             ->expects(self::once())

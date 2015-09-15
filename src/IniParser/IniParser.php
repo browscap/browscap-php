@@ -95,11 +95,9 @@ class IniParser
         $propertyFormatter->setPropertyHolder($propertyHolder);
 
         foreach ($patternpositions as $position => $pattern) {
-            //var_dump(__CLASS__ . '::' . __FUNCTION__, $pattern);
             $pattern     = strtolower($pattern);
             $patternhash = Pattern::getHashForParts($pattern);
             $subkey      = SubKey::getIniPartCacheSubKey($patternhash);
-            var_dump(__CLASS__ . '::' . __FUNCTION__, $pattern, $patternhash, $subkey);
 
             if (!isset($contents[$subkey])) {
                 $contents[$subkey] = array();
@@ -116,7 +114,7 @@ class IniParser
 
             // the position has to be moved by one, because the header of the ini file
             // is also returned as a part
-            $contents[$subkey][] = $patternhash.json_encode(
+            $contents[$subkey][] = $patternhash . "\t" . json_encode(
                 $browserProperties,
                 JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
             );
@@ -128,7 +126,7 @@ class IniParser
         $subkeys = array_flip(SubKey::getAllIniPartCacheSubKeys());
         foreach ($contents as $subkey => $content) {
             $subkey = (string) $subkey;
-            //var_dump(__CLASS__ . '::' . __FUNCTION__, $subkey, $content);
+
             yield array($subkey => $content);
 
             unset($subkeys[$subkey]);
@@ -165,12 +163,14 @@ class IniParser
         }
 
         $quoterHelper = new Quoter();
+        $matches      = $matches[0];
+        usort($matches, array($this, 'compareBcStrings'));
 
         // build an array to structure the data. this requires some memory, but we need this step to be able to
         // sort the data in the way we need it (see below).
         $data = array();
 
-        foreach ($matches[0] as $pattern) {
+        foreach ($matches as $pattern) {
             if ('GJK_Browscap_Version' === $pattern) {
                 continue;
             }
@@ -218,7 +218,7 @@ class IniParser
             }
 
             $subkey = SubKey::getPatternCacheSubkey($patternhash);
-            var_dump(__CLASS__ . '::' . __FUNCTION__, $patternhash, $subkey);
+
             if (!isset($contents[$subkey])) {
                 $contents[$subkey] = array();
             }
@@ -229,8 +229,7 @@ class IniParser
                     array_slice($tmpPatterns, ($i * self::COUNT_PATTERN), self::COUNT_PATTERN)
                 );
 
-                $contents[$subkey][] = $patternhash.' '.$tmpJoinPatterns;
-                var_dump(__CLASS__ . '::' . __FUNCTION__, $subkey, $patternhash.' '.$tmpJoinPatterns);
+                $contents[$subkey][] = $patternhash . "\t" . $tmpJoinPatterns;
             }
         }
 
@@ -239,7 +238,7 @@ class IniParser
         $subkeys = SubKey::getAllPatternCacheSubkeys();
         foreach ($contents as $subkey => $content) {
             $subkey = (string) $subkey;
-            var_dump(__CLASS__ . '::' . __FUNCTION__, $subkey, $content);
+
             yield array($subkey => $content);
 
             unset($subkeys[$subkey]);
@@ -253,195 +252,35 @@ class IniParser
     }
 
     /**
-     * creates the cache content
+     * @param string $a
+     * @param string $b
      *
-     * @param string $iniContent The content of the downloaded ini file
-     *
-     * @return array
-     * @throws \UnexpectedValueException
+     * @return int
      */
-    public function createCacheNewWay($iniContent)
+    private function compareBcStrings($a, $b)
     {
-        $matches          = array();
-        $patternPositions = array();
+        $a_len = strlen($a);
+        $b_len = strlen($b);
 
-        // get all patterns from the ini file in the correct order,
-        // so that we can calculate with index number of the resulting array,
-        // which part to use when the ini file is split into its sections.
-        preg_match_all('/(?<=\[)(?:[^\r\n]+)(?=\])/m', $iniContent, $patternPositions);
-
-        if (!isset($patternPositions[0])) {
-            throw new \UnexpectedValueException('could not extract patterns from ini file');
+        if ($a_len > $b_len) {
+            return -1;
         }
 
-        $patternPositions = $patternPositions[0];
-
-        if (!count($patternPositions)) {
-            throw new \UnexpectedValueException('no patterns were found inside the ini file');
+        if ($a_len < $b_len) {
+            return 1;
         }
 
-        // split the ini file into sections and save the data in one line with a hash of the belonging
-        // pattern (filtered in the previous step)
-        $iniParts    = preg_split('/\[[^\r\n]+\]/', $iniContent);
-        $tmpPatterns = array();
-        $browsers    = array();
+        $a_len = strlen(str_replace(array('*', '?'), '', $a));
+        $b_len = strlen(str_replace(array('*', '?'), '', $b));
 
-        $quoterHelper = new Quoter();
-
-        foreach ($patternPositions as $position => $userAgent) {
-            if ('GJK_Browscap_Version' === $userAgent) {
-                continue;
-            }
-
-            $properties = parse_ini_string($iniParts[($position + 1)], true, INI_SCANNER_RAW);
-
-            if (empty($properties['Comment'])
-                || false !== strpos($userAgent, '*')
-                || false !== strpos($userAgent, '?')
-            ) {
-                $pattern      = $quoterHelper->pregQuote($userAgent, self::REGEX_DELIMITER);
-                $matchesCount = preg_match_all('@\d@', $pattern, $matches);
-
-                if (!$matchesCount) {
-                    $tmpPatterns[$pattern] = $userAgent;
-                } else {
-                    $compressedPattern = preg_replace('@\d@', '(\d)', $pattern);
-
-                    if (!isset($tmpPatterns[$compressedPattern])) {
-                        $tmpPatterns[$compressedPattern] = array('first' => $pattern);
-                    }
-
-                    $tmpPatterns[$compressedPattern][$userAgent] = $matches[0];
-                }
-            }
-
-            $browsers[$userAgent] = $properties;
-
-            unset($position, $userAgent);
+        if ($a_len > $b_len) {
+            return -1;
         }
 
-        $patterns = $this->deduplicatePattern($tmpPatterns);
-        $data     = array();
-
-        foreach (array_keys($patterns) as $pattern) {
-            $patternhash = Pattern::getHashForPattern($pattern, false);
-            $tmpLength   = Pattern::getPatternLength($pattern);
-
-            // special handling of default entry
-            if ($tmpLength === 0) {
-                $patternhash = str_repeat('z', 32);
-            }
-
-            if (!isset($data[$patternhash])) {
-                $data[$patternhash] = array();
-            }
-
-            $data[$patternhash][] = $pattern;
+        if ($a_len < $b_len) {
+            return 1;
         }
 
-        // write optimized file (grouped by the first character of the has, generated from the pattern
-        // start) with multiple patterns joined by tabs. this is to speed up loading of the data (small
-        // array with pattern strings instead of an large array with single patterns) and also enables
-        // us to search for multiple patterns in one preg_match call for a fast first search
-        // (3-10 faster), followed by a detailed search for each single pattern.
-        $contents = array();
-        foreach ($data as $patternhash => $tmpPatterns) {
-            if (empty($tmpPatterns)) {
-                continue;
-            }
-
-            $subkey = SubKey::getPatternCacheSubkey($patternhash);
-            if (!isset($contents[$subkey])) {
-                $contents[$subkey] = array();
-            }
-
-            for ($i = 0, $j = ceil(count($tmpPatterns) / self::COUNT_PATTERN); $i < $j; $i++) {
-                $tmpJoinPatterns = implode(
-                    "\t",
-                    array_slice($tmpPatterns, ($i * self::COUNT_PATTERN), self::COUNT_PATTERN)
-                );
-
-                $contents[$subkey][] = $patternhash.' '.$tmpJoinPatterns;
-            }
-        }
-
-        unset($data);
-        return array($patterns, $browsers, $contents);
-    }
-
-    /**
-     * @param array $tmpPatterns
-     *
-     * @return array
-     */
-    private function deduplicatePattern(array $tmpPatterns)
-    {
-        $patternList = array();
-
-        foreach ($tmpPatterns as $pattern => $patternData) {
-            if (is_string($patternData)) {
-                $data = $patternData;
-            } elseif (2 == count($patternData)) {
-                end($patternData);
-
-                $pattern = $patternData['first'];
-                $data    = key($patternData);
-            } else {
-                unset($patternData['first']);
-
-                $data = $this->deduplicateCompressionPattern($patternData, $pattern);
-            }
-
-            $patternList[$pattern] = $data;
-        }
-
-        return $patternList;
-    }
-
-    /**
-     * That looks complicated...
-     * All numbers are taken out into $matches, so we check if any of those numbers are identical
-     * in all the $matches and if they are we restore them to the $pattern, removing from the $matches.
-     * This gives us patterns with "(\d)" only in places that differ for some matches.
-     *
-     * @param array  $matches
-     * @param string $pattern
-     *
-     * @return array of $matches
-     */
-    private function deduplicateCompressionPattern($matches, &$pattern)
-    {
-        $tmp_matches = $matches;
-        $first_match = array_shift($tmp_matches);
-        $differences = array();
-
-        foreach ($tmp_matches as $some_match) {
-            $differences += array_diff_assoc($first_match, $some_match);
-        }
-
-        $identical = array_diff_key($first_match, $differences);
-
-        $prepared_matches = array();
-
-        foreach ($matches as $i => $some_match) {
-            $key = self::COMPRESSION_PATTERN_START
-                . implode(
-                    self::COMPRESSION_PATTERN_DELIMITER,
-                    array_diff_assoc($some_match, $identical)
-                );
-
-            $prepared_matches[$key] = $i;
-        }
-
-        $pattern_parts = explode('(\d)', $pattern);
-
-        foreach ($identical as $position => $value) {
-            $pattern_parts[$position + 1] = $pattern_parts[$position] . $value . $pattern_parts[$position + 1];
-            unset($pattern_parts[$position]);
-        }
-
-        $pattern = implode('(\d)', $pattern_parts);
-
-        return $prepared_matches;
+        return 0;
     }
 }
