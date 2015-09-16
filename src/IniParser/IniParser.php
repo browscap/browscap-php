@@ -68,7 +68,7 @@ class IniParser
      *            is limited by the internal regular expression limits.
      * @var int
      */
-    CONST COUNT_PATTERN = 50;
+    const COUNT_PATTERN = 50;
 
     /**
      * Creates new ini part cache files

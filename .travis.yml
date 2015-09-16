@@ -29,6 +29,6 @@ script:
   - php vendor/bin/phpcs --standard=psr2 -pn src tests
 
 after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  - if [ "`phpenv version-name`" != "hhvm" ]; then wget https://scrutinizer-ci.com/ocular.phar; fi
+  - if [ "`phpenv version-name`" != "hhvm" ]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
 
