@@ -568,11 +568,11 @@ Type=',
         $fileContents = array();
         foreach (new \RecursiveIteratorIterator($iterator) as $file) {
             /** @var $file \SplFileInfo */
-            if (!$file->isFile() || $file->getExtension() != 'ini') {
+            if (!$file->isFile() || $file->getExtension() !== 'ini') {
                 continue;
             }
 
-            $fileContents[] = array(file_get_contents($file->getPathname()));
+            $fileContents[$file->getFilename()] = array(file_get_contents($file->getPathname()));
         }
 
         return $fileContents;

@@ -613,7 +613,7 @@ class Browscap
 
         $tmpUserAgents = array_keys($browsers);
 
-        usort($tmpUserAgents, array($this, 'compareBcStrings'));
+        uasort($tmpUserAgents, array($this, 'compareBcStrings'));
 
         $userAgentsKeys = array_flip($tmpUserAgents);
         $propertiesKeys = array_flip($this->_properties);
@@ -710,9 +710,10 @@ class Browscap
 
             $propertiesKeys = array_flip($this->_properties);
         }
-
+var_dump('start sorting');
         uasort($patternPositions, array($this, 'compareBcStrings'));
-
+var_dump('end sorting');
+var_dump('start loop');
         foreach ($patternPositions as $position => $userAgent) {
             if ('GJK_Browscap_Version' === $userAgent) {
                 continue;
@@ -751,11 +752,11 @@ class Browscap
             };
 
             $this->_browsers[] = $this->resortProperties($properties, $propertiesKeys);
-
-            unset($position, $userAgent);
         }
-
+var_dump('end loop');
+        var_dump('start deduplicatePattern');
         $this->_patterns = $this->deduplicatePattern($tmpPatterns);
+var_dump('end deduplicatePattern');
     }
 
     /**
