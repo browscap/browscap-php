@@ -32,7 +32,9 @@ namespace BrowscapPHP\Parser;
 
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Formatter\FormatterInterface;
+use BrowscapPHP\Parser\Helper\GetDataInterface;
 use BrowscapPHP\Parser\Helper\GetPatternInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * the interface for the ini parser class
@@ -51,21 +53,33 @@ interface ParserInterface
     /**
      * @param \BrowscapPHP\Parser\Helper\GetPatternInterface $helper
      *
-     * @return \BrowscapPHP\Parser\Ini
+     * @return \BrowscapPHP\Parser\ParserInterface
      */
-    public function setHelper(GetPatternInterface $helper);
+    public function setPatternHelper(GetPatternInterface $helper);
 
     /**
      * @return \BrowscapPHP\Parser\Helper\GetPatternInterface
      */
-    public function getHelper();
+    public function getPatternHelper();
+
+    /**
+     * @param \BrowscapPHP\Parser\Helper\GetDataInterface $dataHelper
+     *
+     * @return \BrowscapPHP\Parser\ParserInterface
+     */
+    public function setDataHelper(GetDataInterface $dataHelper);
+
+    /**
+     * @return \BrowscapPHP\Parser\Helper\GetDataInterface
+     */
+    public function getDataHelper();
 
     /**
      * Set theformatter instance to use for the getBrowser() result
      *
      * @param \BrowscapPHP\Formatter\FormatterInterface $formatter
      *
-     * @return \BrowscapPHP\Parser\Ini
+     * @return \BrowscapPHP\Parser\ParserInterface
      */
     public function setFormatter(FormatterInterface $formatter);
 
@@ -86,9 +100,25 @@ interface ParserInterface
      *
      * @param \BrowscapPHP\Cache\BrowscapCache $cache
      *
-     * @return \BrowscapPHP\Parser\Ini
+     * @return \BrowscapPHP\Parser\ParserInterface
      */
     public function setCache(BrowscapCache $cache);
+
+    /**
+     * Sets a logger instance
+     *
+     * @param \Psr\Log\LoggerInterface $logger
+     *
+     * @return \BrowscapPHP\Parser\ParserInterface
+     */
+    public function setLogger(LoggerInterface $logger);
+
+    /**
+     * Returns a logger instance
+     *
+     * @return \Psr\Log\LoggerInterface $logger
+     */
+    public function getLogger();
 
     /**
      * Gets the browser data formatr for the given user agent

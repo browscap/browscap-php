@@ -61,8 +61,8 @@ class IniTest extends \PHPUnit_Framework_TestCase
         /** @var \BrowscapPHP\Parser\Helper\GetPattern $helper */
         $helper = $this->getMock('\BrowscapPHP\Parser\Helper\GetPattern', array(), array(), '', false);
 
-        self::assertSame($this->object, $this->object->setHelper($helper));
-        self::assertSame($helper, $this->object->getHelper());
+        self::assertSame($this->object, $this->object->setPatternHelper($helper));
+        self::assertSame($helper, $this->object->getPatternHelper());
     }
 
     /**

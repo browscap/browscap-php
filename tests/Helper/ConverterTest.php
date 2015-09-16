@@ -292,10 +292,13 @@ Type=';
             ->method('exists')
             ->will(self::returnValue(false));
 
-        $logger = $this->getMock('\Monolog\Logger', array('info'), array(), '', false);
+        $logger = $this->getMock('\Monolog\Logger', array('info', 'error'), array('test'), '');
         $logger->expects(self::exactly(4))
             ->method('info')
             ->will(self::returnValue(false));
+        $logger->expects(self::never())
+               ->method('error')
+               ->will(self::returnValue(false));
 
         $this->object->setFilesystem($file);
         $this->object->setLogger($logger);
@@ -303,7 +306,7 @@ Type=';
         $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('setItem'), array(), '', false);
         $cache->expects(self::any())
             ->method('setItem')
-            ->will(self::returnValue(false));
+            ->will(self::returnValue(true));
 
         $this->object->setCache($cache);
 
@@ -425,10 +428,13 @@ AolVersion=0
             ->method('exists')
             ->will(self::returnValue(false));
 
-        $logger = $this->getMock('\Monolog\Logger', array('info'), array(), '');
+        $logger = $this->getMock('\Monolog\Logger', array('info', 'error'), array('test'));
         $logger->expects(self::exactly(4))
             ->method('info')
             ->will(self::returnValue(false));
+        $logger->expects(self::never())
+               ->method('error')
+               ->will(self::returnValue(false));
 
         $this->object->setFilesystem($file);
         $this->object->setLogger($logger);
@@ -436,7 +442,7 @@ AolVersion=0
         $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('setItem'), array(), '', false);
         $cache->expects(self::any())
             ->method('setItem')
-            ->will(self::returnValue(false));
+            ->will(self::returnValue(true));
 
         $this->object->setCache($cache);
 

@@ -37,7 +37,7 @@ use BrowscapPHP\Parser\Ini;
 use Psr\Log\LoggerInterface;
 
 /**
- * helper to convert the ini data, parses the data and stores them into the cache
+ * patternHelper to convert the ini data, parses the data and stores them into the cache
  *
  * @category   Browscap-PHP
  * @package    Helper
@@ -72,7 +72,7 @@ class Converter
     private $cache = null;
 
     /**
-     * a filesystem helper instance
+     * a filesystem patternHelper instance
      *
      * @var \BrowscapPHP\Helper\Filesystem
      */

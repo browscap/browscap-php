@@ -32,9 +32,10 @@ namespace BrowscapPHP\Parser\Helper;
 
 use BrowscapPHP\Cache\BrowscapCache;
 use Psr\Log\LoggerInterface;
+use BrowscapPHP\Helper\Quoter;
 
 /**
- * interface for the parser patternHelper
+ * interface for the parser dataHelper
  *
  * @category   Browscap-PHP
  * @package    Parser\Helper
@@ -45,7 +46,7 @@ use Psr\Log\LoggerInterface;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  */
-interface GetPatternInterface
+interface GetDataInterface
 {
     /**
      * Gets a cache instance
@@ -59,7 +60,7 @@ interface GetPatternInterface
      *
      * @param \BrowscapPHP\Cache\BrowscapCache $cache
      *
-     * @return GetPatternInterface
+     * @return \BrowscapPHP\Parser\Helper\GetDataInterface
      */
     public function setCache(BrowscapCache $cache);
 
@@ -68,7 +69,7 @@ interface GetPatternInterface
      *
      * @param \Psr\Log\LoggerInterface $logger
      *
-     * @return \BrowscapPHP\Parser\Helper\GetPatternInterface
+     * @return \BrowscapPHP\Parser\Helper\GetDataInterface
      */
     public function setLogger(LoggerInterface $logger);
 
@@ -80,15 +81,24 @@ interface GetPatternInterface
     public function getLogger();
 
     /**
-     * Gets some possible patterns that have to be matched against the user agent. With the given
-     * user agent string, we can optimize the search for potential patterns:
-     * - We check the first characters of the user agent (or better: a hash, generated from it)
-     * - We compare the length of the pattern with the length of the user agent
-     *   (the pattern cannot be longer than the user agent!)
+     * @param \BrowscapPHP\Helper\Quoter $quoter
      *
-     * @param string $userAgent
-     *
-     * @return \Iterator
+     * @return \BrowscapPHP\Parser\Helper\GetDataInterface
      */
-    public function getPatterns($userAgent);
+    public function setQuoter(Quoter $quoter);
+
+    /**
+     * @return \BrowscapPHP\Helper\Quoter
+     */
+    public function getQuoter();
+
+    /**
+     * Gets the settings for a given pattern (method calls itself to
+     * get the data from the parent patterns)
+     *
+     * @param  string $pattern
+     * @param  array  $settings
+     * @return array
+     */
+    public function getSettings($pattern, array $settings = array());
 }

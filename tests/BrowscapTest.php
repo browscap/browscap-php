@@ -125,14 +125,14 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
     {
         $parser = $this->getMock(
             '\BrowscapPHP\Parser\Ini',
-            array('setHelper', 'setFormatter', 'setCache', 'setLogger'),
+            array('setPatternHelper', 'setFormatter', 'setCache', 'setLogger'),
             array(),
             '',
             false
         );
         $parser
             ->expects(self::once())
-            ->method('setHelper')
+            ->method('setPatternHelper')
             ->will(self::returnSelf())
         ;
         $parser

@@ -37,6 +37,7 @@ use BrowscapPHP\Exception\FetcherException;
 use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\Filesystem;
 use BrowscapPHP\Helper\IniLoader;
+use BrowscapPHP\Helper\Quoter;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use WurflCache\Adapter\AdapterInterface;
@@ -192,15 +193,23 @@ class Browscap
             $this->setParser(new Parser\Ini());
         }
 
-        $helper = new Parser\Helper\GetPattern();
+        $patternHelper = new Parser\Helper\GetPattern();
+        $dataHelper    = new Parser\Helper\GetData();
 
-        $helper
+        $patternHelper
             ->setCache($this->getCache())
             ->setLogger($this->getLogger())
         ;
 
+        $dataHelper
+            ->setCache($this->getCache())
+            ->setLogger($this->getLogger())
+            ->setQuoter(new Quoter())
+        ;
+
         $this->parser
-            ->setHelper($helper)
+            ->setPatternHelper($patternHelper)
+            ->setDataHelper($dataHelper)
             ->setFormatter($this->getFormatter())
             ->setCache($this->getCache())
             ->setLogger($this->getLogger())
