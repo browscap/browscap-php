@@ -13,7 +13,7 @@ Installation
 Run the command below to install via Composer
 
 ```shell
-composer require browscap/browscap-php
+composer require browscap/browscap-php 
 ```
 
 Then you may identify the current user agent like so:
@@ -34,15 +34,15 @@ Before you can start, you have to download the browscap.ini file and convert it 
    if the remote file has changed. If your cache gets corrupted you only need to rerun the `convert` command.
 
 ```php
-bin/browscap browscap:fetch
-bin/browscap browscap:convert
+vendor/bin/browscap browscap:fetch
+vendor/bin/browscap browscap:convert
 ```
 
 2. Download the file and convert it in one step. The downloaded file will not be stored in a local file, but there is a check
    if the remote file has changed. If your cache gets corrupted you have clean the cache and restart the process.
 
 ```php
-bin/browscap browscap:update
+vendor/bin/browscap browscap:update
 ```
 
 A sample using composer with taking the useragent from the global $_SERVER variable.
