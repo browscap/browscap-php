@@ -71,39 +71,12 @@ class BrowscapCache
      * if needed updated the definitions
      *
      * @param \WurflCache\Adapter\AdapterInterface $adapter
-     *
-     * @throws \BrowscapPHP\Exception
+     * @param int                                  $updateInterval
      */
-    public function __construct(AdapterInterface $adapter)
-    {
-        $this
-            ->setCacheAdapter($adapter)
-            ->setUpdateInterval(self::CACHE_LIVETIME)
-        ;
-    }
-
-    /**
-     * sets the cache adapter
-     *
-     * @param \WurflCache\Adapter\AdapterInterface $adapter
-     *
-     * @return \BrowscapPHP\Cache\BrowscapCache
-     */
-    public function setCacheAdapter(AdapterInterface $adapter)
+    public function __construct(AdapterInterface $adapter, $updateInterval = self::CACHE_LIVETIME)
     {
         $this->cache = $adapter;
-
-        return $this;
-    }
-
-    /**
-     * returns the cache adapter
-     *
-     * @return \WurflCache\Adapter\AdapterInterface
-     */
-    public function getCacheAdapter()
-    {
-        return $this->cache;
+        $this->cache->setExpiration((int) $updateInterval);
     }
 
     /**
@@ -127,20 +100,6 @@ class BrowscapCache
     }
 
     /**
-     * set the update intervall
-     *
-     * @param integer $updateInterval
-     *
-     * @return \BrowscapPHP\Cache\BrowscapCache
-     */
-    public function setUpdateInterval($updateInterval)
-    {
-        $this->getCacheAdapter()->setExpiration((int) $updateInterval);
-
-        return $this;
-    }
-
-    /**
      * Get an item.
      *
      * @param string $cacheId
@@ -155,14 +114,14 @@ class BrowscapCache
             $cacheId .= '.'.$this->getVersion();
         }
 
-        if (!$this->getCacheAdapter()->hasItem($cacheId)) {
+        if (!$this->cache->hasItem($cacheId)) {
             $success = false;
 
             return null;
         }
 
         $success = null;
-        $data    = $this->getCacheAdapter()->getItem($cacheId, $success);
+        $data    = $this->cache->getItem($cacheId, $success);
 
         if (!isset($data['content'])) {
             $success = false;
@@ -194,7 +153,7 @@ class BrowscapCache
         }
 
         // Save and return
-        return $this->getCacheAdapter()->setItem($cacheId, $data);
+        return $this->cache->setItem($cacheId, $data);
     }
 
     /**
@@ -211,7 +170,7 @@ class BrowscapCache
             $cacheId .= '.'.$this->getVersion();
         }
 
-        return $this->getCacheAdapter()->hasItem($cacheId);
+        return $this->cache->hasItem($cacheId);
     }
 
     /**
@@ -228,7 +187,7 @@ class BrowscapCache
             $cacheId .= '.'.$this->getVersion();
         }
 
-        return $this->getCacheAdapter()->removeItem($cacheId);
+        return $this->cache->removeItem($cacheId);
     }
 
     /**
@@ -238,6 +197,6 @@ class BrowscapCache
      */
     public function flush()
     {
-        return $this->getCacheAdapter()->flush();
+        return $this->cache->flush();
     }
 }

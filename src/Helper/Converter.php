@@ -61,6 +61,11 @@ class Converter
     const COMPRESSION_PATTERN_START = '@';
     const COMPRESSION_PATTERN_DELIMITER = '|';
 
+    /**
+     * The key to search for in the INI file to find the browscap settings
+     */
+    const BROWSCAP_VERSION_KEY = 'GJK_Browscap_Version';
+
     /** @var \Psr\Log\LoggerInterface */
     private $logger = null;
 
@@ -86,51 +91,15 @@ class Converter
     private $iniVersion = 0;
 
     /**
-     * Sets a logger instance
+     * class constructor
      *
-     * @param \Psr\Log\LoggerInterface $logger
-     *
-     * @return \BrowscapPHP\Helper\Converter
+     * @param \Psr\Log\LoggerInterface         $logger
+     * @param \BrowscapPHP\Cache\BrowscapCache $cache
      */
-    public function setLogger(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, BrowscapCache $cache)
     {
         $this->logger = $logger;
-
-        return $this;
-    }
-
-    /**
-     * Returns a logger instance
-     *
-     * @return \Psr\Log\LoggerInterface $logger
-     */
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
-    /**
-     * Sets a cache instance
-     *
-     * @param \BrowscapPHP\Cache\BrowscapCache $cache
-     *
-     * @return \BrowscapPHP\Helper\Converter
-     */
-    public function setCache(BrowscapCache $cache)
-    {
-        $this->cache = $cache;
-
-        return $this;
-    }
-
-    /**
-     * Returns a cache instance
-     *
-     * @return \BrowscapPHP\Cache\BrowscapCache $cache
-     */
-    public function getCache()
-    {
-        return $this->cache;
+        $this->cache  = $cache;
     }
 
     /**
@@ -171,11 +140,11 @@ class Converter
             throw FileNotFoundException::fileNotFound($iniFile);
         }
 
-        $this->getLogger()->info('start reading file');
+        $this->logger->info('start reading file');
 
         $iniString = file_get_contents($iniFile);
 
-        $this->getLogger()->info('finished reading file');
+        $this->logger->info('finished reading file');
 
         $this->convertString($iniString);
     }
@@ -187,29 +156,29 @@ class Converter
     {
         $iniParser = new IniParser();
 
-        $this->getLogger()->info('start creating patterns from the ini data');
+        $this->logger->info('start creating patterns from the ini data');
 
         foreach ($iniParser->createPatterns($iniString) as $patternsHashList) {
             foreach ($patternsHashList as $subkey => $content) {
                 if (!$this->cache->setItem('browscap.patterns.' . $subkey, $content, true)) {
-                    $this->getLogger()->error('could not write pattern data "' . $subkey . '" to the cache');
+                    $this->logger->error('could not write pattern data "' . $subkey . '" to the cache');
                 }
             }
         }
 
-        $this->getLogger()->info('finished creating patterns from the ini data');
+        $this->logger->info('finished creating patterns from the ini data');
 
-        $this->getLogger()->info('start creating data from the ini data');
+        $this->logger->info('start creating data from the ini data');
 
         foreach ($iniParser->createIniParts($iniString) as $patternsContentList) {
             foreach ($patternsContentList as $subkey => $content) {
-                if (!$this->getCache()->setItem('browscap.iniparts.' . $subkey, $content, true)) {
-                    $this->getLogger()->error('could not write property data "' . $subkey . '" to the cache');
+                if (!$this->cache->setItem('browscap.iniparts.' . $subkey, $content, true)) {
+                    $this->logger->error('could not write property data "' . $subkey . '" to the cache');
                 }
             }
         }
 
-        $this->getLogger()->info('finished creating data from the ini data');
+        $this->logger->info('finished creating data from the ini data');
     }
 
     /**
@@ -222,7 +191,7 @@ class Converter
     public function getIniVersion($iniString)
     {
         $quoterHelper = new Quoter();
-        $key          = $quoterHelper->pregQuote(Ini::BROWSCAP_VERSION_KEY);
+        $key          = $quoterHelper->pregQuote(self::BROWSCAP_VERSION_KEY);
 
         if (preg_match('/\.*\[' . $key . '\][^\[]*Version=(\d+)\D.*/', $iniString, $matches)) {
             if (isset($matches[1])) {
@@ -254,7 +223,7 @@ class Converter
      */
     public function storeVersion()
     {
-        $this->getCache()->setItem('browscap.version', $this->iniVersion, false);
+        $this->cache->setItem('browscap.version', $this->iniVersion, false);
 
         return $this;
     }

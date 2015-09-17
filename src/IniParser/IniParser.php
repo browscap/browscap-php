@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 1998-2014 Browser Capabilities Project
+ * Copyright (c) 1998-2015 Browser Capabilities Project
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,7 +22,7 @@
  *
  * @category   Browscap-PHP
  * @package    Parser
- * @copyright  1998-2014 Browser Capabilities Project
+ * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  * @since      added with version 3.0
@@ -90,9 +90,7 @@ class IniParser
         $iniParts = preg_split('/\[[^\r\n]+\]/', $content);
         $contents = array();
 
-        $propertyHolder    = new PropertyHolder();
-        $propertyFormatter = new PropertyFormatter();
-        $propertyFormatter->setPropertyHolder($propertyHolder);
+        $propertyFormatter = new PropertyFormatter(new PropertyHolder());
 
         foreach ($patternpositions as $position => $pattern) {
             $pattern     = strtolower($pattern);

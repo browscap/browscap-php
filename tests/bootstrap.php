@@ -24,3 +24,6 @@ if (!$foundVendorAutoload) {
 }
 
 ini_set('memory_limit', '-1');
+
+$logger = new \Monolog\Logger('test');
+\Monolog\ErrorHandler::register($logger);

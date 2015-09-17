@@ -50,38 +50,6 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->object = new GetPattern();
-    }
-
-    /**
-     *
-     */
-    public function testSetGetCache()
-    {
-        /** @var \BrowscapPHP\Cache\BrowscapCache $cache */
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
-
-        self::assertSame($this->object, $this->object->setCache($cache));
-        self::assertSame($cache, $this->object->getCache());
-    }
-
-    /**
-     *
-     */
-    public function testSetGetLogger()
-    {
-        /** @var \Monolog\Logger $logger */
-        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
-
-        self::assertSame($this->object, $this->object->setLogger($logger));
-        self::assertSame($logger, $this->object->getLogger());
-    }
-
-    /**
-     *
-     */
-    public function testGetPatterns()
-    {
         $map = array(
             array(
                 'browscap.version',
@@ -99,20 +67,24 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        /** @var \BrowscapPHP\Cache\BrowscapCache $cache */
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem'), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
         $cache
             ->expects(self::never())
             ->method('getItem')
             ->will(self::returnValueMap($map))
         ;
 
-        $this->object->setCache($cache);
-
         /** @var \Monolog\Logger $logger */
         $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
-        $this->object->setLogger($logger);
 
+        $this->object = new GetPattern($cache, $logger);
+    }
+
+    /**
+     *
+     */
+    public function testGetPatterns()
+    {
         $result = $this->object->getPatterns('Mozilla/5.0 (compatible; Ask Jeeves/Teoma*)');
 
         self::assertInstanceOf('Generator', $result);

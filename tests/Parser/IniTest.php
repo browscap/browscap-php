@@ -50,31 +50,16 @@ class IniTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->object = new Ini();
-    }
-
-    /**
-     *
-     */
-    public function testSetGetHelper()
-    {
         /** @var \BrowscapPHP\Parser\Helper\GetPattern $helper */
-        $helper = $this->getMock('\BrowscapPHP\Parser\Helper\GetPattern', array(), array(), '', false);
+        $patternHelper = $this->getMock('\BrowscapPHP\Parser\Helper\GetPattern', array(), array(), '', false);
 
-        self::assertSame($this->object, $this->object->setPatternHelper($helper));
-        self::assertSame($helper, $this->object->getPatternHelper());
-    }
+        /** @var \BrowscapPHP\Parser\Helper\GetPattern $helper */
+        $dataHelper = $this->getMock('\BrowscapPHP\Parser\Helper\GetData', array(), array(), '', false);
 
-    /**
-     *
-     */
-    public function testSetGetFormatter()
-    {
         /** @var \BrowscapPHP\Formatter\PhpGetBrowser $formatter */
         $formatter = $this->getMock('\BrowscapPHP\Formatter\PhpGetBrowser', array(), array(), '', false);
 
-        self::assertSame($this->object, $this->object->setFormatter($formatter));
-        self::assertSame($formatter, $this->object->getFormatter());
+        $this->object = new Ini($patternHelper, $dataHelper, $formatter);
     }
 
     /**
@@ -82,22 +67,6 @@ class IniTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetCache()
     {
-        /** @var \BrowscapPHP\Cache\BrowscapCache $cache */
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
-
-        self::assertSame($this->object, $this->object->setCache($cache));
-        self::assertSame($cache, $this->object->getCache());
-    }
-
-    /**
-     *
-     */
-    public function testSetGetLogger()
-    {
-        /** @var \Monolog\Logger $logger */
-        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
-
-        self::assertSame($this->object, $this->object->setLogger($logger));
-        self::assertSame($logger, $this->object->getLogger());
+        self::markTestSkipped('need to be deleted');
     }
 }

@@ -30,11 +30,9 @@
 
 namespace BrowscapPHP\Parser;
 
-use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Formatter\FormatterInterface;
 use BrowscapPHP\Parser\Helper\GetDataInterface;
 use BrowscapPHP\Parser\Helper\GetPatternInterface;
-use Psr\Log\LoggerInterface;
 
 /**
  * the interface for the ini parser class
@@ -51,81 +49,24 @@ use Psr\Log\LoggerInterface;
 interface ParserInterface
 {
     /**
-     * @param \BrowscapPHP\Parser\Helper\GetPatternInterface $helper
+     * class constructor
      *
-     * @return \BrowscapPHP\Parser\ParserInterface
+     * @param \BrowscapPHP\Parser\Helper\GetPatternInterface $patternHelper
+     * @param \BrowscapPHP\Parser\Helper\GetDataInterface    $dataHelper
+     * @param \BrowscapPHP\Formatter\FormatterInterface      $formatter
      */
-    public function setPatternHelper(GetPatternInterface $helper);
-
-    /**
-     * @return \BrowscapPHP\Parser\Helper\GetPatternInterface
-     */
-    public function getPatternHelper();
-
-    /**
-     * @param \BrowscapPHP\Parser\Helper\GetDataInterface $dataHelper
-     *
-     * @return \BrowscapPHP\Parser\ParserInterface
-     */
-    public function setDataHelper(GetDataInterface $dataHelper);
-
-    /**
-     * @return \BrowscapPHP\Parser\Helper\GetDataInterface
-     */
-    public function getDataHelper();
-
-    /**
-     * Set theformatter instance to use for the getBrowser() result
-     *
-     * @param \BrowscapPHP\Formatter\FormatterInterface $formatter
-     *
-     * @return \BrowscapPHP\Parser\ParserInterface
-     */
-    public function setFormatter(FormatterInterface $formatter);
-
-    /**
-     * @return \BrowscapPHP\Formatter\FormatterInterface
-     */
-    public function getFormatter();
-
-    /**
-     * Gets a cache instance
-     *
-     * @return \BrowscapPHP\Cache\BrowscapCache
-     */
-    public function getCache();
-
-    /**
-     * Sets a cache instance
-     *
-     * @param \BrowscapPHP\Cache\BrowscapCache $cache
-     *
-     * @return \BrowscapPHP\Parser\ParserInterface
-     */
-    public function setCache(BrowscapCache $cache);
-
-    /**
-     * Sets a logger instance
-     *
-     * @param \Psr\Log\LoggerInterface $logger
-     *
-     * @return \BrowscapPHP\Parser\ParserInterface
-     */
-    public function setLogger(LoggerInterface $logger);
-
-    /**
-     * Returns a logger instance
-     *
-     * @return \Psr\Log\LoggerInterface $logger
-     */
-    public function getLogger();
+    public function __construct(
+        GetPatternInterface $patternHelper,
+        GetDataInterface $dataHelper,
+        FormatterInterface $formatter
+    );
 
     /**
      * Gets the browser data formatr for the given user agent
      * (or null if no data avaailble, no even the default browser)
      *
-     * @param  string                  $user_agent
+     * @param  string                  $userAgent
      * @return FormatterInterface|null
      */
-    public function getBrowser($user_agent);
+    public function getBrowser($userAgent);
 }

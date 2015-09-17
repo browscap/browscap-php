@@ -48,36 +48,12 @@ use Psr\Log\LoggerInterface;
 interface GetPatternInterface
 {
     /**
-     * Gets a cache instance
-     *
-     * @return \BrowscapPHP\Cache\BrowscapCache
-     */
-    public function getCache();
-
-    /**
-     * Sets a cache instance
+     * class contructor
      *
      * @param \BrowscapPHP\Cache\BrowscapCache $cache
-     *
-     * @return GetPatternInterface
+     * @param \Psr\Log\LoggerInterface         $logger
      */
-    public function setCache(BrowscapCache $cache);
-
-    /**
-     * Sets a logger instance
-     *
-     * @param \Psr\Log\LoggerInterface $logger
-     *
-     * @return \BrowscapPHP\Parser\Helper\GetPatternInterface
-     */
-    public function setLogger(LoggerInterface $logger);
-
-    /**
-     * Returns a logger instance
-     *
-     * @return \Psr\Log\LoggerInterface $logger
-     */
-    public function getLogger();
+    public function __construct(BrowscapCache $cache, LoggerInterface $logger);
 
     /**
      * Gets some possible patterns that have to be matched against the user agent. With the given

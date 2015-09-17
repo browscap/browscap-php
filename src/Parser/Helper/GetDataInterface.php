@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 1998-2014 Browser Capabilities Project
+ * Copyright (c) 1998-2015 Browser Capabilities Project
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,7 +22,7 @@
  *
  * @category   Browscap-PHP
  * @package    Parser\Helper
- * @copyright  1998-2014 Browser Capabilities Project
+ * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  * @since      added with version 3.0
@@ -49,48 +49,13 @@ use BrowscapPHP\Helper\Quoter;
 interface GetDataInterface
 {
     /**
-     * Gets a cache instance
-     *
-     * @return \BrowscapPHP\Cache\BrowscapCache
-     */
-    public function getCache();
-
-    /**
-     * Sets a cache instance
+     * class contsructor
      *
      * @param \BrowscapPHP\Cache\BrowscapCache $cache
-     *
-     * @return \BrowscapPHP\Parser\Helper\GetDataInterface
+     * @param \Psr\Log\LoggerInterface         $logger
+     * @param \BrowscapPHP\Helper\Quoter       $quoter
      */
-    public function setCache(BrowscapCache $cache);
-
-    /**
-     * Sets a logger instance
-     *
-     * @param \Psr\Log\LoggerInterface $logger
-     *
-     * @return \BrowscapPHP\Parser\Helper\GetDataInterface
-     */
-    public function setLogger(LoggerInterface $logger);
-
-    /**
-     * Returns a logger instance
-     *
-     * @return \Psr\Log\LoggerInterface $logger
-     */
-    public function getLogger();
-
-    /**
-     * @param \BrowscapPHP\Helper\Quoter $quoter
-     *
-     * @return \BrowscapPHP\Parser\Helper\GetDataInterface
-     */
-    public function setQuoter(Quoter $quoter);
-
-    /**
-     * @return \BrowscapPHP\Helper\Quoter
-     */
-    public function getQuoter();
+    public function __contruct(BrowscapCache $cache, LoggerInterface $logger, Quoter $quoter);
 
     /**
      * Gets the settings for a given pattern (method calls itself to

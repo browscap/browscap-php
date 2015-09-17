@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 1998-2014 Browser Capabilities Project
+ * Copyright (c) 1998-2015 Browser Capabilities Project
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,7 +22,7 @@
  *
  * @category   Browscap-PHP
  * @package    Parser\Helper
- * @copyright  1998-2014 Browser Capabilities Project
+ * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  * @since      added with version 3.0
@@ -70,71 +70,17 @@ class GetData implements GetDataInterface
     private $quoter = null;
 
     /**
-     * Gets a cache instance
-     *
-     * @return \BrowscapPHP\Cache\BrowscapCache
-     */
-    public function getCache()
-    {
-        return $this->cache;
-    }
-
-    /**
-     * Sets a cache instance
+     * class contsructor
      *
      * @param \BrowscapPHP\Cache\BrowscapCache $cache
-     *
-     * @return \BrowscapPHP\Parser\Helper\GetData
+     * @param \Psr\Log\LoggerInterface         $logger
+     * @param \BrowscapPHP\Helper\Quoter       $quoter
      */
-    public function setCache(BrowscapCache $cache)
+    public function __contruct(BrowscapCache $cache, LoggerInterface $logger, Quoter $quoter)
     {
-        $this->cache = $cache;
-
-        return $this;
-    }
-
-    /**
-     * Sets a logger instance
-     *
-     * @param \Psr\Log\LoggerInterface $logger
-     *
-     * @return \BrowscapPHP\Parser\Helper\GetData
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
+        $this->cache  = $cache;
         $this->logger = $logger;
-
-        return $this;
-    }
-
-    /**
-     * Returns a logger instance
-     *
-     * @return \Psr\Log\LoggerInterface $logger
-     */
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
-    /**
-     * @param \BrowscapPHP\Helper\Quoter $quoter
-     *
-     * @return \BrowscapPHP\Parser\Helper\GetData
-     */
-    public function setQuoter(Quoter $quoter)
-    {
         $this->quoter = $quoter;
-
-        return $this;
-    }
-
-    /**
-     * @return \BrowscapPHP\Helper\Quoter
-     */
-    public function getQuoter()
-    {
-        return $this->quoter;
     }
 
     /**
@@ -146,10 +92,10 @@ class GetData implements GetDataInterface
      * @return array
      */
     public function getSettings($pattern, array $settings = array())
-    {
+    {print_r(new \Exception('test'));
         // The pattern has been pre-quoted on generation to speed up the pattern search,
         // but for this check we need the unquoted version
-        $unquotedPattern = $this->getQuoter()->pregUnQuote($pattern);
+        $unquotedPattern = $this->quoter->pregUnQuote($pattern);
 
         // Try to get settings for the pattern
         $addedSettings = $this->getIniPart($unquotedPattern);
@@ -181,7 +127,7 @@ class GetData implements GetDataInterface
         $settings += $addedSettings;
 
         if ($parentPattern !== null) {
-            return $this->getSettings($this->getQuoter()->pregQuote($parentPattern), $settings);
+            return $this->getSettings($this->quoter->pregQuote($parentPattern), $settings);
         }
 
         return $settings;
@@ -199,32 +145,30 @@ class GetData implements GetDataInterface
         $patternhash = Pattern::getHashForParts($pattern);
         $subkey      = SubKey::getIniPartCacheSubKey($patternhash);
 
-        if (!$this->getCache()->hasItem('browscap.iniparts.'.$subkey, true)) {
-            $this->getLogger()->debug('cache key "browscap.iniparts.'.$subkey.'" not found');
+        if (!$this->cache->hasItem('browscap.iniparts.'.$subkey, true)) {
+            $this->logger->debug('cache key "browscap.iniparts.'.$subkey.'" not found');
 
             return array();
         }
 
         $success = null;
-        $file    = $this->getCache()->getItem('browscap.iniparts.'.$subkey, true, $success);
+        $file    = $this->cache->getItem('browscap.iniparts.'.$subkey, true, $success);
 
         if (!$success) {
-            $this->getLogger()->debug('cache key "browscap.iniparts.'.$subkey.'" not found');
+            $this->logger->debug('cache key "browscap.iniparts.'.$subkey.'" not found');
 
             return array();
         }
 
         if (!is_array($file) || !count($file)) {
-            $this->getLogger()->debug('cache key "browscap.iniparts.'.$subkey.'" was empty');
+            $this->logger->debug('cache key "browscap.iniparts.'.$subkey.'" was empty');
 
             return array();
         }
 
-        $propertyHolder    = new PropertyHolder();
-        $propertyFormatter = new PropertyFormatter();
-        $propertyFormatter->setPropertyHolder($propertyHolder);
+        $propertyFormatter = new PropertyFormatter(new PropertyHolder());
+        $return            = array();
 
-        $return = array();
         foreach ($file as $buffer) {
             list($tmpBuffer, $patterns) = explode("\t", $buffer, 2);
 

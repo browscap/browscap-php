@@ -62,51 +62,15 @@ class GetPattern implements GetPatternInterface
     private $logger = null;
 
     /**
-     * Gets a cache instance
-     *
-     * @return \BrowscapPHP\Cache\BrowscapCache
-     */
-    public function getCache()
-    {
-        return $this->cache;
-    }
-
-    /**
-     * Sets a cache instance
+     * class contructor
      *
      * @param \BrowscapPHP\Cache\BrowscapCache $cache
-     *
-     * @return \BrowscapPHP\Parser\Helper\GetPattern
+     * @param \Psr\Log\LoggerInterface         $logger
      */
-    public function setCache(BrowscapCache $cache)
+    public function __construct(BrowscapCache $cache, LoggerInterface $logger)
     {
-        $this->cache = $cache;
-
-        return $this;
-    }
-
-    /**
-     * Sets a logger instance
-     *
-     * @param \Psr\Log\LoggerInterface $logger
-     *
-     * @return \BrowscapPHP\Parser\Helper\GetPattern
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
+        $this->cache  = $cache;
         $this->logger = $logger;
-
-        return $this;
-    }
-
-    /**
-     * Returns a logger instance
-     *
-     * @return \Psr\Log\LoggerInterface $logger
-     */
-    public function getLogger()
-    {
-        return $this->logger;
     }
 
     /**
@@ -132,23 +96,23 @@ class GetPattern implements GetPatternInterface
         foreach ($starts as $tmpStart) {
             $tmpSubkey = SubKey::getPatternCacheSubkey($tmpStart);
 
-            if (!$this->getCache()->hasItem('browscap.patterns.'.$tmpSubkey, true)) {
-                $this->getLogger()->debug('cache key "browscap.patterns.'.$tmpSubkey.'" not found');
+            if (!$this->cache->hasItem('browscap.patterns.'.$tmpSubkey, true)) {
+                $this->logger->debug('cache key "browscap.patterns.'.$tmpSubkey.'" not found');
 
                 continue;
             }
             $success   = null;
 
-            $file = $this->getCache()->getItem('browscap.patterns.'.$tmpSubkey, true, $success);
+            $file = $this->cache->getItem('browscap.patterns.'.$tmpSubkey, true, $success);
 
             if (!$success) {
-                $this->getLogger()->debug('cache key "browscap.patterns.'.$tmpSubkey.'" not found');
+                $this->logger->debug('cache key "browscap.patterns.'.$tmpSubkey.'" not found');
 
                 continue;
             }
 
             if (!is_array($file) || !count($file)) {
-                $this->getLogger()->debug('cache key "browscap.patterns.'.$tmpSubkey.'" was empty');
+                $this->logger->debug('cache key "browscap.patterns.'.$tmpSubkey.'" was empty');
 
                 continue;
             }

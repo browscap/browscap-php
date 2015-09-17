@@ -30,10 +30,9 @@
 
 namespace BrowscapPHP\Parser;
 
-use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Formatter\FormatterInterface;
+use BrowscapPHP\Parser\Helper\GetDataInterface;
 use BrowscapPHP\Parser\Helper\GetPatternInterface;
-use Psr\Log\LoggerInterface;
 
 /**
  * Ini parser class (compatible with PHP 5.3+)
@@ -49,18 +48,6 @@ use Psr\Log\LoggerInterface;
  */
 class Ini implements ParserInterface
 {
-    /**
-     * The key to search for in the INI file to find the browscap settings
-     */
-    const BROWSCAP_VERSION_KEY = 'GJK_Browscap_Version';
-
-    /**
-     * The cache instance
-     *
-     * @var \BrowscapPHP\Cache\BrowscapCache
-     */
-    private $cache = null;
-
     /**
      * @var Helper\GetPatternInterface
      */
@@ -78,117 +65,22 @@ class Ini implements ParserInterface
      */
     private $formatter = null;
 
-    /** @var \Psr\Log\LoggerInterface */
-    private $logger = null;
-
     /**
-     * @param \BrowscapPHP\Parser\Helper\GetPatternInterface $patternHelper
+     * class constructor
      *
-     * @return \BrowscapPHP\Parser\Ini
+     * @param \BrowscapPHP\Parser\Helper\GetPatternInterface $patternHelper
+     * @param \BrowscapPHP\Parser\Helper\GetDataInterface    $dataHelper
+     * @param \BrowscapPHP\Formatter\FormatterInterface      $formatter
      */
-    public function setPatternHelper(GetPatternInterface $patternHelper)
+    public function __construct(
+        GetPatternInterface $patternHelper,
+        GetDataInterface $dataHelper,
+        FormatterInterface $formatter
+    )
     {
         $this->patternHelper = $patternHelper;
-
-        return $this;
-    }
-
-    /**
-     * @return \BrowscapPHP\Parser\Helper\GetPatternInterface
-     */
-    public function getPatternHelper()
-    {
-        return $this->patternHelper;
-    }
-
-    /**
-     * @param \BrowscapPHP\Parser\Helper\GetDataInterface $dataHelper
-     *
-     * @return \BrowscapPHP\Parser\Ini
-     */
-    public function setDataHelper(Helper\GetDataInterface $dataHelper)
-    {
-        $this->dataHelper = $dataHelper;
-
-        return $this;
-    }
-
-    /**
-     * @return \BrowscapPHP\Parser\Helper\GetDataInterface
-     */
-    public function getDataHelper()
-    {
-        return $this->dataHelper;
-    }
-
-    /**
-     * Set the formatter instance to use for the getBrowser() result
-     *
-     * @param \BrowscapPHP\Formatter\FormatterInterface $formatter
-     *
-     * @return \BrowscapPHP\Parser\Ini
-     */
-    public function setFormatter(FormatterInterface $formatter)
-    {
-        $this->formatter = $formatter;
-
-        return $this;
-    }
-
-    /**
-     * @return \BrowscapPHP\Formatter\FormatterInterface
-     */
-    public function getFormatter()
-    {
-        return $this->formatter;
-    }
-
-    /**
-     * Gets a cache instance
-     *
-     * @return \BrowscapPHP\Cache\BrowscapCache
-     */
-    public function getCache()
-    {
-        return $this->cache;
-    }
-
-    /**
-     * Sets a cache instance
-     *
-     * @param \BrowscapPHP\Cache\BrowscapCache $cache
-     *
-     * @return \BrowscapPHP\Parser\Ini
-     */
-    public function setCache(BrowscapCache $cache)
-    {
-        $this->cache = $cache;
-
-        return $this;
-    }
-
-    /**
-     * Sets a logger instance
-     *
-     * @param \Psr\Log\LoggerInterface $logger
-     *
-     * @return \BrowscapPHP\Parser\Ini
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-
-        return $this;
-    }
-
-    /**
-     * Returns a logger instance
-     *
-     * @return \Psr\Log\LoggerInterface $logger
-     */
-    public function getLogger()
-    {
-        return $this->logger;
+        $this->dataHelper    = $dataHelper;
+        $this->formatter     = $formatter;
     }
 
     /**
@@ -203,7 +95,7 @@ class Ini implements ParserInterface
         $userAgent = strtolower($userAgent);
         $formatter = null;
 
-        foreach ($this->getPatternHelper()->getPatterns($userAgent) as $patterns) {
+        foreach ($this->patternHelper->getPatterns($userAgent) as $patterns) {
             $patternToMatch = '/^(?:'.str_replace("\t", ')|(?:', $patterns).')$/i';
 
             if (!preg_match($patternToMatch, $userAgent)) {
@@ -231,10 +123,10 @@ class Ini implements ParserInterface
                     // Try to get settings - as digits have been replaced to speed up the pattern search (up to 90 faster),
                     // we won't always find the data in the first step - so check if settings have been found and if not,
                     // search for the next pattern.
-                    $settings = $this->getDataHelper()->getSettings($pattern);
+                    $settings = $this->dataHelper->getSettings($pattern);
 
                     if (count($settings) > 0) {
-                        $formatter = $this->getFormatter();
+                        $formatter = $this->formatter;
                         $formatter->setData($settings);
                         break 2;
                     }
