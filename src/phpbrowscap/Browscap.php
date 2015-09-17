@@ -613,7 +613,7 @@ class Browscap
 
         $tmpUserAgents = array_keys($browsers);
 
-        uasort($tmpUserAgents, array($this, 'compareBcStrings'));
+        usort($tmpUserAgents, array($this, 'compareBcStrings'));
 
         $userAgentsKeys = array_flip($tmpUserAgents);
         $propertiesKeys = array_flip($this->_properties);
@@ -692,7 +692,6 @@ class Browscap
         $iniParts       = preg_split('/\[[^\r\n]+\]/', $iniContent);
         $tmpPatterns    = array();
         $propertiesKeys = array();
-        $userAgentsKeys = array_flip($patternPositions);
         $matches        = array();
 
         if (preg_match('/.*\[DefaultProperties\]([^[]*).*/', $iniContent, $matches)) {
@@ -710,10 +709,18 @@ class Browscap
 
             $propertiesKeys = array_flip($this->_properties);
         }
-var_dump('start sorting');
-        uasort($patternPositions, array($this, 'compareBcStrings'));
-var_dump('end sorting');
-var_dump('start loop');
+
+        $key                   = $this->_pregQuote(self::BROWSCAP_VERSION_KEY);
+        $this->_source_version = 0;
+        $matches               = array();
+
+        if (preg_match("/\\.*[" . $key . "\\][^[]*Version=(\\d+)\\D.*/", $iniContent, $matches)) {
+            if (isset($matches[1])) {
+                $this->_source_version = (int)$matches[1];
+            }
+        }
+
+        $userAgentsKeys = array_flip($patternPositions);
         foreach ($patternPositions as $position => $userAgent) {
             if ('GJK_Browscap_Version' === $userAgent) {
                 continue;
@@ -753,10 +760,18 @@ var_dump('start loop');
 
             $this->_browsers[] = $this->resortProperties($properties, $propertiesKeys);
         }
-var_dump('end loop');
-        var_dump('start deduplicatePattern');
-        $this->_patterns = $this->deduplicatePattern($tmpPatterns);
-var_dump('end deduplicatePattern');
+
+        $patternList = $this->deduplicatePattern($tmpPatterns);
+        $sortedPatternList = array();
+        $patterns = array_keys($patternList);
+
+        usort($patterns, array($this, 'compareBcStrings'));
+
+        foreach ($patterns as $pattern) {
+            $sortedPatternList[$pattern] = $patternList[$pattern];
+        }
+
+        $this->_patterns = $sortedPatternList;
     }
 
     /**
