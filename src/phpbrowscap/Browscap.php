@@ -877,6 +877,7 @@ class Browscap
 
     /**
      * That looks complicated...
+     *
      * All numbers are taken out into $matches, so we check if any of those numbers are identical
      * in all the $matches and if they are we restore them to the $pattern, removing from the $matches.
      * This gives us patterns with "(\d)" only in places that differ for some matches.
@@ -901,10 +902,8 @@ class Browscap
         $prepared_matches = array();
 
         foreach ($matches as $i => $some_match) {
-            $key = self::COMPRESSION_PATTERN_START . implode(
-                    self::COMPRESSION_PATTERN_DELIMITER,
-                    array_diff_assoc($some_match, $identical)
-                );
+            $key = self::COMPRESSION_PATTERN_START
+                . implode(self::COMPRESSION_PATTERN_DELIMITER, array_diff_assoc($some_match, $identical));
 
             $prepared_matches[$key] = $i;
         }
@@ -955,52 +954,12 @@ class Browscap
         // to properly unescape '?' which was changed to '.', I replace '\.' (real dot) with '\?',
         // then change '.' to '?' and then '\?' to '.'.
         $search  = array(
-            '\\' . self::REGEX_DELIMITER,
-            '\\.',
-            '\\\\',
-            '\\+',
-            '\\[',
-            '\\^',
-            '\\]',
-            '\\$',
-            '\\(',
-            '\\)',
-            '\\{',
-            '\\}',
-            '\\=',
-            '\\!',
-            '\\<',
-            '\\>',
-            '\\|',
-            '\\:',
-            '\\-',
-            '.*',
-            '.',
-            '\\?'
+            '\\' . self::REGEX_DELIMITER, '\\.', '\\\\', '\\+', '\\[', '\\^', '\\]', '\\$', '\\(', '\\)', '\\{', '\\}',
+            '\\=', '\\!', '\\<', '\\>', '\\|', '\\:', '\\-', '.*', '.', '\\?'
         );
         $replace = array(
-            self::REGEX_DELIMITER,
-            '\\?',
-            '\\',
-            '+',
-            '[',
-            '^',
-            ']',
-            '$',
-            '(',
-            ')',
-            '{',
-            '}',
-            '=',
-            '!',
-            '<',
-            '>',
-            '|',
-            ':',
-            '-',
-            '*',
-            '?',
-            '.'
+            self::REGEX_DELIMITER, '\\?', '\\', '+', '[', '^', ']', '$', '(', ')', '{', '}', '=', '!', '<', '>', '|',
+            ':', '-', '*', '?', '.'
         );
 
         $result = substr(str_replace($search, $replace, $pattern), 2, -2);
@@ -1059,15 +1018,13 @@ class Browscap
      */
     protected function _buildCache($fileRes)
     {
-        if (false === fwrite(
-                $fileRes,
-                sprintf(
-                    "<?php\n\$source_version=%s;\n\$cache_version=%s",
-                    "'" . $this->_source_version . "'",
-                    "'" . self::CACHE_FILE_VERSION . "'"
-                )
-            )
-        ) {
+        $content = sprintf(
+            "<?php\n\$source_version=%s;\n\$cache_version=%s",
+            "'" . $this->_source_version . "'",
+            "'" . self::CACHE_FILE_VERSION . "'"
+        );
+
+        if (false === fwrite($fileRes, $content)) {
             // write error
             return false;
         }
@@ -1467,8 +1424,7 @@ class Browscap
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/GaretJax/phpbrowscap/
  */
-class Exception
-    extends \Exception
+class Exception extends \Exception
 {
     // nothing to do here
 }
