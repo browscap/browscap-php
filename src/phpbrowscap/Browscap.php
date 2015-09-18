@@ -762,16 +762,34 @@ class Browscap
         }
 
         $patternList = $this->deduplicatePattern($tmpPatterns);
-        $sortedPatternList = array();
-        $patterns = array_keys($patternList);
 
-        usort($patterns, array($this, 'compareBcStrings'));
+        $lengthIndex  = array();
+        $shortLength  = array();
+        $patternArray = array();
+        $counter      = 0;
 
-        foreach ($patterns as $pattern) {
-            $sortedPatternList[$pattern] = $patternList[$pattern];
+        foreach ($patternList as $pattern => $data) {
+            $decodedPattern = $this->_pregUnQuote($pattern, array());
+
+            $lengthIndex[$pattern]  = strlen($decodedPattern);
+            $shortLength[$pattern]  = strlen(str_replace(array('*', '?'), '', $decodedPattern));
+            $patternArray[$pattern] = $counter++;
         }
 
-        $this->_patterns = $sortedPatternList;
+        array_multisort(
+            $lengthIndex,
+            SORT_DESC,
+            SORT_NUMERIC,
+            $shortLength,
+            SORT_DESC,
+            SORT_NUMERIC,
+            $patternArray,
+            SORT_ASC,
+            SORT_NUMERIC, // if the sortIndex is identical the later added file comes first
+            $patternList
+        );
+
+        $this->_patterns = $patternList;
     }
 
     /**
@@ -988,9 +1006,9 @@ class Browscap
         $result = substr(str_replace($search, $replace, $pattern), 2, -2);
 
         if ($matches) {
-            foreach ($matches as $one_match) {
+            foreach ($matches as $oneMatch) {
                 $num_pos = strpos($result, '(\d)');
-                $result  = substr_replace($result, $one_match, $num_pos, 4);
+                $result  = substr_replace($result, $oneMatch, $num_pos, 4);
             }
         }
 
