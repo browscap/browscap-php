@@ -10,22 +10,19 @@ php:
   - nightly
   - hhvm
 
-matrix:
-  allow_failures:
-    - php: 5.3
-    - php: 5.4
+cache:
+  directories:
+  - $TRAVIS_BUILD_DIR/resources
 
 before_script:
-  - mkdir resources
+  - .travis-scripts/cache-browscap.sh
   - travis_retry composer self-update
-  - wget http://browscap.org/stream?q=Full_PHP_BrowsCapINI -O ./resources/full_php_browscap.ini
   - travis_retry composer install -o --prefer-source
 
 script:
-  - php -d browscap=./resources/full_php_browscap.ini vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --colors --verbose --exclude-group compare-with-native-function
+  - php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --colors --verbose
 
 after_script:
-  - rm -rf resources
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
