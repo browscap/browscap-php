@@ -594,7 +594,12 @@ class Browscap
     {
         $browsers = parse_ini_string($iniContent, true, INI_SCANNER_RAW);
 
-        $this->_source_version = $browsers[self::BROWSCAP_VERSION_KEY]['Version'];
+        if ($actLikeNewVersion) {
+            $this->_source_version = (int) $browsers[self::BROWSCAP_VERSION_KEY]['Version'];
+        } else {
+            $this->_source_version = $browsers[self::BROWSCAP_VERSION_KEY]['Version'];
+        }
+
         unset($browsers[self::BROWSCAP_VERSION_KEY]);
 
         if (!$actLikeNewVersion) {
@@ -769,11 +774,13 @@ class Browscap
         $counter      = 0;
 
         foreach ($patternList as $pattern => $data) {
-            $decodedPattern = $this->_pregUnQuote($pattern, array());
+            $decodedPattern = str_replace('(\d)', 0, $this->_pregUnQuote($pattern, false));
 
             $lengthIndex[$pattern]  = strlen($decodedPattern);
             $shortLength[$pattern]  = strlen(str_replace(array('*', '?'), '', $decodedPattern));
-            $patternArray[$pattern] = $counter++;
+            $patternArray[$pattern] = $counter;
+
+            $counter++;
         }
 
         array_multisort(
@@ -785,7 +792,7 @@ class Browscap
             SORT_NUMERIC,
             $patternArray,
             SORT_ASC,
-            SORT_NUMERIC, // if the sortIndex is identical the later added file comes first
+            SORT_NUMERIC,
             $patternList
         );
 
@@ -966,8 +973,8 @@ class Browscap
 
         if ($matches) {
             foreach ($matches as $oneMatch) {
-                $num_pos = strpos($result, '(\d)');
-                $result  = substr_replace($result, $oneMatch, $num_pos, 4);
+                $position = strpos($result, '(\d)');
+                $result   = substr_replace($result, $oneMatch, $position, 4);
             }
         }
 

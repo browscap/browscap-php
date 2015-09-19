@@ -494,8 +494,6 @@ Type=',
      */
     public function testCreateCache($content)
     {
-        self::markTestSkipped('will fail');
-
         $cacheDir = $this->createCacheDir();
 
         $class  = new ReflectionClass('\\phpbrowscap\\Browscap');
@@ -561,20 +559,29 @@ Type=',
 
         $newMethod->invoke($browscap, $content);
 
+        $newVersion = (string) $varNewVersion->getValue($browscap);
+        self::assertSame($version, $newVersion);
+
         $newProperties = $varNewProp->getValue($browscap);
         self::assertSame($properties, $newProperties);
 
-        $newPatterns = $varNewPatt->getValue($browscap);
-        self::assertEquals($patterns, $newPatterns);
+        $newPatterns    = $varNewPatt->getValue($browscap);
+        $newPatternKeys = array_keys($newPatterns);
+        self::assertCount(count($patterns), $newPatterns);
+        foreach(array_keys($patterns) as $key => $pattern) {
+            self::assertSame(
+                $pattern,
+                $newPatternKeys[$key],
+                "the pattern $key should be \"$pattern\", but was \"" . $newPatternKeys[$key] . "\""
+            );
+        }
+        self::assertSame(array_keys($patterns), $newPatternKeys);
 
         $newBrowsers = $varNewBrow->getValue($browscap);
-        self::assertEquals($browsers, $newBrowsers);
+        self::assertSame($browsers, $newBrowsers);
 
         $newUserAgents = $varNewUas->getValue($browscap);
         self::assertSame($userAgents, $newUserAgents);
-
-        $newVersion = (string) $varNewVersion->getValue($browscap);
-        self::assertSame($version, $newVersion);
     }
 
     /**
