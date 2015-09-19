@@ -494,6 +494,8 @@ Type=',
      */
     public function testCreateCache($content)
     {
+        //self::markTestSkipped('will fail because the indexing of the data is different');
+
         $cacheDir = $this->createCacheDir();
 
         $class  = new ReflectionClass('\\phpbrowscap\\Browscap');
