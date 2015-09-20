@@ -580,7 +580,7 @@ Type=',
         self::assertSame(array_keys($patterns), $newPatternKeys);
 
         $newBrowsers = $varNewBrow->getValue($browscap);
-        self::assertSame($browsers, $newBrowsers);
+        self::assertEquals($browsers, $newBrowsers);
 
         $newUserAgents = $varNewUas->getValue($browscap);
         self::assertSame($userAgents, $newUserAgents);

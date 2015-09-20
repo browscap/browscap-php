@@ -768,35 +768,23 @@ class Browscap
 
         $patternList = $this->deduplicatePattern($tmpPatterns);
 
-        $lengthIndex  = array();
-        $shortLength  = array();
         $patternArray = array();
-        $counter      = 0;
 
-        foreach ($patternList as $pattern => $data) {
+        foreach (array_keys($patternList) as $pattern) {
             $decodedPattern = str_replace('(\d)', 0, $this->_pregUnQuote($pattern, false));
 
-            $lengthIndex[$pattern]  = strlen($decodedPattern);
-            $shortLength[$pattern]  = strlen(str_replace(array('*', '?'), '', $decodedPattern));
-            $patternArray[$pattern] = $counter;
-
-            $counter++;
+            $patternArray[$pattern] = $decodedPattern;
         }
 
-        array_multisort(
-            $lengthIndex,
-            SORT_DESC,
-            SORT_NUMERIC,
-            $shortLength,
-            SORT_DESC,
-            SORT_NUMERIC,
-            $patternArray,
-            SORT_ASC,
-            SORT_NUMERIC,
-            $patternList
-        );
+        uasort($patternArray, array($this, 'compareBcStrings'));
 
-        $this->_patterns = $patternList;
+        $sortedPatternList = array();
+
+        foreach (array_keys($patternArray) as $pattern) {
+            $sortedPatternList[$pattern] = $patternList[$pattern];
+        }
+
+        $this->_patterns = $sortedPatternList;
     }
 
     /**
