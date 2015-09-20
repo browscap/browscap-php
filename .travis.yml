@@ -20,7 +20,8 @@ before_script:
   - travis_retry composer install -o --prefer-source
 
 script:
-  - php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --colors --verbose
+  - php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --colors --verbose --exclude-group compare-with-native-function --coverage-text --coverage-clover=coverage.clover
+  - php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --colors --verbose --group compare-with-native-function
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar

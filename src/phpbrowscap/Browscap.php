@@ -208,7 +208,7 @@ class Browscap
      *
      * @throws Exception
      */
-    public function __construct($cache_dir)
+    public function __construct($cache_dir = null)
     {
         // has to be set to reach E_STRICT compatibility, does not affect system/app settings
         date_default_timezone_set(date_default_timezone_get());
@@ -326,6 +326,71 @@ class Browscap
         }
 
         $browser = array();
+
+        $patterns = array_keys($this->_patterns);
+        $chunks   = array_chunk($patterns, 50);
+        foreach ($chunks as $chunk) {
+            $longPattern = self::REGEX_DELIMITER
+                . '^(' . implode(')|(', $chunk) . ')?'
+                . self::REGEX_DELIMITER . 'i';
+//var_dump($longPattern);
+            if (!preg_match($longPattern, $user_agent)) {
+                continue;
+            }
+
+            foreach ($chunk as $pattern) {
+                $patternToMatch = self::REGEX_DELIMITER . '^' . $pattern . '$' . self::REGEX_DELIMITER . 'i';
+                $matches        = array();
+
+                if (preg_match($patternToMatch, $user_agent, $matches)) {
+                    $pattern_data = $this->_patterns[$pattern];
+
+                    if (1 == count($matches)) {
+                        // standard match
+                        $key = $pattern_data;
+
+                        $simple_match = true;
+                    } else {
+                        $pattern_data = unserialize($pattern_data);
+
+                        // match with numeric replacements
+                        array_shift($matches);
+
+                        $match_string = self::COMPRESSION_PATTERN_START
+                            . implode(self::COMPRESSION_PATTERN_DELIMITER, $matches);
+
+                        if (!isset($pattern_data[$match_string])) {
+                            // partial match - numbers are not present, but everything else is ok
+                            continue;
+                        }
+
+                        $key = $pattern_data[$match_string];
+
+                        $simple_match = false;
+                    }
+
+                    $browser = array(
+                        $user_agent, // Original useragent
+                        trim(strtolower($pattern), self::REGEX_DELIMITER),
+                        $this->_pregUnQuote($pattern, $simple_match ? false : $matches)
+                    );
+
+                    $browser = $value = $browser + unserialize($this->_browsers[$key]);
+
+                    while (array_key_exists(3, $value)) {
+                        $value = unserialize($this->_browsers[$value[3]]);
+                        $browser += $value;
+                    }
+
+                    if (!empty($browser[3]) && array_key_exists($browser[3], $this->_userAgents)) {
+                        $browser[3] = $this->_userAgents[$browser[3]];
+                    }
+
+                    break 2;
+                }
+            }
+        }
+        /*
         foreach ($this->_patterns as $pattern => $pattern_data) {
             if (preg_match($pattern . 'i', $user_agent, $matches)) {
                 if (1 == count($matches)) {
@@ -372,6 +437,7 @@ class Browscap
                 break;
             }
         }
+        /**/
 
         // Add the keys for each property
         $array = array();
@@ -633,18 +699,26 @@ class Browscap
             ) {
                 $pattern = $this->_pregQuote($userAgent);
 
-                $matches_count = preg_match_all('@\d@', $pattern, $matches);
+                $countMatches = preg_match_all(
+                    self::REGEX_DELIMITER . '\d' . self::REGEX_DELIMITER,
+                    $pattern,
+                    $matches
+                );
 
-                if (!$matches_count) {
+                if (!$countMatches) {
                     $tmpPatterns[$pattern] = $i;
                 } else {
-                    $compressed_pattern = preg_replace('@\d@', '(\d)', $pattern);
+                    $compressedPattern = preg_replace(
+                        self::REGEX_DELIMITER . '\d' . self::REGEX_DELIMITER,
+                        '(\d)',
+                        $pattern
+                    );
 
-                    if (!isset($tmpPatterns[$compressed_pattern])) {
-                        $tmpPatterns[$compressed_pattern] = array('first' => $pattern);
+                    if (!isset($tmpPatterns[$compressedPattern])) {
+                        $tmpPatterns[$compressedPattern] = array('first' => $pattern);
                     }
 
-                    $tmpPatterns[$compressed_pattern][$i] = $matches[0];
+                    $tmpPatterns[$compressedPattern][$i] = $matches[0];
                 }
             }
 
@@ -739,13 +813,21 @@ class Browscap
             ) {
                 $pattern      = $this->_pregQuote($userAgent);
                 $matches      = array();
-                $countMatches = preg_match_all('@\d@', $pattern, $matches);
                 $i            = $position - 1;
+                $countMatches = preg_match_all(
+                    self::REGEX_DELIMITER . '\d' . self::REGEX_DELIMITER,
+                    $pattern,
+                    $matches
+                );
 
                 if (!$countMatches) {
                     $tmpPatterns[$pattern] = $i;
                 } else {
-                    $compressedPattern = preg_replace('@\d@', '(\d)', $pattern);
+                    $compressedPattern = preg_replace(
+                        self::REGEX_DELIMITER . '\d' . self::REGEX_DELIMITER,
+                        '(\d)',
+                        $pattern
+                    );
 
                     if (!isset($tmpPatterns[$compressedPattern])) {
                         $tmpPatterns[$compressedPattern] = array('first' => $pattern);
@@ -831,7 +913,7 @@ class Browscap
                 $data = $this->deduplicateCompressionPattern($patternData, $pattern);
             }
 
-            $patternList[self::REGEX_DELIMITER . '^' . $pattern . '$' . self::REGEX_DELIMITER] = $data;
+            $patternList[$pattern] = $data;
         }
 
         return $patternList;
