@@ -82,6 +82,11 @@ class Browscap
     const REQUEST_HEADERS = "GET %s HTTP/1.0\r\nHost: %s\r\nUser-Agent: %s\r\nConnection: Close\r\n\r\n";
 
     /**
+     * how many pattern should be checked at once in the first step
+     */
+    const COUNT_PATTERN = 100;
+
+    /**
      * Options for auto update capabilities
      *
      * $remoteVerUrl: The location to use to check out if a new version of the
@@ -328,12 +333,13 @@ class Browscap
         $browser = array();
 
         $patterns = array_keys($this->_patterns);
-        $chunks   = array_chunk($patterns, 50);
+        $chunks   = array_chunk($patterns, self::COUNT_PATTERN);
+
         foreach ($chunks as $chunk) {
             $longPattern = self::REGEX_DELIMITER
-                . '^(' . implode(')|(', $chunk) . ')?'
+                . '^(?:' . implode(')|(?:', $chunk) . ')$'
                 . self::REGEX_DELIMITER . 'i';
-//var_dump($longPattern);
+
             if (!preg_match($longPattern, $user_agent)) {
                 continue;
             }
@@ -342,52 +348,54 @@ class Browscap
                 $patternToMatch = self::REGEX_DELIMITER . '^' . $pattern . '$' . self::REGEX_DELIMITER . 'i';
                 $matches        = array();
 
-                if (preg_match($patternToMatch, $user_agent, $matches)) {
-                    $pattern_data = $this->_patterns[$pattern];
-
-                    if (1 == count($matches)) {
-                        // standard match
-                        $key = $pattern_data;
-
-                        $simple_match = true;
-                    } else {
-                        $pattern_data = unserialize($pattern_data);
-
-                        // match with numeric replacements
-                        array_shift($matches);
-
-                        $match_string = self::COMPRESSION_PATTERN_START
-                            . implode(self::COMPRESSION_PATTERN_DELIMITER, $matches);
-
-                        if (!isset($pattern_data[$match_string])) {
-                            // partial match - numbers are not present, but everything else is ok
-                            continue;
-                        }
-
-                        $key = $pattern_data[$match_string];
-
-                        $simple_match = false;
-                    }
-
-                    $browser = array(
-                        $user_agent, // Original useragent
-                        trim(strtolower($pattern), self::REGEX_DELIMITER),
-                        $this->_pregUnQuote($pattern, $simple_match ? false : $matches)
-                    );
-
-                    $browser = $value = $browser + unserialize($this->_browsers[$key]);
-
-                    while (array_key_exists(3, $value)) {
-                        $value = unserialize($this->_browsers[$value[3]]);
-                        $browser += $value;
-                    }
-
-                    if (!empty($browser[3]) && array_key_exists($browser[3], $this->_userAgents)) {
-                        $browser[3] = $this->_userAgents[$browser[3]];
-                    }
-
-                    break 2;
+                if (!preg_match($patternToMatch, $user_agent, $matches)) {
+                    continue;
                 }
+
+                $pattern_data = $this->_patterns[$pattern];
+
+                if (1 == count($matches)) {
+                    // standard match
+                    $key = $pattern_data;
+
+                    $simple_match = true;
+                } else {
+                    $pattern_data = unserialize($pattern_data);
+
+                    // match with numeric replacements
+                    array_shift($matches);
+
+                    $match_string = self::COMPRESSION_PATTERN_START
+                        . implode(self::COMPRESSION_PATTERN_DELIMITER, $matches);
+
+                    if (!isset($pattern_data[$match_string])) {
+                        // partial match - numbers are not present, but everything else is ok
+                        continue;
+                    }
+
+                    $key = $pattern_data[$match_string];
+
+                    $simple_match = false;
+                }
+
+                $browser = array(
+                    $user_agent, // Original useragent
+                    trim(strtolower($pattern), self::REGEX_DELIMITER),
+                    $this->_pregUnQuote($pattern, $simple_match ? false : $matches)
+                );
+
+                $browser = $value = $browser + unserialize($this->_browsers[$key]);
+
+                while (array_key_exists(3, $value)) {
+                    $value = unserialize($this->_browsers[$value[3]]);
+                    $browser += $value;
+                }
+
+                if (!empty($browser[3]) && array_key_exists($browser[3], $this->_userAgents)) {
+                    $browser[3] = $this->_userAgents[$browser[3]];
+                }
+
+                break;
             }
         }
         /*
