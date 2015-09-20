@@ -395,7 +395,7 @@ class Browscap
                     $browser[3] = $this->_userAgents[$browser[3]];
                 }
 
-                break;
+                break 2;
             }
         }
         /*
