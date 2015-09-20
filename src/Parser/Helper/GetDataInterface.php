@@ -55,7 +55,7 @@ interface GetDataInterface
      * @param \Psr\Log\LoggerInterface         $logger
      * @param \BrowscapPHP\Helper\Quoter       $quoter
      */
-    public function __contruct(BrowscapCache $cache, LoggerInterface $logger, Quoter $quoter);
+    public function __construct(BrowscapCache $cache, LoggerInterface $logger, Quoter $quoter);
 
     /**
      * Gets the settings for a given pattern (method calls itself to

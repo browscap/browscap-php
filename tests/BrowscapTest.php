@@ -123,33 +123,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetParser()
     {
-        $parser = $this->getMock(
-            '\BrowscapPHP\Parser\Ini',
-            array('setPatternHelper', 'setFormatter', 'setCache', 'setLogger'),
-            array(),
-            '',
-            false
-        );
-        $parser
-            ->expects(self::once())
-            ->method('setPatternHelper')
-            ->will(self::returnSelf())
-        ;
-        $parser
-            ->expects(self::once())
-            ->method('setFormatter')
-            ->will(self::returnSelf())
-        ;
-        $parser
-            ->expects(self::once())
-            ->method('setCache')
-            ->will(self::returnSelf())
-        ;
-        $parser
-            ->expects(self::once())
-            ->method('setLogger')
-            ->will(self::returnSelf())
-        ;
+        $parser = $this->getMock('\BrowscapPHP\Parser\Ini', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setParser($parser));
         self::assertSame($parser, $this->object->getParser());

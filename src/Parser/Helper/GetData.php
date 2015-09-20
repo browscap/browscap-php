@@ -76,7 +76,7 @@ class GetData implements GetDataInterface
      * @param \Psr\Log\LoggerInterface         $logger
      * @param \BrowscapPHP\Helper\Quoter       $quoter
      */
-    public function __contruct(BrowscapCache $cache, LoggerInterface $logger, Quoter $quoter)
+    public function __construct(BrowscapCache $cache, LoggerInterface $logger, Quoter $quoter)
     {
         $this->cache  = $cache;
         $this->logger = $logger;
@@ -92,7 +92,7 @@ class GetData implements GetDataInterface
      * @return array
      */
     public function getSettings($pattern, array $settings = array())
-    {print_r(new \Exception('test'));
+    {
         // The pattern has been pre-quoted on generation to speed up the pattern search,
         // but for this check we need the unquoted version
         $unquotedPattern = $this->quoter->pregUnQuote($pattern);

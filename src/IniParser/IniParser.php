@@ -186,6 +186,10 @@ class IniParser
                 $data[$patternhash] = array();
             }
 
+            if (!isset($data[$patternhash][$tmpLength])) {
+                $data[$patternhash][$tmpLength] = array();
+            }
+
             $pattern = $quoterHelper->pregQuote($pattern);
 
             // Check if the pattern contains digits - in this case we replace them with a digit regular expression,
@@ -194,15 +198,26 @@ class IniParser
             if (strpbrk($pattern, '0123456789') !== false) {
                 $compressedPattern = preg_replace('/\d/', '[\d]', $pattern);
 
-                if (!in_array($compressedPattern, $data[$patternhash])) {
-                    $data[$patternhash][] = $compressedPattern;
+                if (!in_array($compressedPattern, $data[$patternhash][$tmpLength])) {
+                    $data[$patternhash][$tmpLength][] = $compressedPattern;
                 }
             } else {
-                $data[$patternhash][] = $pattern;
+                $data[$patternhash][$tmpLength][] = $pattern;
             }
         }
 
         unset($matches);
+
+        // sorting of the data is important to check the patterns later in the correct order, because
+        // we need to check the most specific (=longest) patterns first, and the least specific
+        // (".*" for "Default Browser")  last.
+        //
+        // sort by pattern start to group them
+        ksort($data);
+        // and then by pattern length (longest first)
+        foreach (array_keys($data) as $key) {
+            krsort($data[$key]);
+        }
 
         // write optimized file (grouped by the first character of the has, generated from the pattern
         // start) with multiple patterns joined by tabs. this is to speed up loading of the data (small
@@ -210,8 +225,8 @@ class IniParser
         // us to search for multiple patterns in one preg_match call for a fast first search
         // (3-10 faster), followed by a detailed search for each single pattern.
         $contents = array();
-        foreach ($data as $patternhash => $tmpPatterns) {
-            if (empty($tmpPatterns)) {
+        foreach ($data as $patternhash => $tmpEntries) {
+            if (empty($tmpEntries)) {
                 continue;
             }
 
@@ -221,13 +236,16 @@ class IniParser
                 $contents[$subkey] = array();
             }
 
-            for ($i = 0, $j = ceil(count($tmpPatterns) / self::COUNT_PATTERN); $i < $j; $i++) {
-                $tmpJoinPatterns = implode(
-                    "\t",
-                    array_slice($tmpPatterns, ($i * self::COUNT_PATTERN), self::COUNT_PATTERN)
-                );
+            foreach ($tmpEntries as $tmpLength => $tmpPatterns) {
+                if (empty($tmpPatterns)) {
+                    continue;
+                }
 
-                $contents[$subkey][] = $patternhash . "\t" . $tmpJoinPatterns;
+                $chunks = array_chunk($tmpPatterns, self::COUNT_PATTERN);
+
+                foreach ($chunks as $chunk) {
+                    $contents[$subkey][] = $patternhash . "\t" . $tmpLength . "\t" . implode("\t", $chunk);
+                }
             }
         }
 

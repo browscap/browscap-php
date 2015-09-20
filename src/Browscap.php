@@ -193,8 +193,12 @@ class Browscap
     public function getParser()
     {
         if (null === $this->parser) {
-            $patternHelper = new Parser\Helper\GetPattern($this->getCache(), $this->getLogger());
-            $dataHelper    = new Parser\Helper\GetData($this->getCache(), $this->getLogger(), new Quoter());
+            $cache  = $this->getCache();
+            $logger = $this->getLogger();
+            $quoter = new Quoter();
+
+            $patternHelper = new Parser\Helper\GetPattern($cache, $logger);
+            $dataHelper    = new Parser\Helper\GetData($cache, $logger, $quoter);
 
             $this->parser = new Parser\Ini($patternHelper, $dataHelper, $this->getFormatter());
         }

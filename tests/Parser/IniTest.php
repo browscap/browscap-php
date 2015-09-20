@@ -2,6 +2,9 @@
 
 namespace BrowscapPHPTest\Parser;
 
+use BrowscapPHP\Helper\Quoter;
+use BrowscapPHP\Parser\Helper\GetData;
+use BrowscapPHP\Parser\Helper\GetPattern;
 use BrowscapPHP\Parser\Ini;
 
 /**
@@ -50,11 +53,19 @@ class IniTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        /** @var \BrowscapPHP\Parser\Helper\GetPattern $helper */
-        $patternHelper = $this->getMock('\BrowscapPHP\Parser\Helper\GetPattern', array(), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
 
-        /** @var \BrowscapPHP\Parser\Helper\GetPattern $helper */
-        $dataHelper = $this->getMock('\BrowscapPHP\Parser\Helper\GetData', array(), array(), '', false);
+        /** @var \Monolog\Logger $logger */
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+
+        /** @var \BrowscapPHP\Helper\Quoter $quoter */
+        $quoter = $this->getMock('\BrowscapPHP\Helper\Quoter', array(), array(), '', false);
+
+        /** @var \BrowscapPHP\Parser\Helper\GetPattern $patternHelper */
+        $patternHelper = new GetPattern($cache, $logger);
+
+        /** @var \BrowscapPHP\Parser\Helper\GetData $dataHelper */
+        $dataHelper = new GetData($cache, $logger, $quoter);
 
         /** @var \BrowscapPHP\Formatter\PhpGetBrowser $formatter */
         $formatter = $this->getMock('\BrowscapPHP\Formatter\PhpGetBrowser', array(), array(), '', false);

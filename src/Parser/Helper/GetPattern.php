@@ -87,6 +87,7 @@ class GetPattern implements GetPatternInterface
     public function getPatterns($userAgent)
     {
         $starts = Pattern::getHashForPattern($userAgent, true);
+        $length = strlen($userAgent);
 
         // add special key to fall back to the default browser
         $starts[] = str_repeat('z', 32);
@@ -117,11 +118,19 @@ class GetPattern implements GetPatternInterface
                 continue;
             }
 
+            $found = false;
+
             foreach ($file as $buffer) {
-                list($tmpBuffer, $patterns) = explode("\t", $buffer, 2);
+                list($tmpBuffer, $len, $patterns) = explode("\t", $buffer, 3);
 
                 if ($tmpBuffer === $tmpStart) {
-                    yield trim($patterns);
+                    if ($len <= $length) {
+                        yield trim($patterns);
+                    }
+
+                    $found = true;
+                } elseif ($found === true) {
+                    break;
                 }
             }
         }
