@@ -76,8 +76,7 @@ class Ini implements ParserInterface
         GetPatternInterface $patternHelper,
         GetDataInterface $dataHelper,
         FormatterInterface $formatter
-    )
-    {
+    ) {
         $this->patternHelper = $patternHelper;
         $this->dataHelper    = $dataHelper;
         $this->formatter     = $formatter;
