@@ -621,8 +621,8 @@ class Browscap
 
         $iniContent = file_get_contents($ini_path);
 
-        //$this->createCacheOldWay($iniContent, true);
-        $this->createCacheNewWay($iniContent);
+        $this->createCacheOldWay($iniContent);
+        //$this->createCacheNewWay($iniContent);
 
         // Write out new cache file
         $dir = dirname($cache_path);
