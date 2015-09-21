@@ -496,6 +496,8 @@ Type=',
      */
     public function testCreateCache($content)
     {
+        self::markTestSkipped('to be removed');
+        
         $cacheDir = $this->createCacheDir();
 
         $class  = new ReflectionClass('\\phpbrowscap\\Browscap');
