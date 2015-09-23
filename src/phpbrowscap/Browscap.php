@@ -621,8 +621,8 @@ class Browscap
 
         $iniContent = file_get_contents($ini_path);
 
-        $this->createCacheOldWay($iniContent);
-        //$this->createCacheNewWay($iniContent);
+        //$this->createCacheOldWay($iniContent);
+        $this->createCacheNewWay($iniContent);
 
         // Write out new cache file
         $dir = dirname($cache_path);
@@ -636,7 +636,7 @@ class Browscap
             throw new Exception('opening temporary file failed');
         }
 
-        if (false === $this->_buildCache($fileRes)) {
+        if (false === fwrite($fileRes, $this->_buildCache())) {
             // writing to the temparary file failed
             throw new Exception('writing to temporary file failed');
         }
@@ -1097,11 +1097,9 @@ class Browscap
     /**
      * Parses the array to cache and writes the resulting PHP string to disk
      *
-     * @param resource $fileRes File ressource to write to
-     *
      * @return boolean False on write error, true otherwise
      */
-    protected function _buildCache($fileRes)
+    protected function _buildCache()
     {
         $content = sprintf(
             "<?php\n\$source_version=%s;\n\$cache_version=%s",
@@ -1109,49 +1107,19 @@ class Browscap
             "'" . self::CACHE_FILE_VERSION . "'"
         );
 
-        if (false === fwrite($fileRes, $content)) {
-            // write error
-            return false;
-        }
+        $content .= ";\n\$properties=";
+        $content .= $this->_array2string($this->_properties);
 
-        if (false === fwrite($fileRes, ";\n\$properties=")) {
-            // write error
-            return false;
-        }
-        if (false === $this->_array2string($this->_properties, $fileRes)) {
-            // write error
-            return false;
-        }
-        if (false === fwrite($fileRes, ";\n\$browsers=")) {
-            // write error
-            return false;
-        }
-        if (false === $this->_array2string($this->_browsers, $fileRes)) {
-            // write error
-            return false;
-        }
-        if (false === fwrite($fileRes, ";\n\$userAgents=")) {
-            // write error
-            return false;
-        }
-        if (false === $this->_array2string($this->_userAgents, $fileRes)) {
-            // write error
-            return false;
-        }
-        if (false === fwrite($fileRes, ";\n\$patterns=")) {
-            // write error
-            return false;
-        }
-        if (false === $this->_array2string($this->_patterns, $fileRes)) {
-            // write error
-            return false;
-        }
-        if (false === fwrite($fileRes, ";\n")) {
-            // write error
-            return false;
-        }
+        $content .= ";\n\$browsers=";
+        $content .= $this->_array2string($this->_browsers);
 
-        return true;
+        $content .= ";\n\$userAgents=";
+        $content .= $this->_array2string($this->_userAgents);
+
+        $content .= ";\n\$patterns=";
+        $content .= $this->_array2string($this->_patterns) . ";\n";
+
+        return $content;
     }
 
     /**
@@ -1302,24 +1270,23 @@ class Browscap
      * var_export one as the internal PHP function does not strip whitespace or
      * convert strings to numbers.
      *
-     * @param array    $array   the array to parse and convert
-     * @param resource $fileRes Ressource to write the parsed string to
+     * @param array $array The array to parse and convert
      *
      * @return boolean False on write error, true otherwise
      */
-    protected function _array2string($array, $fileRes)
+    protected function _array2string($array)
     {
-        if (false === fwrite($fileRes, "array(\n")) {
-            // write error
-            return false;
-        }
+        $content = "array(\n";
+
         foreach ($array as $key => $value) {
             if (is_int($key)) {
                 $key = '';
-            } elseif (ctype_digit((string) $key) || '.0' === substr($key, -2)) {
-                $key = intval($key) . '=>';
+            } elseif (ctype_digit((string) $key)) {
+                $key = intval($key) . ' => ';
+            } elseif ('.0' === substr($key, -2) && !preg_match('/[^\d\.]/', $key)) {
+                $key = intval($key) . ' => ';
             } else {
-                $key = "'" . str_replace("'", "\'", $key) . "'=>";
+                $key = "'" . str_replace("'", "\'", $key) . "' => ";
             }
 
             if (is_array($value)) {
@@ -1330,17 +1297,12 @@ class Browscap
                 $value = "'" . str_replace("'", "\'", $value) . "'";
             }
 
-            if (false === fwrite($fileRes, $key . $value . ",\n")) {
-                // write error
-                return false;
-            }
-        }
-        if (false === fwrite($fileRes, "\n)")) {
-            // write error
-            return false;
+            $content .= $key . $value . ",\n";
         }
 
-        return true;
+        $content .= "\n)";
+
+        return $content;
     }
 
     /**

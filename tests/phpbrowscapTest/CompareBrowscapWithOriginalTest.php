@@ -103,15 +103,21 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         self::$object->updateCache();
     }
 
+    /**
+     * @throws \Exception
+     * @throws \phpbrowscap\Exception
+     * @group check-properties
+     */
     public function testCheckProperties()
     {
         $libProperties = get_object_vars(get_browser('x'));
         $bcProperties  = get_object_vars(self::$object->getBrowser('x'));
-
+        //var_export($libProperties);
+        //var_export($bcProperties);
         unset($bcProperties['Parents']);
         unset($bcProperties['browser_name']);
         unset($libProperties['browser_name']);
-        unset($bcProperties['renderingengine_description']);
+        unset($bcProperties['RenderingEngine_Description']);
         unset($libProperties['renderingengine_description']);
 
         $libPropertyKeys = array_map('strtolower', array_keys($libProperties));
