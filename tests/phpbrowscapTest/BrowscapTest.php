@@ -237,7 +237,7 @@ class BrowscapTest
     }
 
     /**
-     *
+     * @group testCache
      */
     public function testArray2string()
     {
@@ -518,11 +518,11 @@ Type=',
         $userAgents = $varUas->getValue($browscap);
         $patterns   = $varPatt->getValue($browscap);
         $version    = (string) $varVersion->getValue($browscap);
-        var_export($version);
-        var_export($properties);
-        var_export($patterns);
-        var_export($browsers);
-        var_export($userAgents);
+        //var_export($version);
+        //var_export($properties);
+        //var_export($patterns);
+        //var_export($browsers);
+        //var_export($userAgents);
 
         $newMethod = $class->getMethod('createCacheNewWay');
         $newMethod->setAccessible(true);
@@ -554,23 +554,23 @@ Type=',
 
         $newVersion = (string) $varNewVersion->getValue($browscap);
         self::assertSame($version, $newVersion);
-        var_export($newVersion);
+        //var_export($newVersion);
 
         $newProperties = $varNewProp->getValue($browscap);
         self::assertSame($properties, $newProperties);
-        var_export($newProperties);
+        //var_export($newProperties);
 
         $newPatterns    = $varNewPatt->getValue($browscap);
         self::assertCount(count($patterns), $newPatterns);
-        var_export($newPatterns);
+        //var_export($newPatterns);
 
         $newBrowsers = $varNewBrow->getValue($browscap);
         self::assertCount(count($browsers), $newBrowsers);
-        var_export($newBrowsers);
+        //var_export($newBrowsers);
 
         $newUserAgents = $varNewUas->getValue($browscap);
         self::assertCount(count($userAgents), $newUserAgents);
-        var_export($newUserAgents);
+        //var_export($newUserAgents);
     }
 
     /**
@@ -597,7 +597,7 @@ Type=',
 
     /**
      * @dataProvider dataBuildCache
-     * @group        testParsing
+     * @group        testCache
      *
      * @param array  $properties
      * @param array  $browsers
@@ -643,9 +643,9 @@ Type=',
         $varPatt->setValue($browscap, $patterns);
         $varVersion->setValue($browscap, $version);
 
-        $return = $method->invoke($browscap);
+        $return = trim($method->invoke($browscap));
 
-        self::assertSame($expected, $return);
+        self::assertSame($expected, $return);exit;
     }
 
     /**
@@ -659,12 +659,12 @@ Type=',
         for ($i = 1; $i <= 2; $i++) {
             // array $properties, array $browsers, array $userAgents, array $patterns, $version, $expected
             $data[$i] = array(
-                'properties' => require $i . '.properties.php',
-                'browsers'   => require $i . '.browsers.php',
-                'userAgents' => require $i . '.userAgents.php',
-                'patterns'   => require $i . '.patterns.php',
-                'version'    => require $i . '.version.php',
-                'expected'   => require $i . '.expected.php',
+                'properties' => require 'tests/data/buildCache/' . $i . '.properties.php',
+                'browsers'   => require 'tests/data/buildCache/' . $i . '.browsers.php',
+                'userAgents' => require 'tests/data/buildCache/' . $i . '.userAgents.php',
+                'patterns'   => require 'tests/data/buildCache/' . $i . '.patterns.php',
+                'version'    => require 'tests/data/buildCache/' . $i . '.version.php',
+                'expected'   => trim(file_get_contents('tests/data/buildCache/' . $i . '.expected.php')),
             );
         }
 
