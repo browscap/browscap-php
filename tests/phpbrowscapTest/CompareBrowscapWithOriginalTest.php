@@ -76,8 +76,6 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 
     /**
      * This method is called before the first test of this test class is run.
-     *
-     * @since Method available since Release 3.4.0
      */
     public static function setUpBeforeClass()
     {
@@ -112,8 +110,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
     {
         $libProperties = get_object_vars(get_browser('x'));
         $bcProperties  = get_object_vars(self::$object->getBrowser('x'));
-        //var_export($libProperties);
-        //var_export($bcProperties);
+
         unset($bcProperties['Parents']);
         unset($bcProperties['browser_name']);
         unset($libProperties['browser_name']);

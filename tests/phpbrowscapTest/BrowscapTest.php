@@ -518,11 +518,6 @@ Type=',
         $userAgents = $varUas->getValue($browscap);
         $patterns   = $varPatt->getValue($browscap);
         $version    = (string) $varVersion->getValue($browscap);
-        //var_export($version);
-        //var_export($properties);
-        //var_export($patterns);
-        //var_export($browsers);
-        //var_export($userAgents);
 
         $newMethod = $class->getMethod('createCacheNewWay');
         $newMethod->setAccessible(true);
@@ -554,23 +549,18 @@ Type=',
 
         $newVersion = (string) $varNewVersion->getValue($browscap);
         self::assertSame($version, $newVersion);
-        //var_export($newVersion);
 
         $newProperties = $varNewProp->getValue($browscap);
         self::assertSame($properties, $newProperties);
-        //var_export($newProperties);
 
         $newPatterns    = $varNewPatt->getValue($browscap);
         self::assertCount(count($patterns), $newPatterns);
-        //var_export($newPatterns);
 
         $newBrowsers = $varNewBrow->getValue($browscap);
         self::assertCount(count($browsers), $newBrowsers);
-        //var_export($newBrowsers);
 
         $newUserAgents = $varNewUas->getValue($browscap);
         self::assertCount(count($userAgents), $newUserAgents);
-        //var_export($newUserAgents);
     }
 
     /**
@@ -643,9 +633,9 @@ Type=',
         $varPatt->setValue($browscap, $patterns);
         $varVersion->setValue($browscap, $version);
 
-        $return = trim($method->invoke($browscap));
+        $return = $method->invoke($browscap);
 
-        self::assertSame($expected, $return);exit;
+        self::assertSame($expected, $return);
     }
 
     /**
@@ -664,7 +654,7 @@ Type=',
                 'userAgents' => require 'tests/data/buildCache/' . $i . '.userAgents.php',
                 'patterns'   => require 'tests/data/buildCache/' . $i . '.patterns.php',
                 'version'    => require 'tests/data/buildCache/' . $i . '.version.php',
-                'expected'   => trim(file_get_contents('tests/data/buildCache/' . $i . '.expected.php')),
+                'expected'   => file_get_contents('tests/data/buildCache/' . $i . '.expected.php'),
             );
         }
 
