@@ -857,7 +857,7 @@ class Browscap
         }
 
         $patternList = $this->deduplicatePattern($tmpPatterns);
-
+        /*
         $patternArray = array();
 
         foreach (array_keys($patternList) as $pattern) {
@@ -875,6 +875,49 @@ class Browscap
         }
 
         $this->_patterns = $sortedPatternList;
+        /**/
+        $positionIndex = array();
+        $lengthIndex   = array();
+        $shortLength   = array();
+        $patternArray  = array();
+        $counter       = 0;
+
+        foreach (array_keys($patternList) as $pattern) {
+            $decodedPattern = str_replace('(\d)', 0, $this->_pregUnQuote($pattern, false));
+
+            if ($decodedPattern === 'DefaultProperties') {
+                $positionIndex[$pattern] = 0;
+            } elseif ($decodedPattern === '*') {
+                $positionIndex[$pattern] = 2;
+            } else {
+                $positionIndex[$pattern] = 1;
+            }
+
+            $lengthIndex[$pattern]  = strlen($decodedPattern);
+            $shortLength[$pattern]  = strlen(str_replace(array('*', '?'), '', $decodedPattern));
+            $patternArray[$pattern] = $counter;
+
+            $counter++;
+            $patternArray[$pattern] = $decodedPattern;
+        }
+
+        array_multisort(
+            $positionIndex,
+            SORT_ASC,
+            SORT_NUMERIC,
+            $lengthIndex,
+            SORT_DESC,
+            SORT_NUMERIC,
+            $shortLength,
+            SORT_DESC,
+            SORT_NUMERIC,
+            $patternArray,
+            SORT_ASC,
+            SORT_NUMERIC,
+            $patternList
+        );
+
+        $this->_patterns = $patternList;
     }
 
     /**
