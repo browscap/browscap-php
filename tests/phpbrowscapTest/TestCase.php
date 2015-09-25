@@ -43,14 +43,6 @@ class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected $cacheDir;
 
-    /**
-     * Sets up the fixture, for example, open a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
-    {
-    }
-
     protected function createCacheDir()
     {
         $cacheDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'browscap_testing';
@@ -79,10 +71,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function removeCacheDir()
     {
         if (isset($this->cacheDir) && is_dir($this->cacheDir)) {
-            if (false === @rmdir($this->cacheDir)) {
-                throw new \RuntimeException(sprintf('Unable to remove the "%s" directory', $this->cacheDir));
-            }
-
+            @rmdir($this->cacheDir);
             $this->cacheDir = null;
         }
     }

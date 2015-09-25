@@ -352,36 +352,35 @@ class Browscap
                     continue;
                 }
 
-                $pattern_data = $this->_patterns[$pattern];
+                $patternData = $this->_patterns[$pattern];
 
-                if (1 == count($matches)) {
+                if (1 === count($matches)) {
                     // standard match
-                    $key = $pattern_data;
-
-                    $simple_match = true;
+                    $key         = $patternData;
+                    $simpleMatch = true;
                 } else {
-                    $pattern_data = unserialize($pattern_data);
+                    $patternData = unserialize($patternData);
 
                     // match with numeric replacements
                     array_shift($matches);
 
-                    $match_string = self::COMPRESSION_PATTERN_START
+                    $matchString = self::COMPRESSION_PATTERN_START
                         . implode(self::COMPRESSION_PATTERN_DELIMITER, $matches);
 
-                    if (!isset($pattern_data[$match_string])) {
+                    if (!isset($patternData[$matchString])) {
                         // partial match - numbers are not present, but everything else is ok
                         continue;
                     }
 
-                    $key = $pattern_data[$match_string];
+                    $key = $patternData[$matchString];
 
-                    $simple_match = false;
+                    $simpleMatch = false;
                 }
 
                 $browser = array(
                     $user_agent, // Original useragent
                     trim(strtolower($pattern), self::REGEX_DELIMITER),
-                    $this->_pregUnQuote($pattern, $simple_match ? false : $matches)
+                    $this->_pregUnQuote($pattern, $simpleMatch ? false : $matches)
                 );
 
                 $browser = $value = $browser + unserialize($this->_browsers[$key]);
@@ -398,54 +397,6 @@ class Browscap
                 break 2;
             }
         }
-        /*
-        foreach ($this->_patterns as $pattern => $pattern_data) {
-            if (preg_match($pattern . 'i', $user_agent, $matches)) {
-                if (1 == count($matches)) {
-                    // standard match
-                    $key = $pattern_data;
-
-                    $simple_match = true;
-                } else {
-                    $pattern_data = unserialize($pattern_data);
-
-                    // match with numeric replacements
-                    array_shift($matches);
-
-                    $match_string = self::COMPRESSION_PATTERN_START
-                        . implode(self::COMPRESSION_PATTERN_DELIMITER, $matches);
-
-                    if (!isset($pattern_data[$match_string])) {
-                        // partial match - numbers are not present, but everything else is ok
-                        continue;
-                    }
-
-                    $key = $pattern_data[$match_string];
-
-                    $simple_match = false;
-                }
-
-                $browser = array(
-                    $user_agent, // Original useragent
-                    trim(strtolower($pattern), self::REGEX_DELIMITER),
-                    $this->_pregUnQuote($pattern, $simple_match ? false : $matches)
-                );
-
-                $browser = $value = $browser + unserialize($this->_browsers[$key]);
-
-                while (array_key_exists(3, $value)) {
-                    $value = unserialize($this->_browsers[$value[3]]);
-                    $browser += $value;
-                }
-
-                if (!empty($browser[3]) && array_key_exists($browser[3], $this->_userAgents)) {
-                    $browser[3] = $this->_userAgents[$browser[3]];
-                }
-
-                break;
-            }
-        }
-        /**/
 
         // Add the keys for each property
         $array = array();
@@ -456,11 +407,13 @@ class Browscap
                 $value = false;
             }
 
-            $tmp_key = $this->_properties[$key];
+            $propertyName = $this->_properties[$key];
+
             if ($this->lowercase) {
-                $tmp_key = strtolower($this->_properties[$key]);
+                $propertyName = strtolower($propertyName);
             }
-            $array[$tmp_key] = $value;
+
+            $array[$propertyName] = $value;
         }
 
         return $return_array ? $array : (object) $array;
@@ -809,7 +762,7 @@ class Browscap
 
         $userAgentsKeys = array_flip($patternPositions);
         foreach ($patternPositions as $position => $userAgent) {
-            if ('GJK_Browscap_Version' === $userAgent) {
+            if (self::BROWSCAP_VERSION_KEY === $userAgent) {
                 continue;
             }
 
@@ -819,7 +772,7 @@ class Browscap
                 || false !== strpos($userAgent, '*')
                 || false !== strpos($userAgent, '?')
             ) {
-                $pattern      = $this->_pregQuote($userAgent);
+                $pattern      = $this->_pregQuote(strtolower($userAgent));
                 $matches      = array();
                 $i            = $position - 1;
                 $countMatches = preg_match_all(
@@ -857,25 +810,7 @@ class Browscap
         }
 
         $patternList = $this->deduplicatePattern($tmpPatterns);
-        /*
-        $patternArray = array();
 
-        foreach (array_keys($patternList) as $pattern) {
-            $decodedPattern = str_replace('(\d)', 0, $this->_pregUnQuote($pattern, false));
-
-            $patternArray[$pattern] = $decodedPattern;
-        }
-
-        uasort($patternArray, array($this, 'compareBcStrings'));
-
-        $sortedPatternList = array();
-
-        foreach (array_keys($patternArray) as $pattern) {
-            $sortedPatternList[$pattern] = $patternList[$pattern];
-        }
-
-        $this->_patterns = $sortedPatternList;
-        /**/
         $positionIndex = array();
         $lengthIndex   = array();
         $shortLength   = array();
@@ -885,7 +820,8 @@ class Browscap
         foreach (array_keys($patternList) as $pattern) {
             $decodedPattern = str_replace('(\d)', 0, $this->_pregUnQuote($pattern, false));
 
-            if ($decodedPattern === 'DefaultProperties') {
+            // force "defaultproperties" (if available) to first position, and "*" to last position
+            if ($decodedPattern === 'defaultproperties') {
                 $positionIndex[$pattern] = 0;
             } elseif ($decodedPattern === '*') {
                 $positionIndex[$pattern] = 2;
@@ -893,12 +829,14 @@ class Browscap
                 $positionIndex[$pattern] = 1;
             }
 
-            $lengthIndex[$pattern]  = strlen($decodedPattern);
-            $shortLength[$pattern]  = strlen(str_replace(array('*', '?'), '', $decodedPattern));
+            // sort by length
+            $lengthIndex[$pattern] = strlen($decodedPattern);
+            $shortLength[$pattern] = strlen(str_replace(array('*', '?'), '', $decodedPattern));
+
+            // sort by original order
             $patternArray[$pattern] = $counter;
 
             $counter++;
-            $patternArray[$pattern] = $decodedPattern;
         }
 
         array_multisort(
