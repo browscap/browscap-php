@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 1998-2014 Browser Capabilities Project
+ * Copyright (c) 1998-2015 Browser Capabilities Project
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,7 +22,7 @@
  *
  * @category   Browscap-PHP
  * @package    Parser\Helper
- * @copyright  1998-2014 Browser Capabilities Project
+ * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  * @since      added with version 3.0
@@ -30,11 +30,8 @@
 
 namespace BrowscapPHP\Parser\Helper;
 
-use BrowscapPHP\Cache\BrowscapCache;
-use Psr\Log\LoggerInterface;
-
 /**
- * interface for the parser patternHelper
+ * includes general functions for the work with patterns
  *
  * @category   Browscap-PHP
  * @package    Parser\Helper
@@ -45,26 +42,67 @@ use Psr\Log\LoggerInterface;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  */
-interface GetPatternInterface
+class SubKey
 {
     /**
-     * class contructor
+     * Gets the subkey for the pattern cache file, generated from the given string
      *
-     * @param \BrowscapPHP\Cache\BrowscapCache $cache
-     * @param \Psr\Log\LoggerInterface         $logger
+     * @param  string $string
+     * @return string
      */
-    public function __construct(BrowscapCache $cache, LoggerInterface $logger);
+    public static function getPatternCacheSubkey($string)
+    {
+        return $string[0].$string[1];
+    }
 
     /**
-     * Gets some possible patterns that have to be matched against the user agent. With the given
-     * user agent string, we can optimize the search for potential patterns:
-     * - We check the first characters of the user agent (or better: a hash, generated from it)
-     * - We compare the length of the pattern with the length of the user agent
-     *   (the pattern cannot be longer than the user agent!)
+     * Gets all subkeys for the pattern cache files
      *
-     * @param string $userAgent
-     *
-     * @return \Iterator
+     * @return array
      */
-    public function getPatterns($userAgent);
+    public static function getAllPatternCacheSubkeys()
+    {
+        $subkeys = array();
+        $chars   = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
+
+        foreach ($chars as $charOne) {
+            foreach ($chars as $charTwo) {
+                $subkeys[$charOne . $charTwo] = '';
+            }
+        }
+
+        return $subkeys;
+    }
+
+    /**
+     * Gets the sub key for the ini parts cache file, generated from the given string
+     *
+     * @param string $string
+     * @return string
+     */
+    public static function getIniPartCacheSubKey($string)
+    {
+        return $string[0] . $string[1] . $string[2];
+    }
+
+    /**
+     * Gets all sub keys for the inipart cache files
+     *
+     * @return array
+     */
+    public static function getAllIniPartCacheSubKeys()
+    {
+        $subKeys = array();
+        $chars   = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
+
+        foreach ($chars as $charOne) {
+            foreach ($chars as $charTwo) {
+                foreach ($chars as $charThree) {
+                    $subKeys[] = $charOne . $charTwo . $charThree;
+                }
+            }
+        }
+
+        return $subKeys;
+    }
 }

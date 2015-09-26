@@ -58,4 +58,38 @@ class Quoter
         // the \\x replacement is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
         return str_replace(array('\*', '\?', '\\x'), array('.*', '.', '\\\\x'), $pattern);
     }
+
+    /**
+     * Reverts the quoting of a pattern.
+     *
+     * @param string $pattern
+     * @return string
+     */
+    public function pregUnQuote($pattern)
+    {
+        // Fast check, because most parent pattern like 'DefaultProperties' don't need a replacement
+        if (preg_match('/[^a-z\s]/i', $pattern)) {
+            // Undo the \\x replacement, that is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
+            // @source https://github.com/browscap/browscap-php
+            $pattern = preg_replace(
+                ['/(?<!\\\\)\\.\\*/', '/(?<!\\\\)\\./', '/(?<!\\\\)\\\\x/'],
+                ['\\*', '\\?', '\\x'],
+                $pattern
+            );
+
+            // Undo preg_quote
+            $pattern = str_replace(
+                array(
+                    "\\\\", "\\+", "\\*", "\\?", "\\[", "\\^", "\\]", "\\\$", "\\(", "\\)", "\\{", "\\}", "\\=",
+                    "\\!", "\\<", "\\>", "\\|", "\\:", "\\-", "\\.", "\\/"
+                ),
+                array(
+                    "\\", "+", "*", "?", "[", "^", "]", "\$", "(", ")", "{", "}", "=", "!", "<", ">", "|", ":",
+                    "-", ".", "/"
+                ),
+                $pattern
+            );
+        }
+        return $pattern;
+    }
 }

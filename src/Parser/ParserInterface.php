@@ -30,8 +30,8 @@
 
 namespace BrowscapPHP\Parser;
 
-use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Formatter\FormatterInterface;
+use BrowscapPHP\Parser\Helper\GetDataInterface;
 use BrowscapPHP\Parser\Helper\GetPatternInterface;
 
 /**
@@ -49,53 +49,24 @@ use BrowscapPHP\Parser\Helper\GetPatternInterface;
 interface ParserInterface
 {
     /**
-     * @param \BrowscapPHP\Parser\Helper\GetPatternInterface $helper
+     * class constructor
      *
-     * @return \BrowscapPHP\Parser\Ini
+     * @param \BrowscapPHP\Parser\Helper\GetPatternInterface $patternHelper
+     * @param \BrowscapPHP\Parser\Helper\GetDataInterface    $dataHelper
+     * @param \BrowscapPHP\Formatter\FormatterInterface      $formatter
      */
-    public function setHelper(GetPatternInterface $helper);
-
-    /**
-     * @return \BrowscapPHP\Parser\Helper\GetPatternInterface
-     */
-    public function getHelper();
-
-    /**
-     * Set theformatter instance to use for the getBrowser() result
-     *
-     * @param \BrowscapPHP\Formatter\FormatterInterface $formatter
-     *
-     * @return \BrowscapPHP\Parser\Ini
-     */
-    public function setFormatter(FormatterInterface $formatter);
-
-    /**
-     * @return \BrowscapPHP\Formatter\FormatterInterface
-     */
-    public function getFormatter();
-
-    /**
-     * Gets a cache instance
-     *
-     * @return \BrowscapPHP\Cache\BrowscapCache
-     */
-    public function getCache();
-
-    /**
-     * Sets a cache instance
-     *
-     * @param \BrowscapPHP\Cache\BrowscapCache $cache
-     *
-     * @return \BrowscapPHP\Parser\Ini
-     */
-    public function setCache(BrowscapCache $cache);
+    public function __construct(
+        GetPatternInterface $patternHelper,
+        GetDataInterface $dataHelper,
+        FormatterInterface $formatter
+    );
 
     /**
      * Gets the browser data formatr for the given user agent
      * (or null if no data avaailble, no even the default browser)
      *
-     * @param  string                  $user_agent
+     * @param  string                  $userAgent
      * @return FormatterInterface|null
      */
-    public function getBrowser($user_agent);
+    public function getBrowser($userAgent);
 }

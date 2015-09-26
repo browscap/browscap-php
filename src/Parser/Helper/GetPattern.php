@@ -54,55 +54,23 @@ class GetPattern implements GetPatternInterface
      */
     private $cache = null;
 
-    /** @var \Psr\Log\LoggerInterface */
+    /**
+     * a logger instance
+     *
+     * @var \Psr\Log\LoggerInterface
+     */
     private $logger = null;
 
     /**
-     * Gets a cache instance
-     *
-     * @return \BrowscapPHP\Cache\BrowscapCache
-     */
-    public function getCache()
-    {
-        return $this->cache;
-    }
-
-    /**
-     * Sets a cache instance
+     * class contructor
      *
      * @param \BrowscapPHP\Cache\BrowscapCache $cache
-     *
-     * @return \BrowscapPHP\Parser\Helper\GetPattern
+     * @param \Psr\Log\LoggerInterface         $logger
      */
-    public function setCache(BrowscapCache $cache)
+    public function __construct(BrowscapCache $cache, LoggerInterface $logger)
     {
-        $this->cache = $cache;
-
-        return $this;
-    }
-
-    /**
-     * Sets a logger instance
-     *
-     * @param \Psr\Log\LoggerInterface $logger
-     *
-     * @return \BrowscapPHP\Parser\Helper\GetPattern
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
+        $this->cache  = $cache;
         $this->logger = $logger;
-
-        return $this;
-    }
-
-    /**
-     * Returns a logger instance
-     *
-     * @return \Psr\Log\LoggerInterface $logger
-     */
-    public function getLogger()
-    {
-        return $this->logger;
     }
 
     /**
@@ -118,8 +86,8 @@ class GetPattern implements GetPatternInterface
      */
     public function getPatterns($userAgent)
     {
-        $starts = Pattern::getPatternStart($userAgent, true);
-        $length = Pattern::getPatternLength($userAgent);
+        $starts = Pattern::getHashForPattern($userAgent, true);
+        $length = strlen($userAgent);
 
         // add special key to fall back to the default browser
         $starts[] = str_repeat('z', 32);
@@ -127,34 +95,39 @@ class GetPattern implements GetPatternInterface
         // get patterns, first for the given browser and if that is not found,
         // for the default browser (with a special key)
         foreach ($starts as $tmpStart) {
-            $tmpSubkey = Pattern::getPatternCacheSubkey($tmpStart);
+            $tmpSubkey = SubKey::getPatternCacheSubkey($tmpStart);
+
+            if (!$this->cache->hasItem('browscap.patterns.'.$tmpSubkey, true)) {
+                $this->logger->debug('cache key "browscap.patterns.'.$tmpSubkey.'" not found');
+
+                continue;
+            }
             $success   = null;
 
-            $file = $this->getCache()->getItem('browscap.patterns.'.$tmpSubkey, true, $success);
+            $file = $this->cache->getItem('browscap.patterns.'.$tmpSubkey, true, $success);
 
             if (!$success) {
-                $this->getLogger()->debug('cache key "browscap.patterns.'.$tmpSubkey.'" not found');
+                $this->logger->debug('cache key "browscap.patterns.'.$tmpSubkey.'" not found');
+
                 continue;
             }
 
             if (!is_array($file) || !count($file)) {
-                $this->getLogger()->debug('cache key "browscap.patterns.'.$tmpSubkey.'" was empty');
+                $this->logger->debug('cache key "browscap.patterns.'.$tmpSubkey.'" was empty');
+
                 continue;
             }
 
             $found = false;
 
             foreach ($file as $buffer) {
-                $tmpBuffer = substr($buffer, 0, 32);
-                if ($tmpBuffer === $tmpStart) {
-                    // get length of the pattern
-                    $len = (int) strstr(substr($buffer, 33, 4), ' ', true);
+                list($tmpBuffer, $len, $patterns) = explode("\t", $buffer, 3);
 
-                    // the user agent must be longer than the pattern without place holders
+                if ($tmpBuffer === $tmpStart) {
                     if ($len <= $length) {
-                        list(, $patterns) = explode(' ', $buffer, 2);
                         yield trim($patterns);
                     }
+
                     $found = true;
                 } elseif ($found === true) {
                     break;
@@ -162,6 +135,6 @@ class GetPattern implements GetPatternInterface
             }
         }
 
-        yield false;
+        yield '';
     }
 }

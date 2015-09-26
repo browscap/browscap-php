@@ -39,7 +39,7 @@ use BrowscapPHP\Formatter\PhpGetBrowser;
 class PhpGetBrowserTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Browscap\Fotmatter\PhpGetBrowser
+     * @var \BrowscapPHP\Formatter\PhpGetBrowser
      */
     private $object = null;
 

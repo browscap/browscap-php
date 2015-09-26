@@ -62,6 +62,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetFormatter()
     {
+        /** @var \BrowscapPHP\Formatter\PhpGetBrowser $formatter */
         $formatter = $this->getMock('\BrowscapPHP\Formatter\PhpGetBrowser', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setFormatter($formatter));
@@ -81,6 +82,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetCache()
     {
+        /** @var \BrowscapPHP\Cache\BrowscapCache $cache */
         $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setCache($cache));
@@ -92,6 +94,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetCacheWithAdapter()
     {
+        /** @var \WurflCache\Adapter\Memory $cache */
         $cache = $this->getMock('\WurflCache\Adapter\Memory', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setCache($cache));
@@ -120,33 +123,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetParser()
     {
-        $parser = $this->getMock(
-            '\BrowscapPHP\Parser\Ini',
-            array('setHelper', 'setFormatter', 'setCache', 'setLogger'),
-            array(),
-            '',
-            false
-        );
-        $parser
-            ->expects(self::once())
-            ->method('setHelper')
-            ->will(self::returnSelf())
-        ;
-        $parser
-            ->expects(self::once())
-            ->method('setFormatter')
-            ->will(self::returnSelf())
-        ;
-        $parser
-            ->expects(self::once())
-            ->method('setCache')
-            ->will(self::returnSelf())
-        ;
-        $parser
-            ->expects(self::once())
-            ->method('setLogger')
-            ->will(self::returnSelf())
-        ;
+        $parser = $this->getMock('\BrowscapPHP\Parser\Ini', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setParser($parser));
         self::assertSame($parser, $this->object->getParser());

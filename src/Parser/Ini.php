@@ -30,13 +30,9 @@
 
 namespace BrowscapPHP\Parser;
 
-use BrowscapPHP\Cache\BrowscapCache;
-use BrowscapPHP\Data\PropertyHolder;
 use BrowscapPHP\Formatter\FormatterInterface;
-use BrowscapPHP\Helper\Converter;
-use BrowscapPHP\Helper\Quoter;
+use BrowscapPHP\Parser\Helper\GetDataInterface;
 use BrowscapPHP\Parser\Helper\GetPatternInterface;
-use Psr\Log\LoggerInterface;
 
 /**
  * Ini parser class (compatible with PHP 5.3+)
@@ -53,21 +49,14 @@ use Psr\Log\LoggerInterface;
 class Ini implements ParserInterface
 {
     /**
-     * The key to search for in the INI file to find the browscap settings
-     */
-    const BROWSCAP_VERSION_KEY = 'GJK_Browscap_Version';
-
-    /**
-     * The cache instance
-     *
-     * @var \BrowscapPHP\Cache\BrowscapCache
-     */
-    private $cache = null;
-
-    /**
      * @var Helper\GetPatternInterface
      */
-    private $helper = null;
+    private $patternHelper = null;
+
+    /**
+     * @var Helper\GetDataInterface
+     */
+    private $dataHelper = null;
 
     /**
      * Formatter to use
@@ -76,97 +65,21 @@ class Ini implements ParserInterface
      */
     private $formatter = null;
 
-    /** @var \Psr\Log\LoggerInterface */
-    private $logger = null;
-
     /**
-     * @param \BrowscapPHP\Parser\Helper\GetPatternInterface $helper
+     * class constructor
      *
-     * @return \BrowscapPHP\Parser\Ini
+     * @param \BrowscapPHP\Parser\Helper\GetPatternInterface $patternHelper
+     * @param \BrowscapPHP\Parser\Helper\GetDataInterface    $dataHelper
+     * @param \BrowscapPHP\Formatter\FormatterInterface      $formatter
      */
-    public function setHelper(GetPatternInterface $helper)
-    {
-        $this->helper = $helper;
-
-        return $this;
-    }
-
-    /**
-     * @return \BrowscapPHP\Parser\Helper\GetPatternInterface
-     */
-    public function getHelper()
-    {
-        return $this->helper;
-    }
-
-    /**
-     * Set the formatter instance to use for the getBrowser() result
-     *
-     * @param \BrowscapPHP\Formatter\FormatterInterface $formatter
-     *
-     * @return \BrowscapPHP\Parser\Ini
-     */
-    public function setFormatter(FormatterInterface $formatter)
-    {
-        $this->formatter = $formatter;
-
-        return $this;
-    }
-
-    /**
-     * @return \BrowscapPHP\Formatter\FormatterInterface
-     */
-    public function getFormatter()
-    {
-        return $this->formatter;
-    }
-
-    /**
-     * Gets a cache instance
-     *
-     * @return \BrowscapPHP\Cache\BrowscapCache
-     */
-    public function getCache()
-    {
-        return $this->cache;
-    }
-
-    /**
-     * Sets a cache instance
-     *
-     * @param \BrowscapPHP\Cache\BrowscapCache $cache
-     *
-     * @return \BrowscapPHP\Parser\Ini
-     */
-    public function setCache(BrowscapCache $cache)
-    {
-        $this->cache = $cache;
-
-        return $this;
-    }
-
-    /**
-     * Sets a logger instance
-     *
-     * @param \Psr\Log\LoggerInterface $logger
-     *
-     * @return \BrowscapPHP\Parser\Ini
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-
-        return $this;
-    }
-
-    /**
-     * Returns a logger instance
-     *
-     * @return \Psr\Log\LoggerInterface $logger
-     */
-    public function getLogger()
-    {
-        return $this->logger;
+    public function __construct(
+        GetPatternInterface $patternHelper,
+        GetDataInterface $dataHelper,
+        FormatterInterface $formatter
+    ) {
+        $this->patternHelper = $patternHelper;
+        $this->dataHelper    = $dataHelper;
+        $this->formatter     = $formatter;
     }
 
     /**
@@ -178,17 +91,13 @@ class Ini implements ParserInterface
      */
     public function getBrowser($userAgent)
     {
-        $userAgent    = strtolower($userAgent);
-        $formatter    = null;
-        $quoterHelper = new Quoter();
+        $userAgent = strtolower($userAgent);
+        $formatter = null;
 
-        foreach ($this->getHelper()->getPatterns($userAgent) as $patterns) {
-            $result = preg_match(
-                '/^(?:'.str_replace("\t", ')|(?:', $quoterHelper->pregQuote($patterns, '/')).')$/i',
-                $userAgent
-            );
+        foreach ($this->patternHelper->getPatterns($userAgent) as $patterns) {
+            $patternToMatch = '/^(?:'.str_replace("\t", ')|(?:', $patterns).')$/i';
 
-            if (!$result) {
+            if (!preg_match($patternToMatch, $userAgent)) {
                 continue;
             }
 
@@ -196,12 +105,30 @@ class Ini implements ParserInterface
             $pattern = strtok($patterns, "\t");
 
             while ($pattern !== false) {
-                $quotedPattern = '/^'.$quoterHelper->pregQuote($pattern, '/').'$/i';
+                $pattern       = str_replace('[\d]', '(\d)', $pattern);
+                $quotedPattern = '/^' . $pattern . '$/i';
+                $matches       = array();
 
-                if (preg_match($quotedPattern, $userAgent)) {
-                    $formatter = $this->getFormatter();
-                    $formatter->setData($this->getSettings($pattern));
-                    break 2;
+                if (preg_match($quotedPattern, $userAgent, $matches)) {
+                    // Insert the digits back into the pattern, so that we can search the settings for it
+                    if (count($matches) > 1) {
+                        array_shift($matches);
+                        foreach ($matches as $oneMatch) {
+                            $numPos  = strpos($pattern, '(\d)');
+                            $pattern = substr_replace($pattern, $oneMatch, $numPos, 4);
+                        }
+                    }
+
+                    // Try to get settings - as digits have been replaced to speed up the pattern search (up to 90 faster),
+                    // we won't always find the data in the first step - so check if settings have been found and if not,
+                    // search for the next pattern.
+                    $settings = $this->dataHelper->getSettings($pattern);
+
+                    if (count($settings) > 0) {
+                        $formatter = $this->formatter;
+                        $formatter->setData($settings);
+                        break 2;
+                    }
                 }
 
                 $pattern = strtok("\t");
@@ -209,125 +136,5 @@ class Ini implements ParserInterface
         }
 
         return $formatter;
-    }
-
-    /**
-     * Gets the settings for a given pattern (method calls itself to
-     * get the data from the parent patterns)
-     *
-     * @param  string $pattern
-     * @param  array  $settings
-     * @return array
-     */
-    private function getSettings($pattern, array $settings = array())
-    {
-        // set some additional data
-        if (count($settings) === 0) {
-            $quoterHelper = new Quoter();
-
-            $settings['browser_name_regex']   = '/^'.$quoterHelper->pregQuote($pattern).'$/';
-            $settings['browser_name_pattern'] = $pattern;
-        }
-
-        $add_settings = $this->getIniPart($pattern);
-
-        // check if parent pattern set, only keep the first one
-        $parent_pattern = null;
-        if (isset($add_settings['Parent'])) {
-            $parent_pattern = $add_settings['Parent'];
-
-            if (isset($settings['Parent'])) {
-                unset($add_settings['Parent']);
-            }
-        }
-
-        // merge settings
-        $settings += $add_settings;
-
-        if ($parent_pattern !== null) {
-            return $this->getSettings($parent_pattern, $settings);
-        }
-
-        return $settings;
-    }
-
-    /**
-     * Gets the relevant part (array of settings) of the ini file for a given pattern.
-     *
-     * @param  string $pattern
-     * @return array
-     */
-    private function getIniPart($pattern)
-    {
-        $pattern     = strtolower($pattern);
-        $patternhash = md5($pattern);
-        $subkey      = Converter::getIniPartCacheSubkey($patternhash);
-
-        if (!$this->getCache()->hasItem('browscap.iniparts.'.$subkey, true)) {
-            return array();
-        }
-
-        $success = null;
-        $file    = $this->getCache()->getItem('browscap.iniparts.'.$subkey, true, $success);
-
-        if (!$success) {
-            return array();
-        }
-
-        $return = array();
-        foreach ($file as $buffer) {
-            if (substr($buffer, 0, 32) === $patternhash) {
-                $return = json_decode(substr($buffer, 32), true);
-
-                foreach (array_keys($return) as $property) {
-                    $return[$property] = $this->formatPropertyValue(
-                        $return[$property],
-                        $property
-                    );
-                }
-
-                break;
-            }
-        }
-
-        return $return;
-    }
-
-    /**
-     * formats the name of a property
-     *
-     * @param string $value
-     * @param string $property
-     *
-     * @return string
-     */
-    private function formatPropertyValue($value, $property)
-    {
-        $valueOutput    = $value;
-        $propertyHolder = new PropertyHolder();
-
-        switch ($propertyHolder->getPropertyType($property)) {
-            case PropertyHolder::TYPE_BOOLEAN:
-                if (true === $value || $value === 'true' || $value === '1') {
-                    $valueOutput = true;
-                } elseif (false === $value || $value === 'false' || $value === '') {
-                    $valueOutput = false;
-                } else {
-                    $valueOutput = '';
-                }
-                break;
-            case PropertyHolder::TYPE_IN_ARRAY:
-                try {
-                    $valueOutput = $propertyHolder->checkValueInArray($property, $value);
-                } catch (\InvalidArgumentException $ex) {
-                    $valueOutput = '';
-                }
-                break;
-            default:
-                // nothing t do here
-                break;
-        }
-
-        return $valueOutput;
     }
 }

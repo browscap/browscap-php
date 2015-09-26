@@ -1,9 +1,8 @@
 <?php
 
-namespace BrowscapPHPTest\Parser;
+namespace BrowscapPHPTest\Parser\Helper;
 
-use BrowscapPHP\Parser\IniParser;
-use org\bovigo\vfs\vfsStream;
+use BrowscapPHP\Parser\Helper\SubKey;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -37,31 +36,23 @@ use org\bovigo\vfs\vfsStream;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/GaretJax/BrowscapPHP/
  */
-class IniParserTest extends \PHPUnit_Framework_TestCase
+class SubKeyTest extends \PHPUnit_Framework_TestCase
 {
-    const STORAGE_DIR = 'storage';
-
     /**
-     * @var \org\bovigo\vfs\vfsStreamDirectory
+     *
      */
-    private $root = null;
-
-    public function setUp()
+    public function testGetPatternCacheSubkey()
     {
-        $this->root = vfsStream::setup(self::STORAGE_DIR);
+        self::assertSame('ab', SubKey::getPatternCacheSubkey('abcd'));
     }
 
     /**
      *
      */
-    public function testShouldSort()
+    public function testGetAllPatternCacheSubkeys()
     {
-        $file = vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.ini');
-
-        $object = new IniParser($file);
-
-        self::assertSame($object, $object->setShouldSort(true));
-        self::assertTrue($object->shouldSort());
-        self::assertSame($file, $object->getFilename());
+        $result = SubKey::getAllPatternCacheSubkeys();
+        self::assertInternalType('array', $result);
+        self::assertSame(256, count($result));
     }
 }

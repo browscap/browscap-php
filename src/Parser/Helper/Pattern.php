@@ -45,17 +45,6 @@ namespace BrowscapPHP\Parser\Helper;
 class Pattern
 {
     /**
-     * Gets the subkey for the pattern cache file, generated from the given string
-     *
-     * @param  string $string
-     * @return string
-     */
-    public static function getPatternCacheSubkey($string)
-    {
-        return $string[0].$string[1];
-    }
-
-    /**
      * Gets a hash or an array of hashes from the first characters of a pattern/user agent, that can
      * be used for a fast comparison, by comparing only the hashes, without having to match the
      * complete pattern against the user agent.
@@ -78,22 +67,24 @@ class Pattern
      * @param  boolean      $variants
      * @return string|array
      */
-    public static function getPatternStart($pattern, $variants = false)
+    public static function getHashForPattern($pattern, $variants = false)
     {
-        $regex   = '/^([^\*\?\s\r\n\\\\]+).*$/';
+        $regex   = '/^([^\.\*\?\s\r\n\\\\]+).*$/';
         $pattern = substr($pattern, 0, 32);
+        $matches = array();
 
-        if (!preg_match($regex, $pattern)) {
+        if (!preg_match($regex, $pattern, $matches) || !isset($matches[1])) {
             return ($variants ? array(md5('')) : md5(''));
         }
 
-        $string = preg_replace($regex, '\\1', $pattern);
+        $string = $matches[1];
 
         if (true === $variants) {
             $patternStarts = array();
 
             for ($i = strlen($string); $i >= 1; $i--) {
-                $patternStarts[] = md5(substr($string, 0, $i));
+                $string          = substr($string, 0, $i);
+                $patternStarts[] = md5($string);
             }
 
             // Add empty pattern start to include patterns that start with "*",
@@ -107,6 +98,18 @@ class Pattern
     }
 
     /**
+     * returns a hash for one pattern
+     *
+     * @param $pattern
+     *
+     * @return string
+     */
+    public static function getHashForParts($pattern)
+    {
+        return md5($pattern);
+    }
+
+    /**
      * Gets the minimum length of the patern (used in the getPatterns() method to
      * check against the user agent length)
      *
@@ -116,24 +119,5 @@ class Pattern
     public static function getPatternLength($pattern)
     {
         return strlen(str_replace('*', '', $pattern));
-    }
-
-    /**
-     * Gets all subkeys for the pattern cache files
-     *
-     * @return array
-     */
-    public static function getAllPatternCacheSubkeys()
-    {
-        $subkeys = array();
-        $chars   = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
-
-        foreach ($chars as $char_one) {
-            foreach ($chars as $char_two) {
-                $subkeys[] = $char_one.$char_two;
-            }
-        }
-
-        return $subkeys;
     }
 }

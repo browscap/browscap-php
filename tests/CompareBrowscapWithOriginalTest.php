@@ -8,6 +8,8 @@ use WurflCache\Adapter\Memory;
 /**
  * Compares get_browser results for all matches in browscap.ini with results from Browscap class.
  * Also compares the execution times.
+ *
+ * @group compare
  */
 class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 {
@@ -87,6 +89,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 
         $cacheAdapter = new Memory();
         $cache        = new BrowscapCache($cacheAdapter);
+        $cache->flush();
 
         self::$object
             ->setCache($cache)
@@ -94,10 +97,15 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         ;
     }
 
+    /**
+     * @group compare
+     */
     public function testCheckProperties()
     {
         $libProperties = get_object_vars(get_browser('x'));
         $bcProperties  = get_object_vars(self::$object->getBrowser('x'));
+
+        unset($libProperties['parent'], $bcProperties['parent']);
 
         $libPropertyKeys = array_keys($libProperties);
         $bcPropertyKeys  = array_keys($bcProperties);
@@ -108,20 +116,27 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             self::fail('the properties found by "get_browser()" differ from found by "Browser::getBrowser()"');
         }
 
-        foreach (array_keys($bcProperties) as $bcProp) {
+        foreach (array_keys($this->properties) as $bcProp) {
+            $bcProp = strtolower($bcProp);
+
+            if (in_array($bcProp, array('browser_name_regex', 'browser_name_pattern', 'parent'))) {
+                unset($libProperties[$bcProp]);
+                continue;
+            }
+
             self::assertArrayHasKey(
-                strtolower($bcProp),
+                $bcProp,
                 $libProperties,
                 'Property `' . $bcProp . '` from Browscap doesn\'t match anything in get_browser.'
             );
 
-            unset($libProperties[strtolower($bcProp)]);
+            unset($libProperties[$bcProp]);
         }
 
         self::assertSame(
             0,
             count($libProperties),
-            'There are ' . count($libProperties) . '(' . implode(', ', array_keys($libProperties))
+            'There are ' . count($libProperties) . '(' . implode(', ', $libPropertyKeys)
             . ') properties in get_browser that do not match those in Browscap.'
         );
     }
@@ -129,6 +144,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider providerUserAgent
      * @depends testCheckProperties
+     * @group compare
      *
      * @param string $userAgent
      */
@@ -144,17 +160,33 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 
             $bcProp = strtolower($bcProp);
 
+            self::assertObjectHasAttribute(
+                $bcProp,
+                $libResult,
+                'Actual library result does not have "' . $bcProp . '" property'
+            );
+
+            self::assertObjectHasAttribute(
+                $bcProp,
+                $bcResult,
+                'Actual browscap result does not have "' . $bcProp . '" property'
+            );
+
             $libValue = (string) $libResult->{$bcProp};
             $bcValue  = (string) $bcResult->{$bcProp};
 
             self::assertSame(
                 $libValue,
                 $bcValue,
-                $bcProp . ': ' . $libValue . ' != ' . $bcValue
+                'Expected actual "' . $bcProp . '" to be "' . $libValue . '" (was "' . $bcValue
+                . '"; used pattern: ' . $bcResult->browser_name_pattern .')'
             );
         }
     }
 
+    /**
+     * @return array[]
+     */
     public function providerUserAgent()
     {
         return array(

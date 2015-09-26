@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 1998-2014 Browser Capabilities Project
+ * Copyright (c) 1998-2015 Browser Capabilities Project
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -21,79 +21,49 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Util\Logfile
- * @copyright  1998-2014 Browser Capabilities Project
+ * @package    Parser\Helper
+ * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Util\Logfile;
+namespace BrowscapPHP\Parser\Helper;
 
-use BrowscapPHP\Exception\ReaderException;
+use BrowscapPHP\Cache\BrowscapCache;
+use Psr\Log\LoggerInterface;
+use BrowscapPHP\Helper\Quoter;
 
 /**
- * reader collection class
+ * interface for the parser dataHelper
  *
  * @category   Browscap-PHP
- * @package    Command
- * @author     Dave Olsen, http://dmolsen.com
+ * @package    Parser\Helper
+ * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
+ * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
  * @version    3.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  */
-class ReaderCollection implements ReaderInterface
+interface GetDataInterface
 {
     /**
-     * @var \BrowscapPHP\Util\Logfile\AbstractReader[]
+     * class contsructor
+     *
+     * @param \BrowscapPHP\Cache\BrowscapCache $cache
+     * @param \Psr\Log\LoggerInterface         $logger
+     * @param \BrowscapPHP\Helper\Quoter       $quoter
      */
-    private $readers = array();
+    public function __construct(BrowscapCache $cache, LoggerInterface $logger, Quoter $quoter);
 
     /**
-     * adds a new reader to this collection
+     * Gets the settings for a given pattern (method calls itself to
+     * get the data from the parent patterns)
      *
-     * @param \BrowscapPHP\Util\Logfile\ReaderInterface $reader
-     *
-     * @return \BrowscapPHP\Util\Logfile\ReaderCollection
+     * @param  string $pattern
+     * @param  array  $settings
+     * @return array
      */
-    public function addReader(ReaderInterface $reader)
-    {
-        $this->readers[] = $reader;
-
-        return $this;
-    }
-
-    /**
-     * @param string $line
-     *
-     * @return bool
-     */
-    public function test($line)
-    {
-        foreach ($this->readers as $reader) {
-            if ($reader->test($line)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param string $line
-     *
-     * @return string
-     * @throws \BrowscapPHP\Exception\ReaderException
-     */
-    public function read($line)
-    {
-        foreach ($this->readers as $reader) {
-            if ($reader->test($line)) {
-                return $reader->read($line);
-            }
-        }
-
-        throw ReaderException::userAgentParserError($line);
-    }
+    public function getSettings($pattern, array $settings = array());
 }

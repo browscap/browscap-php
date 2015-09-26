@@ -37,6 +37,8 @@ use BrowscapPHP\Exception\FetcherException;
 use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\Filesystem;
 use BrowscapPHP\Helper\IniLoader;
+use BrowscapPHP\Helper\Quoter;
+use BrowscapPHP\Parser\ParserInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use WurflCache\Adapter\AdapterInterface;
@@ -80,7 +82,9 @@ class Browscap
      */
     private $cache = null;
 
-    /** @var \Psr\Log\LoggerInterface */
+    /**
+     * @var @var \Psr\Log\LoggerInterface
+     */
     private $logger = null;
 
     /**
@@ -174,7 +178,7 @@ class Browscap
      *
      * @return \BrowscapPHP\Browscap
      */
-    public function setParser(Parser\ParserInterface $parser)
+    public function setParser(ParserInterface $parser)
     {
         $this->parser = $parser;
 
@@ -184,27 +188,20 @@ class Browscap
     /**
      * returns an instance of the used parser class
      *
-     * @return Parser\ParserInterface
+     * @return \BrowscapPHP\Parser\ParserInterface
      */
     public function getParser()
     {
         if (null === $this->parser) {
-            $this->setParser(new Parser\Ini());
+            $cache  = $this->getCache();
+            $logger = $this->getLogger();
+            $quoter = new Quoter();
+
+            $patternHelper = new Parser\Helper\GetPattern($cache, $logger);
+            $dataHelper    = new Parser\Helper\GetData($cache, $logger, $quoter);
+
+            $this->parser = new Parser\Ini($patternHelper, $dataHelper, $this->getFormatter());
         }
-
-        $helper = new Parser\Helper\GetPattern();
-
-        $helper
-            ->setCache($this->getCache())
-            ->setLogger($this->getLogger())
-        ;
-
-        $this->parser
-            ->setHelper($helper)
-            ->setFormatter($this->getFormatter())
-            ->setCache($this->getCache())
-            ->setLogger($this->getLogger())
-        ;
 
         return $this->parser;
     }
@@ -319,11 +316,7 @@ class Browscap
             throw new Exception('an error occured while setting the local file', 0, $e);
         }
 
-        $converter = new Converter();
-        $converter
-            ->setLogger($this->getLogger())
-            ->setCache($this->getCache())
-        ;
+        $converter = new Converter($this->getLogger(), $this->getCache());
 
         try {
             $converter->convertString($loader->load());
@@ -339,13 +332,8 @@ class Browscap
      */
     public function convertString($iniString)
     {
-        $converter = new Converter();
-
-        $converter
-            ->setLogger($this->getLogger())
-            ->setCache($this->getCache())
-            ->convertString($iniString)
-        ;
+        $converter = new Converter($this->getLogger(), $this->getCache());
+        $converter->convertString($iniString);
     }
 
     /**
@@ -398,12 +386,7 @@ class Browscap
     {
         $this->getLogger()->debug('started fetching remote file');
 
-        $converter = new Converter();
-
-        $converter
-            ->setLogger($this->getLogger())
-            ->setCache($this->getCache())
-        ;
+        $converter = new Converter($this->getLogger(), $this->getCache());
 
         if (class_exists('\Browscap\Browscap')) {
             $resourceFolder = 'vendor/browscap/browscap/resources/';

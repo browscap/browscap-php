@@ -61,7 +61,7 @@ class ReaderFactory
     }
 
     /**
-     * @return ReaderInterface[]
+     * @return \BrowscapPHP\Util\Logfile\ReaderInterface[]
      */
     private static function getReaders()
     {

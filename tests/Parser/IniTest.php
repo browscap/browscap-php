@@ -2,6 +2,9 @@
 
 namespace BrowscapPHPTest\Parser;
 
+use BrowscapPHP\Helper\Quoter;
+use BrowscapPHP\Parser\Helper\GetData;
+use BrowscapPHP\Parser\Helper\GetPattern;
 use BrowscapPHP\Parser\Ini;
 
 /**
@@ -50,29 +53,24 @@ class IniTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->object = new Ini();
-    }
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
 
-    /**
-     *
-     */
-    public function testSetGetHelper()
-    {
-        $helper = $this->getMock('\BrowscapPHP\Parser\Helper\GetPattern', array(), array(), '', false);
+        /** @var \Monolog\Logger $logger */
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
 
-        self::assertSame($this->object, $this->object->setHelper($helper));
-        self::assertSame($helper, $this->object->getHelper());
-    }
+        /** @var \BrowscapPHP\Helper\Quoter $quoter */
+        $quoter = $this->getMock('\BrowscapPHP\Helper\Quoter', array(), array(), '', false);
 
-    /**
-     *
-     */
-    public function testSetGetFormatter()
-    {
+        /** @var \BrowscapPHP\Parser\Helper\GetPattern $patternHelper */
+        $patternHelper = new GetPattern($cache, $logger);
+
+        /** @var \BrowscapPHP\Parser\Helper\GetData $dataHelper */
+        $dataHelper = new GetData($cache, $logger, $quoter);
+
+        /** @var \BrowscapPHP\Formatter\PhpGetBrowser $formatter */
         $formatter = $this->getMock('\BrowscapPHP\Formatter\PhpGetBrowser', array(), array(), '', false);
 
-        self::assertSame($this->object, $this->object->setFormatter($formatter));
-        self::assertSame($formatter, $this->object->getFormatter());
+        $this->object = new Ini($patternHelper, $dataHelper, $formatter);
     }
 
     /**
@@ -80,20 +78,6 @@ class IniTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetCache()
     {
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
-
-        self::assertSame($this->object, $this->object->setCache($cache));
-        self::assertSame($cache, $this->object->getCache());
-    }
-
-    /**
-     *
-     */
-    public function testSetGetLogger()
-    {
-        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
-
-        self::assertSame($this->object, $this->object->setLogger($logger));
-        self::assertSame($logger, $this->object->getLogger());
+        self::markTestSkipped('need to be deleted');
     }
 }

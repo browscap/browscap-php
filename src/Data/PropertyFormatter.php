@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 1998-2014 Browser Capabilities Project
+ * Copyright (c) 1998-2015 Browser Capabilities Project
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -21,23 +21,20 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Parser\Helper
- * @copyright  1998-2014 Browser Capabilities Project
+ * @package    Parser
+ * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  * @since      added with version 3.0
  */
 
-namespace BrowscapPHP\Parser\Helper;
-
-use BrowscapPHP\Cache\BrowscapCache;
-use Psr\Log\LoggerInterface;
+namespace BrowscapPHP\Data;
 
 /**
- * interface for the parser patternHelper
+ * Ini parser class (compatible with PHP 5.3+)
  *
  * @category   Browscap-PHP
- * @package    Parser\Helper
+ * @package    Parser
  * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
@@ -45,26 +42,57 @@ use Psr\Log\LoggerInterface;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  */
-interface GetPatternInterface
+class PropertyFormatter
 {
     /**
-     * class contructor
-     *
-     * @param \BrowscapPHP\Cache\BrowscapCache $cache
-     * @param \Psr\Log\LoggerInterface         $logger
+     * @var PropertyHolder
      */
-    public function __construct(BrowscapCache $cache, LoggerInterface $logger);
+    private $propertyHolder = null;
 
     /**
-     * Gets some possible patterns that have to be matched against the user agent. With the given
-     * user agent string, we can optimize the search for potential patterns:
-     * - We check the first characters of the user agent (or better: a hash, generated from it)
-     * - We compare the length of the pattern with the length of the user agent
-     *   (the pattern cannot be longer than the user agent!)
+     * class constructor
      *
-     * @param string $userAgent
-     *
-     * @return \Iterator
+     * @param PropertyHolder $propertyHolder
      */
-    public function getPatterns($userAgent);
+    public function __construct(PropertyHolder $propertyHolder)
+    {
+        $this->propertyHolder = $propertyHolder;
+    }
+
+    /**
+     * formats the name of a property
+     *
+     * @param string $value
+     * @param string $property
+     *
+     * @return string
+     */
+    public function formatPropertyValue($value, $property)
+    {
+        $valueOutput = $value;
+
+        switch ($this->propertyHolder->getPropertyType($property)) {
+            case PropertyHolder::TYPE_BOOLEAN:
+                if (true === $value || $value === 'true' || $value === '1') {
+                    $valueOutput = true;
+                } elseif (false === $value || $value === 'false' || $value === '') {
+                    $valueOutput = false;
+                } else {
+                    $valueOutput = '';
+                }
+                break;
+            case PropertyHolder::TYPE_IN_ARRAY:
+                try {
+                    $valueOutput = $this->propertyHolder->checkValueInArray($property, $value);
+                } catch (\InvalidArgumentException $ex) {
+                    $valueOutput = '';
+                }
+                break;
+            default:
+                // nothing t do here
+                break;
+        }
+
+        return $valueOutput;
+    }
 }
