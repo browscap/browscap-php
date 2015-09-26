@@ -6,13 +6,15 @@ use phpbrowscap\Browscap;
 /**
  * Compares get_browser results for all matches in browscap.ini with results from Browscap class.
  * Also compares the execution times.
+ *
+ * @group compare-with-native-function
  */
 class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Browscap
      */
-    private $object = null;
+    private static $object = null;
 
     /**
      * @var string
@@ -74,8 +76,6 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 
     /**
      * This method is called before the first test of this test class is run.
-     *
-     * @since Method available since Release 3.4.0
      */
     public static function setUpBeforeClass()
     {
@@ -88,15 +88,6 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         }
 
         self::$cacheDir = $cacheDir;
-    }
-
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
-    {
-        parent::setUp();
 
         $objectIniPath = ini_get('browscap');
 
@@ -104,24 +95,32 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             self::markTestSkipped('browscap not defined in php.ini');
         }
 
-        $this->object            = new Browscap(self::$cacheDir);
-        $this->object->localFile = $objectIniPath;
+        self::$object               = new Browscap(self::$cacheDir);
+        self::$object->localFile    = $objectIniPath;
+        self::$object->doAutoUpdate = false;
+        self::$object->updateCache();
     }
 
+    /**
+     * @throws \Exception
+     * @throws \phpbrowscap\Exception
+     * @group check-properties
+     */
     public function testCheckProperties()
     {
         $libProperties = get_object_vars(get_browser('x'));
-        $bcProperties  = get_object_vars($this->object->getBrowser('x'));
+        $bcProperties  = get_object_vars(self::$object->getBrowser('x'));
 
         unset($bcProperties['Parents']);
         unset($bcProperties['browser_name']);
         unset($libProperties['browser_name']);
+        unset($bcProperties['RenderingEngine_Description']);
         unset($libProperties['renderingengine_description']);
 
         $libPropertyKeys = array_map('strtolower', array_keys($libProperties));
         $bcPropertyKeys  = array_map('strtolower', array_keys($bcProperties));
 
-        self::assertSame($libPropertyKeys, $bcPropertyKeys);
+        self::assertEquals($libPropertyKeys, $bcPropertyKeys);
 
         foreach (array_keys($bcProperties) as $bcProp) {
             self::assertArrayHasKey(
@@ -153,7 +152,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
     public function testCompare($userAgent)
     {
         $libResult = get_browser($userAgent);
-        $bcResult  = $this->object->getBrowser($userAgent);
+        $bcResult  = self::$object->getBrowser($userAgent);
 
         $doNotCheck = array('browser_name_regex', 'browser_name_pattern', 'Parent', 'RenderingEngine_Description');
 
@@ -170,7 +169,9 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             self::assertSame(
                 $libValue,
                 $bcValue,
-                $bcProp . ': ' . $libValue . ' != ' . $bcValue
+                'Expected actual "' . $bcProp . '" to be "' . (string) $libValue . '" (was "'
+                . (string) $bcValue
+                . '"; used pattern: ' . (string) $bcResult->browser_name_pattern .')'
             );
         }
     }
