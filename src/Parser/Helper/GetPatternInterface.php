@@ -30,7 +30,7 @@
 
 namespace BrowscapPHP\Parser\Helper;
 
-use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Cache\BrowscapCacheInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -50,10 +50,10 @@ interface GetPatternInterface
     /**
      * class contructor
      *
-     * @param \BrowscapPHP\Cache\BrowscapCache $cache
-     * @param \Psr\Log\LoggerInterface         $logger
+     * @param \BrowscapPHP\Cache\BrowscapCacheInterface $cache
+     * @param \Psr\Log\LoggerInterface                  $logger
      */
-    public function __construct(BrowscapCache $cache, LoggerInterface $logger);
+    public function __construct(BrowscapCacheInterface $cache, LoggerInterface $logger);
 
     /**
      * Gets some possible patterns that have to be matched against the user agent. With the given

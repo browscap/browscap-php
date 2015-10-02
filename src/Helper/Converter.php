@@ -30,10 +30,9 @@
 
 namespace BrowscapPHP\Helper;
 
-use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception\FileNotFoundException;
 use BrowscapPHP\IniParser\IniParser;
-use BrowscapPHP\Parser\Ini;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -72,7 +71,7 @@ class Converter
     /**
      * The cache instance
      *
-     * @var \BrowscapPHP\Cache\BrowscapCache
+     * @var \BrowscapPHP\Cache\BrowscapCacheInterface
      */
     private $cache = null;
 
@@ -93,10 +92,10 @@ class Converter
     /**
      * class constructor
      *
-     * @param \Psr\Log\LoggerInterface         $logger
-     * @param \BrowscapPHP\Cache\BrowscapCache $cache
+     * @param \Psr\Log\LoggerInterface                  $logger
+     * @param \BrowscapPHP\Cache\BrowscapCacheInterface $cache
      */
-    public function __construct(LoggerInterface $logger, BrowscapCache $cache)
+    public function __construct(LoggerInterface $logger, BrowscapCacheInterface $cache)
     {
         $this->logger = $logger;
         $this->cache  = $cache;

@@ -43,21 +43,14 @@ use WurflCache\Adapter\AdapterInterface;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  */
-class BrowscapCache implements BrowscapCacheInterface
+interface BrowscapCacheInterface
 {
     /**
-     * Path to the cache directory
+     * The cache livetime in seconds.
      *
-     * @var \WurflCache\Adapter\AdapterInterface
+     * @var integer
      */
-    private $cache = null;
-
-    /**
-     * Detected browscap version (read from INI file)
-     *
-     * @var int
-     */
-    private $version = null;
+    const CACHE_LIVETIME = 315360000; // ~10 years (60 * 60 * 24 * 365 * 10)
 
     /**
      * Constructor class, checks for the existence of (and loads) the cache and
@@ -66,31 +59,14 @@ class BrowscapCache implements BrowscapCacheInterface
      * @param \WurflCache\Adapter\AdapterInterface $adapter
      * @param int                                  $updateInterval
      */
-    public function __construct(AdapterInterface $adapter, $updateInterval = BrowscapCacheInterface::CACHE_LIVETIME)
-    {
-        $this->cache = $adapter;
-        $this->cache->setExpiration((int) $updateInterval);
-    }
+    public function __construct(AdapterInterface $adapter, $updateInterval = self::CACHE_LIVETIME);
 
     /**
      * Gets the version of the Browscap data
      *
      * @return int
      */
-    public function getVersion()
-    {
-        if ($this->version === null) {
-            $success = true;
-
-            $version = $this->getItem('browscap.version', false, $success);
-
-            if ($version !== null && $success) {
-                $this->version = (int) $version;
-            }
-        }
-
-        return $this->version;
-    }
+    public function getVersion();
 
     /**
      * Get an item.
@@ -101,29 +77,7 @@ class BrowscapCache implements BrowscapCacheInterface
      *
      * @return mixed Data on success, null on failure
      */
-    public function getItem($cacheId, $withVersion = true, & $success = null)
-    {
-        if ($withVersion) {
-            $cacheId .= '.'.$this->getVersion();
-        }
-
-        if (!$this->cache->hasItem($cacheId)) {
-            $success = false;
-
-            return null;
-        }
-
-        $success = null;
-        $data    = $this->cache->getItem($cacheId, $success);
-
-        if (!isset($data['content'])) {
-            $success = false;
-
-            return null;
-        }
-
-        return unserialize($data['content']);
-    }
+    public function getItem($cacheId, $withVersion = true, & $success = null);
 
     /**
      * save the content into an php file
@@ -134,20 +88,7 @@ class BrowscapCache implements BrowscapCacheInterface
      *
      * @return boolean whether the file was correctly written to the disk
      */
-    public function setItem($cacheId, $content, $withVersion = true)
-    {
-        // Get the whole PHP code
-        $data = array(
-            'content' => serialize($content),
-        );
-
-        if ($withVersion) {
-            $cacheId .= '.'.$this->getVersion();
-        }
-
-        // Save and return
-        return $this->cache->setItem($cacheId, $data);
-    }
+    public function setItem($cacheId, $content, $withVersion = true);
 
     /**
      * Test if an item exists.
@@ -157,14 +98,7 @@ class BrowscapCache implements BrowscapCacheInterface
      *
      * @return bool
      */
-    public function hasItem($cacheId, $withVersion = true)
-    {
-        if ($withVersion) {
-            $cacheId .= '.'.$this->getVersion();
-        }
-
-        return $this->cache->hasItem($cacheId);
-    }
+    public function hasItem($cacheId, $withVersion = true);
 
     /**
      * Remove an item.
@@ -174,22 +108,12 @@ class BrowscapCache implements BrowscapCacheInterface
      *
      * @return bool
      */
-    public function removeItem($cacheId, $withVersion = true)
-    {
-        if ($withVersion) {
-            $cacheId .= '.'.$this->getVersion();
-        }
-
-        return $this->cache->removeItem($cacheId);
-    }
+    public function removeItem($cacheId, $withVersion = true);
 
     /**
      * Flush the whole storage
      *
      * @return bool
      */
-    public function flush()
-    {
-        return $this->cache->flush();
-    }
+    public function flush();
 }

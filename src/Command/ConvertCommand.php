@@ -31,7 +31,7 @@
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\Browscap;
-use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Helper\LoggerHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -54,7 +54,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ConvertCommand extends Command
 {
     /**
-     * @var \BrowscapPHP\Cache\BrowscapCache
+     * @var \BrowscapPHP\Cache\BrowscapCacheInterface
      */
     private $cache = null;
 
@@ -64,10 +64,10 @@ class ConvertCommand extends Command
     private $defaultIniFile;
 
     /**
-     * @param \BrowscapPHP\Cache\BrowscapCache $cache
-     * @param string                           $defaultIniFile
+     * @param \BrowscapPHP\Cache\BrowscapCacheInterface $cache
+     * @param string                                    $defaultIniFile
      */
-    public function __construct(BrowscapCache $cache, $defaultIniFile)
+    public function __construct(BrowscapCacheInterface $cache, $defaultIniFile)
     {
         parent::__construct();
 
