@@ -116,11 +116,19 @@ class BrowscapCache implements BrowscapCacheInterface
         $success = null;
         $data    = $this->cache->getItem($cacheId, $success);
 
+        if (!$success) {
+            $success = false;
+
+            return null;
+        }
+
         if (!isset($data['content'])) {
             $success = false;
 
             return null;
         }
+
+        $success = true;
 
         return unserialize($data['content']);
     }
