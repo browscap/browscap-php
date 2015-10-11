@@ -103,7 +103,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \BrowscapPHP\Exception
-     * @expectedExceptionMessage the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCache or an instanceof of \WurflCache\Adapter\AdapterInterface
+     * @expectedExceptionMessage the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCacheInterface or an instanceof of \WurflCache\Adapter\AdapterInterface
      */
     public function testSetGetCacheWithWrongType()
     {
