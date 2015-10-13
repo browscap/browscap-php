@@ -31,7 +31,7 @@
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\Browscap;
-use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception\InvalidArgumentException;
 use BrowscapPHP\Exception\ReaderException;
 use BrowscapPHP\Exception\UnknownBrowserException;
@@ -68,7 +68,7 @@ use Symfony\Component\Finder\SplFileInfo;
 class LogfileCommand extends Command
 {
     /**
-     * @var \BrowscapPHP\Cache\BrowscapCache
+     * @var \BrowscapPHP\Cache\BrowscapCacheInterface
      */
     private $cache = null;
 
@@ -85,9 +85,9 @@ class LogfileCommand extends Command
     private $totalCount = 0;
 
     /**
-     * @param \BrowscapPHP\Cache\BrowscapCache $cache
+     * @param \BrowscapPHP\Cache\BrowscapCacheInterface $cache
      */
-    public function __construct(BrowscapCache $cache)
+    public function __construct(BrowscapCacheInterface $cache)
     {
         parent::__construct();
 
@@ -268,9 +268,11 @@ class LogfileCommand extends Command
             // do nothing
         }
 
+        $outputFile = $input->getArgument('output').'/output.txt';
+
         try {
             $fs->dumpFile(
-                $input->getArgument('output').'/output.txt',
+                $outputFile,
                 implode(PHP_EOL, array_unique($this->undefinedClients))
             );
         } catch (IOException $e) {
@@ -373,6 +375,8 @@ class LogfileCommand extends Command
      */
     private function handleLine(OutputInterface $output, ReaderCollection $collection, Browscap $browscap, $line)
     {
+        $userAgentString = '';
+
         try {
             $userAgentString = $collection->read($line);
 

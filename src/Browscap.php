@@ -33,6 +33,7 @@ use Browscap\Generator\BuildGenerator;
 use Browscap\Helper\CollectionCreator;
 use Browscap\Writer\Factory\PhpWriterFactory;
 use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception\FetcherException;
 use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\Filesystem;
@@ -78,7 +79,7 @@ class Browscap
     /**
      * The cache instance
      *
-     * @var \BrowscapPHP\Cache\BrowscapCache
+     * @var \BrowscapPHP\Cache\BrowscapCacheInterface
      */
     private $cache = null;
 
@@ -129,7 +130,7 @@ class Browscap
     /**
      * Gets a cache instance
      *
-     * @return \BrowscapPHP\Cache\BrowscapCache
+     * @return \BrowscapPHP\Cache\BrowscapCacheInterface
      */
     public function getCache()
     {
@@ -149,20 +150,20 @@ class Browscap
     /**
      * Sets a cache instance
      *
-     * @param \BrowscapPHP\Cache\BrowscapCache|\WurflCache\Adapter\AdapterInterface $cache
+     * @param \BrowscapPHP\Cache\BrowscapCacheInterface|\WurflCache\Adapter\AdapterInterface $cache
      *
      * @throws \BrowscapPHP\Exception
      * @return \BrowscapPHP\Browscap
      */
     public function setCache($cache)
     {
-        if ($cache instanceof BrowscapCache) {
+        if ($cache instanceof BrowscapCacheInterface) {
             $this->cache = $cache;
         } elseif ($cache instanceof AdapterInterface) {
             $this->cache = new BrowscapCache($cache);
         } else {
             throw new Exception(
-                'the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCache or '
+                'the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCacheInterface or '
                 .'an instanceof of \WurflCache\Adapter\AdapterInterface',
                 Exception::CACHE_INCOMPATIBLE
             );
@@ -378,11 +379,14 @@ class Browscap
      * if the local stored information are in the same version as the remote data no actions are
      * taken
      *
-     * @param string $remoteFile The code for the remote file to load
+     * @param string      $remoteFile The code for the remote file to load
+     * @param string|null $buildFolder
+     * @param int|null    $buildNumber
      *
-     * @throws \BrowscapPHP\Exception\FetcherException
+     * @throws \BrowscapPHP\Exception\FileNotFoundException
+     * @throws \BrowscapPHP\Helper\Exception
      */
-    public function update($remoteFile = IniLoader::PHP_INI)
+    public function update($remoteFile = IniLoader::PHP_INI, $buildFolder = null, $buildNumber = null)
     {
         $this->getLogger()->debug('started fetching remote file');
 
@@ -391,9 +395,15 @@ class Browscap
         if (class_exists('\Browscap\Browscap')) {
             $resourceFolder = 'vendor/browscap/browscap/resources/';
 
-            $buildNumber = (int) file_get_contents('vendor/browscap/browscap/BUILD_NUMBER');
+            if (null === $buildNumber) {
+                $buildNumber = (int)file_get_contents('vendor/browscap/browscap/BUILD_NUMBER');
+            }
 
-            $buildFolder = 'resources/browscap-ua-test-'.$buildNumber;
+            if (null === $buildFolder) {
+                $buildFolder = 'resources';
+            }
+
+            $buildFolder .= '/browscap-ua-test-'.$buildNumber;
             $iniFile     = $buildFolder.'/full_php_browscap.ini';
 
             mkdir($buildFolder, 0777, true);

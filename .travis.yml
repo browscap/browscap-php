@@ -25,14 +25,14 @@ before_script:
   - travis_retry composer install -o --prefer-source
 
 script:
-# xdebug is not installed on hhvm, so we are skipping the creation of code coverage data there
-  - if [ "`phpenv version-name`" != "hhvm" ]; then php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --colors --verbose --exclude-group compare --coverage-text --coverage-clover=coverage.clover; fi
-  - if [ "`phpenv version-name`" == "hhvm" ]; then php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --colors --verbose --exclude-group compare; fi
+# xdebug is not installed on hhvm and php7, so we are skipping the creation of code coverage data there
+  - if [ "`phpenv version-name`" == "5.5" ] || [ "`phpenv version-name`" == "5.6" ]; then php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --colors --verbose --exclude-group compare --coverage-text --coverage-clover=coverage.clover; fi
+  - if [ "`phpenv version-name`" != "5.5" ] && [ "`phpenv version-name`" != "5.6" ]; then php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --colors --verbose --exclude-group compare; fi
   - php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --colors --verbose --group compare
   - php vendor/bin/phpcs --standard=psr2 -pn src tests
 
 after_script:
-# xdebug is not installed on hhvm, so we have no code coverage data to send
-  - if [ "`phpenv version-name`" != "hhvm" ]; then wget https://scrutinizer-ci.com/ocular.phar; fi
-  - if [ "`phpenv version-name`" != "hhvm" ]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
+# xdebug is not installed on hhvm and php7, so we have no code coverage data to send
+  - if [ "`phpenv version-name`" == "5.5" ] || [ "`phpenv version-name`" == "5.6" ]; then wget https://scrutinizer-ci.com/ocular.phar; fi
+  - if [ "`phpenv version-name`" == "5.5" ] || [ "`phpenv version-name`" == "5.6" ]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
 
