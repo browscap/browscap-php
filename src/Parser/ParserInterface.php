@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 1998-2014 Browser Capabilities Project
+ * Copyright (c) 1998-2015 Browser Capabilities Project
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,7 +22,7 @@
  *
  * @category   Browscap-PHP
  * @package    Parser
- * @copyright  1998-2014 Browser Capabilities Project
+ * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  * @since      added with version 3.0
@@ -41,7 +41,7 @@ use BrowscapPHP\Parser\Helper\GetPatternInterface;
  * @package    Parser
  * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
- * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
+ * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 1998-2014 Browser Capabilities Project
+ * Copyright (c) 1998-2015 Browser Capabilities Project
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,7 +22,7 @@
  *
  * @category   Browscap-PHP
  * @package    Browscap
- * @copyright  1998-2014 Browser Capabilities Project
+ * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  */
@@ -55,7 +55,7 @@ use WurflCache\Adapter\File;
  * @author     Mikołaj Misiurewicz <quentin389+phpb@gmail.com>
  * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
- * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
+ * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/

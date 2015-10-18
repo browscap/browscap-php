@@ -37,7 +37,7 @@ namespace BrowscapPHP\Data;
  * @package    Parser
  * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
- * @copyright  Copyright (c) 1998-2014 Browser Capabilities Project
+ * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
