@@ -10,6 +10,7 @@ php:
 
 os:
   - linux
+  - osx
 
 cache:
   directories:
