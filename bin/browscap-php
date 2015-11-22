@@ -40,6 +40,6 @@ $application->add(new Command\ParserCommand($cache));
 $application->add(new Command\LogfileCommand($cache));
 $application->add(new Command\FetchCommand($defaultIniFile));
 
-ini_set('memory_limit', '256M');
+ini_set('memory_limit', '512M');
 
 $application->run();

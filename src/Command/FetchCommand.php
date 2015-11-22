@@ -83,6 +83,14 @@ class FetchCommand extends Command
                 $this->defaultIniFile
             )
             ->addOption(
+                'remote-file',
+                'r',
+                InputOption::VALUE_OPTIONAL,
+                'browscap.ini file to download from remote location (possible values are: ' . IniLoader::PHP_INI_LITE
+                . ', ' . IniLoader::PHP_INI . ', ' . IniLoader::PHP_INI_FULL . ')',
+                IniLoader::PHP_INI
+            )
+            ->addOption(
                 'debug',
                 'd',
                 InputOption::VALUE_NONE,
@@ -113,7 +121,7 @@ class FetchCommand extends Command
 
         $browscap
             ->setLogger($logger)
-            ->fetch($file, IniLoader::PHP_INI)
+            ->fetch($file, $input->getOption('remote-file'))
         ;
 
         $logger->info('finished fetching remote file');
