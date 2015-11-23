@@ -347,16 +347,16 @@ class Browscap
      */
     public function fetch($file, $remoteFile = IniLoader::PHP_INI)
     {
+        if (null === ($cachedVersion = $this->checkUpdate($remoteFile))) {
+            // no newer version available
+            return;
+        }
+
         $this->getLoader()
             ->setRemoteFilename($remoteFile)
             ->setOptions($this->options)
             ->setLogger($this->getLogger())
         ;
-
-        if (null === ($cachedVersion = $this->checkUpdate($remoteFile))) {
-            // no newer version available
-            return;
-        }
 
         $this->getLogger()->debug('started fetching remote file');
 
@@ -438,24 +438,24 @@ class Browscap
             $filesystem = new Filesystem();
             $filesystem->remove($buildFolder);
         } else {
+            if (null === ($cachedVersion = $this->checkUpdate($remoteFile))) {
+                // no newer version available
+                return;
+            }
+
             $this->getLoader()
                 ->setRemoteFilename($remoteFile)
                 ->setOptions($this->options)
                 ->setLogger($this->getLogger())
             ;
 
-            if (null === ($cachedVersion = $this->checkUpdate($remoteFile))) {
-                // no newer version available
-                return;
-            }
-
-            $internalLoader = $this->getLoader()->getLoader();
-
             try {
                 $content = $this->getLoader()->load();
             } catch (Helper\Exception $e) {
                 throw new FetcherException('an error occured while loading remote data', 0, $e);
             }
+
+            $internalLoader = $this->getLoader()->getLoader();
 
             if (false === $content) {
                 $error = error_get_last();
@@ -489,8 +489,8 @@ class Browscap
     {
         $success       = null;
         $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
-
-        if (!$success || !$cachedVersion) {
+var_dump($cachedVersion);
+        if (!$cachedVersion) {
             // no newer version available
             $this->getLogger()->info('there is no cached version available, please update from remote');
 

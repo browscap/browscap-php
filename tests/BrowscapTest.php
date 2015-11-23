@@ -541,6 +541,30 @@ AolVersion=0
 
         $this->object->setLoader($loader);
 
+        $map = array(
+            array(
+                'browscap.time',
+                false,
+                null,
+                null
+            ),
+            array(
+                'browscap.version',
+                false,
+                null,
+                6000
+            ),
+        );
+
+        $cache = $this->getMock('\WurflCache\Adapter\Memory', array('getItem'), array(), '', false);
+        $cache
+            ->expects(self::any())
+            ->method('getItem')
+            ->will(self::returnValueMap($map))
+        ;
+
+        $this->object->setCache($cache);
+
         $this->object->fetch(IniLoader::PHP_INI);
     }
 
@@ -680,6 +704,30 @@ AolVersion=0
         ;
 
         $this->object->setLoader($loader);
+
+        $map = array(
+            array(
+                'browscap.time',
+                false,
+                null,
+                null
+            ),
+            array(
+                'browscap.version',
+                false,
+                null,
+                null
+            ),
+        );
+
+        $cache = $this->getMock('\WurflCache\Adapter\Memory', array('getItem'), array(), '', false);
+        $cache
+            ->expects(self::any())
+            ->method('getItem')
+            ->will(self::returnValueMap($map))
+        ;
+
+        $this->object->setCache($cache);
 
         $file = 'resources/test.ini';
 
@@ -935,6 +983,30 @@ AolVersion=0
         ;
 
         $this->object->setLoader($loader);
+
+        $map = array(
+            array(
+                'browscap.time',
+                false,
+                null,
+                null
+            ),
+            array(
+                'browscap.version',
+                false,
+                null,
+                null
+            ),
+        );
+
+        $cache = $this->getMock('\WurflCache\Adapter\Memory', array('getItem'), array(), '', false);
+        $cache
+            ->expects(self::any())
+            ->method('getItem')
+            ->will(self::returnValueMap($map))
+        ;
+
+        $this->object->setCache($cache);
 
         $this->object->fetch(IniLoader::PHP_INI);
 
@@ -1212,26 +1284,16 @@ AolVersion=0
 
         $this->object->setLoader($loader);
 
-        $map = array(
-            array(
-                'browscap.time',
-                false,
-                null,
-                null
-            ),
-            array(
-                'browscap.version',
-                false,
-                null,
-                6000
-            ),
-        );
-
-        $cache = $this->getMock('\WurflCache\Adapter\Memory', array('getItem'), array(), '', false);
+        $cache = $this->getMock('\WurflCache\Adapter\Memory', array('getItem', 'hasItem'), array(), '', false);
         $cache
             ->expects(self::any())
             ->method('getItem')
-            ->will(self::returnValueMap($map))
+            ->will(self::returnValue(6000))
+        ;
+        $cache
+            ->expects(self::any())
+            ->method('hasItem')
+            ->will(self::returnValue(true))
         ;
 
         $this->object->setCache($cache);
