@@ -489,7 +489,7 @@ class Browscap
     {
         $success       = null;
         $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
-var_dump($cachedVersion);
+
         if (!$cachedVersion) {
             // no newer version available
             $this->getLogger()->info('there is no cached version available, please update from remote');
@@ -509,10 +509,9 @@ var_dump($cachedVersion);
             $this->getLogger()->warning($e);
 
             $remoteVersion = null;
-            $success       = false;
         }
 
-        if ($success && $cachedVersion && $remoteVersion && $remoteVersion <= $cachedVersion) {
+        if ($cachedVersion && $remoteVersion && $remoteVersion <= $cachedVersion) {
             // no newer version available
             $this->getLogger()->info('there is no newer version available');
 

@@ -556,7 +556,7 @@ AolVersion=0
             ),
         );
 
-        $cache = $this->getMock('\WurflCache\Adapter\Memory', array('getItem'), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem'), array(), '', false);
         $cache
             ->expects(self::any())
             ->method('getItem')
@@ -683,17 +683,17 @@ AolVersion=0
 
         $loader = $this->getMock('\BrowscapPHP\Helper\IniLoader', array('setRemoteFilename', 'setOptions', 'setLogger', 'load'), array(), '', false);
         $loader
-            ->expects(self::exactly(2))
+            ->expects(self::once())
             ->method('setRemoteFilename')
             ->will(self::returnSelf())
         ;
         $loader
-            ->expects(self::exactly(2))
+            ->expects(self::once())
             ->method('setOptions')
             ->will(self::returnSelf())
         ;
         $loader
-            ->expects(self::exactly(2))
+            ->expects(self::once())
             ->method('setLogger')
             ->will(self::returnSelf())
         ;
@@ -720,7 +720,7 @@ AolVersion=0
             ),
         );
 
-        $cache = $this->getMock('\WurflCache\Adapter\Memory', array('getItem'), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem'), array(), '', false);
         $cache
             ->expects(self::any())
             ->method('getItem')
@@ -962,17 +962,17 @@ AolVersion=0
             false
         );
         $loader
-            ->expects(self::exactly(2))
+            ->expects(self::once())
             ->method('setRemoteFilename')
             ->will(self::returnSelf())
         ;
         $loader
-            ->expects(self::exactly(2))
+            ->expects(self::once())
             ->method('setOptions')
             ->will(self::returnSelf())
         ;
         $loader
-            ->expects(self::exactly(2))
+            ->expects(self::once())
             ->method('setLogger')
             ->will(self::returnSelf())
         ;
@@ -999,7 +999,7 @@ AolVersion=0
             ),
         );
 
-        $cache = $this->getMock('\WurflCache\Adapter\Memory', array('getItem'), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem'), array(), '', false);
         $cache
             ->expects(self::any())
             ->method('getItem')
@@ -1092,7 +1092,7 @@ AolVersion=0
             ),
         );
 
-        $cache = $this->getMock('\WurflCache\Adapter\Memory', array('getItem'), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem'), array(), '', false);
         $cache
             ->expects(self::any())
             ->method('getItem')
@@ -1157,7 +1157,7 @@ AolVersion=0
             ),
         );
 
-        $cache = $this->getMock('\WurflCache\Adapter\Memory', array('getItem'), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem'), array(), '', false);
         $cache
             ->expects(self::any())
             ->method('getItem')
@@ -1202,7 +1202,7 @@ AolVersion=0
             ->will(self::returnSelf())
         ;
         $loader
-            ->expects(self::once())
+            ->expects(self::never())
             ->method('load')
             ->will(self::returnValue(false))
         ;
@@ -1229,7 +1229,7 @@ AolVersion=0
             ),
         );
 
-        $cache = $this->getMock('\WurflCache\Adapter\Memory', array('getItem'), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem'), array(), '', false);
         $cache
             ->expects(self::any())
             ->method('getItem')
@@ -1272,7 +1272,7 @@ AolVersion=0
             ->will(self::returnSelf())
         ;
         $loader
-            ->expects(self::once())
+            ->expects(self::never())
             ->method('load')
             ->will(self::returnValue(false))
         ;
@@ -1284,7 +1284,7 @@ AolVersion=0
 
         $this->object->setLoader($loader);
 
-        $cache = $this->getMock('\WurflCache\Adapter\Memory', array('getItem', 'hasItem'), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'hasItem'), array(), '', false);
         $cache
             ->expects(self::any())
             ->method('getItem')
