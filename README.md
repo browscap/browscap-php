@@ -45,6 +45,13 @@ vendor/bin/browscap-php browscap:convert
 vendor/bin/browscap-php browscap:update
 ```
 
+Note: Both ways to create/update the cache will use the `standard` mode file as default. If you want more detailed information you may change this with the `remote-file` option.
+Please use the help function this parameter.
+
+```php
+vendor/bin/browscap-php browscap:update --remote-file Full_PHP_BrowscapINI
+```
+
 A sample using composer with taking the useragent from the global $_SERVER variable.
 
 ```php
