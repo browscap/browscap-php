@@ -83,6 +83,14 @@ class CheckUpdateCommand extends Command
                 InputOption::VALUE_NONE,
                 'Should the debug mode entered?'
             )
+            ->addOption(
+                'remote-file',
+                'r',
+                InputOption::VALUE_OPTIONAL,
+                'browscap.ini file to download from remote location (possible values are: ' . IniLoader::PHP_INI_LITE
+                . ', ' . IniLoader::PHP_INI . ', ' . IniLoader::PHP_INI_FULL . ')',
+                IniLoader::PHP_INI
+            )
         ;
     }
 
@@ -97,17 +105,17 @@ class CheckUpdateCommand extends Command
         $loggerHelper = new LoggerHelper();
         $logger       = $loggerHelper->create($input->getOption('debug'));
 
-        $logger->info('started checking for new version of remote file');
+        $logger->debug('started checking for new version of remote file');
 
         $browscap = $this->getBrowscap();
 
         $browscap
             ->setLogger($logger)
             ->setCache($this->cache)
-            ->checkUpdate(IniLoader::PHP_INI)
+            ->checkUpdate($input->getOption('remote-file'))
         ;
 
-        $logger->info('finished checking for new version of remote file');
+        $logger->debug('finished checking for new version of remote file');
     }
 
     private function getBrowscap()

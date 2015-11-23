@@ -491,7 +491,7 @@ class Browscap
         $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
 
         if (!$cachedVersion) {
-            // no newer version available
+            // could not load version from cache
             $this->getLogger()->info('there is no cached version available, please update from remote');
 
             return 0;
@@ -506,9 +506,17 @@ class Browscap
         try {
             $remoteVersion = $this->getLoader()->getRemoteVersion();
         } catch (Helper\Exception $e) {
+            // an error occured while getting the remote version
             $this->getLogger()->warning($e);
 
-            $remoteVersion = null;
+            return 0;
+        }
+
+        if (!$remoteVersion) {
+            // could not load remote version
+            $this->getLogger()->info('could not load version from remote location');
+
+            return 0;
         }
 
         if ($cachedVersion && $remoteVersion && $remoteVersion <= $cachedVersion) {
@@ -518,7 +526,9 @@ class Browscap
             return null;
         }
 
-        $this->getLogger()->info('a newer version is available');
+        $this->getLogger()->info(
+            'a newer version is available, local version: ' . $cachedVersion . ', remote version: ' . $remoteVersion
+        );
 
         return (int) $cachedVersion;
     }

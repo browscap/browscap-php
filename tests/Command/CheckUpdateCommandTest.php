@@ -87,7 +87,7 @@ class CheckUpdateCommandTest extends \PHPUnit_Framework_TestCase
             ->will(self::returnSelf())
         ;
         $object
-            ->expects(self::once())
+            ->expects(self::exactly(2))
             ->method('addOption')
             ->will(self::returnSelf())
         ;

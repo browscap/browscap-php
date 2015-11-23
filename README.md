@@ -45,7 +45,10 @@ vendor/bin/browscap-php browscap:convert
 vendor/bin/browscap-php browscap:update
 ```
 
-Note: Both ways to create/update the cache will use the `standard` mode file as default. If you want more detailed information you may change this with the `remote-file` option.
+If you only want to check if a new version of the browscap.ini is available, you can use the `browscap:check-update` command.
+
+Note: Both ways to create/update the cache and also checking the update will use the `standard` mode file as default. 
+If you want more detailed information you may change this with the `remote-file` option.
 Please use the help function this parameter.
 
 ```php

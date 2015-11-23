@@ -1284,11 +1284,26 @@ AolVersion=0
 
         $this->object->setLoader($loader);
 
+        $map = array(
+            array(
+                'browscap.time',
+                false,
+                null,
+                null
+            ),
+            array(
+                'browscap.version',
+                false,
+                null,
+                6000
+            ),
+        );
+
         $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'hasItem'), array(), '', false);
         $cache
             ->expects(self::any())
             ->method('getItem')
-            ->will(self::returnValue(6000))
+            ->will(self::returnValueMap($map))
         ;
         $cache
             ->expects(self::any())
