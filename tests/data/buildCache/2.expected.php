@@ -1,6 +1,6 @@
 <?php
 $source_version='6000';
-$cache_version='2.0.5';
+$cache_version='2.1.0';
 $properties=array(
 'browser_name',
 'browser_name_regex',
