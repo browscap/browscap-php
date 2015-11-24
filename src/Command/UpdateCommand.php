@@ -78,6 +78,14 @@ class UpdateCommand extends Command
             ->setName('browscap:update')
             ->setDescription('Fetches an updated INI file for Browscap and overwrites the current PHP file.')
             ->addOption(
+                'remote-file',
+                'r',
+                InputOption::VALUE_OPTIONAL,
+                'browscap.ini file to download from remote location (possible values are: ' . IniLoader::PHP_INI_LITE
+                . ', ' . IniLoader::PHP_INI . ', ' . IniLoader::PHP_INI_FULL . ')',
+                IniLoader::PHP_INI
+            )
+            ->addOption(
                 'no-backup',
                 null,
                 InputOption::VALUE_NONE,
@@ -110,7 +118,7 @@ class UpdateCommand extends Command
         $browscap
             ->setLogger($logger)
             ->setCache($this->cache)
-            ->update(IniLoader::PHP_INI)
+            ->update($input->getOption('remote-file'))
         ;
 
         $logger->info('finished updating cache with remote file');
