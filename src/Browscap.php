@@ -461,10 +461,10 @@ class Browscap
                 throw new FetcherException('an error occured while loading remote data', 0, $e);
             }
 
-            $internalLoader = $this->getLoader()->getLoader();
-
             if (false === $content) {
-                $error = error_get_last();
+                $internalLoader = $this->getLoader()->getLoader();
+                $error          = error_get_last();
+
                 throw FetcherException::httpError($internalLoader->getUri(), $error['message']);
             }
 
