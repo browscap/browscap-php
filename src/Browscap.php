@@ -344,6 +344,7 @@ class Browscap
      * @param string $remoteFile The code for the remote file to load
      *
      * @throws \BrowscapPHP\Exception\FetcherException
+     * @throws \BrowscapPHP\Helper\Exception
      */
     public function fetch($file, $remoteFile = IniLoader::PHP_INI)
     {
@@ -360,7 +361,11 @@ class Browscap
 
         $this->getLogger()->debug('started fetching remote file');
 
-        $content = $this->getLoader()->load();
+        try {
+            $content = $this->getLoader()->load();
+        } catch (Helper\Exception $e) {
+            throw new FetcherException('an error occured while fetching remote data', 0, $e);
+        }
 
         if (false === $content) {
             $error = error_get_last();
@@ -395,6 +400,7 @@ class Browscap
      *
      * @throws \BrowscapPHP\Exception\FileNotFoundException
      * @throws \BrowscapPHP\Helper\Exception
+     * @throws \BrowscapPHP\Exception\FetcherException
      */
     public function update($remoteFile = IniLoader::PHP_INI, $buildFolder = null, $buildNumber = null)
     {
@@ -484,6 +490,7 @@ class Browscap
      *
      * @return int|null The actual cached version if a newer version is available, null otherwise
      * @throws \BrowscapPHP\Helper\Exception
+     * @throws \BrowscapPHP\Exception\FetcherException
      */
     public function checkUpdate($remoteFile = IniLoader::PHP_INI)
     {
@@ -506,10 +513,7 @@ class Browscap
         try {
             $remoteVersion = $this->getLoader()->getRemoteVersion();
         } catch (Helper\Exception $e) {
-            // an error occured while getting the remote version
-            $this->getLogger()->warning($e);
-
-            return 0;
+            throw new FetcherException('an error occured while checking remote version', 0, $e);
         }
 
         if (!$remoteVersion) {

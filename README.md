@@ -55,6 +55,9 @@ Please use the help function this parameter.
 vendor/bin/browscap-php browscap:update --remote-file Full_PHP_BrowscapINI
 ```
 
+Note: Each operation (fetch, update, check-update) which fetches data from the remote host browscap.org may run into the 
+rate limit of that site. If this happens an Exception is thrown.
+
 A sample using composer with taking the useragent from the global $_SERVER variable.
 
 ```php
@@ -77,6 +80,7 @@ $current_browser = $bc->getBrowser($the_user_agent);
 
 If you want to log something that happens with the detector you may set an logger.
 This logger has to implement the logger interface from Psr\Log\LoggerInterface
+
 ```php
 $bc = new Browscap();
 $bc->setLogger($logger);
