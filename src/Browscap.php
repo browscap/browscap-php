@@ -334,17 +334,9 @@ class Browscap
     public function convertString($iniString)
     {
         $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
-        $iniString     = $this->sanitizeContent($iniString);
+        $converter     = new Converter($this->getLogger(), $this->getCache());
 
-        $converter = new Converter($this->getLogger(), $this->getCache());
-        $iniVersion = $converter->getIniVersion($iniString);
-
-        if ($iniVersion > $cachedVersion) {
-            $converter
-                ->storeVersion()
-                ->convertString($iniString)
-            ;
-        }
+        $this->storeContent($converter, $iniString, $cachedVersion);
     }
 
     /**
@@ -480,16 +472,7 @@ class Browscap
 
             $this->getLogger()->debug('finished fetching remote file');
 
-            $content = $this->sanitizeContent($content);
-
-            $iniVersion = $converter->getIniVersion($content);
-
-            if ($iniVersion > $cachedVersion) {
-                $converter
-                    ->storeVersion()
-                    ->convertString($content)
-                ;
-            }
+            $this->storeContent($converter, $content, $cachedVersion);
         }
     }
 
@@ -559,5 +542,25 @@ class Browscap
 
         // replace opening and closing php and asp tags
         return str_replace(array('<?', '<%', '?>', '%>'), '', $content);
+    }
+
+    /**
+     * reads and parses an ini string and writes the results into the cache
+     *
+     * @param \BrowscapPHP\Helper\Converter $converter
+     * @param string                        $content
+     * @param int                           $cachedVersion
+     */
+    private function storeContent(Converter $converter, $content, $cachedVersion)
+    {
+        $iniString  = $this->sanitizeContent($content);
+        $iniVersion = $converter->getIniVersion($iniString);
+
+        if ($iniVersion > $cachedVersion) {
+            $converter
+                ->storeVersion()
+                ->convertString($iniString)
+            ;
+        }
     }
 }
