@@ -97,7 +97,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetCacheWithAdapter()
     {
-        /** @var Memory $cache */
+        /** @var \WurflCache\Adapter\Memory $cache */
         $cache = $this->getMock('\WurflCache\Adapter\Memory', array(), array(), '', false);
 
         self::assertSame($this->object, $this->object->setCache($cache));
