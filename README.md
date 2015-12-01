@@ -45,12 +45,18 @@ vendor/bin/browscap-php browscap:convert
 vendor/bin/browscap-php browscap:update
 ```
 
-Note: Both ways to create/update the cache will use the `standard` mode file as default. If you want more detailed information you may change this with the `remote-file` option.
+If you only want to check if a new version of the browscap.ini is available, you can use the `browscap:check-update` command.
+
+Note: Both ways to create/update the cache and also checking the update will use the `standard` mode file as default. 
+If you want more detailed information you may change this with the `remote-file` option.
 Please use the help function this parameter.
 
 ```php
 vendor/bin/browscap-php browscap:update --remote-file Full_PHP_BrowscapINI
 ```
+
+Note: Each operation (fetch, update, check-update) which fetches data from the remote host browscap.org may run into the 
+rate limit of that site. If this happens an Exception is thrown.
 
 A sample using composer with taking the useragent from the global $_SERVER variable.
 
@@ -74,6 +80,7 @@ $current_browser = $bc->getBrowser($the_user_agent);
 
 If you want to log something that happens with the detector you may set an logger.
 This logger has to implement the logger interface from Psr\Log\LoggerInterface
+
 ```php
 $bc = new Browscap();
 $bc->setLogger($logger);

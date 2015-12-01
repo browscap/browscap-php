@@ -3,6 +3,7 @@
 namespace BrowscapPHPTest;
 
 use BrowscapPHP\Browscap;
+use BrowscapPHP\Helper\Exception;
 use BrowscapPHP\Helper\IniLoader;
 use org\bovigo\vfs\vfsStream;
 
@@ -33,10 +34,11 @@ use org\bovigo\vfs\vfsStream;
  *
  * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
- * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
- * @version    1.0
+ * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
+ * @version    3.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/BrowscapPHP/
+ * @link       https://github.com/browscap/browscap-php/
+ * @group      browscap
  */
 class BrowscapTest extends \PHPUnit_Framework_TestCase
 {
@@ -146,6 +148,25 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
 
         self::assertSame($this->object, $this->object->setLogger($logger));
         self::assertSame($logger, $this->object->getLogger());
+    }
+
+    /**
+     *
+     */
+    public function testGetLoader()
+    {
+        self::assertInstanceOf('\BrowscapPHP\Helper\IniLoader', $this->object->getLoader());
+    }
+
+    /**
+     *
+     */
+    public function testSetGetgetLoader()
+    {
+        $loader = $this->getMock('\BrowscapPHP\Helper\IniLoader', array(), array(), '', false);
+
+        $this->object->setLoader($loader);
+        self::assertSame($loader, $this->object->getLoader());
     }
 
     /**
@@ -518,17 +539,17 @@ AolVersion=0
 
         $loader = $this->getMock('\BrowscapPHP\Helper\IniLoader', array('setRemoteFilename', 'setOptions', 'setLogger', 'load'), array(), '', false);
         $loader
-            ->expects(self::once())
+            ->expects(self::exactly(2))
             ->method('setRemoteFilename')
             ->will(self::returnSelf())
         ;
         $loader
-            ->expects(self::once())
+            ->expects(self::exactly(2))
             ->method('setOptions')
             ->will(self::returnSelf())
         ;
         $loader
-            ->expects(self::once())
+            ->expects(self::exactly(2))
             ->method('setLogger')
             ->will(self::returnSelf())
         ;
@@ -539,6 +560,35 @@ AolVersion=0
         ;
 
         $this->object->setLoader($loader);
+
+        $map = array(
+            array(
+                'browscap.time',
+                false,
+                null,
+                null
+            ),
+            array(
+                'browscap.version',
+                false,
+                null,
+                6000
+            ),
+        );
+
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'setItem'), array(), '', false);
+        $cache
+            ->expects(self::once())
+            ->method('getItem')
+            ->will(self::returnValueMap($map))
+        ;
+        $cache
+            ->expects(self::never())
+            ->method('setItem')
+            ->will(self::returnValue(false))
+        ;
+
+        $this->object->setCache($cache);
 
         $this->object->fetch(IniLoader::PHP_INI);
     }
@@ -680,9 +730,40 @@ AolVersion=0
 
         $this->object->setLoader($loader);
 
-        $this->object->fetch(IniLoader::PHP_INI);
+        $map = array(
+            array(
+                'browscap.time',
+                false,
+                null,
+                null
+            ),
+            array(
+                'browscap.version',
+                false,
+                null,
+                null
+            ),
+        );
 
-        self::assertSame($content, file_get_contents(IniLoader::PHP_INI));
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'setItem'), array(), '', false);
+        $cache
+            ->expects(self::once())
+            ->method('getItem')
+            ->will(self::returnValueMap($map))
+        ;
+        $cache
+            ->expects(self::never())
+            ->method('setItem')
+            ->will(self::returnValue(false))
+        ;
+
+        $this->object->setCache($cache);
+
+        $file = 'resources/test.ini';
+
+        $this->object->fetch($file);
+
+        self::assertSame($content, file_get_contents($file));
     }
 
     /**
@@ -933,6 +1014,35 @@ AolVersion=0
 
         $this->object->setLoader($loader);
 
+        $map = array(
+            array(
+                'browscap.time',
+                false,
+                null,
+                null
+            ),
+            array(
+                'browscap.version',
+                false,
+                null,
+                null
+            ),
+        );
+
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'setItem'), array(), '', false);
+        $cache
+            ->expects(self::once())
+            ->method('getItem')
+            ->will(self::returnValueMap($map))
+        ;
+        $cache
+            ->expects(self::never())
+            ->method('setItem')
+            ->will(self::returnValue(false))
+        ;
+
+        $this->object->setCache($cache);
+
         $this->object->fetch(IniLoader::PHP_INI);
 
         self::assertSame($expected, file_get_contents(IniLoader::PHP_INI));
@@ -942,7 +1052,7 @@ AolVersion=0
      * @expectedException \BrowscapPHP\Exception\FetcherException
      * @expectedExceptionMessage Could not fetch HTTP resource "http://browscap.org/stream?q=PHP_BrowscapINI":
      */
-    public function testUpdate()
+    public function testUpdateFailException()
     {
         if (class_exists('\Browscap\Browscap')) {
             self::markTestSkipped(
@@ -954,9 +1064,22 @@ AolVersion=0
         $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
         $this->object->setLogger($logger);
 
+        $internalLoader = $this->getMock(
+            '\FileLoader\Loader',
+            array('getUri'),
+            array(),
+            '',
+            false
+        );
+        $internalLoader
+            ->expects(self::once())
+            ->method('getUri')
+            ->will(self::returnValue('http://browscap.org/stream?q=PHP_BrowscapINI'))
+        ;
+
         $loader = $this->getMock(
             '\BrowscapPHP\Helper\IniLoader',
-            array('setRemoteFilename', 'setOptions', 'setLogger', 'load'),
+            array('setRemoteFilename', 'setOptions', 'setLogger', 'load', 'getLoader'),
             array(),
             '',
             false
@@ -981,8 +1104,11 @@ AolVersion=0
             ->method('load')
             ->will(self::returnValue(false))
         ;
-
-        $this->object->setLoader($loader);
+        $loader
+            ->expects(self::once())
+            ->method('getLoader')
+            ->will(self::returnValue($internalLoader))
+        ;
 
         $this->object->setLoader($loader);
 
@@ -1001,15 +1127,531 @@ AolVersion=0
             ),
         );
 
-        $cache = $this->getMock('\WurflCache\Adapter\Memory', array('getItem'), array(), '', false);
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'setItem'), array(), '', false);
         $cache
-            ->expects(self::any())
+            ->expects(self::once())
             ->method('getItem')
             ->will(self::returnValueMap($map))
+        ;
+        $cache
+            ->expects(self::never())
+            ->method('setItem')
+            ->will(self::returnValue(true))
         ;
 
         $this->object->setCache($cache);
 
         $this->object->update();
+    }
+
+    /**
+     *
+     */
+    public function testUpdateOk()
+    {
+        if (class_exists('\Browscap\Browscap')) {
+            self::markTestSkipped(
+                'if the \Browscap\Browscap class is available the browscap.ini file is not updated from a remote '
+                . 'location'
+            );
+        }
+
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $this->object->setLogger($logger);
+
+        $internalLoader = $this->getMock(
+            '\FileLoader\Loader',
+            array('getUri'),
+            array(),
+            '',
+            false
+        );
+        $internalLoader
+            ->expects(self::never())
+            ->method('getUri')
+            ->will(self::returnValue('http://browscap.org/stream?q=PHP_BrowscapINI'))
+        ;
+
+        $content   = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+
+[GJK_Browscap_Version]
+Version=5031
+Released=Mon, 30 Jun 2014 17:55:58 +0200
+Format=ASP
+Type=
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; DefaultProperties
+
+[DefaultProperties]
+
+Comment=DefaultProperties
+Browser=DefaultProperties
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=false
+Beta=false
+Win16=false
+Win32=false
+Win64=false
+Frames=false
+IFrames=false
+Tables=false
+Cookies=false
+BackgroundSounds=false
+JavaScript=false
+VBScript=false
+JavaApplets=false
+ActiveXControls=false
+isMobileDevice=false
+isTablet=false
+isSyndicationReader=false
+Crawler=false
+CssVersion=0
+AolVersion=0
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Ask
+
+[Ask]
+
+Parent=DefaultProperties
+Comment=Ask
+Browser=Ask
+Frames=1
+IFrames=1
+Tables=1
+Crawler=1
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=
+Beta=
+Win16=
+Win32=
+Win64=
+Cookies=
+BackgroundSounds=
+JavaScript=
+VBScript=
+JavaApplets=
+ActiveXControls=
+isMobileDevice=
+isTablet=
+isSyndicationReader=
+CssVersion=0
+AolVersion=0
+
+[Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)]
+
+Parent=Ask
+Browser=Teoma
+Comment=Ask
+Version=0.0
+MajorVer=0
+MinorVer=0
+Platform=unknown
+Platform_Version=unknown
+Alpha=
+Beta=
+Win16=
+Win32=
+Win64=
+Frames=1
+IFrames=1
+Tables=1
+Cookies=
+BackgroundSounds=
+JavaScript=
+VBScript=
+JavaApplets=
+ActiveXControls=
+isMobileDevice=
+isTablet=
+isSyndicationReader=
+Crawler=1
+CssVersion=0
+AolVersion=0
+';
+
+        $loader = $this->getMock(
+            '\BrowscapPHP\Helper\IniLoader',
+            array('setRemoteFilename', 'setOptions', 'setLogger', 'load', 'getLoader'),
+            array(),
+            '',
+            false
+        );
+        $loader
+            ->expects(self::once())
+            ->method('setRemoteFilename')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('setOptions')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('setLogger')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('load')
+            ->will(self::returnValue($content))
+        ;
+        $loader
+            ->expects(self::never())
+            ->method('getLoader')
+            ->will(self::returnValue($internalLoader))
+        ;
+
+        $this->object->setLoader($loader);
+
+        $map = array(
+            array(
+                'browscap.time',
+                false,
+                null,
+                null
+            ),
+            array(
+                'browscap.version',
+                false,
+                null,
+                null
+            ),
+        );
+
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'setItem'), array(), '', false);
+        $cache
+            ->expects(self::once())
+            ->method('getItem')
+            ->will(self::returnValueMap($map))
+        ;
+        $cache
+            ->expects(self::exactly(4353))
+            ->method('setItem')
+            ->will(self::returnValue(false))
+        ;
+
+        $this->object->setCache($cache);
+
+        self::assertNull($this->object->update());
+    }
+
+    /**
+     *
+     */
+    public function testCheckUpdateWithCacheFail()
+    {
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $this->object->setLogger($logger);
+
+        $loader = $this->getMock(
+            '\BrowscapPHP\Helper\IniLoader',
+            array('setRemoteFilename', 'setOptions', 'setLogger', 'load'),
+            array(),
+            '',
+            false
+        );
+        $loader
+            ->expects(self::never())
+            ->method('setRemoteFilename')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::never())
+            ->method('setOptions')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::never())
+            ->method('setLogger')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::never())
+            ->method('load')
+            ->will(self::returnValue(false))
+        ;
+
+        $this->object->setLoader($loader);
+
+        $map = array(
+            array(
+                'browscap.time',
+                false,
+                null,
+                null
+            ),
+            array(
+                'browscap.version',
+                false,
+                null,
+                null
+            ),
+        );
+
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'setItem'), array(), '', false);
+        $cache
+            ->expects(self::once())
+            ->method('getItem')
+            ->will(self::returnValueMap($map))
+        ;
+        $cache
+            ->expects(self::never())
+            ->method('setItem')
+            ->will(self::returnValue(false))
+        ;
+
+        $this->object->setCache($cache);
+
+        self::assertSame(0, $this->object->checkUpdate());
+    }
+
+    /**
+     * @expectedException \BrowscapPHP\Exception\FetcherException
+     * @expectedExceptionMessage an error occured while checking remote version
+     */
+    public function testCheckUpdateWithException()
+    {
+        $version = 6000;
+
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $this->object->setLogger($logger);
+
+        $loader = $this->getMock(
+            '\BrowscapPHP\Helper\IniLoader',
+            array('setRemoteFilename', 'setOptions', 'setLogger', 'load', 'getRemoteVersion'),
+            array(),
+            '',
+            false
+        );
+        $loader
+            ->expects(self::once())
+            ->method('setRemoteFilename')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('setOptions')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('setLogger')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::never())
+            ->method('load')
+            ->will(self::returnValue(false))
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('getRemoteVersion')
+            ->will(self::throwException(new Exception('Exception')))
+        ;
+
+        $this->object->setLoader($loader);
+
+        $map = array(
+            array(
+                'browscap.time',
+                false,
+                null,
+                null
+            ),
+            array(
+                'browscap.version',
+                false,
+                null,
+                $version
+            ),
+        );
+
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'setItem'), array(), '', false);
+        $cache
+            ->expects(self::once())
+            ->method('getItem')
+            ->will(self::returnValueMap($map))
+        ;
+        $cache
+            ->expects(self::never())
+            ->method('setItem')
+            ->will(self::returnValue(false))
+        ;
+
+        $this->object->setCache($cache);
+
+        $this->object->checkUpdate();
+    }
+
+    /**
+     *
+     */
+    public function testCheckUpdateWithoutNewerVersion()
+    {
+        $version = 6000;
+
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $this->object->setLogger($logger);
+
+        $loader = $this->getMock(
+            '\BrowscapPHP\Helper\IniLoader',
+            array('setRemoteFilename', 'setOptions', 'setLogger', 'load', 'getRemoteVersion'),
+            array(),
+            '',
+            false
+        );
+        $loader
+            ->expects(self::once())
+            ->method('setRemoteFilename')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('setOptions')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('setLogger')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::never())
+            ->method('load')
+            ->will(self::returnValue(false))
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('getRemoteVersion')
+            ->will(self::returnValue($version))
+        ;
+
+        $this->object->setLoader($loader);
+
+        $map = array(
+            array(
+                'browscap.time',
+                false,
+                null,
+                null
+            ),
+            array(
+                'browscap.version',
+                false,
+                null,
+                $version
+            ),
+        );
+
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'setItem'), array(), '', false);
+        $cache
+            ->expects(self::once())
+            ->method('getItem')
+            ->will(self::returnValueMap($map))
+        ;
+        $cache
+            ->expects(self::never())
+            ->method('setItem')
+            ->will(self::returnValue(false))
+        ;
+
+        $this->object->setCache($cache);
+
+        self::assertNull($this->object->checkUpdate());
+    }
+
+    /**
+     *
+     */
+    public function testCheckUpdateWithNewerVersion()
+    {
+        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $this->object->setLogger($logger);
+
+        $loader = $this->getMock(
+            '\BrowscapPHP\Helper\IniLoader',
+            array('setRemoteFilename', 'setOptions', 'setLogger', 'load', 'getRemoteVersion'),
+            array(),
+            '',
+            false
+        );
+        $loader
+            ->expects(self::once())
+            ->method('setRemoteFilename')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('setOptions')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('setLogger')
+            ->will(self::returnSelf())
+        ;
+        $loader
+            ->expects(self::never())
+            ->method('load')
+            ->will(self::returnValue(false))
+        ;
+        $loader
+            ->expects(self::once())
+            ->method('getRemoteVersion')
+            ->will(self::returnValue(6001))
+        ;
+
+        $this->object->setLoader($loader);
+
+        $map = array(
+            array(
+                'browscap.time',
+                false,
+                null,
+                null
+            ),
+            array(
+                'browscap.version',
+                false,
+                null,
+                6000
+            ),
+        );
+
+        $cache = $this->getMock(
+            '\BrowscapPHP\Cache\BrowscapCache',
+            array('getItem', 'hasItem', 'setItem'),
+            array(),
+            '',
+            false
+        );
+        $cache
+            ->expects(self::any())
+            ->method('getItem')
+            ->will(self::returnValueMap($map))
+        ;
+        $cache
+            ->expects(self::any())
+            ->method('hasItem')
+            ->will(self::returnValue(true))
+        ;
+        $cache
+            ->expects(self::never())
+            ->method('setItem')
+            ->will(self::returnValue(false))
+        ;
+
+        $this->object->setCache($cache);
+
+        self::assertSame(6000, $this->object->checkUpdate());
     }
 }

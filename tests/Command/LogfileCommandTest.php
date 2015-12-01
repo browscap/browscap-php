@@ -34,10 +34,11 @@ use org\bovigo\vfs\vfsStream;
  *
  * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
- * @copyright  Copyright (c) 2006-2012 Jonathan Stoppani
- * @version    1.0
+ * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
+ * @version    3.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/GaretJax/BrowscapPHP/
+ * @link       https://github.com/browscap/browscap-php/
+ * @group      command
  */
 class LogfileCommandTest extends \PHPUnit_Framework_TestCase
 {

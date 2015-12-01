@@ -3,7 +3,7 @@
 namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Cache\BrowscapCache;
-use BrowscapPHP\Command\ConvertCommand;
+use BrowscapPHP\Command\CheckUpdateCommand;
 use WurflCache\Adapter\Memory;
 
 /**
@@ -32,17 +32,17 @@ use WurflCache\Adapter\Memory;
  * THE SOFTWARE.
  *
  * @package    Browscap
- * @author     Vítor Brandão <noisebleed@noiselabs.org>
+ * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  * @group      command
  */
-class ConvertCommandTest extends \PHPUnit_Framework_TestCase
+class CheckUpdateCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \BrowscapPHP\Command\ConvertCommand
+     * @var \BrowscapPHP\Command\UpdateCommand
      */
     private $object = null;
 
@@ -55,9 +55,8 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
     {
         $cacheAdapter   = new Memory();
         $cache          = new BrowscapCache($cacheAdapter);
-        $defaultIniFile = 'resources/browscap.ini';
 
-        $this->object = new ConvertCommand($cache, $defaultIniFile);
+        $this->object = new CheckUpdateCommand($cache);
     }
 
     /**
@@ -66,7 +65,7 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
     public function testConfigure()
     {
         $object = $this->getMock(
-            '\BrowscapPHP\Command\ConvertCommand',
+            '\BrowscapPHP\Command\CheckUpdateCommand',
             array('setName', 'setDescription', 'addArgument', 'addOption'),
             array(),
             '',
@@ -83,7 +82,7 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
             ->will(self::returnSelf())
         ;
         $object
-            ->expects(self::once())
+            ->expects(self::never())
             ->method('addArgument')
             ->will(self::returnSelf())
         ;
@@ -93,44 +92,10 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
             ->will(self::returnSelf())
         ;
 
-        $class  = new \ReflectionClass('\BrowscapPHP\Command\ConvertCommand');
+        $class  = new \ReflectionClass('\BrowscapPHP\Command\CheckUpdateCommand');
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 
         self::assertNull($method->invoke($object));
-    }
-
-    /**
-     *
-     */
-    public function testExecute()
-    {
-        if (defined('HHVM_VERSION')) {
-            self::markTestSkipped('test will fail for hhvm');
-        }
-
-        $input         = $this->getMock('\Symfony\Component\Console\Input\ArgvInput', array(), array(), '', false);
-        $objectIniPath = ini_get('browscap');
-
-        if (!is_file($objectIniPath)) {
-            $this->setExpectedException(
-                '\BrowscapPHP\Exception',
-                'an error occured while converting the local file into the cache'
-            );
-        } else {
-            $input
-                ->expects(self::exactly(2))
-                ->method('getArgument')
-                ->with('file')
-                ->will(self::returnValue($objectIniPath))
-            ;
-        }
-        $output = $this->getMock('\Symfony\Component\Console\Output\ConsoleOutput', array(), array(), '', false);
-
-        $class  = new \ReflectionClass('\BrowscapPHP\Command\ConvertCommand');
-        $method = $class->getMethod('execute');
-        $method->setAccessible(true);
-
-        self::assertNull($method->invoke($this->object, $input, $output));
     }
 }

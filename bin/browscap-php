@@ -39,6 +39,7 @@ $application->add(new Command\UpdateCommand($cache));
 $application->add(new Command\ParserCommand($cache));
 $application->add(new Command\LogfileCommand($cache));
 $application->add(new Command\FetchCommand($defaultIniFile));
+$application->add(new Command\CheckUpdateCommand($cache));
 
 ini_set('memory_limit', '512M');
 

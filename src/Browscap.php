@@ -344,9 +344,15 @@ class Browscap
      * @param string $remoteFile The code for the remote file to load
      *
      * @throws \BrowscapPHP\Exception\FetcherException
+     * @throws \BrowscapPHP\Helper\Exception
      */
     public function fetch($file, $remoteFile = IniLoader::PHP_INI)
     {
+        if (null === ($cachedVersion = $this->checkUpdate($remoteFile))) {
+            // no newer version available
+            return;
+        }
+
         $this->getLoader()
             ->setRemoteFilename($remoteFile)
             ->setOptions($this->options)
@@ -355,7 +361,11 @@ class Browscap
 
         $this->getLogger()->debug('started fetching remote file');
 
-        $content = $this->getLoader()->load();
+        try {
+            $content = $this->getLoader()->load();
+        } catch (Helper\Exception $e) {
+            throw new FetcherException('an error occured while fetching remote data', 0, $e);
+        }
 
         if (false === $content) {
             $error = error_get_last();
@@ -367,8 +377,13 @@ class Browscap
 
         $content = $this->sanitizeContent($content);
 
-        $fs = new Filesystem();
-        $fs->dumpFile($file, $content);
+        $converter  = new Converter($this->getLogger(), $this->getCache());
+        $iniVersion = $converter->getIniVersion($content);
+
+        if ($iniVersion > $cachedVersion) {
+            $fs = new Filesystem();
+            $fs->dumpFile($file, $content);
+        }
 
         $this->getLogger()->debug('finished storing remote file into local file');
     }
@@ -385,6 +400,7 @@ class Browscap
      *
      * @throws \BrowscapPHP\Exception\FileNotFoundException
      * @throws \BrowscapPHP\Helper\Exception
+     * @throws \BrowscapPHP\Exception\FetcherException
      */
     public function update($remoteFile = IniLoader::PHP_INI, $buildFolder = null, $buildNumber = null)
     {
@@ -428,30 +444,16 @@ class Browscap
             $filesystem = new Filesystem();
             $filesystem->remove($buildFolder);
         } else {
+            if (null === ($cachedVersion = $this->checkUpdate($remoteFile))) {
+                // no newer version available
+                return;
+            }
+
             $this->getLoader()
                 ->setRemoteFilename($remoteFile)
                 ->setOptions($this->options)
                 ->setLogger($this->getLogger())
             ;
-
-            $success       = null;
-            $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
-
-            try {
-                $remoteVersion = $this->getLoader()->getRemoteVersion();
-            } catch (Helper\Exception $e) {
-                $this->getLogger()->warning($e);
-
-                $remoteVersion = null;
-                $success       = false;
-            }
-
-            if ($success && $cachedVersion && $remoteVersion && $remoteVersion <= $cachedVersion) {
-                // no newer version available
-                return;
-            }
-
-            $internalLoader = $this->getLoader()->getLoader();
 
             try {
                 $content = $this->getLoader()->load();
@@ -460,7 +462,9 @@ class Browscap
             }
 
             if (false === $content) {
-                $error = error_get_last();
+                $internalLoader = $this->getLoader()->getLoader();
+                $error          = error_get_last();
+
                 throw FetcherException::httpError($internalLoader->getUri(), $error['message']);
             }
 
@@ -477,6 +481,60 @@ class Browscap
                 ;
             }
         }
+    }
+
+    /**
+     * checks if an update on a remote location for the local file or the cache
+     *
+     * @param string $remoteFile
+     *
+     * @return int|null The actual cached version if a newer version is available, null otherwise
+     * @throws \BrowscapPHP\Helper\Exception
+     * @throws \BrowscapPHP\Exception\FetcherException
+     */
+    public function checkUpdate($remoteFile = IniLoader::PHP_INI)
+    {
+        $success       = null;
+        $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
+
+        if (!$cachedVersion) {
+            // could not load version from cache
+            $this->getLogger()->info('there is no cached version available, please update from remote');
+
+            return 0;
+        }
+
+        $this->getLoader()
+            ->setRemoteFilename($remoteFile)
+            ->setOptions($this->options)
+            ->setLogger($this->getLogger())
+        ;
+
+        try {
+            $remoteVersion = $this->getLoader()->getRemoteVersion();
+        } catch (Helper\Exception $e) {
+            throw new FetcherException('an error occured while checking remote version', 0, $e);
+        }
+
+        if (!$remoteVersion) {
+            // could not load remote version
+            $this->getLogger()->info('could not load version from remote location');
+
+            return 0;
+        }
+
+        if ($cachedVersion && $remoteVersion && $remoteVersion <= $cachedVersion) {
+            // no newer version available
+            $this->getLogger()->info('there is no newer version available');
+
+            return null;
+        }
+
+        $this->getLogger()->info(
+            'a newer version is available, local version: ' . $cachedVersion . ', remote version: ' . $remoteVersion
+        );
+
+        return (int) $cachedVersion;
     }
 
     /**
