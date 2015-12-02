@@ -317,13 +317,13 @@ class Browscap
             throw new Exception('an error occured while setting the local file', 0, $e);
         }
 
-        $converter = new Converter($this->getLogger(), $this->getCache());
-
         try {
-            $converter->convertString($loader->load());
+            $iniString = $loader->load();
         } catch (Helper\Exception $e) {
             throw new Exception('an error occured while converting the local file into the cache', 0, $e);
         }
+
+        $this->convertString($iniString);
     }
 
     /**
@@ -333,8 +333,10 @@ class Browscap
      */
     public function convertString($iniString)
     {
-        $converter = new Converter($this->getLogger(), $this->getCache());
-        $converter->convertString($iniString);
+        $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
+        $converter     = new Converter($this->getLogger(), $this->getCache());
+
+        $this->storeContent($converter, $iniString, $cachedVersion);
     }
 
     /**
@@ -470,16 +472,7 @@ class Browscap
 
             $this->getLogger()->debug('finished fetching remote file');
 
-            $content = $this->sanitizeContent($content);
-
-            $iniVersion = $converter->getIniVersion($content);
-
-            if ($iniVersion > $cachedVersion) {
-                $converter
-                    ->storeVersion()
-                    ->convertString($content)
-                ;
-            }
+            $this->storeContent($converter, $content, $cachedVersion);
         }
     }
 
@@ -549,5 +542,25 @@ class Browscap
 
         // replace opening and closing php and asp tags
         return str_replace(array('<?', '<%', '?>', '%>'), '', $content);
+    }
+
+    /**
+     * reads and parses an ini string and writes the results into the cache
+     *
+     * @param \BrowscapPHP\Helper\Converter $converter
+     * @param string                        $content
+     * @param int                           $cachedVersion
+     */
+    private function storeContent(Converter $converter, $content, $cachedVersion)
+    {
+        $iniString  = $this->sanitizeContent($content);
+        $iniVersion = $converter->getIniVersion($iniString);
+
+        if ($iniVersion > $cachedVersion) {
+            $converter
+                ->storeVersion()
+                ->convertString($iniString)
+            ;
+        }
     }
 }

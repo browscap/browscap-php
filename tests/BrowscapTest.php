@@ -6,6 +6,7 @@ use BrowscapPHP\Browscap;
 use BrowscapPHP\Helper\Exception;
 use BrowscapPHP\Helper\IniLoader;
 use org\bovigo\vfs\vfsStream;
+use WurflCache\Adapter\Memory;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -402,12 +403,12 @@ AolVersion=0
 
         vfsStream::setup(self::STORAGE_DIR, null, $structure);
 
-        $cache = $this->getMock('\WurflCache\Adapter\Memory', array(), array(), '', false);
+        $cache = new Memory();
         $this->object->setCache($cache);
 
-        self::assertNull(
-            $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.ini'))
-        );
+        $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.ini'));
+
+        self::assertSame(5031, $this->object->getCache()->getVersion());
     }
 
     /**
@@ -520,12 +521,12 @@ CssVersion=0
 AolVersion=0
 ';
 
-        $cache = $this->getMock('\WurflCache\Adapter\Memory', array(), array(), '', false);
+        $cache = new Memory();
         $this->object->setCache($cache);
 
-        self::assertNull(
-            $this->object->convertString($content)
-        );
+        $this->object->convertString($content);
+
+        self::assertSame(5031, $this->object->getCache()->getVersion());
     }
 
     /**
