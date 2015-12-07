@@ -549,14 +549,14 @@ class Browscap
      *
      * @param \BrowscapPHP\Helper\Converter $converter
      * @param string                        $content
-     * @param int                           $cachedVersion
+     * @param int|null                      $cachedVersion
      */
     private function storeContent(Converter $converter, $content, $cachedVersion)
     {
         $iniString  = $this->sanitizeContent($content);
         $iniVersion = $converter->getIniVersion($iniString);
 
-        if ($iniVersion > $cachedVersion) {
+        if (!$cachedVersion || $iniVersion > $cachedVersion) {
             $converter
                 ->storeVersion()
                 ->convertString($iniString)
