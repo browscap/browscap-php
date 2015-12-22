@@ -267,7 +267,6 @@ class IniLoader
         $internalLoader = $this->getLoader();
         $internalLoader
             ->setRemoteDataUrl($this->getRemoteIniUrl())
-            ->setRemoteVerUrl($this->getRemoteTimeUrl())
             ->setTimeout($this->getTimeout())
         ;
 
@@ -289,14 +288,13 @@ class IniLoader
     {
         $internalLoader = $this->getLoader();
         $internalLoader
-            ->setRemoteDataUrl($this->getRemoteIniUrl())
             ->setRemoteVerUrl($this->getRemoteTimeUrl())
             ->setTimeout($this->getTimeout())
         ;
 
         try {
             // Get updated timestamp
-            $remoteDatetime = $internalLoader->load();
+            $remoteDatetime = $internalLoader->getMTime();
         } catch (LoaderException $exception) {
             throw new Exception('could not load the new remote time', 0, $exception);
         }
@@ -321,14 +319,13 @@ class IniLoader
     {
         $internalLoader = $this->getLoader();
         $internalLoader
-            ->setRemoteDataUrl($this->getRemoteIniUrl())
             ->setRemoteVerUrl($this->getRemoteVersionUrl())
             ->setTimeout($this->getTimeout())
         ;
 
         try {
             // Get updated timestamp
-            return (int) $internalLoader->load();
+            return (int) $internalLoader->getMTime();
         } catch (LoaderException $exception) {
             throw new Exception('could not load the new version', 0, $exception);
         }
