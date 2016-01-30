@@ -13,13 +13,13 @@ Installation
 Run the command below to install via Composer
 
 ```shell
-composer require browscap/browscap-php 
+composer require browscap/browscap-php
 ```
 
 Then you may identify the current user agent like so:
 
 ```php
-use BrowscapPHP\Browscap;
+use phpbrowscap\Browscap;
 
 $browscap = new Browscap();
 $info = $browscap->getBrowser();
@@ -47,7 +47,7 @@ vendor/bin/browscap-php browscap:update
 
 If you only want to check if a new version of the browscap.ini is available, you can use the `browscap:check-update` command.
 
-Note: Both ways to create/update the cache and also checking the update will use the `standard` mode file as default. 
+Note: Both ways to create/update the cache and also checking the update will use the `standard` mode file as default.
 If you want more detailed information you may change this with the `remote-file` option.
 Please use the help function this parameter.
 
@@ -55,7 +55,7 @@ Please use the help function this parameter.
 vendor/bin/browscap-php browscap:update --remote-file Full_PHP_BrowscapINI
 ```
 
-Note: Each operation (fetch, update, check-update) which fetches data from the remote host browscap.org may run into the 
+Note: Each operation (fetch, update, check-update) which fetches data from the remote host browscap.org may run into the
 rate limit of that site. If this happens an Exception is thrown.
 
 A sample using composer with taking the useragent from the global $_SERVER variable.
