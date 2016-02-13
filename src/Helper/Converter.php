@@ -178,7 +178,7 @@ class Converter
         }
 
         $this->cache->setItem('browscap.releaseDate', $this->getIniReleaseDate($iniString), false);
-        
+
         $this->logger->info('finished creating data from the ini data');
     }
 
@@ -193,7 +193,7 @@ class Converter
     {
         $quoterHelper = new Quoter();
         $key          = $quoterHelper->pregQuote(self::BROWSCAP_VERSION_KEY);
-        
+
         if (preg_match('/\.*\[' . $key . '\][^\[]*Version=(\d+)\D.*/', $iniString, $matches)) {
             if (isset($matches[1])) {
                 $this->iniVersion = (int) $matches[1];
@@ -228,13 +228,13 @@ class Converter
 
         return $this;
     }
-    
+
     /**
      * Parses the ini data to get the releaseDate of loaded ini file
      *
      * @param string $iniString The loaded ini data
      *
-     * @return string
+     * @return string|null
      */
     private function getIniReleaseDate($iniString)
     {
@@ -243,5 +243,7 @@ class Converter
                 return $matches[1];
             }
         }
+
+        return null;
     }
 }
