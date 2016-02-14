@@ -31,13 +31,14 @@
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\Browscap;
-use BrowscapPHP\Cache\BrowscapCacheInterface;
+use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Helper\LoggerHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use WurflCache\Adapter\File;
 
 /**
  * command to convert a downloaded Browscap ini file and write it to the cache
@@ -64,15 +65,32 @@ class ConvertCommand extends Command
     private $defaultIniFile;
 
     /**
-     * @param \BrowscapPHP\Cache\BrowscapCacheInterface $cache
-     * @param string                                    $defaultIniFile
+     * @var string
      */
-    public function __construct(BrowscapCacheInterface $cache, $defaultIniFile)
+    private $defaultCacheFolder;
+
+    /**
+     * @param string $defaultCacheFolder
+     * @param string $defaultIniFile
+     */
+    public function __construct($defaultCacheFolder, $defaultIniFile)
     {
         parent::__construct();
 
-        $this->cache          = $cache;
-        $this->defaultIniFile = $defaultIniFile;
+        $this->defaultCacheFolder = $defaultCacheFolder;
+        $this->defaultIniFile     = $defaultIniFile;
+    }
+
+    /**
+     * @param \BrowscapPHP\Cache\BrowscapCacheInterface $cache
+     *
+     * @return $this
+     */
+    public function setCache(\BrowscapPHP\Cache\BrowscapCacheInterface $cache)
+    {
+        $this->cache = $cache;
+
+        return $this;
     }
 
     /**
@@ -101,6 +119,13 @@ class ConvertCommand extends Command
                 InputOption::VALUE_NONE,
                 'Should the debug mode entered?'
             )
+            ->addOption(
+                'cache',
+                'c',
+                InputOption::VALUE_REQUIRED,
+                'Where the cache files are located',
+                $this->defaultCacheFolder
+            )
         ;
     }
 
@@ -121,7 +146,7 @@ class ConvertCommand extends Command
 
         $browscap
             ->setLogger($logger)
-            ->setCache($this->cache)
+            ->setCache($this->getCache($input))
         ;
 
         $logger->info('started converting local file');
@@ -136,5 +161,20 @@ class ConvertCommand extends Command
     private function getBrowscap()
     {
         return new Browscap();
+    }
+
+    /**
+     * @param InputInterface $input
+     *
+     * @return \BrowscapPHP\Cache\BrowscapCacheInterface
+     */
+    private function getCache(InputInterface $input)
+    {
+        if (null === $this->cache) {
+            $cacheAdapter = new File(array(File::DIR => $input->getOption('cache')));
+            $this->cache  = new BrowscapCache($cacheAdapter);
+        }
+
+        return $this->cache;
     }
 }

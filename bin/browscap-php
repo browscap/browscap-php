@@ -1,11 +1,11 @@
 #!/usr/bin/env php
 <?php
 
-chdir(dirname(__DIR__));
+$baseDir = dirname(__DIR__);
 
 $autoloadPaths = array(
-    'vendor/autoload.php',
-    '../../autoload.php',
+    $baseDir . '/vendor/autoload.php',
+    $baseDir . '/../../autoload.php',
 );
 
 $foundVendorAutoload = false;
@@ -23,23 +23,18 @@ if (!$foundVendorAutoload) {
 
 use BrowscapPHP\Exception;
 use Symfony\Component\Console\Application;
-use BrowscapPHP\Cache\BrowscapCache;
-use WurflCache\Adapter\File;
 use BrowscapPHP\Command;
 
-$resourceDirectory = 'resources/';
-$defaultIniFile    = 'resources/browscap.ini';
-
-$cacheAdapter = new File(array(File::DIR => $resourceDirectory));
-$cache        = new BrowscapCache($cacheAdapter);
+$cacheDirectory = $baseDir . '/cache/';
+$defaultIniFile = $baseDir . '/cache/browscap.ini';
 
 $application = new Application('browscap.php');
-$application->add(new Command\ConvertCommand($cache, $defaultIniFile));
-$application->add(new Command\UpdateCommand($cache));
-$application->add(new Command\ParserCommand($cache));
-$application->add(new Command\LogfileCommand($cache));
+$application->add(new Command\ConvertCommand($cacheDirectory, $defaultIniFile));
+$application->add(new Command\UpdateCommand($cacheDirectory));
+$application->add(new Command\ParserCommand($cacheDirectory));
+$application->add(new Command\LogfileCommand($cacheDirectory));
 $application->add(new Command\FetchCommand($defaultIniFile));
-$application->add(new Command\CheckUpdateCommand($cache));
+$application->add(new Command\CheckUpdateCommand($cacheDirectory));
 
 ini_set('memory_limit', '512M');
 

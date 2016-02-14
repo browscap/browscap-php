@@ -760,7 +760,7 @@ AolVersion=0
 
         $this->object->setCache($cache);
 
-        $file = 'resources/test.ini';
+        $file = 'cache/test.ini';
 
         $this->object->fetch($file);
 

@@ -59,7 +59,8 @@ class LogfileCommandTest extends \PHPUnit_Framework_TestCase
         $cacheAdapter   = new Memory();
         $cache          = new BrowscapCache($cacheAdapter);
 
-        $this->object = new LogfileCommand($cache);
+        $this->object = new LogfileCommand('');
+        $this->object->setCache($cache);
     }
 
     /**
@@ -90,7 +91,7 @@ class LogfileCommandTest extends \PHPUnit_Framework_TestCase
             ->will(self::returnSelf())
         ;
         $object
-            ->expects(self::exactly(5))
+            ->expects(self::exactly(6))
             ->method('addOption')
             ->will(self::returnSelf())
         ;

@@ -31,13 +31,14 @@
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\Browscap;
-use BrowscapPHP\Cache\BrowscapCacheInterface;
+use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Helper\LoggerHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use WurflCache\Adapter\File;
 
 /**
  * commands to parse a given useragent
@@ -59,13 +60,30 @@ class ParserCommand extends Command
     private $cache = null;
 
     /**
-     * @param \BrowscapPHP\Cache\BrowscapCacheInterface $cache
+     * @var string
      */
-    public function __construct(BrowscapCacheInterface $cache)
+    private $defaultCacheFolder;
+
+    /**
+     * @param string $defaultCacheFolder
+     */
+    public function __construct($defaultCacheFolder)
     {
         parent::__construct();
 
+        $this->defaultCacheFolder = $defaultCacheFolder;
+    }
+
+    /**
+     * @param \BrowscapPHP\Cache\BrowscapCacheInterface $cache
+     *
+     * @return $this
+     */
+    public function setCache(\BrowscapPHP\Cache\BrowscapCacheInterface $cache)
+    {
         $this->cache = $cache;
+
+        return $this;
     }
 
     /**
@@ -88,6 +106,13 @@ class ParserCommand extends Command
                 InputOption::VALUE_NONE,
                 'Should the debug mode entered?'
             )
+            ->addOption(
+                'cache',
+                'c',
+                InputOption::VALUE_REQUIRED,
+                'Where the cache files are located',
+                $this->defaultCacheFolder
+            )
         ;
     }
 
@@ -106,7 +131,7 @@ class ParserCommand extends Command
 
         $browscap
             ->setLogger($logger)
-            ->setCache($this->cache)
+            ->setCache($this->getCache($input))
         ;
 
         $result = $browscap->getBrowser($input->getArgument('user-agent'));
@@ -122,5 +147,20 @@ class ParserCommand extends Command
     private function getBrowscap()
     {
         return new Browscap();
+    }
+
+    /**
+     * @param InputInterface $input
+     *
+     * @return \BrowscapPHP\Cache\BrowscapCacheInterface
+     */
+    private function getCache(InputInterface $input)
+    {
+        if (null === $this->cache) {
+            $cacheAdapter = new File(array(File::DIR => $input->getOption('cache')));
+            $this->cache  = new BrowscapCache($cacheAdapter);
+        }
+
+        return $this->cache;
     }
 }
