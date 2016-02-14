@@ -5,8 +5,8 @@ vendor/
 .project
 composer.phar
 composer.lock
-cache/*
-!cache/.gitkeep
+resources/*
+!resources/.gitkeep
 PHP_BrowscapINI
 ergebnis.txt
 tests/data/*

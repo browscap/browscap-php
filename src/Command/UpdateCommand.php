@@ -32,6 +32,7 @@ namespace BrowscapPHP\Command;
 
 use BrowscapPHP\Browscap;
 use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Helper\IniLoader;
 use BrowscapPHP\Helper\LoggerHelper;
 use Symfony\Component\Console\Command\Command;
@@ -56,7 +57,7 @@ use WurflCache\Adapter\File;
 class UpdateCommand extends Command
 {
     /**
-     * @var \BrowscapPHP\Cache\BrowscapCacheInterface
+     * @var BrowscapCacheInterface
      */
     private $cache = null;
 
@@ -80,7 +81,7 @@ class UpdateCommand extends Command
      *
      * @return $this
      */
-    public function setCache(\BrowscapPHP\Cache\BrowscapCacheInterface $cache)
+    public function setCache(BrowscapCacheInterface $cache)
     {
         $this->cache = $cache;
 
@@ -157,7 +158,7 @@ class UpdateCommand extends Command
     /**
      * @param InputInterface $input
      *
-     * @return \BrowscapPHP\Cache\BrowscapCacheInterface
+     * @return BrowscapCacheInterface
      */
     private function getCache(InputInterface $input)
     {

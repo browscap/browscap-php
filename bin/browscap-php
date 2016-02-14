@@ -25,8 +25,8 @@ use BrowscapPHP\Exception;
 use Symfony\Component\Console\Application;
 use BrowscapPHP\Command;
 
-$cacheDirectory = $baseDir . '/cache/';
-$defaultIniFile = $baseDir . '/cache/browscap.ini';
+$cacheDirectory = $baseDir . '/resources/';
+$defaultIniFile = $baseDir . '/resources/browscap.ini';
 
 $application = new Application('browscap.php');
 $application->add(new Command\ConvertCommand($cacheDirectory, $defaultIniFile));

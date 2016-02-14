@@ -32,6 +32,7 @@ namespace BrowscapPHP\Command;
 
 use BrowscapPHP\Browscap;
 use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception\InvalidArgumentException;
 use BrowscapPHP\Exception\ReaderException;
 use BrowscapPHP\Exception\UnknownBrowserException;
@@ -81,7 +82,7 @@ class LogfileCommand extends Command
     private $totalCount = 0;
 
     /**
-     * @var \BrowscapPHP\Cache\BrowscapCacheInterface
+     * @var BrowscapCacheInterface
      */
     private $cache = null;
 
@@ -105,7 +106,7 @@ class LogfileCommand extends Command
      *
      * @return $this
      */
-    public function setCache(\BrowscapPHP\Cache\BrowscapCacheInterface $cache)
+    public function setCache(BrowscapCacheInterface $cache)
     {
         $this->cache = $cache;
 
@@ -578,7 +579,7 @@ class LogfileCommand extends Command
     /**
      * @param InputInterface $input
      *
-     * @return \BrowscapPHP\Cache\BrowscapCacheInterface
+     * @return BrowscapCacheInterface
      */
     private function getCache(InputInterface $input)
     {

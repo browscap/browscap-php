@@ -32,6 +32,7 @@ namespace BrowscapPHP\Command;
 
 use BrowscapPHP\Browscap;
 use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Helper\LoggerHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -55,7 +56,7 @@ use WurflCache\Adapter\File;
 class ParserCommand extends Command
 {
     /**
-     * @var \BrowscapPHP\Cache\BrowscapCacheInterface
+     * @var BrowscapCacheInterface
      */
     private $cache = null;
 
@@ -79,7 +80,7 @@ class ParserCommand extends Command
      *
      * @return $this
      */
-    public function setCache(\BrowscapPHP\Cache\BrowscapCacheInterface $cache)
+    public function setCache(BrowscapCacheInterface $cache)
     {
         $this->cache = $cache;
 
@@ -152,7 +153,7 @@ class ParserCommand extends Command
     /**
      * @param InputInterface $input
      *
-     * @return \BrowscapPHP\Cache\BrowscapCacheInterface
+     * @return BrowscapCacheInterface
      */
     private function getCache(InputInterface $input)
     {

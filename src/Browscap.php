@@ -135,7 +135,7 @@ class Browscap
     public function getCache()
     {
         if (null === $this->cache) {
-            $cacheDirectory = __DIR__.'/../cache/';
+            $cacheDirectory = __DIR__.'/../resources/';
 
             $cacheAdapter = new File(
                 array(File::DIR => $cacheDirectory)
@@ -418,7 +418,7 @@ class Browscap
             }
 
             if (null === $buildFolder) {
-                $buildFolder = 'cache';
+                $buildFolder = 'resources';
             }
 
             $buildFolder .= '/browscap-ua-test-'.$buildNumber;

@@ -55,7 +55,7 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
     {
         $cacheAdapter   = new Memory();
         $cache          = new BrowscapCache($cacheAdapter);
-        $defaultIniFile = 'cache/browscap.ini';
+        $defaultIniFile = 'resources/browscap.ini';
 
         $this->object = new ConvertCommand('', $defaultIniFile);
         $this->object->setCache($cache);
