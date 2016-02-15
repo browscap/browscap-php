@@ -31,6 +31,7 @@
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\Browscap;
+use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception\InvalidArgumentException;
 use BrowscapPHP\Exception\ReaderException;
@@ -52,6 +53,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use WurflCache\Adapter\File;
 
 /**
  * commands to parse a log file and parse the useragents in it
@@ -68,11 +70,6 @@ use Symfony\Component\Finder\SplFileInfo;
 class LogfileCommand extends Command
 {
     /**
-     * @var \BrowscapPHP\Cache\BrowscapCacheInterface
-     */
-    private $cache = null;
-
-    /**
      * @var array
      */
     private $undefinedClients = array();
@@ -85,13 +82,35 @@ class LogfileCommand extends Command
     private $totalCount = 0;
 
     /**
-     * @param \BrowscapPHP\Cache\BrowscapCacheInterface $cache
+     * @var BrowscapCacheInterface
      */
-    public function __construct(BrowscapCacheInterface $cache)
+    private $cache = null;
+
+    /**
+     * @var string
+     */
+    private $defaultCacheFolder;
+
+    /**
+     * @param string $defaultCacheFolder
+     */
+    public function __construct($defaultCacheFolder)
     {
         parent::__construct();
 
+        $this->defaultCacheFolder = $defaultCacheFolder;
+    }
+
+    /**
+     * @param \BrowscapPHP\Cache\BrowscapCacheInterface $cache
+     *
+     * @return $this
+     */
+    public function setCache(BrowscapCacheInterface $cache)
+    {
         $this->cache = $cache;
+
+        return $this;
     }
 
     /**
@@ -140,6 +159,13 @@ class LogfileCommand extends Command
                 InputOption::VALUE_NONE,
                 'Should the debug mode entered?'
             )
+            ->addOption(
+                'cache',
+                'c',
+                InputOption::VALUE_REQUIRED,
+                'Where the cache files are located',
+                $this->defaultCacheFolder
+            )
         ;
     }
 
@@ -167,7 +193,7 @@ class LogfileCommand extends Command
 
         $browscap
             ->setLogger($logger)
-            ->setCache($this->cache)
+            ->setCache($this->getCache($input))
         ;
 
         /** @var $file \Symfony\Component\Finder\SplFileInfo */
@@ -548,5 +574,20 @@ class LogfileCommand extends Command
     private function getBrowscap()
     {
         return new Browscap();
+    }
+
+    /**
+     * @param InputInterface $input
+     *
+     * @return BrowscapCacheInterface
+     */
+    private function getCache(InputInterface $input)
+    {
+        if (null === $this->cache) {
+            $cacheAdapter = new File(array(File::DIR => $input->getOption('cache')));
+            $this->cache  = new BrowscapCache($cacheAdapter);
+        }
+
+        return $this->cache;
     }
 }

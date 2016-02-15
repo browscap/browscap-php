@@ -57,7 +57,8 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
         $cache          = new BrowscapCache($cacheAdapter);
         $defaultIniFile = 'resources/browscap.ini';
 
-        $this->object = new ConvertCommand($cache, $defaultIniFile);
+        $this->object = new ConvertCommand('', $defaultIniFile);
+        $this->object->setCache($cache);
     }
 
     /**
@@ -88,7 +89,7 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
             ->will(self::returnSelf())
         ;
         $object
-            ->expects(self::exactly(2))
+            ->expects(self::exactly(3))
             ->method('addOption')
             ->will(self::returnSelf())
         ;

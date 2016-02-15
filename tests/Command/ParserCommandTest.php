@@ -56,7 +56,8 @@ class ParserCommandTest extends \PHPUnit_Framework_TestCase
         $cacheAdapter   = new Memory();
         $cache          = new BrowscapCache($cacheAdapter);
 
-        $this->object = new ParserCommand($cache);
+        $this->object = new ParserCommand('');
+        $this->object->setCache($cache);
     }
 
     /**
@@ -87,7 +88,7 @@ class ParserCommandTest extends \PHPUnit_Framework_TestCase
             ->will(self::returnSelf())
         ;
         $object
-            ->expects(self::once())
+            ->expects(self::exactly(2))
             ->method('addOption')
             ->will(self::returnSelf())
         ;

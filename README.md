@@ -55,6 +55,14 @@ Please use the help function this parameter.
 vendor/bin/browscap-php browscap:update --remote-file Full_PHP_BrowscapINI
 ```
 
+Each operation expect fetch uses a cache inside the `resources` directory inside the project. If you update this library with 
+composer, the cache is cleared also. If you want to avoid this and want to set your own cache folder, 
+you can use the `cache` option. If you do this, you have to set a Cache Instance for this this path (see below).
+
+```php
+vendor/bin/browscap-php browscap:update --cache ./browscap-cache
+```
+
 Note: Each operation (fetch, update, check-update) which fetches data from the remote host browscap.org may run into the 
 rate limit of that site. If this happens an Exception is thrown.
 

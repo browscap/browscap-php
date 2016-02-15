@@ -135,10 +135,10 @@ class Browscap
     public function getCache()
     {
         if (null === $this->cache) {
-            $resourceDirectory = __DIR__.'/../resources/';
+            $cacheDirectory = __DIR__.'/../resources/';
 
             $cacheAdapter = new File(
-                array(File::DIR => $resourceDirectory)
+                array(File::DIR => $cacheDirectory)
             );
 
             $this->cache = new BrowscapCache($cacheAdapter);

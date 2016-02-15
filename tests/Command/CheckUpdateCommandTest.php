@@ -56,7 +56,8 @@ class CheckUpdateCommandTest extends \PHPUnit_Framework_TestCase
         $cacheAdapter   = new Memory();
         $cache          = new BrowscapCache($cacheAdapter);
 
-        $this->object = new CheckUpdateCommand($cache);
+        $this->object = new CheckUpdateCommand('');
+        $this->object->setCache($cache);
     }
 
     /**
@@ -87,7 +88,7 @@ class CheckUpdateCommandTest extends \PHPUnit_Framework_TestCase
             ->will(self::returnSelf())
         ;
         $object
-            ->expects(self::exactly(2))
+            ->expects(self::exactly(3))
             ->method('addOption')
             ->will(self::returnSelf())
         ;
