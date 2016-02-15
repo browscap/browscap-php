@@ -1335,7 +1335,7 @@ AolVersion=0
             ->will(self::returnValueMap($map))
         ;
         $cache
-            ->expects(self::exactly(4353))
+            ->expects(self::exactly(4354))
             ->method('setItem')
             ->will(self::returnValue(false))
         ;

@@ -60,6 +60,13 @@ class BrowscapCache implements BrowscapCacheInterface
     private $version = null;
 
     /**
+     * Release date of the Browscap data (read from INI file)
+     *
+     * @var string
+     */
+    private $releaseDate;
+
+    /**
      * Constructor class, checks for the existence of (and loads) the cache and
      * if needed updated the definitions
      *
@@ -90,6 +97,26 @@ class BrowscapCache implements BrowscapCacheInterface
         }
 
         return $this->version;
+    }
+
+    /**
+     * Gets the release date of the Browscap data
+     *
+     * @return string
+     */
+    public function getReleaseDate()
+    {
+        if ($this->releaseDate === null) {
+            $success = true;
+
+            $releaseDate = $this->getItem('browscap.releaseDate', false, $success);
+
+            if ($releaseDate !== null && $success) {
+                $this->releaseDate = $releaseDate;
+            }
+        }
+
+        return $this->releaseDate;
     }
 
     /**
