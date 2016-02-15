@@ -63,9 +63,9 @@ class FetchCommand extends Command
      */
     public function __construct($defaultIniFile)
     {
-        parent::__construct();
-
         $this->defaultIniFile = $defaultIniFile;
+
+        parent::__construct();
     }
 
     /**

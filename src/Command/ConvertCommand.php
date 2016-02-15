@@ -76,10 +76,10 @@ class ConvertCommand extends Command
      */
     public function __construct($defaultCacheFolder, $defaultIniFile)
     {
-        parent::__construct();
-
         $this->defaultCacheFolder = $defaultCacheFolder;
         $this->defaultIniFile     = $defaultIniFile;
+
+        parent::__construct();
     }
 
     /**
@@ -123,7 +123,7 @@ class ConvertCommand extends Command
             ->addOption(
                 'cache',
                 'c',
-                InputOption::VALUE_REQUIRED,
+                InputOption::VALUE_OPTIONAL,
                 'Where the cache files are located',
                 $this->defaultCacheFolder
             )
