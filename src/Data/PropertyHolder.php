@@ -136,6 +136,9 @@ class PropertyHolder
             'Crawler',
             'MasterParent',
             'LiteMode',
+            'isFake',
+            'isAnonymized',
+            'isModified',
         );
 
         if (in_array($propertyName, $booleanProperties)) {
