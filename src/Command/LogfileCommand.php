@@ -96,9 +96,9 @@ class LogfileCommand extends Command
      */
     public function __construct($defaultCacheFolder)
     {
-        parent::__construct();
-
         $this->defaultCacheFolder = $defaultCacheFolder;
+
+        parent::__construct();
     }
 
     /**
@@ -162,7 +162,7 @@ class LogfileCommand extends Command
             ->addOption(
                 'cache',
                 'c',
-                InputOption::VALUE_REQUIRED,
+                InputOption::VALUE_OPTIONAL,
                 'Where the cache files are located',
                 $this->defaultCacheFolder
             )
