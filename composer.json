@@ -29,7 +29,7 @@
         "mimmi20/file-loader": "~2.0",
         "symfony/filesystem": "*",
         "symfony/finder": "~2.6",
-        "symfony/console": "^3.0",
+        "symfony/console": "^2.6|^3.0",
         "monolog/monolog": "1.*"
     },
     "require-dev": {
