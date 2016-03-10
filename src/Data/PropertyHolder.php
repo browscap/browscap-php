@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 1998-2015 Browser Capabilities Project
+ * Copyright (c) 1998-2015 Browser Capabilities Project.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -21,9 +21,10 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Data
+ *
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
+ *
  * @link       https://github.com/browscap/browscap-php/
  * @since      added with version 3.0
  */
@@ -31,25 +32,27 @@
 namespace BrowscapPHP\Data;
 
 /**
- * Class PropertyHolder
+ * Class PropertyHolder.
  *
  * @category   Browscap
- * @package    Data
+ *
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  */
 class PropertyHolder
 {
-    const TYPE_STRING   = 'string';
-    const TYPE_GENERIC  = 'generic';
-    const TYPE_NUMBER   = 'number';
-    const TYPE_BOOLEAN  = 'boolean';
+    const TYPE_STRING = 'string';
+    const TYPE_GENERIC = 'generic';
+    const TYPE_NUMBER = 'number';
+    const TYPE_BOOLEAN = 'boolean';
     const TYPE_IN_ARRAY = 'in_array';
 
     /**
-     * Get the type of a property
+     * Get the type of a property.
      *
-     * @param  string     $propertyName
+     * @param string $propertyName
+     *
      * @throws \Exception
+     *
      * @return string
      */
     public function getPropertyType($propertyName)
@@ -153,6 +156,7 @@ class PropertyHolder
      * @param string $value
      *
      * @throws \InvalidArgumentException
+     *
      * @return string
      */
     public function checkValueInArray($property, $value)
@@ -193,17 +197,17 @@ class PropertyHolder
             case 'Device_Pointing_Method':
                 // This property is taken from http://www.scientiamobile.com/wurflCapability
                 $allowedValues = array(
-                    'joystick', 'stylus', 'touchscreen', 'clickwheel', 'trackpad', 'trackball', 'mouse', 'unknown'
+                    'joystick', 'stylus', 'touchscreen', 'clickwheel', 'trackpad', 'trackball', 'mouse', 'unknown',
                 );
                 break;
             case 'Browser_Bits':
             case 'Platform_Bits':
                 $allowedValues = array(
-                    '0', '8', '16', '32', '64'
+                    '0', '8', '16', '32', '64',
                 );
                 break;
             default:
-                throw new \InvalidArgumentException('Property "' . $property . '" is not defined to be validated');
+                throw new \InvalidArgumentException('Property "'.$property.'" is not defined to be validated');
                 break;
         }
 

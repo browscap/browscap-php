@@ -65,6 +65,13 @@ class BrowscapCache implements BrowscapCacheInterface
      * @var string
      */
     private $releaseDate;
+    
+    /**
+     * Type of the Browscap data (read from INI file)
+     *
+     * @var string
+     */
+    private $type;
 
     /**
      * Constructor class, checks for the existence of (and loads) the cache and
@@ -117,6 +124,26 @@ class BrowscapCache implements BrowscapCacheInterface
         }
 
         return $this->releaseDate;
+    }
+    
+    /**
+     * Gets the type of the Browscap data
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        if ($this->type === null) {
+            $success = true;
+    
+            $type = $this->getItem('browscap.type', false, $success);
+    
+            if ($type !== null && $success) {
+                $this->type = $type;
+            }
+        }
+    
+        return $this->type;
     }
 
     /**
