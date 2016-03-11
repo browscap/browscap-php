@@ -178,6 +178,7 @@ class Converter
         }
 
         $this->cache->setItem('browscap.releaseDate', $this->getIniReleaseDate($iniString), false);
+        $this->cache->setItem('browscap.type', $this->getIniType($iniString), false);
 
         $this->logger->info('finished creating data from the ini data');
     }
@@ -244,6 +245,24 @@ class Converter
             }
         }
 
+        return null;
+    }
+    
+    /**
+     * Parses the ini data to get the releaseDate of loaded ini file
+     *
+     * @param string $iniString The loaded ini data
+     *
+     * @return string|null
+     */
+    private function getIniType($iniString)
+    {
+        if (preg_match('/Type=(.*)/', $iniString, $matches)) {
+            if (isset($matches[1])) {
+                return $matches[1];
+            }
+        }
+    
         return null;
     }
 }

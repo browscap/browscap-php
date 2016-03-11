@@ -74,6 +74,13 @@ interface BrowscapCacheInterface
      * @return string
      */
     public function getReleaseDate();
+    
+    /**
+     * Gets the type of the Browscap data
+     *
+     * @return string
+     */
+    public function getType();
 
     /**
      * Get an item.
