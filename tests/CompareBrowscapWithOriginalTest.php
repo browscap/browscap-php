@@ -59,6 +59,9 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         'Crawler'                     => 'false',
         'CssVersion'                  => '0',
         'AolVersion'                  => '0',
+        'IsFake'                      => 'false',
+        'IsAnonymized'                => 'false',
+        'IsModified'                  => 'false',
         'Device_Name'                 => 'unknown',
         'Device_Maker'                => 'unknown',
         'Device_Type'                 => 'unknown',
@@ -136,7 +139,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         self::assertSame(
             0,
             count($libProperties),
-            'There are ' . count($libProperties) . '(' . implode(', ', $libPropertyKeys)
+            'There are ' . count($libProperties) . '(' . implode(', ', array_keys($libProperties))
             . ') properties in get_browser that do not match those in Browscap.'
         );
     }

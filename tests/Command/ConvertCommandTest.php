@@ -4,6 +4,7 @@ namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Command\ConvertCommand;
+use BrowscapPHP\Exception as BrowscapException;
 use WurflCache\Adapter\Memory;
 
 /**
@@ -110,14 +111,14 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
             self::markTestSkipped('test will fail for hhvm');
         }
 
-        $input         = $this->getMock('\Symfony\Component\Console\Input\ArgvInput', array(), array(), '', false);
+        $input = $this->getMockBuilder(\Symfony\Component\Console\Input\ArgvInput::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $objectIniPath = ini_get('browscap');
 
         if (!is_file($objectIniPath)) {
-            $this->setExpectedException(
-                '\BrowscapPHP\Exception',
-                'an error occured while converting the local file into the cache'
-            );
+            $this->expectException(BrowscapException::class);
+            $this->expectExceptionMessage('an error occured while converting the local file into the cache');
         } else {
             $input
                 ->expects(self::exactly(2))
@@ -126,7 +127,9 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
                 ->will(self::returnValue($objectIniPath))
             ;
         }
-        $output = $this->getMock('\Symfony\Component\Console\Output\ConsoleOutput', array(), array(), '', false);
+        $output = $this->getMockBuilder(\Symfony\Component\Console\Output\ConsoleOutput::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $class  = new \ReflectionClass('\BrowscapPHP\Command\ConvertCommand');
         $method = $class->getMethod('execute');
