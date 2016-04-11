@@ -130,6 +130,36 @@ $bc = new Browscap();
 $bc->setClient($client);
 ```
 
+Upgrade from version 2.x to 3.x
+-------------------------------
+
+Please note that the namespace was changed and the fact that the caches from both versions are incompatible with each other.
+All public properties of version 2.x have been removed.
+
+Actually in version 2.x the Browscap parser is initialized this way:
+
+```php
+use phpbrowscap\Browscap;
+
+$browscap = new Browscap($cacheDir);
+```
+
+If you want to use a File Cache also with version 3.0 you can change your setup this way:
+
+```php
+use BrowscapPHP\Browscap;
+use WurflCache\Adapter\File;
+
+$adapter  = new File(array(File::Dir => $cacheDir));
+$browscap = new Browscap();
+$browscap->setCache($adapter)
+```
+
+The WurflCache package supports other Caches. Please look into this package if you want to use one of them.
+
+If you want to autoupdate the used cache, we recommend a separate cron job and calls the command listed above.
+
+
 Issues and feature requests
 ---------------------------
 
