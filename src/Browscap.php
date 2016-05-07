@@ -228,15 +228,15 @@ class Browscap
      */
     public function getBrowser($userAgent = null)
     {
+        if (null === $this->getCache()->getVersion()) {
+            // there is no active/warm cache available
+            throw new Exception('there is no active cache available, please run the update command');
+        }
+
         // Automatically detect the useragent
         if (!isset($userAgent)) {
             $support   = new Helper\Support($_SERVER);
             $userAgent = $support->getUserAgent();
-        }
-
-        if (null === $this->getCache()->getVersion()) {
-            // there is no active/warm cache available
-            throw new Exception('there is no active cache available, please run the update commend');
         }
 
         // try to get browser data

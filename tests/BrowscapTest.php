@@ -149,7 +149,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \BrowscapPHP\Exception
-     * @expectedExceptionMessage there is no active cache available, please run the update commend
+     * @expectedExceptionMessage there is no active cache available, please run the update command
      */
     public function testGetBrowserWithoutCache()
     {
