@@ -148,12 +148,31 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     *
+     */
+    public function testGetLoader()
+    {
+        self::assertInstanceOf('\GuzzleHttp\Client', $this->object->getClient());
+    }
+
+    /**
      * @expectedException \BrowscapPHP\Exception
      * @expectedExceptionMessage there is no active cache available, please run the update command
      */
     public function testGetBrowserWithoutCache()
     {
         $this->object->getBrowser();
+    }
+
+    /**
+     *
+     */
+    public function testSetGetgetLoader()
+    {
+        $loader = $this->getMock('\GuzzleHttp\Client', array(), array(), '', false);
+
+        $this->object->setClient($loader);
+        self::assertSame($loader, $this->object->getClient());
     }
 
     /**

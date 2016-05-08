@@ -109,12 +109,6 @@ class ConvertCommand extends Command
                 $this->defaultIniFile
             )
             ->addOption(
-                'no-backup',
-                null,
-                InputOption::VALUE_NONE,
-                'Do not backup the previously existing file'
-            )
-            ->addOption(
                 'debug',
                 'd',
                 InputOption::VALUE_NONE,
@@ -154,7 +148,7 @@ class ConvertCommand extends Command
 
         $file = ($input->getArgument('file') ? $input->getArgument('file') : ($this->defaultIniFile));
 
-        $browscap->convertFile($file, $input->getOption('no-backup'));
+        $browscap->convertFile($file);
 
         $logger->info('finished converting local file');
     }

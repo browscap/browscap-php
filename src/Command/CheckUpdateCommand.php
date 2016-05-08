@@ -103,14 +103,6 @@ class CheckUpdateCommand extends Command
                 'Should the debug mode entered?'
             )
             ->addOption(
-                'remote-file',
-                'r',
-                InputOption::VALUE_OPTIONAL,
-                'browscap.ini file to download from remote location (possible values are: ' . IniLoader::PHP_INI_LITE
-                . ', ' . IniLoader::PHP_INI . ', ' . IniLoader::PHP_INI_FULL . ')',
-                IniLoader::PHP_INI
-            )
-            ->addOption(
                 'cache',
                 'c',
                 InputOption::VALUE_OPTIONAL,
@@ -138,7 +130,7 @@ class CheckUpdateCommand extends Command
         $browscap
             ->setLogger($logger)
             ->setCache($this->getCache($input))
-            ->checkUpdate($input->getOption('remote-file'))
+            ->checkUpdate()
         ;
 
         $logger->debug('finished checking for new version of remote file');
