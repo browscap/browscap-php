@@ -2,7 +2,7 @@
 
 namespace BrowscapPHPTest\Formatter;
 
-use BrowscapPHP\Formatter\PhpGetBrowser;
+use BrowscapPHP\Formatter\LegacyFormatter;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -36,38 +36,43 @@ use BrowscapPHP\Formatter\PhpGetBrowser;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  */
-class PhpGetBrowserTest extends \PHPUnit_Framework_TestCase
+class LegacyFormatterTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var \BrowscapPHP\Formatter\PhpGetBrowser
-     */
-    private $object = null;
-
-    /**
-     * Sets up the fixture, for example, open a network connection.
-     * This method is called before a test is executed.
-     *
-     */
-    public function setUp()
+    public function formatterOptionsProvider()
     {
-        $this->object = new PhpGetBrowser();
+        return array(
+            array(
+                array(),
+                (object) array(
+                    'Browser' => 'test',
+                    'Comment' => 'TestComment',
+                ),
+            ),
+            array(
+                array('lowercase' => true),
+                (object) array(
+                    'browser' => 'test',
+                    'comment' => 'TestComment',
+                )
+            )
+        );
     }
 
     /**
-     *
+     * @dataProvider formatterOptionsProvider
+     * @param array $options
+     * @param \stdClass $expectedResult
      */
-    public function testSetGetData()
+    public function testSetGetData($options, $expectedResult)
     {
         $data = array(
             'Browser' => 'test',
             'Comment' => 'TestComment',
         );
 
-        self::assertSame($this->object, $this->object->setData($data));
-        $return = $this->object->getData();
-        self::assertInstanceOf('\stdClass', $return);
-        self::assertSame('test', $return->browser);
-        self::assertSame('TestComment', $return->comment);
-        self::assertObjectHasAttribute('browser_type', $return);
+        $formatter = new LegacyFormatter($options);
+        self::assertSame($formatter, $formatter->setData($data));
+        $return = $formatter->getData();
+        self::assertEquals($expectedResult, $return);
     }
 }
