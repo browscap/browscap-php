@@ -53,7 +53,7 @@ class ConverterConvertStringTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $logger = $this->getMock('\Monolog\Logger', array('info'), array(), '', false);
+        $logger = $this->getMock('\Monolog\Logger', array('info', 'error'), array(), '', false);
         $logger->expects(self::exactly(4))
                ->method('info')
                ->will(self::returnValue(false));

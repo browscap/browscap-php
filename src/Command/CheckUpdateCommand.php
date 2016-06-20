@@ -30,7 +30,7 @@
 
 namespace BrowscapPHP\Command;
 
-use BrowscapPHP\Browscap;
+use BrowscapPHP\BrowscapUpdater;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Helper\IniLoader;
@@ -133,7 +133,7 @@ class CheckUpdateCommand extends Command
 
         $logger->debug('started checking for new version of remote file');
 
-        $browscap = $this->getBrowscap();
+        $browscap = new BrowscapUpdater();
 
         $browscap
             ->setLogger($logger)
@@ -142,11 +142,6 @@ class CheckUpdateCommand extends Command
         ;
 
         $logger->debug('finished checking for new version of remote file');
-    }
-
-    private function getBrowscap()
-    {
-        return new Browscap();
     }
 
     /**

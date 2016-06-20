@@ -30,7 +30,7 @@
 
 namespace BrowscapPHP\Command;
 
-use BrowscapPHP\Browscap;
+use BrowscapPHP\BrowscapUpdater;
 use BrowscapPHP\Helper\IniLoader;
 use BrowscapPHP\Helper\LoggerHelper;
 use Symfony\Component\Console\Command\Command;
@@ -117,7 +117,7 @@ class FetchCommand extends Command
 
         $logger->info('started fetching remote file');
 
-        $browscap = $this->getBrowscap();
+        $browscap = new BrowscapUpdater();
 
         $browscap
             ->setLogger($logger)
@@ -125,10 +125,5 @@ class FetchCommand extends Command
         ;
 
         $logger->info('finished fetching remote file');
-    }
-
-    private function getBrowscap()
-    {
-        return new Browscap();
     }
 }

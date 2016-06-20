@@ -42,25 +42,6 @@ use WurflCache\Adapter\Memory;
 class ParserCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \BrowscapPHP\Command\ParserCommand
-     */
-    private $object = null;
-
-    /**
-     * Sets up the fixture, for example, open a network connection.
-     * This method is called before a test is executed.
-     *
-     */
-    public function setUp()
-    {
-        $cacheAdapter   = new Memory();
-        $cache          = new BrowscapCache($cacheAdapter);
-
-        $this->object = new ParserCommand('');
-        $this->object->setCache($cache);
-    }
-
-    /**
      *
      */
     public function testConfigure()
@@ -97,6 +78,14 @@ class ParserCommandTest extends \PHPUnit_Framework_TestCase
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getVersion'), array(), '', false);
+        $cache
+            ->expects(self::never())
+            ->method('getVersion')
+            ->will(self::returnValue(1))
+        ;
+        $object->setCache($cache);
+
         self::assertNull($method->invoke($object));
     }
 
@@ -105,6 +94,21 @@ class ParserCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
+        $object = new ParserCommand('');
+
+        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getVersion', 'hasItem'), array(), '', false);
+        $cache
+            ->expects(self::once())
+            ->method('getVersion')
+            ->will(self::returnValue(1))
+        ;
+        $cache
+            ->expects(self::exactly(2))
+            ->method('hasItem')
+            ->will(self::returnValue(false))
+        ;
+        $object->setCache($cache);
+
         $input  = $this->getMock('\Symfony\Component\Console\Input\ArgvInput', array(), array(), '', false);
         $output = $this->getMock('\Symfony\Component\Console\Output\ConsoleOutput', array(), array(), '', false);
 
@@ -112,6 +116,6 @@ class ParserCommandTest extends \PHPUnit_Framework_TestCase
         $method = $class->getMethod('execute');
         $method->setAccessible(true);
 
-        self::assertNull($method->invoke($this->object, $input, $output));
+        self::assertNull($method->invoke($object, $input, $output));
     }
 }

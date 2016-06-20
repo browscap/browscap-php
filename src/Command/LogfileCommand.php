@@ -186,7 +186,7 @@ class LogfileCommand extends Command
         $loggerHelper = new LoggerHelper();
         $logger       = $loggerHelper->create($input->getOption('debug'));
 
-        $browscap   = $this->getBrowscap();
+        $browscap   = new Browscap();
         $loader     = new IniLoader();
         $collection = ReaderFactory::factory();
         $fs         = new Filesystem();
@@ -255,12 +255,6 @@ class LogfileCommand extends Command
             arsort($this->uas, SORT_NUMERIC);
 
             try {
-                $fs->dumpFile($input->getArgument('output').'/output.sql', $this->createSqlContent());
-            } catch (IOException $e) {
-                // do nothing
-            }
-
-            try {
                 $fs->dumpFile(
                     $input->getArgument('output').'/output.txt',
                     implode(PHP_EOL, array_unique($this->undefinedClients))
@@ -286,12 +280,6 @@ class LogfileCommand extends Command
             } catch (IOException $e) {
                 // do nothing
             }
-        }
-
-        try {
-            $fs->dumpFile($input->getArgument('output').'/output.sql', $this->createSqlContent());
-        } catch (IOException $e) {
-            // do nothing
         }
 
         $outputFile = $input->getArgument('output').'/output.txt';
@@ -322,23 +310,6 @@ class LogfileCommand extends Command
         } catch (IOException $e) {
             // do nothing
         }
-    }
-
-    private function createSqlContent()
-    {
-        $content = '';
-
-        arsort($this->uas, SORT_NUMERIC);
-
-        foreach ($this->uas as $agentOfLine => $count) {
-            $content .= "
-                INSERT INTO `agents` (`agent`, `count`)
-                VALUES ('".addslashes($agentOfLine)."', ".addslashes($count).")
-                ON DUPLICATE KEY UPDATE `count`=`count`+".addslashes($count).";
-            ";
-        }
-
-        return $content;
     }
 
     private function createAmountContent()
@@ -569,11 +540,6 @@ class LogfileCommand extends Command
         }
 
         return $path;
-    }
-
-    private function getBrowscap()
-    {
-        return new Browscap();
     }
 
     /**

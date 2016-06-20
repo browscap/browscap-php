@@ -30,7 +30,7 @@
 
 namespace BrowscapPHP\Command;
 
-use BrowscapPHP\Browscap;
+use BrowscapPHP\BrowscapUpdater;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Helper\LoggerHelper;
@@ -143,7 +143,7 @@ class ConvertCommand extends Command
 
         $logger->info('initializing converting process');
 
-        $browscap = $this->getBrowscap();
+        $browscap = new BrowscapUpdater();
 
         $browscap
             ->setLogger($logger)
@@ -157,11 +157,6 @@ class ConvertCommand extends Command
         $browscap->convertFile($file, $input->getOption('no-backup'));
 
         $logger->info('finished converting local file');
-    }
-
-    private function getBrowscap()
-    {
-        return new Browscap();
     }
 
     /**

@@ -2,6 +2,7 @@
 namespace BrowscapPHPTest;
 
 use BrowscapPHP\Browscap;
+use BrowscapPHP\BrowscapUpdater;
 use BrowscapPHP\Cache\BrowscapCache;
 use WurflCache\Adapter\Memory;
 
@@ -94,10 +95,13 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $cache        = new BrowscapCache($cacheAdapter);
         $cache->flush();
 
-        self::$object
+        $updater = new BrowscapUpdater();
+        $updater
             ->setCache($cache)
             ->convertFile($objectIniPath)
         ;
+
+        self::$object->setCache($cache);
     }
 
     /**
@@ -130,7 +134,8 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             self::assertArrayHasKey(
                 $bcProp,
                 $libProperties,
-                'Property `' . $bcProp . '` from Browscap doesn\'t match anything in get_browser.'
+                'Property `' . $bcProp . '` from Browscap doesn\'t match anything in get_browser. '
+                . 'You may have an outdated browscap.ini file for your tests'
             );
 
             unset($libProperties[$bcProp]);
