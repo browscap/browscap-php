@@ -59,7 +59,9 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
     public function testaddReader()
     {
         /** @var \BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader $reader */
-        $reader = $this->getMock('\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader', array(), array(), '', false);
+        $reader = $this->getMockBuilder(\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         self::assertSame($this->object, $this->object->addReader($reader));
     }
@@ -70,13 +72,10 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
     public function testTestSuccessFull()
     {
         /** @var \BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader $reader */
-        $reader = $this->getMock(
-            '\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader',
-            array('test'),
-            array(),
-            '',
-            false
-        );
+        $reader = $this->getMockBuilder(\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['test'])
+            ->getMock();
         $reader
             ->expects(self::once())
             ->method('test')
@@ -94,13 +93,10 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
     public function testTestNotSuccessFull()
     {
         /** @var \BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader $reader */
-        $reader = $this->getMock(
-            '\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader',
-            array('test'),
-            array(),
-            '',
-            false
-        );
+        $reader = $this->getMockBuilder(\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['test'])
+            ->getMock();
         $reader
             ->expects(self::once())
             ->method('test')
@@ -117,13 +113,10 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testReadSuccessFull()
     {
-        $reader = $this->getMock(
-            '\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader',
-            array('test', 'read'),
-            array(),
-            '',
-            false
-        );
+        $reader = $this->getMockBuilder(\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['test', 'read'])
+            ->getMock();
         $reader
             ->expects(self::once())
             ->method('test')
@@ -146,13 +139,10 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testReadNotSuccessFull()
     {
-        $reader = $this->getMock(
-            '\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader',
-            array('test', 'read'),
-            array(),
-            '',
-            false
-        );
+        $reader = $this->getMockBuilder(\BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['test', 'read'])
+            ->getMock();
         $reader
             ->expects(self::once())
             ->method('test')

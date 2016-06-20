@@ -230,7 +230,9 @@ class BrowscapUpdater
 
         $this->getLogger()->debug('started fetching remote file');
 
-        $uri      = (new IniLoader())->setRemoteFilename($remoteFile)->getRemoteIniUrl();
+        $uri = (new IniLoader())->setRemoteFilename($remoteFile)->getRemoteIniUrl();
+
+        /** @var \Psr\Http\Message\ResponseInterface $response */
         $response = $this->getClient()->get($uri, ['timeout' => 5]);
 
         if ($response->getStatusCode() !== 200) {
@@ -288,7 +290,9 @@ class BrowscapUpdater
             return;
         }
 
-        $uri      = (new IniLoader())->setRemoteFilename($remoteFile)->getRemoteIniUrl();
+        $uri = (new IniLoader())->setRemoteFilename($remoteFile)->getRemoteIniUrl();
+
+        /** @var \Psr\Http\Message\ResponseInterface $response */
         $response = $this->getClient()->get($uri, ['timeout' => 5]);
 
         if ($response->getStatusCode() !== 200) {
@@ -336,7 +340,9 @@ class BrowscapUpdater
             return 0;
         }
 
-        $uri      = (new IniLoader())->getRemoteVersionUrl();
+        $uri = (new IniLoader())->getRemoteVersionUrl();
+
+        /** @var \Psr\Http\Message\ResponseInterface $response */
         $response = $this->getClient()->get($uri, ['timeout' => 5]);
 
         if ($response->getStatusCode() !== 200) {

@@ -67,13 +67,10 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testConfigure()
     {
-        $object = $this->getMock(
-            '\BrowscapPHP\Command\ConvertCommand',
-            array('setName', 'setDescription', 'addArgument', 'addOption'),
-            array(),
-            '',
-            false
-        );
+        $object = $this->getMockBuilder(\BrowscapPHP\Command\ConvertCommand::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['setName', 'setDescription', 'addArgument', 'addOption'])
+            ->getMock();
         $object
             ->expects(self::once())
             ->method('setName')

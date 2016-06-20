@@ -46,13 +46,10 @@ class ParserCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testConfigure()
     {
-        $object = $this->getMock(
-            '\BrowscapPHP\Command\ParserCommand',
-            array('setName', 'setDescription', 'addArgument', 'addOption'),
-            array(),
-            '',
-            false
-        );
+        $object = $this->getMockBuilder(\BrowscapPHP\Command\ParserCommand::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['setName', 'setDescription', 'addArgument', 'addOption'])
+            ->getMock();
         $object
             ->expects(self::once())
             ->method('setName')
@@ -78,7 +75,10 @@ class ParserCommandTest extends \PHPUnit_Framework_TestCase
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getVersion'), array(), '', false);
+        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getVersion'])
+            ->getMock();
         $cache
             ->expects(self::never())
             ->method('getVersion')
@@ -96,7 +96,10 @@ class ParserCommandTest extends \PHPUnit_Framework_TestCase
     {
         $object = new ParserCommand('');
 
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getVersion', 'hasItem'), array(), '', false);
+        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getVersion', 'hasItem'])
+            ->getMock();
         $cache
             ->expects(self::once())
             ->method('getVersion')
@@ -109,8 +112,12 @@ class ParserCommandTest extends \PHPUnit_Framework_TestCase
         ;
         $object->setCache($cache);
 
-        $input  = $this->getMock('\Symfony\Component\Console\Input\ArgvInput', array(), array(), '', false);
-        $output = $this->getMock('\Symfony\Component\Console\Output\ConsoleOutput', array(), array(), '', false);
+        $input  = $this->getMockBuilder(\Symfony\Component\Console\Input\ArgvInput::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $output = $this->getMockBuilder(\Symfony\Component\Console\Output\ConsoleOutput::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $class  = new \ReflectionClass('\BrowscapPHP\Command\ParserCommand');
         $method = $class->getMethod('execute');
