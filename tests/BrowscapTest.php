@@ -159,17 +159,6 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testSetGetgetLoader()
-    {
-        $loader = $this->getMock('\GuzzleHttp\Client', array(), array(), '', false);
-
-        $this->object->setClient($loader);
-        self::assertSame($loader, $this->object->getClient());
-    }
-
-    /**
-     *
-     */
     public function testGetBrowserWithoutUa()
     {
         $browserObject = new \StdClass();
