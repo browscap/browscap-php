@@ -412,7 +412,7 @@ AolVersion=0
 
     /**
      * @expectedException \BrowscapPHP\Exception\FetcherException
-     * @expectedExceptionMessage Could not fetch HTTP resource "http://browscap.org/stream?q=PHP_BrowscapINI":
+     * @expectedExceptionMessage an error occured while fetching remote data from URI ' . $uri . ': StatusCode was 500
      */
     public function testFetchFail()
     {
@@ -421,6 +421,16 @@ AolVersion=0
             ->getMock();
         $this->object->setLogger($logger);
 
+        $response = $this->getMockBuilder(GuzzleHttp\Psr7\Response::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getStatusCode'])
+            ->getMock();
+        $response
+            ->expects(self::once())
+            ->method('getStatusCode')
+            ->will(self::returnValue(500))
+        ;
+
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
             ->setMethods(['get'])
@@ -428,7 +438,7 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue(false))
+            ->will(self::returnValue($response))
         ;
 
         $this->object->setClient($client);
@@ -583,32 +593,30 @@ CssVersion=0
 AolVersion=0
 ';
 
-        $loader = $this->getMockBuilder(\BrowscapPHP\Helper\IniLoader::class)
+        $body = $this->getMockBuilder(\GuzzleHttp\Psr7\Stream::class)
             ->disableOriginalConstructor()
-            ->setMethods(['setRemoteFilename', 'setOptions', 'setLogger', 'load'])
+            ->setMethods(['getContents'])
             ->getMock();
-        $loader
+        $body
             ->expects(self::once())
-            ->method('setRemoteFilename')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setOptions')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setLogger')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('load')
+            ->method('getContents')
             ->will(self::returnValue($content))
         ;
 
-        $this->object->setLoader($loader);
+        $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getStatusCode', 'getBody'])
+            ->getMock();
+        $response
+            ->expects(self::once())
+            ->method('getStatusCode')
+            ->will(self::returnValue(200))
+        ;
+        $response
+            ->expects(self::once())
+            ->method('getBody')
+            ->will(self::returnValue($body))
+        ;
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -617,8 +625,10 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue(false))
+            ->will(self::returnValue($response))
         ;
+
+        $this->object->setClient($client);
 
         $map = array(
             array(
@@ -879,32 +889,42 @@ CssVersion=0
 AolVersion=0
 ';
 
-        $loader = $this->getMockBuilder(\BrowscapPHP\Helper\IniLoader::class)
+        $body = $this->getMockBuilder(\GuzzleHttp\Psr7\Stream::class)
             ->disableOriginalConstructor()
-            ->setMethods(['setRemoteFilename', 'setOptions', 'setLogger', 'load'])
+            ->setMethods(['getContents'])
             ->getMock();
-        $loader
+        $body
             ->expects(self::once())
-            ->method('setRemoteFilename')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setOptions')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setLogger')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('load')
+            ->method('getContents')
             ->will(self::returnValue($content))
         ;
 
-        $this->object->setLoader($loader);
+        $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getStatusCode', 'getBody'])
+            ->getMock();
+        $response
+            ->expects(self::once())
+            ->method('getStatusCode')
+            ->will(self::returnValue(200))
+        ;
+        $response
+            ->expects(self::once())
+            ->method('getBody')
+            ->will(self::returnValue($body))
+        ;
+
+        $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['get'])
+            ->getMock();
+        $client
+            ->expects(self::once())
+            ->method('get')
+            ->will(self::returnValue($response))
+        ;
+
+        $this->object->setClient($client);
 
         $map = array(
             array(
