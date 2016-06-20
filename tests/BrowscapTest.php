@@ -148,14 +148,6 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     *
-     */
-    public function testGetLoader()
-    {
-        self::assertInstanceOf('\GuzzleHttp\Client', $this->object->getClient());
-    }
-
-    /**
      * @expectedException \BrowscapPHP\Exception
      * @expectedExceptionMessage there is no active cache available, please run the update command
      */

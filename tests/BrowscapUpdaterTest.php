@@ -123,30 +123,20 @@ class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testGetLoader()
+    public function testGetClient()
     {
-        self::assertInstanceOf('\BrowscapPHP\Helper\IniLoader', $this->object->getLoader());
+        self::assertInstanceOf('\GuzzleHttp\Client', $this->object->getClient());
     }
 
     /**
      *
      */
-    public function testSetGetgetLoader()
+    public function testSetGetClient()
     {
-        $loader = $this->getMock('\BrowscapPHP\Helper\IniLoader', array(), array(), '', false);
+        $client = $this->getMock('\GuzzleHttp\Client', array(), array(), '', false);
 
-        $this->object->setLoader($loader);
-        self::assertSame($loader, $this->object->getLoader());
-    }
-
-    /**
-     *
-     */
-    public function testSetOptions()
-    {
-        $options = array();
-
-        self::assertSame($this->object, $this->object->setOptions($options));
+        $this->object->setClient($client);
+        self::assertSame($client, $this->object->getClient());
     }
 
     /**
