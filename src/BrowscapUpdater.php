@@ -355,7 +355,12 @@ class BrowscapUpdater
         try {
             $remoteVersion = $response->getBody()->getContents();
         } catch (\Exception $e) {
-            throw new FetcherException('an error occured while fetching remote data', 0, $e);
+            throw new FetcherException(
+                'an error occured while fetching version data from URI ' . $uri . ': StatusCode was '
+                . $response->getStatusCode(),
+                0,
+                $e
+            );
         }
 
         if (!$remoteVersion) {
