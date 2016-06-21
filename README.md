@@ -16,7 +16,7 @@ Run the command below to install via Composer
 composer require browscap/browscap-php 
 ```
 
-Then you may identify the current user agent like so:
+Then you may identify the current user agent this way:
 
 ```php
 use BrowscapPHP\Browscap;
@@ -33,81 +33,90 @@ Before you can start, you have to download the browscap.ini file and convert it 
 a. Download the file and convert it in two steps. The downloaded file will be stored in a local file, but there is no check
    if the remote file has changed. If your cache gets corrupted you only need to rerun the `convert` command.
 
-    ```php
-    vendor/bin/browscap-php browscap:fetch
-    vendor/bin/browscap-php browscap:convert
-    ```
+```php
+vendor/bin/browscap-php browscap:fetch
+vendor/bin/browscap-php browscap:convert
+```
 
 b. Download the file and convert it in one step. The downloaded file will not be stored in a local file, but there is a check
    if the remote file has changed. If your cache gets corrupted you have clean the cache and restart the process.
 
-    ```php
-    vendor/bin/browscap-php browscap:update
-    ```
+```php
+vendor/bin/browscap-php browscap:update
+```
     
 If you want to autoupdate the used cache, we recommend a separate cron job that calls the command listed above.
 
 What's changed in version 3.x
 -----------------------------
 
-##Changes
+## Changes
 
 * the namespace was changed to `BrowscapPHP` 
-* the `Browscap` class was splitted into pieces
+* the `Browscap` class was split into pieces
   * for caching the [WurflCache](https://github.com/mimmi20/WurflCache) package is used
   * for downloading the browscap.ini the [FileLoader](https://github.com/mimmi20/FileLoader) package is used
 
-##removed features
+## Removed features
 
 * the autoupdate function was removed
 * all public properties were removed
 
-##new features
+## New features
 
-* now it is possible to use other caches than the file cache
+* now it is possible to use other caches than the file cache (see the [WurflCache](https://github.com/mimmi20/WurflCache) package formore information)
 * now it is possible to write your own formatter to change the output format 
-* now it is possbile to set a logger
+* now it is possbile to set a PSR-3 compatible logger
 
 Setup Examples
 --------------
 
-##update your setup to version 3.x
+## Update your setup to version 3.x
 
 This is the base setup in version 2.x.
 ```php
 // setup in version 2.x
 $bc = new \phpbrowscap\Browscap($cacheDir);
+$result = $bc->getBrowser();
 ```
 
-Change this to the base setup for version 3.x.
+Change this to the base setup for version 3.x. to use the v2 cache directory
 ```php
-$bc      = new \BrowscapPHP\Browscap();
-$adapter = new \WurflCache\Adapter\File(array(\WurflCache\Adapter\File::Dir => $cacheDir));
-$bc->setCache($adapter)
+$bc = new \BrowscapPHP\Browscap();
+$adapter = new \WurflCache\Adapter\File([\WurflCache\Adapter\File::Dir => $cacheDir]);
+$bc->setCache($adapter);
+$result = $bc->getBrowser();
 ```
 
-##setting up a logger
+Note: In version 2.x a cache directory was required, but version 3.x has a default directory.
+If you don't require a specific cache directory, the setup becomes more simple.
+```php
+$result = (new \BrowscapPHP\Browscap())->getBrowser();
+```
+
+## Setting up a logger
 
 If you want to log something that happens with the detector you may set an logger.
-This logger has to implement the logger interface from [Psr\Log](https://github.com/php-fig/log)
+This logger has to implement the PSR3 logger interface from [Psr\Log](https://github.com/php-fig/log)
 
 ```php
-$bc     = new \BrowscapPHP\Browscap();
+$bc = new \BrowscapPHP\Browscap();
 $logger = new \Monolog\Logger('name');
 $bc->setLogger($logger);
 ```
 
-##setting up a Memechache
+## Setting up a Memcache
 
+If you don't want to use a file cache, you may change the cache adapter. 
 This cache adapter has to implement the adapter interface from WurflCache\Adapter\AdapterInterface
 ```php
-$memcacheConfiguration = array(
+$memcacheConfiguration = [
     'host'             => '127.0.0.1', // optional, defaults to '127.0.0.1'
     'port'             => 11211,       // optional, defaults to 11211
     'namespace'        => 'wurfl',     // optional, defaults to 'wurfl'
     'cacheExpiration'  => 0,           // optional, defaults to 0 (cache does not expire), expiration time in seconds
     'cacheVersion'     => '1234',      // optional, default value may change in external library
-);
+];
 $adapter = new \WurflCache\Adapter\Memcached($memcacheConfiguration);
 $bc = new \BrowscapPHP\Browscap();
 $bc->setCache($adapter);
@@ -115,14 +124,14 @@ $bc->setCache($adapter);
 
 NOTE: Please look into the [WurflCache](https://github.com/mimmi20/WurflCache) package for infomation about the other cache adapters.
 
-##using the full browscap.ini file
+## Using the full browscap.ini file
 
 ```php
 $bc = new \BrowscapPHP\Browscap();
 $bc->update(\BrowscapPHP\Helper\IniLoader::PHP_INI_FULL);
 ```
 
-##setting up a proxy configuration
+## Setting up a proxy configuration
 
 If you are behind a proxy or need a spcific configuration, you have to set up a client instance. 
 See into the [Guzzle documentation](http://docs.guzzlephp.org/en/latest/) for more information about this.
@@ -132,14 +141,14 @@ $client = new \GuzzleHttp\Client($options = []);
 
 $bc = new Browscap();
 $bc->setClient($client);
-$proxyConfig = array(
+$proxyConfig = [
     'ProxyProtocol' => 'http',          // optional, defaults to `http`
     'ProxyHost'     => 'example.org', 
     'ProxyPort'     => 80,              // optional, defaults to port 80 or 443 (depends on the protocoll) 
     'ProxyAuth'     => 'basic',         // optional, only `basic` is available at the moment
     'ProxyUser'     => 'your username',
     'ProxyPassword' => 'your super secret password',
-);
+];
 $bc = new \BrowscapPHP\Browscap();
 $bc->setOptions($proxyConfig);
 ```
@@ -147,14 +156,14 @@ $bc->setOptions($proxyConfig);
 Usage Examples
 --------------
 
-##taking the user agent from the global $_SERVER variable
+## Taking the user agent from the global $_SERVER variable
 
 ```php
 $bc = new \BrowscapPHP\Browscap();
 $current_browser = $bc->getBrowser();
 ```
 
-##using a sample useragent 
+## Using a sample useragent 
 
 ```php
 $bc = new \BrowscapPHP\Browscap();
@@ -170,7 +179,7 @@ NOTE: If you don't want to use a file cache, you could not use the CLI commands.
 NOTE: Each operation (fetch, update, check-update) which fetches data from the remote host browscap.org may run into the 
 rate limit of that site. If this happens an Exception is thrown.
 
-##check-update
+## check-update
 
 If you only want to check if a new version of the browscap.ini is available, you can use the `check-update` command.
 
@@ -183,7 +192,7 @@ vendor/bin/browscap-php browscap:check-update
 - `debug` (optional) if set more messages are printed to the console
 - `cache` (optional) the relative path to your cache directory
 
-##fetch
+## fetch
 
 The `fetch` command downloads an ini file from browscap.org. 
 
@@ -200,7 +209,7 @@ vendor/bin/browscap-php browscap:fetch
   - `Full_PHP_BrowscapINI` downloads the full file
 - `file` (optional) the relative path to the local file where the remote content is stored
 
-##convert
+## convert
 
 The `convert` command reads a local stored browscap.ini file and writes the contents into a cache. 
 
@@ -214,7 +223,7 @@ vendor/bin/browscap-php browscap:convert
 - `debug` (optional) if set more messages are printed to the console
 - `cache` (optional) the relative path to your cache directory
 
-##update
+## update
 
 The `update` command downloads an ini file from browscap.org and writes the contents into a cache. No local files are created.
 
@@ -231,7 +240,7 @@ vendor/bin/browscap-php browscap:update
   - `Full_PHP_BrowscapINI` downloads the full file
 - `cache` (optional) the relative path to your cache directory
 
-##parse
+## parse
 
 The `parse` command parses a given user agent and writes the result to the console.
 
@@ -245,7 +254,7 @@ vendor/bin/browscap-php browscap:parse
 - `debug` (optional) if set more messages are printed to the console
 - `cache` (optional) the relative path to your cache directory
 
-##log
+## log
 
 The `log` command parses a single access log file or a directory with access log files and writes the results into an output file. 
 
@@ -269,9 +278,9 @@ NOTE: At the moment only Apache access logs are supported.
 CLI Examples
 ------------
 
-##updating the cache using the full browscap.ini file
+## Updating the cache using the full browscap.ini file
 
-Note: Both ways to create/update the cache and also checking the update will use the `standard` mode file as default. 
+Note: Both ways to create/update the cache will use the `standard` mode file as default. 
 If you want more detailed information you may change this with the `remote-file` option.
 Please use the help function this parameter.
 
@@ -279,11 +288,11 @@ Please use the help function this parameter.
 vendor/bin/browscap-php browscap:update --remote-file Full_PHP_BrowscapINI
 ```
 
-##updating a custom cache dir
+## Updating a custom cache dir
 
 Each operation expect fetch uses a cache inside the `resources` directory inside the project. If you update this library with 
 composer, the cache is cleared also. If you want to avoid this and want to set your own cache folder, 
-you can use the `cache` option. If you do this, you have to set a Cache Instance for this this path (see below).
+you can use the `cache` option. If you do this, you have to set a Cache Instance for this this path.
 
 ```php
 vendor/bin/browscap-php browscap:update --cache ./browscap-cache
