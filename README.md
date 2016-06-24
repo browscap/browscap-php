@@ -127,7 +127,7 @@ NOTE: Please look into the [WurflCache](https://github.com/mimmi20/WurflCache) p
 ## Using the full browscap.ini file
 
 ```php
-$bc = new \BrowscapPHP\Browscap();
+$bc = new \BrowscapPHP\BrowscapUpdater();
 $bc->update(\BrowscapPHP\Helper\IniLoader::PHP_INI_FULL);
 ```
 
@@ -137,20 +137,15 @@ If you are behind a proxy or need a spcific configuration, you have to set up a 
 See into the [Guzzle documentation](http://docs.guzzlephp.org/en/latest/) for more information about this.
 
 ```php
-$client = new \GuzzleHttp\Client($options = []);
-
-$bc = new Browscap();
-$bc->setClient($client);
 $proxyConfig = [
-    'ProxyProtocol' => 'http',          // optional, defaults to `http`
-    'ProxyHost'     => 'example.org', 
-    'ProxyPort'     => 80,              // optional, defaults to port 80 or 443 (depends on the protocoll) 
-    'ProxyAuth'     => 'basic',         // optional, only `basic` is available at the moment
-    'ProxyUser'     => 'your username',
-    'ProxyPassword' => 'your super secret password',
+    'proxy' => [
+        'http'  => 'tcp://localhost:8125',
+        'https' => 'tcp://localhost:8124',
+    ],
 ];
-$bc = new \BrowscapPHP\Browscap();
-$bc->setOptions($proxyConfig);
+$client = new \GuzzleHttp\Client($proxyConfig);
+$bcu = new BrowscapUpdater();
+$bcu->setClient($client);
 ```
 
 Usage Examples
