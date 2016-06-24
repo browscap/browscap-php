@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Parser
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -40,7 +39,6 @@ use BrowscapPHP\Parser\Helper\SubKey;
  * Ini parser class (compatible with PHP 5.3+)
  *
  * @category   Browscap-PHP
- * @package    Parser
  * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
@@ -88,7 +86,7 @@ class IniParser
         // split the ini file into sections and save the data in one line with a hash of the beloging
         // pattern (filtered in the previous step)
         $iniParts = preg_split('/\[[^\r\n]+\]/', $content);
-        $contents = array();
+        $contents = [];
 
         $propertyFormatter = new PropertyFormatter(new PropertyHolder());
 
@@ -98,7 +96,7 @@ class IniParser
             $subkey      = SubKey::getIniPartCacheSubKey($patternhash);
 
             if (!isset($contents[$subkey])) {
-                $contents[$subkey] = array();
+                $contents[$subkey] = [];
             }
 
             $browserProperties = parse_ini_string($iniParts[($position + 1)], INI_SCANNER_RAW);
@@ -125,7 +123,7 @@ class IniParser
         foreach ($contents as $subkey => $content) {
             $subkey = (string) $subkey;
 
-            yield array($subkey => $content);
+            yield [$subkey => $content];
 
             unset($subkeys[$subkey]);
         }
@@ -133,7 +131,7 @@ class IniParser
         foreach (array_keys($subkeys) as $subkey) {
             $subkey = (string) $subkey;
 
-            yield array($subkey => array());
+            yield [$subkey => []];
         }
     }
 
@@ -156,17 +154,18 @@ class IniParser
         );
 
         if (empty($matches[0]) || !is_array($matches[0])) {
-            yield array();
+            yield [];
+
             return;
         }
 
         $quoterHelper = new Quoter();
         $matches      = $matches[0];
-        usort($matches, array($this, 'compareBcStrings'));
+        usort($matches, [$this, 'compareBcStrings']);
 
         // build an array to structure the data. this requires some memory, but we need this step to be able to
         // sort the data in the way we need it (see below).
-        $data = array();
+        $data = [];
 
         foreach ($matches as $pattern) {
             if ('GJK_Browscap_Version' === $pattern) {
@@ -183,11 +182,11 @@ class IniParser
             }
 
             if (!isset($data[$patternhash])) {
-                $data[$patternhash] = array();
+                $data[$patternhash] = [];
             }
 
             if (!isset($data[$patternhash][$tmpLength])) {
-                $data[$patternhash][$tmpLength] = array();
+                $data[$patternhash][$tmpLength] = [];
             }
 
             $pattern = $quoterHelper->pregQuote($pattern);
@@ -224,7 +223,7 @@ class IniParser
         // array with pattern strings instead of an large array with single patterns) and also enables
         // us to search for multiple patterns in one preg_match call for a fast first search
         // (3-10 faster), followed by a detailed search for each single pattern.
-        $contents = array();
+        $contents = [];
         foreach ($data as $patternhash => $tmpEntries) {
             if (empty($tmpEntries)) {
                 continue;
@@ -233,7 +232,7 @@ class IniParser
             $subkey = SubKey::getPatternCacheSubkey($patternhash);
 
             if (!isset($contents[$subkey])) {
-                $contents[$subkey] = array();
+                $contents[$subkey] = [];
             }
 
             foreach ($tmpEntries as $tmpLength => $tmpPatterns) {
@@ -255,7 +254,7 @@ class IniParser
         foreach ($contents as $subkey => $content) {
             $subkey = (string) $subkey;
 
-            yield array($subkey => $content);
+            yield [$subkey => $content];
 
             unset($subkeys[$subkey]);
         }
@@ -263,7 +262,7 @@ class IniParser
         foreach (array_keys($subkeys) as $subkey) {
             $subkey = (string) $subkey;
 
-            yield array($subkey => array());
+            yield [$subkey => []];
         }
     }
 
@@ -286,8 +285,8 @@ class IniParser
             return 1;
         }
 
-        $a_len = strlen(str_replace(array('*', '?'), '', $a));
-        $b_len = strlen(str_replace(array('*', '?'), '', $b));
+        $a_len = strlen(str_replace(['*', '?'], '', $a));
+        $b_len = strlen(str_replace(['*', '?'], '', $b));
 
         if ($a_len > $b_len) {
             return -1;

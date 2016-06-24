@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Util\Logfile
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -36,7 +35,6 @@ use BrowscapPHP\Exception\ReaderException;
  * reader collection class
  *
  * @category   Browscap-PHP
- * @package    Command
  * @author     Dave Olsen, http://dmolsen.com
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -48,7 +46,7 @@ class ReaderCollection implements ReaderInterface
     /**
      * @var \BrowscapPHP\Util\Logfile\AbstractReader[]
      */
-    private $readers = array();
+    private $readers = [];
 
     /**
      * adds a new reader to this collection
@@ -83,8 +81,8 @@ class ReaderCollection implements ReaderInterface
     /**
      * @param string $line
      *
-     * @return string
      * @throws \BrowscapPHP\Exception\ReaderException
+     * @return string
      */
     public function read($line)
     {

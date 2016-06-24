@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Util\Logfile
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -36,7 +35,6 @@ use BrowscapPHP\Exception\ReaderException;
  * abstract parent class for all readers
  *
  * @category   Browscap-PHP
- * @package    Command
  * @author     Dave Olsen, http://dmolsen.com
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -60,8 +58,8 @@ abstract class AbstractReader implements ReaderInterface
     /**
      * @param string $line
      *
-     * @return string
      * @throws \BrowscapPHP\Exception\ReaderException
+     * @return string
      */
     public function read($line)
     {
@@ -81,13 +79,13 @@ abstract class AbstractReader implements ReaderInterface
      */
     protected function match($line)
     {
-        $matches = array();
+        $matches = [];
 
         if (preg_match($this->getRegex(), $line, $matches)) {
             return $matches;
         }
 
-        return array();
+        return [];
     }
 
     /**

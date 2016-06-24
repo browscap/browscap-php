@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Formatter
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -34,7 +33,6 @@ namespace BrowscapPHP\Formatter;
  * formatter to output the data like the native get_browser function
  *
  * @category   Browscap-PHP
- * @package    Formatter
  * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
@@ -49,14 +47,14 @@ class PhpGetBrowser implements FormatterInterface
      *
      * @var array
      */
-    private $settings = array();
+    private $settings = [];
 
     /**
      * a list of possible properties
      *
      * @var array
      */
-    private $defaultproperties = array(
+    private $defaultproperties = [
         'browser_name_regex'          => null,
         'browser_name_pattern'        => null,
         'Parent'                      => null,
@@ -107,7 +105,7 @@ class PhpGetBrowser implements FormatterInterface
         'RenderingEngine_Version'     => 'unknown',
         'RenderingEngine_Description' => 'unknown',
         'RenderingEngine_Maker'       => 'unknown',
-    );
+    ];
 
     /**
      * Sets the data (done by the parser)

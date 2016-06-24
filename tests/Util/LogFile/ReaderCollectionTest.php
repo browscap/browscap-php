@@ -29,7 +29,6 @@ use BrowscapPHP\Util\Logfile\ReaderCollection;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -46,7 +45,6 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
-     *
      */
     public function setUp()
     {
@@ -79,8 +77,7 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
         $reader
             ->expects(self::once())
             ->method('test')
-            ->will(self::returnValue(true))
-        ;
+            ->will(self::returnValue(true));
 
         $this->object->addReader($reader);
 
@@ -100,8 +97,7 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
         $reader
             ->expects(self::once())
             ->method('test')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $this->object->addReader($reader);
 
@@ -120,13 +116,11 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
         $reader
             ->expects(self::once())
             ->method('test')
-            ->will(self::returnValue(true))
-        ;
+            ->will(self::returnValue(true));
         $reader
             ->expects(self::once())
             ->method('read')
-            ->will(self::returnValue('TestUA'))
-        ;
+            ->will(self::returnValue('TestUA'));
 
         $this->object->addReader($reader);
 
@@ -146,13 +140,11 @@ class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
         $reader
             ->expects(self::once())
             ->method('test')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
         $reader
             ->expects(self::never())
             ->method('read')
-            ->will(self::returnValue('TestUA'))
-        ;
+            ->will(self::returnValue('TestUA'));
 
         $this->object->addReader($reader);
         $this->object->read('Test');

@@ -40,10 +40,10 @@ namespace BrowscapPHP\Data;
  */
 class PropertyHolder
 {
-    const TYPE_STRING = 'string';
-    const TYPE_GENERIC = 'generic';
-    const TYPE_NUMBER = 'number';
-    const TYPE_BOOLEAN = 'boolean';
+    const TYPE_STRING   = 'string';
+    const TYPE_GENERIC  = 'generic';
+    const TYPE_NUMBER   = 'number';
+    const TYPE_BOOLEAN  = 'boolean';
     const TYPE_IN_ARRAY = 'in_array';
 
     /**
@@ -57,7 +57,7 @@ class PropertyHolder
      */
     public function getPropertyType($propertyName)
     {
-        $stringProperties = array(
+        $stringProperties = [
             'Comment',
             'Browser',
             'Browser_Maker',
@@ -76,49 +76,49 @@ class PropertyHolder
             'Parent',
             'PropertyName',
             'CDF',
-        );
+        ];
 
         if (in_array($propertyName, $stringProperties)) {
             return self::TYPE_STRING;
         }
 
-        $arrayProperties = array(
+        $arrayProperties = [
             'Browser_Type',
             'Device_Type',
             'Device_Pointing_Method',
             'Browser_Bits',
             'Platform_Bits',
-        );
+        ];
 
         if (in_array($propertyName, $arrayProperties)) {
             return self::TYPE_IN_ARRAY;
         }
 
-        $genericProperties = array(
+        $genericProperties = [
             'Platform_Version',
             'RenderingEngine_Version',
             'Released',
             'Format',
             'Type',
-        );
+        ];
 
         if (in_array($propertyName, $genericProperties)) {
             return self::TYPE_GENERIC;
         }
 
-        $numericProperties = array(
+        $numericProperties = [
             'Version',
             'CssVersion',
             'AolVersion',
             'MajorVer',
             'MinorVer',
-        );
+        ];
 
         if (in_array($propertyName, $numericProperties)) {
             return self::TYPE_NUMBER;
         }
 
-        $booleanProperties = array(
+        $booleanProperties = [
             'Alpha',
             'Beta',
             'Win16',
@@ -142,7 +142,7 @@ class PropertyHolder
             'isFake',
             'isAnonymized',
             'isModified',
-        );
+        ];
 
         if (in_array($propertyName, $booleanProperties)) {
             return self::TYPE_BOOLEAN;
@@ -163,7 +163,7 @@ class PropertyHolder
     {
         switch ($property) {
             case 'Browser_Type':
-                $allowedValues = array(
+                $allowedValues = [
                     'Useragent Anonymizer',
                     'Browser',
                     'Offline Browser',
@@ -175,10 +175,10 @@ class PropertyHolder
                     'Application',
                     'Tool',
                     'unknown',
-                );
+                ];
                 break;
             case 'Device_Type':
-                $allowedValues = array(
+                $allowedValues = [
                     'Console',
                     'TV Device',
                     'Tablet',
@@ -192,22 +192,22 @@ class PropertyHolder
                     'Car Entertainment System',
                     'Digital Camera',
                     'unknown',
-                );
+                ];
                 break;
             case 'Device_Pointing_Method':
                 // This property is taken from http://www.scientiamobile.com/wurflCapability
-                $allowedValues = array(
+                $allowedValues = [
                     'joystick', 'stylus', 'touchscreen', 'clickwheel', 'trackpad', 'trackball', 'mouse', 'unknown',
-                );
+                ];
                 break;
             case 'Browser_Bits':
             case 'Platform_Bits':
-                $allowedValues = array(
+                $allowedValues = [
                     '0', '8', '16', '32', '64',
-                );
+                ];
                 break;
             default:
-                throw new \InvalidArgumentException('Property "'.$property.'" is not defined to be validated');
+                throw new \InvalidArgumentException('Property "' . $property . '" is not defined to be validated');
                 break;
         }
 
@@ -216,8 +216,8 @@ class PropertyHolder
         }
 
         throw new \InvalidArgumentException(
-            'invalid value given for Property "'.$property.'": given value "'.(string) $value.'", allowed: '
-            .json_encode($allowedValues)
+            'invalid value given for Property "' . $property . '": given value "' . (string) $value . '", allowed: '
+            . json_encode($allowedValues)
         );
     }
 }

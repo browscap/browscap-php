@@ -29,7 +29,6 @@ use BrowscapPHP\Command\FetchCommand;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -47,7 +46,6 @@ class FetchCommandTest extends \PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
-     *
      */
     public function setUp()
     {
@@ -68,23 +66,19 @@ class FetchCommandTest extends \PHPUnit_Framework_TestCase
         $object
             ->expects(self::once())
             ->method('setName')
-            ->will(self::returnSelf())
-        ;
+            ->will(self::returnSelf());
         $object
             ->expects(self::once())
             ->method('setDescription')
-            ->will(self::returnSelf())
-        ;
+            ->will(self::returnSelf());
         $object
             ->expects(self::once())
             ->method('addArgument')
-            ->will(self::returnSelf())
-        ;
+            ->will(self::returnSelf());
         $object
             ->expects(self::exactly(2))
             ->method('addOption')
-            ->will(self::returnSelf())
-        ;
+            ->will(self::returnSelf());
 
         $class  = new \ReflectionClass('\BrowscapPHP\Command\FetchCommand');
         $method = $class->getMethod('configure');

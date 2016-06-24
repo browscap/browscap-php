@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Command
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -43,7 +42,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * command to fetch a browscap ini file from the remote host and store the content in a local file
  *
  * @category   Browscap-PHP
- * @package    Command
  * @author     Dave Olsen, http://dmolsen.com
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
@@ -95,8 +93,7 @@ class FetchCommand extends Command
                 'd',
                 InputOption::VALUE_NONE,
                 'Should the debug mode entered?'
-            )
-        ;
+            );
     }
 
     /**
@@ -121,8 +118,7 @@ class FetchCommand extends Command
 
         $browscap
             ->setLogger($logger)
-            ->fetch($file, $input->getOption('remote-file'))
-        ;
+            ->fetch($file, $input->getOption('remote-file'));
 
         $logger->info('finished fetching remote file');
     }

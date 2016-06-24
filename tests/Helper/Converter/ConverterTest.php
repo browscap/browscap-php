@@ -30,7 +30,6 @@ use org\bovigo\vfs\vfsStream;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -216,11 +215,11 @@ Crawler=1
 CssVersion=0
 AolVersion=0
 ';
-        $structure = array(
-            self::STORAGE_DIR => array(
+        $structure = [
+            self::STORAGE_DIR => [
                 'test.ini' => $content,
-            )
-        );
+            ],
+        ];
 
         $this->root = vfsStream::setup(self::STORAGE_DIR, null, $structure);
 

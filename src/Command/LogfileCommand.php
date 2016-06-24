@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Command
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -59,7 +58,6 @@ use WurflCache\Adapter\File;
  * commands to parse a log file and parse the useragents in it
  *
  * @category   Browscap-PHP
- * @package    Command
  * @author     Dave Olsen, http://dmolsen.com
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
@@ -72,13 +70,13 @@ class LogfileCommand extends Command
     /**
      * @var array
      */
-    private $undefinedClients = array();
+    private $undefinedClients = [];
 
-    private $uas         = array();
-    private $uasWithType = array();
+    private $uas         = [];
+    private $uasWithType = [];
 
-    private $countOk = 0;
-    private $countNok = 0;
+    private $countOk    = 0;
+    private $countNok   = 0;
     private $totalCount = 0;
 
     /**
@@ -144,14 +142,14 @@ class LogfileCommand extends Command
                 'i',
                 InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
                 'Include glob expressions for log files in the log directory',
-                array('*.log', '*.log*.gz', '*.log*.bz2')
+                ['*.log', '*.log*.gz', '*.log*.bz2']
             )
             ->addOption(
                 'exclude',
                 'e',
                 InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
                 'Exclude glob expressions for log files in the log directory',
-                array('*error*')
+                ['*error*']
             )
             ->addOption(
                 'debug',
@@ -165,8 +163,7 @@ class LogfileCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 'Where the cache files are located',
                 $this->defaultCacheFolder
-            )
-        ;
+            );
     }
 
     /**
@@ -193,18 +190,17 @@ class LogfileCommand extends Command
 
         $browscap
             ->setLogger($logger)
-            ->setCache($this->getCache($input))
-        ;
+            ->setCache($this->getCache($input));
 
         /** @var $file \Symfony\Component\Finder\SplFileInfo */
         foreach ($this->getFiles($input) as $file) {
-            $this->uas = array();
+            $this->uas = [];
             $path      = $this->getPath($file);
 
             $this->countOk  = 0;
             $this->countNok = 0;
 
-            $logger->info('Analyzing file "'.$file->getPathname().'"');
+            $logger->info('Analyzing file "' . $file->getPathname() . '"');
 
             $lines = file($path);
 
@@ -230,7 +226,7 @@ class LogfileCommand extends Command
 
             try {
                 $fs->dumpFile(
-                    $input->getArgument('output').'/output.txt',
+                    $input->getArgument('output') . '/output.txt',
                     implode(PHP_EOL, array_unique($this->undefinedClients))
                 );
             } catch (IOException $e) {
@@ -239,7 +235,7 @@ class LogfileCommand extends Command
 
             try {
                 $fs->dumpFile(
-                    $input->getArgument('output').'/output-with-amount.txt',
+                    $input->getArgument('output') . '/output-with-amount.txt',
                     $this->createAmountContent()
                 );
             } catch (IOException $e) {
@@ -248,7 +244,7 @@ class LogfileCommand extends Command
 
             try {
                 $fs->dumpFile(
-                    $input->getArgument('output').'/output-with-amount-and-type.txt',
+                    $input->getArgument('output') . '/output-with-amount-and-type.txt',
                     $this->createAmountTypeContent()
                 );
             } catch (IOException $e) {
@@ -256,7 +252,7 @@ class LogfileCommand extends Command
             }
         }
 
-        $outputFile = $input->getArgument('output').'/output.txt';
+        $outputFile = $input->getArgument('output') . '/output.txt';
 
         try {
             $fs->dumpFile(
@@ -264,12 +260,12 @@ class LogfileCommand extends Command
                 implode(PHP_EOL, array_unique($this->undefinedClients))
             );
         } catch (IOException $e) {
-            throw new \UnexpectedValueException('writing to file "'.$outputFile.'" failed', 0, $e);
+            throw new \UnexpectedValueException('writing to file "' . $outputFile . '" failed', 0, $e);
         }
 
         try {
             $fs->dumpFile(
-                $input->getArgument('output').'/output-with-amount.txt',
+                $input->getArgument('output') . '/output-with-amount.txt',
                 $this->createAmountContent()
             );
         } catch (IOException $e) {
@@ -278,7 +274,7 @@ class LogfileCommand extends Command
 
         try {
             $fs->dumpFile(
-                $input->getArgument('output').'/output-with-amount-and-type.txt',
+                $input->getArgument('output') . '/output-with-amount-and-type.txt',
                 $this->createAmountTypeContent()
             );
         } catch (IOException $e) {
@@ -288,7 +284,7 @@ class LogfileCommand extends Command
 
     private function createAmountContent()
     {
-        $counts = array();
+        $counts = [];
 
         foreach ($this->uasWithType as $uas) {
             foreach ($uas as $userAgentString => $count) {
@@ -314,7 +310,7 @@ class LogfileCommand extends Command
     private function createAmountTypeContent()
     {
         $content = '';
-        $types   = array('B', 'T', 'P', 'D', 'N', 'U');
+        $types   = ['B', 'T', 'P', 'D', 'N', 'U'];
 
         foreach ($types as $type) {
             if (!isset($this->uasWithType[$type])) {
@@ -335,7 +331,7 @@ class LogfileCommand extends Command
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param \BrowscapPHP\Util\Logfile\ReaderCollection        $collection
      * @param \BrowscapPHP\Browscap                             $browscap
-     * @param integer                                           $line
+     * @param int                                               $line
      *
      * @throws UnknownBrowserException
      * @throws UnknownBrowserTypeException
@@ -360,35 +356,35 @@ class LogfileCommand extends Command
             }
 
             $type = '.';
-            $this->countOk++;
+            ++$this->countOk;
         } catch (ReaderException $e) {
             $type = 'E';
-            $this->countNok++;
+            ++$this->countNok;
         } catch (UnknownBrowserTypeException $e) {
             $type = 'T';
-            $this->countNok++;
+            ++$this->countNok;
         } catch (UnknownBrowserException $e) {
             $type = 'B';
-            $this->countNok++;
+            ++$this->countNok;
         } catch (UnknownPlatformException $e) {
             $type = 'P';
-            $this->countNok++;
+            ++$this->countNok;
         } catch (UnknownDeviceException $e) {
             $type = 'D';
-            $this->countNok++;
+            ++$this->countNok;
         } catch (UnknownEngineException $e) {
             $type = 'N';
-            $this->countNok++;
+            ++$this->countNok;
         } catch (\Exception $e) {
             $type = 'U';
-            $this->countNok++;
+            ++$this->countNok;
         }
 
         $this->outputProgress($output, $type);
 
         // count all useragents
         if (isset($this->uas[$userAgentString])) {
-            $this->uas[$userAgentString]++;
+            ++$this->uas[$userAgentString];
         } else {
             $this->uas[$userAgentString] = 1;
         }
@@ -396,11 +392,11 @@ class LogfileCommand extends Command
         if ('.' !== $type && 'E' !== $type) {
             // count all undetected useragents grouped by detection error
             if (!isset($this->uasWithType[$type])) {
-                $this->uasWithType[$type] = array();
+                $this->uasWithType[$type] = [];
             }
 
             if (isset($this->uasWithType[$type][$userAgentString])) {
-                $this->uasWithType[$type][$userAgentString]++;
+                ++$this->uasWithType[$type][$userAgentString];
             } else {
                 $this->uasWithType[$type][$userAgentString] = 1;
             }
@@ -417,8 +413,8 @@ class LogfileCommand extends Command
     private function outputProgress(OutputInterface $output, $result, $end = false)
     {
         if (($this->totalCount % 70) === 0 || $end) {
-            $formatString = '  %'.strlen($this->countOk).'d OK, %'.strlen($this->countNok).'d NOK, Summary %'
-                .strlen($this->totalCount).'d';
+            $formatString = '  %' . strlen($this->countOk) . 'd OK, %' . strlen($this->countNok) . 'd NOK, Summary %'
+                . strlen($this->totalCount) . 'd';
 
             if ($end) {
                 $result = str_pad($result, 70 - ($this->totalCount % 70), ' ', STR_PAD_RIGHT);
@@ -426,7 +422,7 @@ class LogfileCommand extends Command
 
             $endString = sprintf($formatString, $this->countOk, $this->countNok, $this->totalCount);
 
-            $output->writeln($result.$endString);
+            $output->writeln($result . $endString);
 
             return;
         }
@@ -449,7 +445,7 @@ class LogfileCommand extends Command
             throw new UnknownBrowserTypeException('unknwon browser type found');
         }
 
-        if (in_array($result->browser_type, array('Bot/Crawler', 'Library'))) {
+        if (in_array($result->browser_type, ['Bot/Crawler', 'Library'])) {
             return '.';
         }
 
@@ -485,8 +481,8 @@ class LogfileCommand extends Command
         if ($input->getOption('log-dir')) {
             $dirFinder = Finder::create()
                 ->in($input->getOption('log-dir'));
-            array_map(array($dirFinder, 'name'), $input->getOption('include'));
-            array_map(array($dirFinder, 'notName'), $input->getOption('exclude'));
+            array_map([$dirFinder, 'name'], $input->getOption('include'));
+            array_map([$dirFinder, 'notName'], $input->getOption('exclude'));
 
             $finder->append($dirFinder);
         }
@@ -503,10 +499,10 @@ class LogfileCommand extends Command
     {
         switch ($file->getExtension()) {
             case 'gz':
-                $path = 'compress.zlib://'.$file->getPathname();
+                $path = 'compress.zlib://' . $file->getPathname();
                 break;
             case 'bz2':
-                $path = 'compress.bzip2://'.$file->getPathname();
+                $path = 'compress.bzip2://' . $file->getPathname();
                 break;
             default:
                 $path = $file->getPathname();
@@ -524,7 +520,7 @@ class LogfileCommand extends Command
     private function getCache(InputInterface $input)
     {
         if (null === $this->cache) {
-            $cacheAdapter = new File(array(File::DIR => $input->getOption('cache')));
+            $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
             $this->cache  = new BrowscapCache($cacheAdapter);
         }
 

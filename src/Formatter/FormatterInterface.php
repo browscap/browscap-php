@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Formatter
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -34,7 +33,6 @@ namespace BrowscapPHP\Formatter;
  * interface for formating the output
  *
  * @category   Browscap-PHP
- * @package    Formatter
  * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
@@ -47,8 +45,7 @@ interface FormatterInterface
     /**
      * Sets the data (done by the parser)
      *
-     * @param  array $settings
-     * @return void
+     * @param array $settings
      */
     public function setData(array $settings);
 

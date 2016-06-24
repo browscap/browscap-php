@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Helper
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -63,7 +62,6 @@ namespace BrowscapPHP\Helper;
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package   BrowserDetector
  * @author    Thomas Mueller <t_mueller_stolzenhain@yahoo.de>
  * @version   Stable 2.1.3 $Date: 2010/09/18 15:43:21
  * @license   http://opensource.org/licenses/BSD-3-Clause New BSD License
@@ -73,7 +71,6 @@ namespace BrowscapPHP\Helper;
  * class to help getting the user agent
  *
  * @category   Browscap-PHP
- * @package    Browscap
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -85,22 +82,22 @@ class Support
     /**
      * @var array
      */
-    private $source = array();
+    private $source = [];
 
     /**
      * The HTTP Headers that this application will look through to find the best
      * User Agent, if one is not specified
      *
-     * @var Array
+     * @var array
      */
-    private $userAgentHeaders = array(
+    private $userAgentHeaders = [
         'HTTP_X_DEVICE_USER_AGENT',
         'HTTP_X_ORIGINAL_USER_AGENT',
         'HTTP_X_OPERAMINI_PHONE_UA',
         'HTTP_X_SKYFIRE_PHONE',
         'HTTP_X_BOLT_PHONE_UA',
         'HTTP_USER_AGENT',
-    );
+    ];
 
     /**
      * @param array|null $source
@@ -108,7 +105,7 @@ class Support
     public function __construct($source = null)
     {
         if (is_null($source) || !is_array($source)) {
-            $source = array();
+            $source = [];
         }
 
         $this->source = $source;

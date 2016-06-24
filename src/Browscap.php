@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Browscap
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -43,7 +42,6 @@ use GuzzleHttp\Client;
  * Browscap.ini parsing class with caching and update capabilities
  *
  * @category   Browscap-PHP
- * @package    Browscap
  * @author     Jonathan Stoppani <jonathan@stoppani.name>
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @author     Mikołaj Misiurewicz <quentin389+phpb@gmail.com>
@@ -116,10 +114,10 @@ class Browscap
     public function getCache()
     {
         if (null === $this->cache) {
-            $cacheDirectory = __DIR__.'/../resources/';
+            $cacheDirectory = __DIR__ . '/../resources/';
 
             $cacheAdapter = new File(
-                array(File::DIR => $cacheDirectory)
+                [File::DIR => $cacheDirectory]
             );
 
             $this->cache = new BrowscapCache($cacheAdapter);
@@ -145,7 +143,7 @@ class Browscap
         } else {
             throw new Exception(
                 'the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCacheInterface or '
-                .'an instanceof of \WurflCache\Adapter\AdapterInterface',
+                . 'an instanceof of \WurflCache\Adapter\AdapterInterface',
                 Exception::CACHE_INCOMPATIBLE
             );
         }

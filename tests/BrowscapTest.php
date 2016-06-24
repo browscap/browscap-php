@@ -29,7 +29,6 @@ use BrowscapPHP\Browscap;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -49,7 +48,6 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
-     *
      */
     public function setUp()
     {
@@ -171,8 +169,8 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetBrowserWithoutUa()
     {
-        $browserObject = new \StdClass();
-        $browserObject->parent = 'something';
+        $browserObject          = new \StdClass();
+        $browserObject->parent  = 'something';
         $browserObject->comment = 'an comment';
 
         $formatter = $this->getMockBuilder(\BrowscapPHP\Formatter\PhpGetBrowser::class)
@@ -182,8 +180,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
         $formatter
             ->expects(self::once())
             ->method('getData')
-            ->will(self::returnValue($browserObject))
-        ;
+            ->will(self::returnValue($browserObject));
 
         $parser = $this->getMockBuilder(\BrowscapPHP\Parser\Ini::class)
             ->disableOriginalConstructor()
@@ -192,8 +189,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
         $parser
             ->expects(self::once())
             ->method('getBrowser')
-            ->will(self::returnValue($formatter))
-        ;
+            ->will(self::returnValue($formatter));
 
         $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
             ->disableOriginalConstructor()
@@ -202,8 +198,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
         $cache
             ->expects(self::once())
             ->method('getVersion')
-            ->will(self::returnValue(1))
-        ;
+            ->will(self::returnValue(1));
 
         $this->object->setFormatter($formatter);
         $this->object->setParser($parser);
@@ -218,8 +213,8 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetBrowserWithUa()
     {
-        $browserObject = new \StdClass();
-        $browserObject->parent = 'something';
+        $browserObject          = new \StdClass();
+        $browserObject->parent  = 'something';
         $browserObject->comment = 'an comment';
 
         $formatter = $this->getMockBuilder(\BrowscapPHP\Formatter\PhpGetBrowser::class)
@@ -229,8 +224,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
         $formatter
             ->expects(self::once())
             ->method('getData')
-            ->will(self::returnValue($browserObject))
-        ;
+            ->will(self::returnValue($browserObject));
 
         $parser = $this->getMockBuilder(\BrowscapPHP\Parser\Ini::class)
             ->disableOriginalConstructor()
@@ -239,8 +233,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
         $parser
             ->expects(self::once())
             ->method('getBrowser')
-            ->will(self::returnValue($formatter))
-        ;
+            ->will(self::returnValue($formatter));
 
         $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
             ->disableOriginalConstructor()
@@ -249,8 +242,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
         $cache
             ->expects(self::once())
             ->method('getVersion')
-            ->will(self::returnValue(1))
-        ;
+            ->will(self::returnValue(1));
 
         $this->object->setFormatter($formatter);
         $this->object->setParser($parser);
@@ -272,8 +264,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
         $formatter
             ->expects(self::once())
             ->method('getData')
-            ->will(self::returnValue(null))
-        ;
+            ->will(self::returnValue(null));
 
         $parser = $this->getMockBuilder(\BrowscapPHP\Parser\Ini::class)
             ->disableOriginalConstructor()
@@ -282,8 +273,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
         $parser
             ->expects(self::once())
             ->method('getBrowser')
-            ->will(self::returnValue(null))
-        ;
+            ->will(self::returnValue(null));
 
         $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
             ->disableOriginalConstructor()
@@ -292,8 +282,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
         $cache
             ->expects(self::once())
             ->method('getVersion')
-            ->will(self::returnValue(1))
-        ;
+            ->will(self::returnValue(1));
 
         $this->object->setFormatter($formatter);
         $this->object->setParser($parser);

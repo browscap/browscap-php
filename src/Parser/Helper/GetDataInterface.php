@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Parser\Helper
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -31,14 +30,13 @@
 namespace BrowscapPHP\Parser\Helper;
 
 use BrowscapPHP\Cache\BrowscapCacheInterface;
-use Psr\Log\LoggerInterface;
 use BrowscapPHP\Helper\Quoter;
+use Psr\Log\LoggerInterface;
 
 /**
  * interface for the parser dataHelper
  *
  * @category   Browscap-PHP
- * @package    Parser\Helper
  * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
@@ -65,5 +63,5 @@ interface GetDataInterface
      * @param  array  $settings
      * @return array
      */
-    public function getSettings($pattern, array $settings = array());
+    public function getSettings($pattern, array $settings = []);
 }

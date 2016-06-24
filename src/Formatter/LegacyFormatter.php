@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Formatter
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -34,7 +33,6 @@ namespace BrowscapPHP\Formatter;
  * formatter for backwards compatibility with 2.x
  *
  * @category   Browscap-PHP
- * @package    Formatter
  * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
@@ -49,30 +47,30 @@ class LegacyFormatter implements FormatterInterface
      *
      * @var array
      */
-    private $options = array();
+    private $options = [];
 
     /**
      * Default formatter options
      *
      * @var array
      */
-    private $defaultOptions = array(
-        'lowercase' => false
-    );
+    private $defaultOptions = [
+        'lowercase' => false,
+    ];
 
     /**
      * Variable to save the settings in, type depends on implementation
      *
      * @var array
      */
-    private $settings = array();
+    private $settings = [];
 
     /**
      * LegacyFormatter constructor.
      *
      * @param array $options Formatter optioms
      */
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
         $this->options = array_merge($this->defaultOptions, $options);
     }

@@ -32,7 +32,6 @@ use WurflCache\Adapter\Memory;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -50,7 +49,6 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
-     *
      */
     public function setUp()
     {
@@ -74,23 +72,19 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
         $object
             ->expects(self::once())
             ->method('setName')
-            ->will(self::returnSelf())
-        ;
+            ->will(self::returnSelf());
         $object
             ->expects(self::once())
             ->method('setDescription')
-            ->will(self::returnSelf())
-        ;
+            ->will(self::returnSelf());
         $object
             ->expects(self::once())
             ->method('addArgument')
-            ->will(self::returnSelf())
-        ;
+            ->will(self::returnSelf());
         $object
             ->expects(self::exactly(2))
             ->method('addOption')
-            ->will(self::returnSelf())
-        ;
+            ->will(self::returnSelf());
 
         $class  = new \ReflectionClass('\BrowscapPHP\Command\ConvertCommand');
         $method = $class->getMethod('configure');
@@ -121,8 +115,7 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
                 ->expects(self::exactly(2))
                 ->method('getArgument')
                 ->with('file')
-                ->will(self::returnValue($objectIniPath))
-            ;
+                ->will(self::returnValue($objectIniPath));
         }
         $output = $this->getMockBuilder(\Symfony\Component\Console\Output\ConsoleOutput::class)
             ->disableOriginalConstructor()

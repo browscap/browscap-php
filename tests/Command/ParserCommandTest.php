@@ -2,9 +2,7 @@
 
 namespace BrowscapPHPTest\Command;
 
-use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Command\ParserCommand;
-use WurflCache\Adapter\Memory;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -31,7 +29,6 @@ use WurflCache\Adapter\Memory;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -53,23 +50,19 @@ class ParserCommandTest extends \PHPUnit_Framework_TestCase
         $object
             ->expects(self::once())
             ->method('setName')
-            ->will(self::returnSelf())
-        ;
+            ->will(self::returnSelf());
         $object
             ->expects(self::once())
             ->method('setDescription')
-            ->will(self::returnSelf())
-        ;
+            ->will(self::returnSelf());
         $object
             ->expects(self::once())
             ->method('addArgument')
-            ->will(self::returnSelf())
-        ;
+            ->will(self::returnSelf());
         $object
             ->expects(self::exactly(2))
             ->method('addOption')
-            ->will(self::returnSelf())
-        ;
+            ->will(self::returnSelf());
 
         $class  = new \ReflectionClass('\BrowscapPHP\Command\ParserCommand');
         $method = $class->getMethod('configure');
@@ -82,8 +75,7 @@ class ParserCommandTest extends \PHPUnit_Framework_TestCase
         $cache
             ->expects(self::never())
             ->method('getVersion')
-            ->will(self::returnValue(1))
-        ;
+            ->will(self::returnValue(1));
         $object->setCache($cache);
 
         self::assertNull($method->invoke($object));
@@ -103,13 +95,11 @@ class ParserCommandTest extends \PHPUnit_Framework_TestCase
         $cache
             ->expects(self::once())
             ->method('getVersion')
-            ->will(self::returnValue(1))
-        ;
+            ->will(self::returnValue(1));
         $cache
             ->expects(self::exactly(2))
             ->method('hasItem')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
         $object->setCache($cache);
 
         $input  = $this->getMockBuilder(\Symfony\Component\Console\Input\ArgvInput::class)

@@ -4,8 +4,8 @@ namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Command\LogfileCommand;
-use WurflCache\Adapter\Memory;
 use org\bovigo\vfs\vfsStream;
+use WurflCache\Adapter\Memory;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -32,7 +32,6 @@ use org\bovigo\vfs\vfsStream;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -52,7 +51,6 @@ class LogfileCommandTest extends \PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
-     *
      */
     public function setUp()
     {
@@ -75,23 +73,19 @@ class LogfileCommandTest extends \PHPUnit_Framework_TestCase
         $object
             ->expects(self::once())
             ->method('setName')
-            ->will(self::returnSelf())
-        ;
+            ->will(self::returnSelf());
         $object
             ->expects(self::once())
             ->method('setDescription')
-            ->will(self::returnSelf())
-        ;
+            ->will(self::returnSelf());
         $object
             ->expects(self::once())
             ->method('addArgument')
-            ->will(self::returnSelf())
-        ;
+            ->will(self::returnSelf());
         $object
             ->expects(self::exactly(6))
             ->method('addOption')
-            ->will(self::returnSelf())
-        ;
+            ->will(self::returnSelf());
 
         $class  = new \ReflectionClass('\BrowscapPHP\Command\LogfileCommand');
         $method = $class->getMethod('configure');
@@ -211,26 +205,26 @@ Crawler=1
 CssVersion=0
 AolVersion=0
 ';
-        $structure = array(
-            'test.log' => $content
-        );
+        $structure = [
+            'test.log' => $content,
+        ];
 
         vfsStream::setup(self::STORAGE_DIR, null, $structure);
 
-        $map = array(
-            array(
+        $map = [
+            [
                 'log-file',
-                vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.log')
-            ),
-            array(
+                vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.log'),
+            ],
+            [
                 'debug',
-                false
-            ),
-            array(
+                false,
+            ],
+            [
                 'log-dir',
-                null
-            )
-        );
+                null,
+            ],
+        ];
 
         $input  = $this->getMockBuilder(\Symfony\Component\Console\Input\ArgvInput::class)
             ->disableOriginalConstructor()
@@ -239,13 +233,11 @@ AolVersion=0
         $input
             ->expects(self::exactly(5))
             ->method('getOption')
-            ->will(self::returnValueMap($map))
-        ;
+            ->will(self::returnValueMap($map));
         $input
             ->expects(self::once())
             ->method('getArgument')
-            ->will(self::returnValue(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.txt')))
-        ;
+            ->will(self::returnValue(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.txt')));
 
         $output = $this->getMockBuilder(\Symfony\Component\Console\Output\ConsoleOutput::class)
             ->disableOriginalConstructor()
