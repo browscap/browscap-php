@@ -426,8 +426,7 @@ AolVersion=0
         $response
             ->expects(self::exactly(2))
             ->method('getStatusCode')
-            ->will(self::returnValue(500))
-        ;
+            ->will(self::returnValue(500));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -436,8 +435,7 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
@@ -596,8 +594,7 @@ AolVersion=0
         $body
             ->expects(self::once())
             ->method('getContents')
-            ->will(self::returnValue($content))
-        ;
+            ->will(self::returnValue($content));
 
         $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
             ->disableOriginalConstructor()
@@ -606,13 +603,11 @@ AolVersion=0
         $response
             ->expects(self::once())
             ->method('getStatusCode')
-            ->will(self::returnValue(200))
-        ;
+            ->will(self::returnValue(200));
         $response
             ->expects(self::once())
             ->method('getBody')
-            ->will(self::returnValue($body))
-        ;
+            ->will(self::returnValue($body));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -621,8 +616,7 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
@@ -890,8 +884,7 @@ AolVersion=0
         $body
             ->expects(self::once())
             ->method('getContents')
-            ->will(self::returnValue($content))
-        ;
+            ->will(self::returnValue($content));
 
         $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
             ->disableOriginalConstructor()
@@ -900,13 +893,11 @@ AolVersion=0
         $response
             ->expects(self::once())
             ->method('getStatusCode')
-            ->will(self::returnValue(200))
-        ;
+            ->will(self::returnValue(200));
         $response
             ->expects(self::once())
             ->method('getBody')
-            ->will(self::returnValue($body))
-        ;
+            ->will(self::returnValue($body));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -915,8 +906,7 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
@@ -980,8 +970,7 @@ AolVersion=0
         $body
             ->expects(self::once())
             ->method('getContents')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
             ->disableOriginalConstructor()
@@ -990,13 +979,11 @@ AolVersion=0
         $response
             ->expects(self::once())
             ->method('getStatusCode')
-            ->will(self::returnValue(200))
-        ;
+            ->will(self::returnValue(200));
         $response
             ->expects(self::once())
             ->method('getBody')
-            ->will(self::returnValue($body))
-        ;
+            ->will(self::returnValue($body));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -1005,8 +992,7 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
@@ -1172,8 +1158,7 @@ AolVersion=0
         $body
             ->expects(self::once())
             ->method('getContents')
-            ->will(self::returnValue($content))
-        ;
+            ->will(self::returnValue($content));
 
         $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
             ->disableOriginalConstructor()
@@ -1182,13 +1167,11 @@ AolVersion=0
         $response
             ->expects(self::once())
             ->method('getStatusCode')
-            ->will(self::returnValue(200))
-        ;
+            ->will(self::returnValue(200));
         $response
             ->expects(self::once())
             ->method('getBody')
-            ->will(self::returnValue($body))
-        ;
+            ->will(self::returnValue($body));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -1197,8 +1180,7 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
@@ -1252,8 +1234,7 @@ AolVersion=0
         $body
             ->expects(self::never())
             ->method('getContents')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
             ->disableOriginalConstructor()
@@ -1262,13 +1243,11 @@ AolVersion=0
         $response
             ->expects(self::never())
             ->method('getStatusCode')
-            ->will(self::returnValue(200))
-        ;
+            ->will(self::returnValue(200));
         $response
             ->expects(self::never())
             ->method('getBody')
-            ->will(self::returnValue($body))
-        ;
+            ->will(self::returnValue($body));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -1277,8 +1256,7 @@ AolVersion=0
         $client
             ->expects(self::never())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
@@ -1335,8 +1313,7 @@ AolVersion=0
         $body
             ->expects(self::once())
             ->method('getContents')
-            ->will(self::throwException(new Exception('Exception')))
-        ;
+            ->will(self::throwException(new Exception('Exception')));
 
         $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
             ->disableOriginalConstructor()
@@ -1345,13 +1322,11 @@ AolVersion=0
         $response
             ->expects(self::exactly(2))
             ->method('getStatusCode')
-            ->will(self::returnValue(200))
-        ;
+            ->will(self::returnValue(200));
         $response
             ->expects(self::once())
             ->method('getBody')
-            ->will(self::returnValue($body))
-        ;
+            ->will(self::returnValue($body));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -1360,8 +1335,7 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
@@ -1417,8 +1391,7 @@ AolVersion=0
         $body
             ->expects(self::once())
             ->method('getContents')
-            ->will(self::returnValue($version))
-        ;
+            ->will(self::returnValue($version));
 
         $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
             ->disableOriginalConstructor()
@@ -1427,13 +1400,11 @@ AolVersion=0
         $response
             ->expects(self::once())
             ->method('getStatusCode')
-            ->will(self::returnValue(200))
-        ;
+            ->will(self::returnValue(200));
         $response
             ->expects(self::once())
             ->method('getBody')
-            ->will(self::returnValue($body))
-        ;
+            ->will(self::returnValue($body));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -1442,8 +1413,7 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
@@ -1497,8 +1467,7 @@ AolVersion=0
         $body
             ->expects(self::once())
             ->method('getContents')
-            ->will(self::returnValue(6001))
-        ;
+            ->will(self::returnValue(6001));
 
         $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
             ->disableOriginalConstructor()
@@ -1507,13 +1476,11 @@ AolVersion=0
         $response
             ->expects(self::once())
             ->method('getStatusCode')
-            ->will(self::returnValue(200))
-        ;
+            ->will(self::returnValue(200));
         $response
             ->expects(self::once())
             ->method('getBody')
-            ->will(self::returnValue($body))
-        ;
+            ->will(self::returnValue($body));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -1522,8 +1489,7 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 

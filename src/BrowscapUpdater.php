@@ -28,20 +28,17 @@
 
 namespace BrowscapPHP;
 
-use Browscap\Generator\BuildGenerator;
-use Browscap\Helper\CollectionCreator;
-use Browscap\Writer\Factory\PhpWriterFactory;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception\FetcherException;
 use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\Filesystem;
 use BrowscapPHP\Helper\IniLoader;
+use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use WurflCache\Adapter\AdapterInterface;
 use WurflCache\Adapter\File;
-use GuzzleHttp\Client;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -320,9 +317,9 @@ class BrowscapUpdater
     /**
      * checks if an update on a remote location for the local file or the cache
      *
-     * @return int|null The actual cached version if a newer version is available, null otherwise
      * @throws \BrowscapPHP\Helper\Exception
      * @throws \BrowscapPHP\Exception\FetcherException
+     * @return int|null                                The actual cached version if a newer version is available, null otherwise
      * @return int|null                                The actual cached version if a newer version is available, null otherwise
      */
     public function checkUpdate()

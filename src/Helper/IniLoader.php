@@ -29,11 +29,6 @@
 
 namespace BrowscapPHP\Helper;
 
-use FileLoader\Exception as LoaderException;
-use FileLoader\Loader;
-use GuzzleHttp\Client;
-use Psr\Log\LoggerInterface;
-
 /**
  * class to load the browscap.ini
  *

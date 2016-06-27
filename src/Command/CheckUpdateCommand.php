@@ -32,7 +32,6 @@ namespace BrowscapPHP\Command;
 use BrowscapPHP\BrowscapUpdater;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
-use BrowscapPHP\Helper\IniLoader;
 use BrowscapPHP\Helper\LoggerHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -127,8 +126,7 @@ class CheckUpdateCommand extends Command
         $browscap
             ->setLogger($logger)
             ->setCache($this->getCache($input))
-            ->checkUpdate()
-        ;
+            ->checkUpdate();
 
         $logger->debug('finished checking for new version of remote file');
     }

@@ -36,7 +36,6 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use WurflCache\Adapter\AdapterInterface;
 use WurflCache\Adapter\File;
-use GuzzleHttp\Client;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities

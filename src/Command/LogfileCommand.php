@@ -205,7 +205,7 @@ class LogfileCommand extends Command
             $lines = file($path);
 
             if (empty($lines)) {
-                $logger->info('Skipping empty file "'.$file->getPathname().'"');
+                $logger->info('Skipping empty file "' . $file->getPathname() . '"');
                 continue;
             }
 
