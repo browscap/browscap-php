@@ -65,13 +65,10 @@ class UpdateCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testConfigure()
     {
-        $object = $this->getMock(
-            '\BrowscapPHP\Command\UpdateCommand',
-            array('setName', 'setDescription', 'addArgument', 'addOption'),
-            array(),
-            '',
-            false
-        );
+        $object = $this->getMockBuilder(\BrowscapPHP\Command\UpdateCommand::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['setName', 'setDescription', 'addArgument', 'addOption'])
+            ->getMock();
         $object
             ->expects(self::once())
             ->method('setName')
@@ -107,8 +104,12 @@ class UpdateCommandTest extends \PHPUnit_Framework_TestCase
     {
         self::markTestSkipped('not ready yet');
 
-        $input  = $this->getMock('\Symfony\Component\Console\Input\ArgvInput', array(), array(), '', false);
-        $output = $this->getMock('\Symfony\Component\Console\Output\ConsoleOutput', array(), array(), '', false);
+        $input  = $this->getMockBuilder(\Symfony\Component\Console\Input\ArgvInput::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $output = $this->getMockBuilder(\Symfony\Component\Console\Output\ConsoleOutput::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $class  = new \ReflectionClass('\BrowscapPHP\Command\UpdateCommand');
         $method = $class->getMethod('execute');

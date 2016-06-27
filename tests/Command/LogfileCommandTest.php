@@ -68,13 +68,10 @@ class LogfileCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testConfigure()
     {
-        $object = $this->getMock(
-            '\BrowscapPHP\Command\LogfileCommand',
-            array('setName', 'setDescription', 'addArgument', 'addOption'),
-            array(),
-            '',
-            false
-        );
+        $object = $this->getMockBuilder(\BrowscapPHP\Command\LogfileCommand::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['setName', 'setDescription', 'addArgument', 'addOption'])
+            ->getMock();
         $object
             ->expects(self::once())
             ->method('setName')
@@ -235,7 +232,10 @@ AolVersion=0
             )
         );
 
-        $input  = $this->getMock('\Symfony\Component\Console\Input\ArgvInput', array('getOption', 'getArgument'), array(), '', false);
+        $input  = $this->getMockBuilder(\Symfony\Component\Console\Input\ArgvInput::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getOption', 'getArgument'])
+            ->getMock();
         $input
             ->expects(self::exactly(5))
             ->method('getOption')
@@ -247,7 +247,9 @@ AolVersion=0
             ->will(self::returnValue(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.txt')))
         ;
 
-        $output = $this->getMock('\Symfony\Component\Console\Output\ConsoleOutput', array(), array(), '', false);
+        $output = $this->getMockBuilder(\Symfony\Component\Console\Output\ConsoleOutput::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $class  = new \ReflectionClass('\BrowscapPHP\Command\LogfileCommand');
         $method = $class->getMethod('execute');

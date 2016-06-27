@@ -44,6 +44,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use WurflCache\Adapter\AdapterInterface;
 use WurflCache\Adapter\File;
+use GuzzleHttp\Client;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -75,17 +76,9 @@ class BrowscapUpdater
     private $logger = null;
 
     /**
-     * Options for the updater. The array should be overwritten,
-     * containing all options as keys, set to the default value.
-     *
-     * @var array
+     * @var \GuzzleHttp\Client
      */
-    private $options = array();
-
-    /**
-     * @var \BrowscapPHP\Helper\IniLoader
-     */
-    private $loader = null;
+    private $client = null;
 
     /**
      * Gets a cache instance
@@ -161,37 +154,23 @@ class BrowscapUpdater
     }
 
     /**
-     * Sets multiple loader options at once
-     *
-     * @param array $options
-     *
-     * @return \BrowscapPHP\BrowscapUpdater
+     * @return \GuzzleHttp\Client
      */
-    public function setOptions(array $options)
+    public function getClient()
     {
-        $this->options = $options;
-
-        return $this;
-    }
-
-    /**
-     * @return \BrowscapPHP\Helper\IniLoader
-     */
-    public function getLoader()
-    {
-        if (null === $this->loader) {
-            $this->loader = new IniLoader();
+        if (null === $this->client) {
+            $this->client = new Client();
         }
 
-        return $this->loader;
+        return $this->client;
     }
 
     /**
-     * @param \BrowscapPHP\Helper\IniLoader $loader
+     * @param \GuzzleHttp\Client $client
      */
-    public function setLoader(IniLoader $loader)
+    public function setClient(Client $client)
     {
-        $this->loader = $loader;
+        $this->client = $client;
     }
 
     /**
@@ -203,16 +182,16 @@ class BrowscapUpdater
      */
     public function convertFile($iniFile)
     {
-        $loader = new IniLoader();
+        if (empty($iniFile)) {
+            throw new Exception('the file name can not be empty');
+        }
 
-        try {
-            $loader->setLocalFile($iniFile);
-        } catch (Helper\Exception $e) {
-            throw new Exception('an error occured while setting the local file', 0, $e);
+        if (!is_readable($iniFile)) {
+            throw new Exception('it was not possible to read the local file ' . $iniFile);
         }
 
         try {
-            $iniString = $loader->load();
+            $iniString = file_get_contents($iniFile);
         } catch (Helper\Exception $e) {
             throw new Exception('an error occured while converting the local file into the cache', 0, $e);
         }
@@ -244,28 +223,34 @@ class BrowscapUpdater
      */
     public function fetch($file, $remoteFile = IniLoader::PHP_INI)
     {
-        if (null === ($cachedVersion = $this->checkUpdate($remoteFile))) {
+        if (null === ($cachedVersion = $this->checkUpdate())) {
             // no newer version available
             return;
         }
 
-        $this->getLoader()
-            ->setRemoteFilename($remoteFile)
-            ->setOptions($this->options)
-            ->setLogger($this->getLogger())
-        ;
-
         $this->getLogger()->debug('started fetching remote file');
 
+        $uri = (new IniLoader())->setRemoteFilename($remoteFile)->getRemoteIniUrl();
+
+        /** @var \Psr\Http\Message\ResponseInterface $response */
+        $response = $this->getClient()->get($uri, ['timeout' => 5]);
+
+        if ($response->getStatusCode() !== 200) {
+            throw new FetcherException(
+                'an error occured while fetching remote data from URI ' . $uri . ': StatusCode was '
+                . $response->getStatusCode()
+            );
+        }
+
         try {
-            $content = $this->getLoader()->load();
-        } catch (Helper\Exception $e) {
+            $content = $response->getBody()->getContents();
+        } catch (\Exception $e) {
             throw new FetcherException('an error occured while fetching remote data', 0, $e);
         }
 
-        if (false === $content) {
+        if (empty($content)) {
             $error = error_get_last();
-            throw FetcherException::httpError($this->getLoader()->getRemoteIniUrl(), $error['message']);
+            throw FetcherException::httpError($uri, $error['message']);
         }
 
         $this->getLogger()->debug('finished fetching remote file');
@@ -290,96 +275,60 @@ class BrowscapUpdater
      * if the local stored information are in the same version as the remote data no actions are
      * taken
      *
-     * @param string      $remoteFile The code for the remote file to load
-     * @param string|null $buildFolder
-     * @param int|null    $buildNumber
+     * @param string $remoteFile The code for the remote file to load
      *
      * @throws \BrowscapPHP\Exception\FileNotFoundException
      * @throws \BrowscapPHP\Helper\Exception
      * @throws \BrowscapPHP\Exception\FetcherException
      */
-    public function update($remoteFile = IniLoader::PHP_INI, $buildFolder = null, $buildNumber = null)
+    public function update($remoteFile = IniLoader::PHP_INI)
     {
         $this->getLogger()->debug('started fetching remote file');
 
+        if (null === ($cachedVersion = $this->checkUpdate())) {
+            // no newer version available
+            return;
+        }
+
+        $uri = (new IniLoader())->setRemoteFilename($remoteFile)->getRemoteIniUrl();
+
+        /** @var \Psr\Http\Message\ResponseInterface $response */
+        $response = $this->getClient()->get($uri, ['timeout' => 5]);
+
+        if ($response->getStatusCode() !== 200) {
+            throw new FetcherException(
+                'an error occured while fetching remote data from URI ' . $uri . ': StatusCode was '
+                . $response->getStatusCode()
+            );
+        }
+
+        try {
+            $content = $response->getBody()->getContents();
+        } catch (\Exception $e) {
+            throw new FetcherException('an error occured while fetching remote data', 0, $e);
+        }
+
+        if (empty($content)) {
+            $error = error_get_last();
+
+            throw FetcherException::httpError($uri, $error['message']);
+        }
+
+        $this->getLogger()->debug('finished fetching remote file');
+
         $converter = new Converter($this->getLogger(), $this->getCache());
 
-        if (class_exists('\Browscap\Browscap')) {
-            $resourceFolder = 'vendor/browscap/browscap/resources/';
-
-            if (null === $buildNumber) {
-                $buildNumber = (int)file_get_contents('vendor/browscap/browscap/BUILD_NUMBER');
-            }
-
-            if (null === $buildFolder) {
-                $buildFolder = 'resources';
-            }
-
-            $buildFolder .= '/browscap-ua-test-'.$buildNumber;
-            $iniFile     = $buildFolder.'/full_php_browscap.ini';
-
-            mkdir($buildFolder, 0777, true);
-
-            $writerCollectionFactory = new PhpWriterFactory();
-            $writerCollection        = $writerCollectionFactory->createCollection($this->getLogger(), $buildFolder);
-
-            $buildGenerator = new BuildGenerator($resourceFolder, $buildFolder);
-            $buildGenerator
-                ->setLogger($this->getLogger())
-                ->setCollectionCreator(new CollectionCreator())
-                ->setWriterCollection($writerCollection)
-                ->run($buildNumber, false)
-            ;
-
-            $converter
-                ->setVersion($buildNumber)
-                ->storeVersion()
-                ->convertFile($iniFile)
-            ;
-
-            $filesystem = new Filesystem();
-            $filesystem->remove($buildFolder);
-        } else {
-            if (null === ($cachedVersion = $this->checkUpdate($remoteFile))) {
-                // no newer version available
-                return;
-            }
-
-            $this->getLoader()
-                ->setRemoteFilename($remoteFile)
-                ->setOptions($this->options)
-                ->setLogger($this->getLogger())
-            ;
-
-            try {
-                $content = $this->getLoader()->load();
-            } catch (Helper\Exception $e) {
-                throw new FetcherException('an error occured while loading remote data', 0, $e);
-            }
-
-            if (false === $content) {
-                $internalLoader = $this->getLoader()->getLoader();
-                $error          = error_get_last();
-
-                throw FetcherException::httpError($internalLoader->getUri(), $error['message']);
-            }
-
-            $this->getLogger()->debug('finished fetching remote file');
-
-            $this->storeContent($converter, $content, $cachedVersion);
-        }
+        $this->storeContent($converter, $content, $cachedVersion);
     }
 
     /**
      * checks if an update on a remote location for the local file or the cache
      *
-     * @param string $remoteFile
-     *
      * @return int|null The actual cached version if a newer version is available, null otherwise
      * @throws \BrowscapPHP\Helper\Exception
      * @throws \BrowscapPHP\Exception\FetcherException
      */
-    public function checkUpdate($remoteFile = IniLoader::PHP_INI)
+    public function checkUpdate()
     {
         $success       = null;
         $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
@@ -391,16 +340,27 @@ class BrowscapUpdater
             return 0;
         }
 
-        $this->getLoader()
-            ->setRemoteFilename($remoteFile)
-            ->setOptions($this->options)
-            ->setLogger($this->getLogger())
-        ;
+        $uri = (new IniLoader())->getRemoteVersionUrl();
+
+        /** @var \Psr\Http\Message\ResponseInterface $response */
+        $response = $this->getClient()->get($uri, ['timeout' => 5]);
+
+        if ($response->getStatusCode() !== 200) {
+            throw new FetcherException(
+                'an error occured while fetching version data from URI ' . $uri . ': StatusCode was '
+                . $response->getStatusCode()
+            );
+        }
 
         try {
-            $remoteVersion = $this->getLoader()->getRemoteVersion();
-        } catch (Helper\Exception $e) {
-            throw new FetcherException('an error occured while checking remote version', 0, $e);
+            $remoteVersion = $response->getBody()->getContents();
+        } catch (\Exception $e) {
+            throw new FetcherException(
+                'an error occured while fetching version data from URI ' . $uri . ': StatusCode was '
+                . $response->getStatusCode(),
+                0,
+                $e
+            );
         }
 
         if (!$remoteVersion) {

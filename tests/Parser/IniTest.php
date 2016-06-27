@@ -53,13 +53,19 @@ class IniTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
+        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         /** @var \Monolog\Logger $logger */
-        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $logger = $this->getMockBuilder(\Monolog\Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         /** @var \BrowscapPHP\Helper\Quoter $quoter */
-        $quoter = $this->getMock('\BrowscapPHP\Helper\Quoter', array(), array(), '', false);
+        $quoter = $this->getMockBuilder(\BrowscapPHP\Helper\Quoter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         /** @var \BrowscapPHP\Parser\Helper\GetPattern $patternHelper */
         $patternHelper = new GetPattern($cache, $logger);
@@ -68,7 +74,9 @@ class IniTest extends \PHPUnit_Framework_TestCase
         $dataHelper = new GetData($cache, $logger, $quoter);
 
         /** @var \BrowscapPHP\Formatter\PhpGetBrowser $formatter */
-        $formatter = $this->getMock('\BrowscapPHP\Formatter\PhpGetBrowser', array(), array(), '', false);
+        $formatter = $this->getMockBuilder(\BrowscapPHP\Formatter\PhpGetBrowser::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->object = new Ini($patternHelper, $dataHelper, $formatter);
     }

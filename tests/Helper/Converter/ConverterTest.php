@@ -53,12 +53,18 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $logger = $this->getMock('\Monolog\Logger', array('info'), array(), '', false);
+        $logger = $this->getMockBuilder(\Monolog\Logger::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['info'])
+            ->getMock();
         $logger->expects(self::never())
                ->method('info')
                ->will(self::returnValue(false));
 
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('setItem'), array(), '', false);
+        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['setItem'])
+            ->getMock();
         $cache->expects(self::any())
               ->method('setItem')
               ->will(self::returnValue(true));
@@ -74,7 +80,9 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
         self::assertInstanceOf('\BrowscapPHP\Helper\Filesystem', $this->object->getFilesystem());
 
         /** @var \BrowscapPHP\Helper\Filesystem $file */
-        $file = $this->getMock('\BrowscapPHP\Helper\Filesystem', array(), array(), '', false);
+        $file = $this->getMockBuilder(\BrowscapPHP\Helper\Filesystem::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         self::assertSame($this->object, $this->object->setFilesystem($file));
         self::assertSame($file, $this->object->getFilesystem());
@@ -86,7 +94,10 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
      */
     public function testConvertMissingFile()
     {
-        $file = $this->getMock('\BrowscapPHP\Helper\Filesystem', array('exists'), array(), '', false);
+        $file = $this->getMockBuilder(\BrowscapPHP\Helper\Filesystem::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['exists'])
+            ->getMock();
         $file->expects(self::once())
             ->method('exists')
             ->will(self::returnValue(false));
@@ -213,7 +224,10 @@ AolVersion=0
 
         $this->root = vfsStream::setup(self::STORAGE_DIR, null, $structure);
 
-        $file = $this->getMock('\BrowscapPHP\Helper\Filesystem', array('exists'), array(), '', false);
+        $file = $this->getMockBuilder(\BrowscapPHP\Helper\Filesystem::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['exists'])
+            ->getMock();
         $file->expects(self::once())
             ->method('exists')
             ->will(self::returnValue(false));
@@ -227,7 +241,10 @@ AolVersion=0
      */
     public function testGetIniVersion()
     {
-        $file = $this->getMock('\BrowscapPHP\Helper\Filesystem', array('exists'), array(), '', false);
+        $file = $this->getMockBuilder(\BrowscapPHP\Helper\Filesystem::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['exists'])
+            ->getMock();
         $file->expects(self::never())
             ->method('exists')
             ->will(self::returnValue(false));

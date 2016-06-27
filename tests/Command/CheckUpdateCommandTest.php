@@ -65,13 +65,10 @@ class CheckUpdateCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testConfigure()
     {
-        $object = $this->getMock(
-            '\BrowscapPHP\Command\CheckUpdateCommand',
-            array('setName', 'setDescription', 'addArgument', 'addOption'),
-            array(),
-            '',
-            false
-        );
+        $object = $this->getMockBuilder(\BrowscapPHP\Command\CheckUpdateCommand::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['setName', 'setDescription', 'addArgument', 'addOption'])
+            ->getMock();
         $object
             ->expects(self::once())
             ->method('setName')
@@ -88,7 +85,7 @@ class CheckUpdateCommandTest extends \PHPUnit_Framework_TestCase
             ->will(self::returnSelf())
         ;
         $object
-            ->expects(self::exactly(3))
+            ->expects(self::exactly(2))
             ->method('addOption')
             ->will(self::returnSelf())
         ;

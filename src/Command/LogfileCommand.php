@@ -201,53 +201,27 @@ class LogfileCommand extends Command
             $this->uas = array();
             $path      = $this->getPath($file);
 
-            $loader->setLocalFile($path);
-            $internalLoader = $loader->getLoader();
-
             $this->countOk  = 0;
             $this->countNok = 0;
 
             $logger->info('Analyzing file "'.$file->getPathname().'"');
 
-            if ($internalLoader->isSupportingLoadingLines()) {
-                if (!$internalLoader->init($path)) {
-                    $logger->info('Skipping empty file "'.$file->getPathname().'"');
-                    continue;
-                }
+            $lines = file($path);
 
-                $this->totalCount = 1;
+            if (empty($lines)) {
+                $logger->info('Skipping empty file "'.$file->getPathname().'"');
+                continue;
+            }
 
-                while ($internalLoader->isValid()) {
-                    $this->handleLine(
-                        $output,
-                        $collection,
-                        $browscap,
-                        $internalLoader->getLine()
-                    );
+            $this->totalCount = count($lines);
 
-                    $this->totalCount++;
-                }
-
-                $internalLoader->close();
-                $this->totalCount--;
-            } else {
-                $lines = file($path);
-
-                if (empty($lines)) {
-                    $logger->info('Skipping empty file "'.$file->getPathname().'"');
-                    continue;
-                }
-
-                $this->totalCount = count($lines);
-
-                foreach ($lines as $line) {
-                    $this->handleLine(
-                        $output,
-                        $collection,
-                        $browscap,
-                        $line
-                    );
-                }
+            foreach ($lines as $line) {
+                $this->handleLine(
+                    $output,
+                    $collection,
+                    $browscap,
+                    $line
+                );
             }
 
             $this->outputProgress($output, '', true);

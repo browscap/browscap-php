@@ -120,21 +120,14 @@ $bc
 ;
 ```
 
-If you are behind a proxy you have to set a configuration with the proxy data. Parts who are not
-needed for your connection (like the port if the standard port is used) dont need to be set
+If you are behind a proxy or need a spcific configuration, you have to set up a client instance. 
+See into the [Guzzle documentation](http://docs.guzzlephp.org/en/latest/) for more information about this.
 
 ```php
-$proxyConfig = array(
-    'ProxyProtocol' => 'http',
-    'ProxyHost'     => 'example.org',
-    //'ProxyPort'     => null,
-    'ProxyAuth'     => 'basic',
-    'ProxyUser'     => 'your username',
-    'ProxyPassword' => 'your super secret password',
-);
+$client = new \GuzzleHttp\Client($options = []);
 
 $bc = new Browscap();
-$bc->setOptions($proxyConfig);
+$bc->setClient($client);
 ```
 
 Issues and feature requests

@@ -53,7 +53,10 @@ class ConverterConvertStringTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $logger = $this->getMock('\Monolog\Logger', array('info', 'error'), array(), '', false);
+        $logger = $this->getMockBuilder(\Monolog\Logger::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['info', 'error'])
+            ->getMock();
         $logger->expects(self::exactly(4))
                ->method('info')
                ->will(self::returnValue(false));
@@ -61,7 +64,10 @@ class ConverterConvertStringTest extends \PHPUnit_Framework_TestCase
                ->method('error')
                ->will(self::returnValue(false));
 
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('setItem'), array(), '', false);
+        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['setItem'])
+            ->getMock();
         $cache->expects(self::any())
               ->method('setItem')
               ->will(self::returnValue(true));
@@ -74,7 +80,10 @@ class ConverterConvertStringTest extends \PHPUnit_Framework_TestCase
      */
     public function testConvertString()
     {
-        $file = $this->getMock('\BrowscapPHP\Helper\Filesystem', array('exists'), array(), '', false);
+        $file = $this->getMockBuilder(\BrowscapPHP\Helper\Filesystem::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['exists'])
+            ->getMock();
         $file->expects(self::never())
             ->method('exists')
             ->will(self::returnValue(false));
@@ -194,7 +203,10 @@ AolVersion=0
      */
     public function testConvertStringWithoutPatternFaound()
     {
-        $file = $this->getMock('\BrowscapPHP\Helper\Filesystem', array('exists'), array(), '', false);
+        $file = $this->getMockBuilder(\BrowscapPHP\Helper\Filesystem::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['exists'])
+            ->getMock();
         $file->expects(self::never())
             ->method('exists')
             ->will(self::returnValue(false));

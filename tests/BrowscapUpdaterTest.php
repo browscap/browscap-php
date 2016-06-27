@@ -74,7 +74,9 @@ class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
     public function testSetGetCache()
     {
         /** @var \BrowscapPHP\Cache\BrowscapCache $cache */
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
+        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         self::assertSame($this->object, $this->object->setCache($cache));
         self::assertSame($cache, $this->object->getCache());
@@ -86,7 +88,9 @@ class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
     public function testSetGetCacheWithAdapter()
     {
         /** @var \WurflCache\Adapter\Memory $cache */
-        $cache = $this->getMock('\WurflCache\Adapter\Memory', array(), array(), '', false);
+        $cache = $this->getMockBuilder(\WurflCache\Adapter\Memory::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         self::assertSame($this->object, $this->object->setCache($cache));
         self::assertInstanceOf('\BrowscapPHP\Cache\BrowscapCache', $this->object->getCache());
@@ -114,7 +118,9 @@ class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetLogger()
     {
-        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $logger = $this->getMockBuilder(\Monolog\Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         self::assertSame($this->object, $this->object->setLogger($logger));
         self::assertSame($logger, $this->object->getLogger());
@@ -123,37 +129,29 @@ class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testGetLoader()
+    public function testGetClient()
     {
-        self::assertInstanceOf('\BrowscapPHP\Helper\IniLoader', $this->object->getLoader());
+        self::assertInstanceOf('\GuzzleHttp\Client', $this->object->getClient());
     }
 
     /**
      *
      */
-    public function testSetGetgetLoader()
+    public function testSetGetClient()
     {
-        $loader = $this->getMock('\BrowscapPHP\Helper\IniLoader', array(), array(), '', false);
+        $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->object->setLoader($loader);
-        self::assertSame($loader, $this->object->getLoader());
-    }
-
-    /**
-     *
-     */
-    public function testSetOptions()
-    {
-        $options = array();
-
-        self::assertSame($this->object, $this->object->setOptions($options));
+        $this->object->setClient($client);
+        self::assertSame($client, $this->object->getClient());
     }
 
     /**
      * tests if an exception is thrown if no file name was given
      *
      * @expectedException \BrowscapPHP\Exception
-     * @expectedExceptionMessage an error occured while setting the local file
+     * @expectedExceptionMessage the file name can not be empty
      */
     public function testConvertEmptyFile()
     {
@@ -164,7 +162,7 @@ class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
      * tests if an exception is thrown if no file name was given
      *
      * @expectedException \BrowscapPHP\Exception
-     * @expectedExceptionMessage an error occured while converting the local file into the cache
+     * @expectedExceptionMessage it was not possible to read the local file /this/file/does/not/exist
      */
     public function testConvertNotReadableFile()
     {
@@ -414,36 +412,36 @@ AolVersion=0
 
     /**
      * @expectedException \BrowscapPHP\Exception\FetcherException
-     * @expectedExceptionMessage Could not fetch HTTP resource "http://browscap.org/stream?q=PHP_BrowscapINI":
+     * @expectedExceptionMessage an error occured while fetching version data from URI http://browscap.org/version-number: StatusCode was 500
      */
     public function testFetchFail()
     {
-        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $logger = $this->getMockBuilder(\Monolog\Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->object->setLogger($logger);
 
-        $loader = $this->getMock('\BrowscapPHP\Helper\IniLoader', array('setRemoteFilename', 'setOptions', 'setLogger', 'load'), array(), '', false);
-        $loader
+        $response = $this->getMockBuilder(GuzzleHttp\Psr7\Response::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getStatusCode'])
+            ->getMock();
+        $response
             ->expects(self::exactly(2))
-            ->method('setRemoteFilename')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::exactly(2))
-            ->method('setOptions')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::exactly(2))
-            ->method('setLogger')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('load')
-            ->will(self::returnValue(false))
+            ->method('getStatusCode')
+            ->will(self::returnValue(500))
         ;
 
-        $this->object->setLoader($loader);
+        $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['get'])
+            ->getMock();
+        $client
+            ->expects(self::once())
+            ->method('get')
+            ->will(self::returnValue($response))
+        ;
+
+        $this->object->setClient($client);
 
         $map = array(
             array(
@@ -460,7 +458,10 @@ AolVersion=0
             ),
         );
 
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'setItem'), array(), '', false);
+        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getItem', 'setItem'])
+            ->getMock();
         $cache
             ->expects(self::once())
             ->method('getItem')
@@ -482,7 +483,9 @@ AolVersion=0
      */
     public function testFetchOK()
     {
-        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $logger = $this->getMockBuilder(\Monolog\Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->object->setLogger($logger);
 
         $content   = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
@@ -590,29 +593,42 @@ CssVersion=0
 AolVersion=0
 ';
 
-        $loader = $this->getMock('\BrowscapPHP\Helper\IniLoader', array('setRemoteFilename', 'setOptions', 'setLogger', 'load'), array(), '', false);
-        $loader
+        $body = $this->getMockBuilder(\GuzzleHttp\Psr7\Stream::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getContents'])
+            ->getMock();
+        $body
             ->expects(self::once())
-            ->method('setRemoteFilename')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setOptions')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setLogger')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('load')
+            ->method('getContents')
             ->will(self::returnValue($content))
         ;
 
-        $this->object->setLoader($loader);
+        $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getStatusCode', 'getBody'])
+            ->getMock();
+        $response
+            ->expects(self::once())
+            ->method('getStatusCode')
+            ->will(self::returnValue(200))
+        ;
+        $response
+            ->expects(self::once())
+            ->method('getBody')
+            ->will(self::returnValue($body))
+        ;
+
+        $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['get'])
+            ->getMock();
+        $client
+            ->expects(self::once())
+            ->method('get')
+            ->will(self::returnValue($response))
+        ;
+
+        $this->object->setClient($client);
 
         $map = array(
             array(
@@ -629,7 +645,10 @@ AolVersion=0
             ),
         );
 
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'setItem'), array(), '', false);
+        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getItem', 'setItem'])
+            ->getMock();
         $cache
             ->expects(self::once())
             ->method('getItem')
@@ -655,7 +674,9 @@ AolVersion=0
      */
     public function testFetchSanitizeOK()
     {
-        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $logger = $this->getMockBuilder(\Monolog\Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->object->setLogger($logger);
 
         $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
@@ -868,35 +889,42 @@ CssVersion=0
 AolVersion=0
 ';
 
-        $loader = $this->getMock(
-            '\BrowscapPHP\Helper\IniLoader',
-            array('setRemoteFilename', 'setOptions', 'setLogger', 'load'),
-            array(),
-            '',
-            false
-        );
-        $loader
+        $body = $this->getMockBuilder(\GuzzleHttp\Psr7\Stream::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getContents'])
+            ->getMock();
+        $body
             ->expects(self::once())
-            ->method('setRemoteFilename')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setOptions')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setLogger')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('load')
+            ->method('getContents')
             ->will(self::returnValue($content))
         ;
 
-        $this->object->setLoader($loader);
+        $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getStatusCode', 'getBody'])
+            ->getMock();
+        $response
+            ->expects(self::once())
+            ->method('getStatusCode')
+            ->will(self::returnValue(200))
+        ;
+        $response
+            ->expects(self::once())
+            ->method('getBody')
+            ->will(self::returnValue($body))
+        ;
+
+        $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['get'])
+            ->getMock();
+        $client
+            ->expects(self::once())
+            ->method('get')
+            ->will(self::returnValue($response))
+        ;
+
+        $this->object->setClient($client);
 
         $map = array(
             array(
@@ -913,7 +941,10 @@ AolVersion=0
             ),
         );
 
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'setItem'), array(), '', false);
+        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getItem', 'setItem'])
+            ->getMock();
         $cache
             ->expects(self::once())
             ->method('getItem')
@@ -945,56 +976,47 @@ AolVersion=0
             );
         }
 
-        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $logger = $this->getMockBuilder(\Monolog\Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->object->setLogger($logger);
 
-        $internalLoader = $this->getMock(
-            '\FileLoader\Loader',
-            array('getUri'),
-            array(),
-            '',
-            false
-        );
-        $internalLoader
+        $body = $this->getMockBuilder(\GuzzleHttp\Psr7\Stream::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getContents'])
+            ->getMock();
+        $body
             ->expects(self::once())
-            ->method('getUri')
-            ->will(self::returnValue('http://browscap.org/stream?q=PHP_BrowscapINI'))
-        ;
-
-        $loader = $this->getMock(
-            '\BrowscapPHP\Helper\IniLoader',
-            array('setRemoteFilename', 'setOptions', 'setLogger', 'load', 'getLoader'),
-            array(),
-            '',
-            false
-        );
-        $loader
-            ->expects(self::once())
-            ->method('setRemoteFilename')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setOptions')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setLogger')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('load')
+            ->method('getContents')
             ->will(self::returnValue(false))
         ;
-        $loader
+
+        $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getStatusCode', 'getBody'])
+            ->getMock();
+        $response
             ->expects(self::once())
-            ->method('getLoader')
-            ->will(self::returnValue($internalLoader))
+            ->method('getStatusCode')
+            ->will(self::returnValue(200))
+        ;
+        $response
+            ->expects(self::once())
+            ->method('getBody')
+            ->will(self::returnValue($body))
         ;
 
-        $this->object->setLoader($loader);
+        $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['get'])
+            ->getMock();
+        $client
+            ->expects(self::once())
+            ->method('get')
+            ->will(self::returnValue($response))
+        ;
+
+        $this->object->setClient($client);
 
         $map = array(
             array(
@@ -1011,7 +1033,10 @@ AolVersion=0
             ),
         );
 
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'setItem'), array(), '', false);
+        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getItem', 'setItem'])
+            ->getMock();
         $cache
             ->expects(self::once())
             ->method('getItem')
@@ -1040,21 +1065,10 @@ AolVersion=0
             );
         }
 
-        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $logger = $this->getMockBuilder(\Monolog\Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->object->setLogger($logger);
-
-        $internalLoader = $this->getMock(
-            '\FileLoader\Loader',
-            array('getUri'),
-            array(),
-            '',
-            false
-        );
-        $internalLoader
-            ->expects(self::never())
-            ->method('getUri')
-            ->will(self::returnValue('http://browscap.org/stream?q=PHP_BrowscapINI'))
-        ;
 
         $content   = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
@@ -1161,40 +1175,42 @@ CssVersion=0
 AolVersion=0
 ';
 
-        $loader = $this->getMock(
-            '\BrowscapPHP\Helper\IniLoader',
-            array('setRemoteFilename', 'setOptions', 'setLogger', 'load', 'getLoader'),
-            array(),
-            '',
-            false
-        );
-        $loader
+        $body = $this->getMockBuilder(\GuzzleHttp\Psr7\Stream::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getContents'])
+            ->getMock();
+        $body
             ->expects(self::once())
-            ->method('setRemoteFilename')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setOptions')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setLogger')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('load')
+            ->method('getContents')
             ->will(self::returnValue($content))
         ;
-        $loader
-            ->expects(self::never())
-            ->method('getLoader')
-            ->will(self::returnValue($internalLoader))
+
+        $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getStatusCode', 'getBody'])
+            ->getMock();
+        $response
+            ->expects(self::once())
+            ->method('getStatusCode')
+            ->will(self::returnValue(200))
+        ;
+        $response
+            ->expects(self::once())
+            ->method('getBody')
+            ->will(self::returnValue($body))
         ;
 
-        $this->object->setLoader($loader);
+        $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['get'])
+            ->getMock();
+        $client
+            ->expects(self::once())
+            ->method('get')
+            ->will(self::returnValue($response))
+        ;
+
+        $this->object->setClient($client);
 
         $map = array(
             array(
@@ -1211,7 +1227,10 @@ AolVersion=0
             ),
         );
 
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'setItem'), array(), '', false);
+        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getItem', 'setItem'])
+            ->getMock();
         $cache
             ->expects(self::once())
             ->method('getItem')
@@ -1233,38 +1252,47 @@ AolVersion=0
      */
     public function testCheckUpdateWithCacheFail()
     {
-        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $logger = $this->getMockBuilder(\Monolog\Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->object->setLogger($logger);
 
-        $loader = $this->getMock(
-            '\BrowscapPHP\Helper\IniLoader',
-            array('setRemoteFilename', 'setOptions', 'setLogger', 'load'),
-            array(),
-            '',
-            false
-        );
-        $loader
+        $body = $this->getMockBuilder(\GuzzleHttp\Psr7\Stream::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getContents'])
+            ->getMock();
+        $body
             ->expects(self::never())
-            ->method('setRemoteFilename')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::never())
-            ->method('setOptions')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::never())
-            ->method('setLogger')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::never())
-            ->method('load')
+            ->method('getContents')
             ->will(self::returnValue(false))
         ;
 
-        $this->object->setLoader($loader);
+        $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getStatusCode', 'getBody'])
+            ->getMock();
+        $response
+            ->expects(self::never())
+            ->method('getStatusCode')
+            ->will(self::returnValue(200))
+        ;
+        $response
+            ->expects(self::never())
+            ->method('getBody')
+            ->will(self::returnValue($body))
+        ;
+
+        $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['get'])
+            ->getMock();
+        $client
+            ->expects(self::never())
+            ->method('get')
+            ->will(self::returnValue($response))
+        ;
+
+        $this->object->setClient($client);
 
         $map = array(
             array(
@@ -1281,7 +1309,10 @@ AolVersion=0
             ),
         );
 
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'setItem'), array(), '', false);
+        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getItem', 'setItem'])
+            ->getMock();
         $cache
             ->expects(self::once())
             ->method('getItem')
@@ -1300,49 +1331,53 @@ AolVersion=0
 
     /**
      * @expectedException \BrowscapPHP\Exception\FetcherException
-     * @expectedExceptionMessage an error occured while checking remote version
+     * @expectedExceptionMessage an error occured while fetching version data from URI http://browscap.org/version-number: StatusCode was 200
      */
     public function testCheckUpdateWithException()
     {
         $version = 6000;
 
-        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $logger = $this->getMockBuilder(\Monolog\Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->object->setLogger($logger);
 
-        $loader = $this->getMock(
-            '\BrowscapPHP\Helper\IniLoader',
-            array('setRemoteFilename', 'setOptions', 'setLogger', 'load', 'getRemoteVersion'),
-            array(),
-            '',
-            false
-        );
-        $loader
+        $body = $this->getMockBuilder(\GuzzleHttp\Psr7\Stream::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getContents'])
+            ->getMock();
+        $body
             ->expects(self::once())
-            ->method('setRemoteFilename')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setOptions')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setLogger')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::never())
-            ->method('load')
-            ->will(self::returnValue(false))
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('getRemoteVersion')
+            ->method('getContents')
             ->will(self::throwException(new Exception('Exception')))
         ;
 
-        $this->object->setLoader($loader);
+        $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getStatusCode', 'getBody'])
+            ->getMock();
+        $response
+            ->expects(self::exactly(2))
+            ->method('getStatusCode')
+            ->will(self::returnValue(200))
+        ;
+        $response
+            ->expects(self::once())
+            ->method('getBody')
+            ->will(self::returnValue($body))
+        ;
+
+        $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['get'])
+            ->getMock();
+        $client
+            ->expects(self::once())
+            ->method('get')
+            ->will(self::returnValue($response))
+        ;
+
+        $this->object->setClient($client);
 
         $map = array(
             array(
@@ -1359,7 +1394,10 @@ AolVersion=0
             ),
         );
 
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'setItem'), array(), '', false);
+        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getItem', 'setItem'])
+            ->getMock();
         $cache
             ->expects(self::once())
             ->method('getItem')
@@ -1383,43 +1421,47 @@ AolVersion=0
     {
         $version = 6000;
 
-        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $logger = $this->getMockBuilder(\Monolog\Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->object->setLogger($logger);
 
-        $loader = $this->getMock(
-            '\BrowscapPHP\Helper\IniLoader',
-            array('setRemoteFilename', 'setOptions', 'setLogger', 'load', 'getRemoteVersion'),
-            array(),
-            '',
-            false
-        );
-        $loader
+        $body = $this->getMockBuilder(\GuzzleHttp\Psr7\Stream::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getContents'])
+            ->getMock();
+        $body
             ->expects(self::once())
-            ->method('setRemoteFilename')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setOptions')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setLogger')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::never())
-            ->method('load')
-            ->will(self::returnValue(false))
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('getRemoteVersion')
+            ->method('getContents')
             ->will(self::returnValue($version))
         ;
 
-        $this->object->setLoader($loader);
+        $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getStatusCode', 'getBody'])
+            ->getMock();
+        $response
+            ->expects(self::once())
+            ->method('getStatusCode')
+            ->will(self::returnValue(200))
+        ;
+        $response
+            ->expects(self::once())
+            ->method('getBody')
+            ->will(self::returnValue($body))
+        ;
+
+        $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['get'])
+            ->getMock();
+        $client
+            ->expects(self::once())
+            ->method('get')
+            ->will(self::returnValue($response))
+        ;
+
+        $this->object->setClient($client);
 
         $map = array(
             array(
@@ -1436,7 +1478,10 @@ AolVersion=0
             ),
         );
 
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array('getItem', 'setItem'), array(), '', false);
+        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getItem', 'setItem'])
+            ->getMock();
         $cache
             ->expects(self::once())
             ->method('getItem')
@@ -1458,43 +1503,47 @@ AolVersion=0
      */
     public function testCheckUpdateWithNewerVersion()
     {
-        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $logger = $this->getMockBuilder(\Monolog\Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->object->setLogger($logger);
 
-        $loader = $this->getMock(
-            '\BrowscapPHP\Helper\IniLoader',
-            array('setRemoteFilename', 'setOptions', 'setLogger', 'load', 'getRemoteVersion'),
-            array(),
-            '',
-            false
-        );
-        $loader
+        $body = $this->getMockBuilder(\GuzzleHttp\Psr7\Stream::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getContents'])
+            ->getMock();
+        $body
             ->expects(self::once())
-            ->method('setRemoteFilename')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setOptions')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('setLogger')
-            ->will(self::returnSelf())
-        ;
-        $loader
-            ->expects(self::never())
-            ->method('load')
-            ->will(self::returnValue(false))
-        ;
-        $loader
-            ->expects(self::once())
-            ->method('getRemoteVersion')
+            ->method('getContents')
             ->will(self::returnValue(6001))
         ;
 
-        $this->object->setLoader($loader);
+        $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getStatusCode', 'getBody'])
+            ->getMock();
+        $response
+            ->expects(self::once())
+            ->method('getStatusCode')
+            ->will(self::returnValue(200))
+        ;
+        $response
+            ->expects(self::once())
+            ->method('getBody')
+            ->will(self::returnValue($body))
+        ;
+
+        $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['get'])
+            ->getMock();
+        $client
+            ->expects(self::once())
+            ->method('get')
+            ->will(self::returnValue($response))
+        ;
+
+        $this->object->setClient($client);
 
         $map = array(
             array(
@@ -1511,13 +1560,10 @@ AolVersion=0
             ),
         );
 
-        $cache = $this->getMock(
-            '\BrowscapPHP\Cache\BrowscapCache',
-            array('getItem', 'hasItem', 'setItem'),
-            array(),
-            '',
-            false
-        );
+        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getItem', 'hasItem', 'setItem'])
+            ->getMock();
         $cache
             ->expects(self::any())
             ->method('getItem')

@@ -32,6 +32,7 @@ namespace BrowscapPHP\Helper;
 
 use FileLoader\Exception as LoaderException;
 use FileLoader\Loader;
+use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -63,122 +64,11 @@ class IniLoader
     private $remoteIniUrl  = 'http://browscap.org/stream?q=%q';
     private $remoteTimeUrl = 'http://browscap.org/version';
     private $remoteVersionUrl = 'http://browscap.org/version-number';
-    private $timeout = 5;
-
-    /**
-     * The path of the local version of the browscap.ini file from which to
-     * update (to be set only if used).
-     *
-     * @var string
-     */
-    private $localFile = null;
-
-    /**
-     * an logger instance
-     *
-     * @var \Psr\Log\LoggerInterface
-     */
-    private $logger = null;
-
-    /**
-     * an file loader instance
-     *
-     * @var \FileLoader\Loader
-     */
-    private $loader = null;
 
     /**
      * @var string
      */
     private $remoteFilename = self::PHP_INI;
-
-    /**
-     * Options for the updater. The array should be overwritten,
-     * containing all options as keys, set to the default value.
-     *
-     * @var array
-     */
-    private $options = array();
-
-    /**
-     * sets the logger
-     *
-     * @param \Psr\Log\LoggerInterface $logger
-     *
-     * @return \BrowscapPHP\Helper\IniLoader
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-
-        return $this;
-    }
-
-    /**
-     * returns the logger
-     *
-     * @return \Psr\Log\LoggerInterface
-     */
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
-    /**
-     * sets the loader
-     *
-     * @param \FileLoader\Loader $loader
-     *
-     * @return \BrowscapPHP\Helper\IniLoader
-     */
-    public function setLoader(Loader $loader)
-    {
-        $this->loader = $loader;
-
-        return $this;
-    }
-
-    /**
-     * creates the ini loader
-     *
-     * @return \FileLoader\Loader
-     */
-    public function getLoader()
-    {
-        if (null === $this->loader) {
-            $this->loader = new Loader();
-        }
-
-        if (null !== $this->localFile) {
-            $this->loader->setLocalFile($this->localFile);
-        }
-
-        $this->loader->setOptions($this->options);
-
-        return $this->loader;
-    }
-
-    /**
-     * sets the name of the local file
-     *
-     * @param string $filename the file name
-     *
-     * @throws \BrowscapPHP\Helper\Exception
-     * @return \BrowscapPHP\Helper\IniLoader
-     */
-    public function setLocalFile($filename = null)
-    {
-        if (empty($filename)) {
-            throw new Exception(
-                'the filename can not be empty',
-                Exception::LOCAL_FILE_MISSING
-            );
-        }
-
-        $this->localFile = $filename;
-
-        return $this;
-    }
 
     /**
      * sets the name of the local ini file
@@ -230,104 +120,5 @@ class IniLoader
     public function getRemoteVersionUrl()
     {
         return $this->remoteVersionUrl;
-    }
-
-    /**
-     * returns the timeout
-     *
-     * @return integer
-     */
-    public function getTimeout()
-    {
-        return $this->timeout;
-    }
-
-    /**
-     * Sets multiple loader options at once
-     *
-     * @param array $options
-     *
-     * @return IniLoader
-     */
-    public function setOptions(array $options)
-    {
-        $this->options = $options;
-
-        return $this;
-    }
-
-    /**
-     * loads the ini file from a remote or local location and returns the content of the file
-     *
-     * @throws \BrowscapPHP\Helper\Exception
-     * @return string                        the content of the loaded ini file
-     */
-    public function load()
-    {
-        $internalLoader = $this->getLoader();
-        $internalLoader
-            ->setRemoteDataUrl($this->getRemoteIniUrl())
-            ->setTimeout($this->getTimeout())
-        ;
-
-        try {
-            // Get updated .ini file
-            return $internalLoader->load();
-        } catch (LoaderException $exception) {
-            throw new Exception('could not load the data file', 0, $exception);
-        }
-    }
-
-    /**
-     * Gets the remote file update timestamp
-     *
-     * @throws \BrowscapPHP\Helper\Exception
-     * @return integer                       the remote modification timestamp
-     */
-    public function getMTime()
-    {
-        $internalLoader = $this->getLoader();
-        $internalLoader
-            ->setRemoteVerUrl($this->getRemoteTimeUrl())
-            ->setTimeout($this->getTimeout())
-        ;
-
-        try {
-            // Get updated timestamp
-            $remoteDatetime = $internalLoader->getMTime();
-        } catch (LoaderException $exception) {
-            throw new Exception('could not load the new remote time', 0, $exception);
-        }
-
-        $rfcDate   = \DateTime::createFromFormat(\DateTime::RFC2822, $remoteDatetime);
-        $timestamp = ($rfcDate instanceof \DateTime ? $rfcDate->getTimestamp() : (int) $remoteDatetime);
-
-        if (!$timestamp) {
-            throw new Exception('Bad datetime format from ' . $this->getRemoteTimeUrl(), Exception::INVALID_DATETIME);
-        }
-
-        return $timestamp;
-    }
-
-    /**
-     * Gets the remote file update timestamp
-     *
-     * @throws \BrowscapPHP\Helper\Exception
-     * @return integer                       the remote modification timestamp
-     */
-    public function getRemoteVersion()
-    {
-        $internalLoader = $this->getLoader();
-        $internalLoader
-            ->setRemoteVerUrl($this->getRemoteVersionUrl())
-            ->setTimeout($this->getTimeout())
-        ;
-
-        try {
-            // Get updated timestamp
-            return (int) $internalLoader->getMTime();
-        } catch (LoaderException $exception) {
-            throw new Exception('could not load the new version', 0, $exception);
-        }
     }
 }

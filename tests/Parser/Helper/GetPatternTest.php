@@ -67,7 +67,9 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $cache = $this->getMock('\BrowscapPHP\Cache\BrowscapCache', array(), array(), '', false);
+        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $cache
             ->expects(self::never())
             ->method('getItem')
@@ -75,7 +77,9 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
         ;
 
         /** @var \Monolog\Logger $logger */
-        $logger = $this->getMock('\Monolog\Logger', array(), array(), '', false);
+        $logger = $this->getMockBuilder(\Monolog\Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->object = new GetPattern($cache, $logger);
     }
