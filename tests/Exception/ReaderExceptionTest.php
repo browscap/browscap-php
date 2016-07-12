@@ -29,7 +29,6 @@ use BrowscapPHP\Exception\ReaderException;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0

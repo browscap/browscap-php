@@ -29,7 +29,6 @@ use BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -46,7 +45,6 @@ class ApacheCommonLogFormatReaderTest extends \PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
-     *
      */
     public function setUp()
     {
@@ -75,9 +73,9 @@ class ApacheCommonLogFormatReaderTest extends \PHPUnit_Framework_TestCase
      */
     public function regexproviderOk()
     {
-        return array(
-            array('87.139.99.29 - - 6 0 - - [07/Aug/2014:18:36:10 +0200] - "-" 408 - "-" "-" - www.geld.de'),
-        );
+        return [
+            ['87.139.99.29 - - 6 0 - - [07/Aug/2014:18:36:10 +0200] - "-" 408 - "-" "-" - www.geld.de'],
+        ];
     }
 
     /**

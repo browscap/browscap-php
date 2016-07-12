@@ -29,7 +29,6 @@ use BrowscapPHP\Parser\Helper\Pattern;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -52,8 +51,8 @@ class PatternTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetPatternStartWithVariants()
     {
-        $pattern = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.68 Safari/537.36';
-        $expected = array (
+        $pattern  = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.68 Safari/537.36';
+        $expected = [
             0 => 'aaa556aeec36ac3edfe2f5deea5f1d28',
             1 => '31d050fd7a4ea6c972063ef30d18991a',
             2 => 'dbeb1c32b66fd7717de583d999f89ec3',
@@ -64,7 +63,7 @@ class PatternTest extends \PHPUnit_Framework_TestCase
             7 => '27c9d5187cd283f8d160ec1ed2b5ac89',
             8 => '6f8f57715090da2632453988d9a1501b',
             9 => 'd41d8cd98f00b204e9800998ecf8427e',
-        );
+        ];
 
         self::assertSame($expected, Pattern::getHashForPattern(strtolower($pattern), true));
     }

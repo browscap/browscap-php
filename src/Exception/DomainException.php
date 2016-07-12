@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Exception
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -36,7 +35,6 @@ use DomainException as BaseDomainException;
  * TBD
  *
  * @category   Browscap-PHP
- * @package    Exception
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0

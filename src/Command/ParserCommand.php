@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Command
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -45,7 +44,6 @@ use WurflCache\Adapter\File;
  * commands to parse a given useragent
  *
  * @category   Browscap-PHP
- * @package    Command
  * @author     Dave Olsen, http://dmolsen.com
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
@@ -113,8 +111,7 @@ class ParserCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 'Where the cache files are located',
                 $this->defaultCacheFolder
-            )
-        ;
+            );
     }
 
     /**
@@ -132,8 +129,7 @@ class ParserCommand extends Command
 
         $browscap
             ->setLogger($logger)
-            ->setCache($this->getCache($input))
-        ;
+            ->setCache($this->getCache($input));
 
         $result = $browscap->getBrowser($input->getArgument('user-agent'));
 
@@ -153,7 +149,7 @@ class ParserCommand extends Command
     private function getCache(InputInterface $input)
     {
         if (null === $this->cache) {
-            $cacheAdapter = new File(array(File::DIR => $input->getOption('cache')));
+            $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
             $this->cache  = new BrowscapCache($cacheAdapter);
         }
 

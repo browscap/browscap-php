@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Command
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -33,7 +32,6 @@ namespace BrowscapPHP\Command;
 use BrowscapPHP\BrowscapUpdater;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
-use BrowscapPHP\Helper\IniLoader;
 use BrowscapPHP\Helper\LoggerHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -46,7 +44,6 @@ use WurflCache\Adapter\File;
  * file
  *
  * @category   Browscap-PHP
- * @package    Command
  * @author     Dave Olsen, http://dmolsen.com
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
@@ -108,8 +105,7 @@ class CheckUpdateCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 'Where the cache files are located',
                 $this->defaultCacheFolder
-            )
-        ;
+            );
     }
 
     /**
@@ -130,8 +126,7 @@ class CheckUpdateCommand extends Command
         $browscap
             ->setLogger($logger)
             ->setCache($this->getCache($input))
-            ->checkUpdate()
-        ;
+            ->checkUpdate();
 
         $logger->debug('finished checking for new version of remote file');
     }
@@ -144,7 +139,7 @@ class CheckUpdateCommand extends Command
     private function getCache(InputInterface $input)
     {
         if (null === $this->cache) {
-            $cacheAdapter = new File(array(File::DIR => $input->getOption('cache')));
+            $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
             $this->cache  = new BrowscapCache($cacheAdapter);
         }
 

@@ -33,7 +33,6 @@ use WurflCache\Adapter\Memory;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -53,7 +52,6 @@ class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
-     *
      */
     public function setUp()
     {
@@ -278,9 +276,9 @@ Crawler=1
 CssVersion=0
 AolVersion=0
 ';
-        $structure = array(
-            'test.ini' => $content
-        );
+        $structure = [
+            'test.ini' => $content,
+        ];
 
         vfsStream::setup(self::STORAGE_DIR, null, $structure);
 
@@ -428,8 +426,7 @@ AolVersion=0
         $response
             ->expects(self::exactly(2))
             ->method('getStatusCode')
-            ->will(self::returnValue(500))
-        ;
+            ->will(self::returnValue(500));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -438,25 +435,24 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
-        $map = array(
-            array(
+        $map = [
+            [
                 'browscap.time',
                 false,
                 null,
-                null
-            ),
-            array(
+                null,
+            ],
+            [
                 'browscap.version',
                 false,
                 null,
-                6000
-            ),
-        );
+                6000,
+            ],
+        ];
 
         $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
             ->disableOriginalConstructor()
@@ -465,13 +461,11 @@ AolVersion=0
         $cache
             ->expects(self::once())
             ->method('getItem')
-            ->will(self::returnValueMap($map))
-        ;
+            ->will(self::returnValueMap($map));
         $cache
             ->expects(self::never())
             ->method('setItem')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $this->object->setCache($cache);
 
@@ -600,8 +594,7 @@ AolVersion=0
         $body
             ->expects(self::once())
             ->method('getContents')
-            ->will(self::returnValue($content))
-        ;
+            ->will(self::returnValue($content));
 
         $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
             ->disableOriginalConstructor()
@@ -610,13 +603,11 @@ AolVersion=0
         $response
             ->expects(self::once())
             ->method('getStatusCode')
-            ->will(self::returnValue(200))
-        ;
+            ->will(self::returnValue(200));
         $response
             ->expects(self::once())
             ->method('getBody')
-            ->will(self::returnValue($body))
-        ;
+            ->will(self::returnValue($body));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -625,25 +616,24 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
-        $map = array(
-            array(
+        $map = [
+            [
                 'browscap.time',
                 false,
                 null,
-                null
-            ),
-            array(
+                null,
+            ],
+            [
                 'browscap.version',
                 false,
                 null,
-                null
-            ),
-        );
+                null,
+            ],
+        ];
 
         $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
             ->disableOriginalConstructor()
@@ -652,13 +642,11 @@ AolVersion=0
         $cache
             ->expects(self::once())
             ->method('getItem')
-            ->will(self::returnValueMap($map))
-        ;
+            ->will(self::returnValueMap($map));
         $cache
             ->expects(self::never())
             ->method('setItem')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $this->object->setCache($cache);
 
@@ -896,8 +884,7 @@ AolVersion=0
         $body
             ->expects(self::once())
             ->method('getContents')
-            ->will(self::returnValue($content))
-        ;
+            ->will(self::returnValue($content));
 
         $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
             ->disableOriginalConstructor()
@@ -906,13 +893,11 @@ AolVersion=0
         $response
             ->expects(self::once())
             ->method('getStatusCode')
-            ->will(self::returnValue(200))
-        ;
+            ->will(self::returnValue(200));
         $response
             ->expects(self::once())
             ->method('getBody')
-            ->will(self::returnValue($body))
-        ;
+            ->will(self::returnValue($body));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -921,25 +906,24 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
-        $map = array(
-            array(
+        $map = [
+            [
                 'browscap.time',
                 false,
                 null,
-                null
-            ),
-            array(
+                null,
+            ],
+            [
                 'browscap.version',
                 false,
                 null,
-                null
-            ),
-        );
+                null,
+            ],
+        ];
 
         $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
             ->disableOriginalConstructor()
@@ -948,13 +932,11 @@ AolVersion=0
         $cache
             ->expects(self::once())
             ->method('getItem')
-            ->will(self::returnValueMap($map))
-        ;
+            ->will(self::returnValueMap($map));
         $cache
             ->expects(self::never())
             ->method('setItem')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $this->object->setCache($cache);
 
@@ -988,8 +970,7 @@ AolVersion=0
         $body
             ->expects(self::once())
             ->method('getContents')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
             ->disableOriginalConstructor()
@@ -998,13 +979,11 @@ AolVersion=0
         $response
             ->expects(self::once())
             ->method('getStatusCode')
-            ->will(self::returnValue(200))
-        ;
+            ->will(self::returnValue(200));
         $response
             ->expects(self::once())
             ->method('getBody')
-            ->will(self::returnValue($body))
-        ;
+            ->will(self::returnValue($body));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -1013,25 +992,24 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
-        $map = array(
-            array(
+        $map = [
+            [
                 'browscap.time',
                 false,
                 null,
-                null
-            ),
-            array(
+                null,
+            ],
+            [
                 'browscap.version',
                 false,
                 null,
-                null
-            ),
-        );
+                null,
+            ],
+        ];
 
         $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
             ->disableOriginalConstructor()
@@ -1040,13 +1018,11 @@ AolVersion=0
         $cache
             ->expects(self::once())
             ->method('getItem')
-            ->will(self::returnValueMap($map))
-        ;
+            ->will(self::returnValueMap($map));
         $cache
             ->expects(self::never())
             ->method('setItem')
-            ->will(self::returnValue(true))
-        ;
+            ->will(self::returnValue(true));
 
         $this->object->setCache($cache);
 
@@ -1182,8 +1158,7 @@ AolVersion=0
         $body
             ->expects(self::once())
             ->method('getContents')
-            ->will(self::returnValue($content))
-        ;
+            ->will(self::returnValue($content));
 
         $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
             ->disableOriginalConstructor()
@@ -1192,13 +1167,11 @@ AolVersion=0
         $response
             ->expects(self::once())
             ->method('getStatusCode')
-            ->will(self::returnValue(200))
-        ;
+            ->will(self::returnValue(200));
         $response
             ->expects(self::once())
             ->method('getBody')
-            ->will(self::returnValue($body))
-        ;
+            ->will(self::returnValue($body));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -1207,25 +1180,24 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
-        $map = array(
-            array(
+        $map = [
+            [
                 'browscap.time',
                 false,
                 null,
-                null
-            ),
-            array(
+                null,
+            ],
+            [
                 'browscap.version',
                 false,
                 null,
-                null
-            ),
-        );
+                null,
+            ],
+        ];
 
         $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
             ->disableOriginalConstructor()
@@ -1234,13 +1206,11 @@ AolVersion=0
         $cache
             ->expects(self::once())
             ->method('getItem')
-            ->will(self::returnValueMap($map))
-        ;
+            ->will(self::returnValueMap($map));
         $cache
             ->expects(self::exactly(4355))
             ->method('setItem')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $this->object->setCache($cache);
 
@@ -1264,8 +1234,7 @@ AolVersion=0
         $body
             ->expects(self::never())
             ->method('getContents')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
             ->disableOriginalConstructor()
@@ -1274,13 +1243,11 @@ AolVersion=0
         $response
             ->expects(self::never())
             ->method('getStatusCode')
-            ->will(self::returnValue(200))
-        ;
+            ->will(self::returnValue(200));
         $response
             ->expects(self::never())
             ->method('getBody')
-            ->will(self::returnValue($body))
-        ;
+            ->will(self::returnValue($body));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -1289,25 +1256,24 @@ AolVersion=0
         $client
             ->expects(self::never())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
-        $map = array(
-            array(
+        $map = [
+            [
                 'browscap.time',
                 false,
                 null,
-                null
-            ),
-            array(
+                null,
+            ],
+            [
                 'browscap.version',
                 false,
                 null,
-                null
-            ),
-        );
+                null,
+            ],
+        ];
 
         $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
             ->disableOriginalConstructor()
@@ -1316,13 +1282,11 @@ AolVersion=0
         $cache
             ->expects(self::once())
             ->method('getItem')
-            ->will(self::returnValueMap($map))
-        ;
+            ->will(self::returnValueMap($map));
         $cache
             ->expects(self::never())
             ->method('setItem')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $this->object->setCache($cache);
 
@@ -1349,8 +1313,7 @@ AolVersion=0
         $body
             ->expects(self::once())
             ->method('getContents')
-            ->will(self::throwException(new Exception('Exception')))
-        ;
+            ->will(self::throwException(new Exception('Exception')));
 
         $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
             ->disableOriginalConstructor()
@@ -1359,13 +1322,11 @@ AolVersion=0
         $response
             ->expects(self::exactly(2))
             ->method('getStatusCode')
-            ->will(self::returnValue(200))
-        ;
+            ->will(self::returnValue(200));
         $response
             ->expects(self::once())
             ->method('getBody')
-            ->will(self::returnValue($body))
-        ;
+            ->will(self::returnValue($body));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -1374,25 +1335,24 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
-        $map = array(
-            array(
+        $map = [
+            [
                 'browscap.time',
                 false,
                 null,
-                null
-            ),
-            array(
+                null,
+            ],
+            [
                 'browscap.version',
                 false,
                 null,
-                $version
-            ),
-        );
+                $version,
+            ],
+        ];
 
         $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
             ->disableOriginalConstructor()
@@ -1401,13 +1361,11 @@ AolVersion=0
         $cache
             ->expects(self::once())
             ->method('getItem')
-            ->will(self::returnValueMap($map))
-        ;
+            ->will(self::returnValueMap($map));
         $cache
             ->expects(self::never())
             ->method('setItem')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $this->object->setCache($cache);
 
@@ -1433,8 +1391,7 @@ AolVersion=0
         $body
             ->expects(self::once())
             ->method('getContents')
-            ->will(self::returnValue($version))
-        ;
+            ->will(self::returnValue($version));
 
         $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
             ->disableOriginalConstructor()
@@ -1443,13 +1400,11 @@ AolVersion=0
         $response
             ->expects(self::once())
             ->method('getStatusCode')
-            ->will(self::returnValue(200))
-        ;
+            ->will(self::returnValue(200));
         $response
             ->expects(self::once())
             ->method('getBody')
-            ->will(self::returnValue($body))
-        ;
+            ->will(self::returnValue($body));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -1458,25 +1413,24 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
-        $map = array(
-            array(
+        $map = [
+            [
                 'browscap.time',
                 false,
                 null,
-                null
-            ),
-            array(
+                null,
+            ],
+            [
                 'browscap.version',
                 false,
                 null,
-                $version
-            ),
-        );
+                $version,
+            ],
+        ];
 
         $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
             ->disableOriginalConstructor()
@@ -1485,13 +1439,11 @@ AolVersion=0
         $cache
             ->expects(self::once())
             ->method('getItem')
-            ->will(self::returnValueMap($map))
-        ;
+            ->will(self::returnValueMap($map));
         $cache
             ->expects(self::never())
             ->method('setItem')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $this->object->setCache($cache);
 
@@ -1515,8 +1467,7 @@ AolVersion=0
         $body
             ->expects(self::once())
             ->method('getContents')
-            ->will(self::returnValue(6001))
-        ;
+            ->will(self::returnValue(6001));
 
         $response = $this->getMockBuilder(\GuzzleHttp\Psr7\Response::class)
             ->disableOriginalConstructor()
@@ -1525,13 +1476,11 @@ AolVersion=0
         $response
             ->expects(self::once())
             ->method('getStatusCode')
-            ->will(self::returnValue(200))
-        ;
+            ->will(self::returnValue(200));
         $response
             ->expects(self::once())
             ->method('getBody')
-            ->will(self::returnValue($body))
-        ;
+            ->will(self::returnValue($body));
 
         $client = $this->getMockBuilder(\GuzzleHttp\Client::class)
             ->disableOriginalConstructor()
@@ -1540,25 +1489,24 @@ AolVersion=0
         $client
             ->expects(self::once())
             ->method('get')
-            ->will(self::returnValue($response))
-        ;
+            ->will(self::returnValue($response));
 
         $this->object->setClient($client);
 
-        $map = array(
-            array(
+        $map = [
+            [
                 'browscap.time',
                 false,
                 null,
-                null
-            ),
-            array(
+                null,
+            ],
+            [
                 'browscap.version',
                 false,
                 null,
-                6000
-            ),
-        );
+                6000,
+            ],
+        ];
 
         $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
             ->disableOriginalConstructor()
@@ -1567,18 +1515,15 @@ AolVersion=0
         $cache
             ->expects(self::any())
             ->method('getItem')
-            ->will(self::returnValueMap($map))
-        ;
+            ->will(self::returnValueMap($map));
         $cache
             ->expects(self::any())
             ->method('hasItem')
-            ->will(self::returnValue(true))
-        ;
+            ->will(self::returnValue(true));
         $cache
             ->expects(self::never())
             ->method('setItem')
-            ->will(self::returnValue(false))
-        ;
+            ->will(self::returnValue(false));
 
         $this->object->setCache($cache);
 

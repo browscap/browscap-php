@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Parser\Helper
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -33,14 +32,13 @@ namespace BrowscapPHP\Parser\Helper;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Data\PropertyFormatter;
 use BrowscapPHP\Data\PropertyHolder;
-use Psr\Log\LoggerInterface;
 use BrowscapPHP\Helper\Quoter;
+use Psr\Log\LoggerInterface;
 
 /**
  * extracts the data and the data for theses pattern from the ini content, optimized for PHP 5.5+
  *
  * @category   Browscap-PHP
- * @package    Parser\Helper
  * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
@@ -91,7 +89,7 @@ class GetData implements GetDataInterface
      * @param  array  $settings
      * @return array
      */
-    public function getSettings($pattern, array $settings = array())
+    public function getSettings($pattern, array $settings = [])
     {
         // The pattern has been pre-quoted on generation to speed up the pattern search,
         // but for this check we need the unquoted version
@@ -145,29 +143,29 @@ class GetData implements GetDataInterface
         $patternhash = Pattern::getHashForParts($pattern);
         $subkey      = SubKey::getIniPartCacheSubKey($patternhash);
 
-        if (!$this->cache->hasItem('browscap.iniparts.'.$subkey, true)) {
-            $this->logger->debug('cache key "browscap.iniparts.'.$subkey.'" not found');
+        if (!$this->cache->hasItem('browscap.iniparts.' . $subkey, true)) {
+            $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" not found');
 
-            return array();
+            return [];
         }
 
         $success = null;
-        $file    = $this->cache->getItem('browscap.iniparts.'.$subkey, true, $success);
+        $file    = $this->cache->getItem('browscap.iniparts.' . $subkey, true, $success);
 
         if (!$success) {
-            $this->logger->debug('cache key "browscap.iniparts.'.$subkey.'" not found');
+            $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" not found');
 
-            return array();
+            return [];
         }
 
         if (!is_array($file) || !count($file)) {
-            $this->logger->debug('cache key "browscap.iniparts.'.$subkey.'" was empty');
+            $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" was empty');
 
-            return array();
+            return [];
         }
 
         $propertyFormatter = new PropertyFormatter(new PropertyHolder());
-        $return            = array();
+        $return            = [];
 
         foreach ($file as $buffer) {
             list($tmpBuffer, $patterns) = explode("\t", $buffer, 2);

@@ -29,7 +29,6 @@ use BrowscapPHP\Helper\Support;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -39,17 +38,19 @@ use BrowscapPHP\Helper\Support;
 class SupportTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     *
+     * tests that a useragent is taken from the $_SERVER array
      */
     public function testGetUserAgent()
     {
-        $source = array('HTTP_USER_AGENT' => 'testUA');
+        $source = ['HTTP_USER_AGENT' => 'testUA'];
         $object = new Support($source);
 
         self::assertSame('testUA', $object->getUserAgent());
-    }/**
- *
- */
+    }
+
+    /**
+     * tests that an empty useragent is returned without source
+     */
     public function testGetUserAgentWithoutSource()
     {
         $object = new Support();

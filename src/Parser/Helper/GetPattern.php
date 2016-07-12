@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Parser\Helper
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -37,7 +36,6 @@ use Psr\Log\LoggerInterface;
  * extracts the pattern and the data for theses pattern from the ini content, optimized for PHP 5.5+
  *
  * @category   Browscap-PHP
- * @package    Parser\Helper
  * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
@@ -97,23 +95,23 @@ class GetPattern implements GetPatternInterface
         foreach ($starts as $tmpStart) {
             $tmpSubkey = SubKey::getPatternCacheSubkey($tmpStart);
 
-            if (!$this->cache->hasItem('browscap.patterns.'.$tmpSubkey, true)) {
-                $this->logger->debug('cache key "browscap.patterns.'.$tmpSubkey.'" not found');
+            if (!$this->cache->hasItem('browscap.patterns.' . $tmpSubkey, true)) {
+                $this->logger->debug('cache key "browscap.patterns.' . $tmpSubkey . '" not found');
 
                 continue;
             }
             $success   = null;
 
-            $file = $this->cache->getItem('browscap.patterns.'.$tmpSubkey, true, $success);
+            $file = $this->cache->getItem('browscap.patterns.' . $tmpSubkey, true, $success);
 
             if (!$success) {
-                $this->logger->debug('cache key "browscap.patterns.'.$tmpSubkey.'" not found');
+                $this->logger->debug('cache key "browscap.patterns.' . $tmpSubkey . '" not found');
 
                 continue;
             }
 
             if (!is_array($file) || !count($file)) {
-                $this->logger->debug('cache key "browscap.patterns.'.$tmpSubkey.'" was empty');
+                $this->logger->debug('cache key "browscap.patterns.' . $tmpSubkey . '" was empty');
 
                 continue;
             }

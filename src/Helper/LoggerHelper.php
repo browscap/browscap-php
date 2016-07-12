@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Helper
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -42,7 +41,6 @@ use Monolog\Processor\MemoryUsageProcessor;
  * Class LoggerHelper
  *
  * @category   Browscap-PHP
- * @package    Helper
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -54,7 +52,7 @@ class LoggerHelper
     /**
      * creates a \Monolog\Logger instance
      *
-     * @param boolean $debug If true the debug logging mode will be enabled
+     * @param bool $debug If true the debug logging mode will be enabled
      *
      * @return \Monolog\Logger
      */
@@ -65,7 +63,7 @@ class LoggerHelper
         if ($debug) {
             $stream = new StreamHandler('php://output', Logger::DEBUG);
             $stream->setFormatter(
-                new LineFormatter('[%datetime%] %channel%.%level_name%: %message% %extra%'."\n")
+                new LineFormatter('[%datetime%] %channel%.%level_name%: %message% %extra%' . "\n")
             );
 
             /** @var callable $memoryProcessor */
@@ -77,7 +75,7 @@ class LoggerHelper
             $logger->pushProcessor($peakMemoryProcessor);
         } else {
             $stream = new StreamHandler('php://output', Logger::INFO);
-            $stream->setFormatter(new LineFormatter('[%datetime%] %message% %extra%'."\n"));
+            $stream->setFormatter(new LineFormatter('[%datetime%] %message% %extra%' . "\n"));
 
             /** @var callable $peakMemoryProcessor */
             $peakMemoryProcessor = new MemoryPeakUsageProcessor(true);

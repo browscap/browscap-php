@@ -29,7 +29,6 @@ use BrowscapPHP\Formatter\LegacyFormatter;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -40,35 +39,35 @@ class LegacyFormatterTest extends \PHPUnit_Framework_TestCase
 {
     public function formatterOptionsProvider()
     {
-        return array(
-            array(
-                array(),
-                (object) array(
+        return [
+            [
+                [],
+                (object) [
                     'Browser' => 'test',
                     'Comment' => 'TestComment',
-                ),
-            ),
-            array(
-                array('lowercase' => true),
-                (object) array(
+                ],
+            ],
+            [
+                ['lowercase' => true],
+                (object) [
                     'browser' => 'test',
                     'comment' => 'TestComment',
-                )
-            )
-        );
+                ],
+            ],
+        ];
     }
 
     /**
      * @dataProvider formatterOptionsProvider
-     * @param array $options
+     * @param array     $options
      * @param \stdClass $expectedResult
      */
     public function testSetGetData($options, $expectedResult)
     {
-        $data = array(
+        $data = [
             'Browser' => 'test',
             'Comment' => 'TestComment',
-        );
+        ];
 
         $formatter = new LegacyFormatter($options);
         self::assertSame($formatter, $formatter->setData($data));

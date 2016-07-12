@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Helper
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -34,7 +33,6 @@ namespace BrowscapPHP\Helper;
  * class to help quoting strings for using a regex
  *
  * @category   Browscap-PHP
- * @package    Helper
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -56,13 +54,13 @@ class Quoter
         $pattern = preg_quote($user_agent, $delimiter);
 
         // the \\x replacement is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
-        return str_replace(array('\*', '\?', '\\x'), array('.*', '.', '\\\\x'), $pattern);
+        return str_replace(['\*', '\?', '\\x'], ['.*', '.', '\\\\x'], $pattern);
     }
 
     /**
      * Reverts the quoting of a pattern.
      *
-     * @param string $pattern
+     * @param  string $pattern
      * @return string
      */
     public function pregUnQuote($pattern)
@@ -79,17 +77,18 @@ class Quoter
 
             // Undo preg_quote
             $pattern = str_replace(
-                array(
-                    "\\\\", "\\+", "\\*", "\\?", "\\[", "\\^", "\\]", "\\\$", "\\(", "\\)", "\\{", "\\}", "\\=",
-                    "\\!", "\\<", "\\>", "\\|", "\\:", "\\-", "\\.", "\\/"
-                ),
-                array(
-                    "\\", "+", "*", "?", "[", "^", "]", "\$", "(", ")", "{", "}", "=", "!", "<", ">", "|", ":",
-                    "-", ".", "/"
-                ),
+                [
+                    '\\\\', '\\+', '\\*', '\\?', '\\[', '\\^', '\\]', '\\$', '\\(', '\\)', '\\{', '\\}', '\\=',
+                    '\\!', '\\<', '\\>', '\\|', '\\:', '\\-', '\\.', '\\/',
+                ],
+                [
+                    '\\', '+', '*', '?', '[', '^', ']', '$', '(', ')', '{', '}', '=', '!', '<', '>', '|', ':',
+                    '-', '.', '/',
+                ],
                 $pattern
             );
         }
+
         return $pattern;
     }
 }

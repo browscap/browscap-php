@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Browscap
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -29,28 +28,22 @@
 
 namespace BrowscapPHP;
 
-use Browscap\Generator\BuildGenerator;
-use Browscap\Helper\CollectionCreator;
-use Browscap\Writer\Factory\PhpWriterFactory;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception\FetcherException;
 use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\Filesystem;
 use BrowscapPHP\Helper\IniLoader;
-use BrowscapPHP\Helper\Quoter;
-use BrowscapPHP\Parser\ParserInterface;
+use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use WurflCache\Adapter\AdapterInterface;
 use WurflCache\Adapter\File;
-use GuzzleHttp\Client;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
  *
  * @category   Browscap-PHP
- * @package    Browscap
  * @author     Jonathan Stoppani <jonathan@stoppani.name>
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @author     Mikołaj Misiurewicz <quentin389+phpb@gmail.com>
@@ -88,10 +81,10 @@ class BrowscapUpdater
     public function getCache()
     {
         if (null === $this->cache) {
-            $cacheDirectory = __DIR__.'/../resources/';
+            $cacheDirectory = __DIR__ . '/../resources/';
 
             $cacheAdapter = new File(
-                array(File::DIR => $cacheDirectory)
+                [File::DIR => $cacheDirectory]
             );
 
             $this->cache = new BrowscapCache($cacheAdapter);
@@ -117,7 +110,7 @@ class BrowscapUpdater
         } else {
             throw new Exception(
                 'the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCacheInterface or '
-                .'an instanceof of \WurflCache\Adapter\AdapterInterface',
+                . 'an instanceof of \WurflCache\Adapter\AdapterInterface',
                 Exception::CACHE_INCOMPATIBLE
             );
         }
@@ -176,7 +169,7 @@ class BrowscapUpdater
     /**
      * reads and parses an ini file and writes the results into the cache
      *
-     * @param  string $iniFile
+     * @param string $iniFile
      *
      * @throws \BrowscapPHP\Exception
      */
@@ -324,9 +317,10 @@ class BrowscapUpdater
     /**
      * checks if an update on a remote location for the local file or the cache
      *
-     * @return int|null The actual cached version if a newer version is available, null otherwise
      * @throws \BrowscapPHP\Helper\Exception
      * @throws \BrowscapPHP\Exception\FetcherException
+     * @return int|null                                The actual cached version if a newer version is available, null otherwise
+     * @return int|null                                The actual cached version if a newer version is available, null otherwise
      */
     public function checkUpdate()
     {
@@ -395,7 +389,7 @@ class BrowscapUpdater
         $content = preg_replace('/<[?%].*[?%]>/', '', $content);
 
         // replace opening and closing php and asp tags
-        return str_replace(array('<?', '<%', '?>', '%>'), '', $content);
+        return str_replace(['<?', '<%', '?>', '%>'], '', $content);
     }
 
     /**
@@ -413,8 +407,7 @@ class BrowscapUpdater
         if (!$cachedVersion || $iniVersion > $cachedVersion) {
             $converter
                 ->storeVersion()
-                ->convertString($iniString)
-            ;
+                ->convertString($iniString);
         }
     }
 }

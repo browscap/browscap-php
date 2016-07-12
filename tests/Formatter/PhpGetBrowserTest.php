@@ -29,7 +29,6 @@ use BrowscapPHP\Formatter\PhpGetBrowser;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -46,7 +45,6 @@ class PhpGetBrowserTest extends \PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
-     *
      */
     public function setUp()
     {
@@ -58,10 +56,10 @@ class PhpGetBrowserTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetData()
     {
-        $data = array(
+        $data = [
             'Browser' => 'test',
             'Comment' => 'TestComment',
-        );
+        ];
 
         self::assertSame($this->object, $this->object->setData($data));
         $return = $this->object->getData();

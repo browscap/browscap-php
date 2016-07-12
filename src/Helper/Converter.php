@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Helper
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -39,7 +38,6 @@ use Psr\Log\LoggerInterface;
  * patternHelper to convert the ini data, parses the data and stores them into the cache
  *
  * @category   Browscap-PHP
- * @package    Helper
  * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
@@ -55,9 +53,9 @@ class Converter
      * REGEX_DELIMITER: Delimiter of all the regex patterns in the whole class.
      * REGEX_MODIFIERS: Regex modifiers.
      */
-    const REGEX_DELIMITER = '@';
-    const REGEX_MODIFIERS = 'i';
-    const COMPRESSION_PATTERN_START = '@';
+    const REGEX_DELIMITER               = '@';
+    const REGEX_MODIFIERS               = 'i';
+    const COMPRESSION_PATTERN_START     = '@';
     const COMPRESSION_PATTERN_DELIMITER = '|';
 
     /**
@@ -85,7 +83,7 @@ class Converter
     /**
      * version of the ini file
      *
-     * @var integer
+     * @var int
      */
     private $iniVersion = 0;
 
@@ -247,7 +245,7 @@ class Converter
 
         return null;
     }
-    
+
     /**
      * Parses the ini data to get the releaseDate of loaded ini file
      *
@@ -262,7 +260,7 @@ class Converter
                 return $matches[1];
             }
         }
-    
+
         return null;
     }
 }

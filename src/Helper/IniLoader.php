@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Helper
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -30,16 +29,10 @@
 
 namespace BrowscapPHP\Helper;
 
-use FileLoader\Exception as LoaderException;
-use FileLoader\Loader;
-use GuzzleHttp\Client;
-use Psr\Log\LoggerInterface;
-
 /**
  * class to load the browscap.ini
  *
  * @category   Browscap-PHP
- * @package    Helper
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -61,8 +54,8 @@ class IniLoader
      *                The placeholder for the file should be represented by a %s.
      * $timeout:      The timeout for the requests.
      */
-    private $remoteIniUrl  = 'http://browscap.org/stream?q=%q';
-    private $remoteTimeUrl = 'http://browscap.org/version';
+    private $remoteIniUrl     = 'http://browscap.org/stream?q=%q';
+    private $remoteTimeUrl    = 'http://browscap.org/version';
     private $remoteVersionUrl = 'http://browscap.org/version-number';
 
     /**

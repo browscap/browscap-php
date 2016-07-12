@@ -29,7 +29,6 @@ use BrowscapPHP\Parser\Helper\GetPattern;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @package    Browscap
  * @author     Vítor Brandão <noisebleed@noiselabs.org>
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -46,26 +45,25 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
     /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
-     *
      */
     public function setUp()
     {
-        $map = array(
-            array(
+        $map = [
+            [
                 'browscap.version',
                 null,
-                array(
-                    'content'      => serialize(42)
-                )
-            ),
-            array(
+                [
+                    'content'      => serialize(42),
+                ],
+            ],
+            [
                 'test.42',
                 null,
-                array(
-                    'content'      => serialize('this is a test')
-                )
-            )
-        );
+                [
+                    'content'      => serialize('this is a test'),
+                ],
+            ],
+        ];
 
         $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
             ->disableOriginalConstructor()
@@ -73,8 +71,7 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
         $cache
             ->expects(self::never())
             ->method('getItem')
-            ->will(self::returnValueMap($map))
-        ;
+            ->will(self::returnValueMap($map));
 
         /** @var \Monolog\Logger $logger */
         $logger = $this->getMockBuilder(\Monolog\Logger::class)

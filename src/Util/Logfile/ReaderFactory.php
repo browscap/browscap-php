@@ -21,7 +21,6 @@
  * THE SOFTWARE.
  *
  * @category   Browscap-PHP
- * @package    Util\Logfile
  * @copyright  1998-2015 Browser Capabilities Project
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
@@ -34,7 +33,6 @@ namespace BrowscapPHP\Util\Logfile;
  * abstract parent class for all readers
  *
  * @category   Browscap-PHP
- * @package    Command
  * @author     Dave Olsen, http://dmolsen.com
  * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
  * @version    3.0
@@ -44,7 +42,7 @@ namespace BrowscapPHP\Util\Logfile;
 class ReaderFactory
 {
     /** @var ReaderInterface[] */
-    private static $readers = array();
+    private static $readers = [];
 
     /**
      * @return \BrowscapPHP\Util\Logfile\ReaderCollection
