@@ -72,6 +72,13 @@ class BrowscapUpdater
      * @var \GuzzleHttp\Client
      */
     private $client = null;
+    
+    /**
+     * Curl timeout
+     * 
+     * @var int
+     */
+    private $timeout = 30;
 
     /**
      * Gets a cache instance
@@ -226,7 +233,7 @@ class BrowscapUpdater
         $uri = (new IniLoader())->setRemoteFilename($remoteFile)->getRemoteIniUrl();
 
         /** @var \Psr\Http\Message\ResponseInterface $response */
-        $response = $this->getClient()->get($uri, ['timeout' => 5]);
+        $response = $this->getClient()->get($uri, ['timeout' => $this->timeout]);
 
         if ($response->getStatusCode() !== 200) {
             throw new FetcherException(
@@ -286,7 +293,7 @@ class BrowscapUpdater
         $uri = (new IniLoader())->setRemoteFilename($remoteFile)->getRemoteIniUrl();
 
         /** @var \Psr\Http\Message\ResponseInterface $response */
-        $response = $this->getClient()->get($uri, ['timeout' => 5]);
+        $response = $this->getClient()->get($uri, ['timeout' => $this->timeout]);
 
         if ($response->getStatusCode() !== 200) {
             throw new FetcherException(
@@ -337,7 +344,7 @@ class BrowscapUpdater
         $uri = (new IniLoader())->getRemoteVersionUrl();
 
         /** @var \Psr\Http\Message\ResponseInterface $response */
-        $response = $this->getClient()->get($uri, ['timeout' => 5]);
+        $response = $this->getClient()->get($uri, ['timeout' => $this->timeout]);
 
         if ($response->getStatusCode() !== 200) {
             throw new FetcherException(
