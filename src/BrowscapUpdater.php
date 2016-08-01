@@ -74,6 +74,13 @@ class BrowscapUpdater
     private $client = null;
 
     /**
+     * Curl connect timeout in seconds
+     *
+     * @var int
+     */
+    private $connectTimeout = 5;
+
+    /**
      * Gets a cache instance
      *
      * @return \BrowscapPHP\Cache\BrowscapCacheInterface
@@ -226,7 +233,7 @@ class BrowscapUpdater
         $uri = (new IniLoader())->setRemoteFilename($remoteFile)->getRemoteIniUrl();
 
         /** @var \Psr\Http\Message\ResponseInterface $response */
-        $response = $this->getClient()->get($uri, ['timeout' => 5]);
+        $response = $this->getClient()->get($uri, ['connect_timeout' => $this->connectTimeout]);
 
         if ($response->getStatusCode() !== 200) {
             throw new FetcherException(
@@ -286,7 +293,7 @@ class BrowscapUpdater
         $uri = (new IniLoader())->setRemoteFilename($remoteFile)->getRemoteIniUrl();
 
         /** @var \Psr\Http\Message\ResponseInterface $response */
-        $response = $this->getClient()->get($uri, ['timeout' => 5]);
+        $response = $this->getClient()->get($uri, ['connect_timeout' => $this->connectTimeout]);
 
         if ($response->getStatusCode() !== 200) {
             throw new FetcherException(
@@ -337,7 +344,7 @@ class BrowscapUpdater
         $uri = (new IniLoader())->getRemoteVersionUrl();
 
         /** @var \Psr\Http\Message\ResponseInterface $response */
-        $response = $this->getClient()->get($uri, ['timeout' => 5]);
+        $response = $this->getClient()->get($uri, ['connect_timeout' => $this->connectTimeout]);
 
         if ($response->getStatusCode() !== 200) {
             throw new FetcherException(

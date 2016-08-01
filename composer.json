@@ -24,23 +24,22 @@
         "source": "https://github.com/browscap/browscap-php"
     },
     "require": {
-        "php": "^5.6|^7.0",
+        "php": "^5.6 || ^7.0",
         "mimmi20/wurflcache": "^1.3",
         "guzzlehttp/guzzle": "^6.2",
-        "symfony/filesystem": "^2.6|^3.0",
-        "symfony/finder": "^2.6|^3.0",
-        "symfony/console": "^2.6|^3.0",
+        "symfony/filesystem": "^2.6 || ^3.0",
+        "symfony/finder": "^2.6 || ^3.0",
+        "symfony/console": "^2.6 || ^3.0",
         "monolog/monolog": "^1.7"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.2",
+        "phpunit/phpunit": "^5.3",
         "mikey179/vfsStream": "^1.6",
         "squizlabs/php_codesniffer": "^2.5",
-        "fabpot/php-cs-fixer": "^1.11"
+        "friendsofphp/php-cs-fixer": "^1.11"
     },
     "suggest": {
-        "ext-curl": "to use curl requests to get the ini file",
-        "browscap/browscap": "to update the source file without downloading, for PHP 5.6+"
+        "ext-curl": "to use curl requests to get the ini file"
     },
     "autoload": {
         "psr-4": {
