@@ -76,12 +76,10 @@ class BrowscapCache implements BrowscapCacheInterface
      * if needed updated the definitions
      *
      * @param \WurflCache\Adapter\AdapterInterface $adapter
-     * @param int                                  $updateInterval
      */
-    public function __construct(AdapterInterface $adapter, $updateInterval = BrowscapCacheInterface::CACHE_LIVETIME)
+    public function __construct(AdapterInterface $adapter)
     {
         $this->cache = $adapter;
-        $this->cache->setExpiration((int) $updateInterval);
     }
 
     /**
