@@ -83,7 +83,7 @@ $result = $bc->getBrowser();
 Change this to the base setup for version 3.x. to use the v2 cache directory
 ```php
 $bc = new \BrowscapPHP\Browscap();
-$adapter = new \WurflCache\Adapter\File([\WurflCache\Adapter\File::Dir => $cacheDir]);
+$adapter = new \WurflCache\Adapter\File([\WurflCache\Adapter\File::DIR => $cacheDir]);
 $bc->setCache($adapter);
 $result = $bc->getBrowser();
 ```
