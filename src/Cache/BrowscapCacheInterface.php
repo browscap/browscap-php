@@ -55,9 +55,8 @@ interface BrowscapCacheInterface
      * if needed updated the definitions
      *
      * @param \WurflCache\Adapter\AdapterInterface $adapter
-     * @param int                                  $updateInterval
      */
-    public function __construct(AdapterInterface $adapter, $updateInterval = self::CACHE_LIVETIME);
+    public function __construct(AdapterInterface $adapter);
 
     /**
      * Gets the version of the Browscap data
