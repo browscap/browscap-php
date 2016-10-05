@@ -138,7 +138,7 @@ class BrowscapUpdater
 
         return $this;
     }
-
+    
     /**
      * returns a logger instance
      *
@@ -152,7 +152,21 @@ class BrowscapUpdater
 
         return $this->logger;
     }
-
+    
+    /**
+     * Sets the Connection Timeout
+     *
+     * @param $connectTimeout
+     *
+     * @return \BrowscapPHP\BrowscapUpdater
+     */
+    public function setConnectTimeout($connectTimeout)
+    {        
+        $this->connectTimeout = (int)$connectTimeout;
+        
+        return $this;
+    }
+    
     /**
      * @return \GuzzleHttp\Client
      */
