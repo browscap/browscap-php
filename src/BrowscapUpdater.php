@@ -138,7 +138,7 @@ class BrowscapUpdater
 
         return $this;
     }
-    
+
     /**
      * returns a logger instance
      *
@@ -166,7 +166,7 @@ class BrowscapUpdater
         
         return $this;
     }
-
+    
     /**
      * @return \GuzzleHttp\Client
      */
