@@ -152,7 +152,7 @@ class BrowscapUpdater
 
         return $this->logger;
     }
-    
+
     /**
      * Sets the Connection Timeout
      *
@@ -166,7 +166,7 @@ class BrowscapUpdater
         
         return $this;
     }
-    
+
     /**
      * @return \GuzzleHttp\Client
      */
