@@ -154,6 +154,20 @@ class BrowscapUpdater
     }
 
     /**
+     * Sets the Connection Timeout
+     *
+     * @param $connectTimeout
+     *
+     * @return \BrowscapPHP\BrowscapUpdater
+     */
+    public function setConnectTimeout($connectTimeout)
+    {        
+        $this->connectTimeout = (int)$connectTimeout;
+        
+        return $this;
+    }
+    
+    /**
      * @return \GuzzleHttp\Client
      */
     public function getClient()
