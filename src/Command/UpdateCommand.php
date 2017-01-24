@@ -138,10 +138,9 @@ class UpdateCommand extends Command
 
         $browscap = new BrowscapUpdater();
 
-        $browscap
-            ->setLogger($logger)
-            ->setCache($this->getCache($input))
-            ->update($input->getOption('remote-file'));
+        $browscap->setLogger($logger);
+        $browscap->setCache($this->getCache($input));
+        $browscap->update($input->getOption('remote-file'));
 
         $logger->info('finished updating cache with remote file');
     }
