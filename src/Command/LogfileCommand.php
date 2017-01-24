@@ -40,7 +40,6 @@ use BrowscapPHP\Exception\UnknownDeviceException;
 use BrowscapPHP\Exception\UnknownEngineException;
 use BrowscapPHP\Exception\UnknownPlatformException;
 use BrowscapPHP\Helper\Filesystem;
-use BrowscapPHP\Helper\IniLoader;
 use BrowscapPHP\Helper\LoggerHelper;
 use BrowscapPHP\Util\Logfile\ReaderCollection;
 use BrowscapPHP\Util\Logfile\ReaderFactory;
@@ -184,7 +183,6 @@ class LogfileCommand extends Command
         $logger       = $loggerHelper->create($input->getOption('debug'));
 
         $browscap   = new Browscap();
-        $loader     = new IniLoader();
         $collection = ReaderFactory::factory();
         $fs         = new Filesystem();
 
