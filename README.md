@@ -55,7 +55,7 @@ What's changed in version 3.x
 * the namespace was changed to `BrowscapPHP` 
 * the `Browscap` class was split into pieces
   * for caching the [WurflCache](https://github.com/mimmi20/WurflCache) package is used
-  * for downloading the browscap.ini the [FileLoader](https://github.com/mimmi20/FileLoader) package is used
+  * for downloading the browscap.ini the [Guzzle HTTP](https://github.com/guzzle/guzzle) package is used
 
 ## Removed features
 
