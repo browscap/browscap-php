@@ -106,7 +106,6 @@ class BrowscapUpdater
      * @param \BrowscapPHP\Cache\BrowscapCacheInterface|\WurflCache\Adapter\AdapterInterface $cache
      *
      * @throws \BrowscapPHP\Exception
-     * @return \BrowscapPHP\BrowscapUpdater
      */
     public function setCache($cache)
     {
@@ -121,22 +120,16 @@ class BrowscapUpdater
                 Exception::CACHE_INCOMPATIBLE
             );
         }
-
-        return $this;
     }
 
     /**
      * Sets a logger instance
      *
      * @param \Psr\Log\LoggerInterface $logger
-     *
-     * @return \BrowscapPHP\BrowscapUpdater
      */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
-
-        return $this;
     }
 
     /**
@@ -157,14 +150,10 @@ class BrowscapUpdater
      * Sets the Connection Timeout
      *
      * @param int $connectTimeout
-     *
-     * @return \BrowscapPHP\BrowscapUpdater
      */
     public function setConnectTimeout($connectTimeout)
     {
         $this->connectTimeout = (int) $connectTimeout;
-
-        return $this;
     }
 
     /**

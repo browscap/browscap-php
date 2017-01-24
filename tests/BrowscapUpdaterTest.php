@@ -76,7 +76,7 @@ class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::assertSame($this->object, $this->object->setCache($cache));
+        $this->object->setCache($cache);
         self::assertSame($cache, $this->object->getCache());
     }
 
@@ -90,7 +90,7 @@ class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::assertSame($this->object, $this->object->setCache($cache));
+        $this->object->setCache($cache);
         self::assertInstanceOf('\BrowscapPHP\Cache\BrowscapCache', $this->object->getCache());
     }
 
@@ -114,13 +114,29 @@ class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
+    public function testSetConnectTimeout()
+    {
+        $timeout = 25;
+
+        $reflection = new \ReflectionObject($this->object);
+        $property   = $reflection->getProperty('connectTimeout');
+        $property->setAccessible(true);
+
+        $this->object->setConnectTimeout($timeout);
+
+        self::assertSame($timeout, $property->getValue($this->object));
+    }
+
+    /**
+     *
+     */
     public function testSetGetLogger()
     {
         $logger = $this->getMockBuilder(\Monolog\Logger::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::assertSame($this->object, $this->object->setLogger($logger));
+        $this->object->setLogger($logger);
         self::assertSame($logger, $this->object->getLogger());
     }
 
