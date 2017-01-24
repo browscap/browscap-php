@@ -97,9 +97,8 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $cache->flush();
 
         $updater = new BrowscapUpdater();
-        $updater
-            ->setCache($cache)
-            ->convertFile($objectIniPath);
+        $updater->setCache($cache);
+        $updater->convertFile($objectIniPath);
 
         self::$object->setCache($cache);
     }
