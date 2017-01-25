@@ -106,6 +106,8 @@ class BrowscapUpdater
      * @param \BrowscapPHP\Cache\BrowscapCacheInterface|\WurflCache\Adapter\AdapterInterface $cache
      *
      * @throws \BrowscapPHP\Exception
+     *
+     * @return self
      */
     public function setCache($cache)
     {
@@ -120,16 +122,22 @@ class BrowscapUpdater
                 Exception::CACHE_INCOMPATIBLE
             );
         }
+
+        return $this;
     }
 
     /**
      * Sets a logger instance
      *
      * @param \Psr\Log\LoggerInterface $logger
+     *
+     * @return self
      */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+
+        return $this;
     }
 
     /**
