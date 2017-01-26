@@ -76,7 +76,7 @@ class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->object->setCache($cache);
+        self::assertSame($this->object, $this->object->setCache($cache));
         self::assertSame($cache, $this->object->getCache());
     }
 
@@ -90,7 +90,7 @@ class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->object->setCache($cache);
+        self::assertSame($this->object, $this->object->setCache($cache));
         self::assertInstanceOf('\BrowscapPHP\Cache\BrowscapCache', $this->object->getCache());
     }
 
@@ -136,7 +136,7 @@ class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->object->setLogger($logger);
+        self::assertSame($this->object, $this->object->setLogger($logger));
         self::assertSame($logger, $this->object->getLogger());
     }
 
