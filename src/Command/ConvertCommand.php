@@ -136,9 +136,8 @@ class ConvertCommand extends Command
 
         $browscap = new BrowscapUpdater();
 
-        $browscap
-            ->setLogger($logger)
-            ->setCache($this->getCache($input));
+        $browscap->setLogger($logger);
+        $browscap->setCache($this->getCache($input));
 
         $logger->info('started converting local file');
 

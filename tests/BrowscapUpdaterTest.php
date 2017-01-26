@@ -114,6 +114,22 @@ class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
+    public function testSetConnectTimeout()
+    {
+        $timeout = 25;
+
+        $reflection = new \ReflectionObject($this->object);
+        $property   = $reflection->getProperty('connectTimeout');
+        $property->setAccessible(true);
+
+        $this->object->setConnectTimeout($timeout);
+
+        self::assertSame($timeout, $property->getValue($this->object));
+    }
+
+    /**
+     *
+     */
     public function testSetGetLogger()
     {
         $logger = $this->getMockBuilder(\Monolog\Logger::class)

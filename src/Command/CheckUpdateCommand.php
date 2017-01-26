@@ -123,10 +123,9 @@ class CheckUpdateCommand extends Command
 
         $browscap = new BrowscapUpdater();
 
-        $browscap
-            ->setLogger($logger)
-            ->setCache($this->getCache($input))
-            ->checkUpdate();
+        $browscap->setLogger($logger);
+        $browscap->setCache($this->getCache($input));
+        $browscap->checkUpdate();
 
         $logger->debug('finished checking for new version of remote file');
     }

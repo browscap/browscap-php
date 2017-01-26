@@ -116,9 +116,8 @@ class FetchCommand extends Command
 
         $browscap = new BrowscapUpdater();
 
-        $browscap
-            ->setLogger($logger)
-            ->fetch($file, $input->getOption('remote-file'));
+        $browscap->setLogger($logger);
+        $browscap->fetch($file, $input->getOption('remote-file'));
 
         $logger->info('finished fetching remote file');
     }
