@@ -95,8 +95,8 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetCacheWithAdapter()
     {
-        /** @var \WurflCache\Adapter\Memory $cache */
-        $cache = $this->getMockBuilder(\WurflCache\Adapter\Memory::class)
+        /** @var \Symfony\Component\Cache\Simple\ArrayCache $cache */ 
+        $cache = $this->getMockBuilder(\Symfony\Component\Cache\Simple\ArrayCache::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -106,7 +106,7 @@ class BrowscapTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \BrowscapPHP\Exception
-     * @expectedExceptionMessage the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCacheInterface or an instanceof of \WurflCache\Adapter\AdapterInterface
+     * @expectedExceptionMessage the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCacheInterface or an instanceof of \Psr\SimpleCache\CacheInterface 
      */
     public function testSetGetCacheWithWrongType()
     {

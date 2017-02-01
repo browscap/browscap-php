@@ -4,14 +4,14 @@ namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Cache\BrowscapCache;
 use PHPUnit_Framework_TestCase;
-use WurflCache\Adapter\Memory;
-use WurflCache\Adapter\NullStorage;
+use Symfony\Component\Cache\Simple\ArrayCache;
+use Symfony\Component\Cache\Simple\NullCache;
 
 class BrowscapCacheTest extends PHPUnit_Framework_TestCase
 {
     public function testConstruct()
     {
-        $adapter = new NullStorage();
+        $adapter = new NullCache();
         $cache   = new BrowscapCache($adapter);
 
         $this->assertInstanceOf('BrowscapPHP\Cache\BrowscapCache', $cache);
@@ -19,7 +19,7 @@ class BrowscapCacheTest extends PHPUnit_Framework_TestCase
 
     public function testVersion()
     {
-        $adapter = new Memory();
+        $adapter = new ArrayCache();
         $cache   = new BrowscapCache($adapter);
 
         $this->assertNull($cache->getVersion());
@@ -30,7 +30,7 @@ class BrowscapCacheTest extends PHPUnit_Framework_TestCase
 
     public function testReleaseDate()
     {
-        $adapter = new Memory();
+        $adapter = new ArrayCache();
         $cache   = new BrowscapCache($adapter);
 
         $this->assertNull($cache->getVersion());
@@ -41,7 +41,7 @@ class BrowscapCacheTest extends PHPUnit_Framework_TestCase
 
     public function testType()
     {
-        $adapter = new Memory();
+        $adapter = new ArrayCache();
         $cache   = new BrowscapCache($adapter);
 
         $this->assertNull($cache->getType());

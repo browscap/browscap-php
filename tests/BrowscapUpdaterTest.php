@@ -6,7 +6,7 @@ use BrowscapPHP\BrowscapUpdater;
 use BrowscapPHP\Helper\Exception;
 use BrowscapPHP\Helper\IniLoader;
 use org\bovigo\vfs\vfsStream;
-use WurflCache\Adapter\Memory;
+use Symfony\Component\Cache\Simple\ArrayCache;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -85,8 +85,8 @@ class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetCacheWithAdapter()
     {
-        /** @var \WurflCache\Adapter\Memory $cache */
-        $cache = $this->getMockBuilder(\WurflCache\Adapter\Memory::class)
+        /** @var \Symfony\Component\Cache\Simple\ArrayCache $cache */
+        $cache = $this->getMockBuilder(\Symfony\Component\Cache\Simple\ArrayCache::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -96,7 +96,7 @@ class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \BrowscapPHP\Exception
-     * @expectedExceptionMessage the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCacheInterface or an instanceof of \WurflCache\Adapter\AdapterInterface
+     * @expectedExceptionMessage the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCacheInterface or an instanceof of \Psr\SimpleCache\CacheInterface
      */
     public function testSetGetCacheWithWrongType()
     {
@@ -298,7 +298,7 @@ AolVersion=0
 
         vfsStream::setup(self::STORAGE_DIR, null, $structure);
 
-        $cache = new Memory();
+        $cache = new ArrayCache();
         $this->object->setCache($cache);
 
         $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.ini'));
@@ -416,7 +416,7 @@ CssVersion=0
 AolVersion=0
 ';
 
-        $cache = new Memory();
+        $cache = new ArrayCache();
         $this->object->setCache($cache);
 
         $this->object->convertString($content);

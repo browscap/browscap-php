@@ -5,7 +5,7 @@ namespace BrowscapPHPTest\Command;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Command\LogfileCommand;
 use org\bovigo\vfs\vfsStream;
-use WurflCache\Adapter\Memory;
+use Symfony\Component\Cache\Simple\ArrayCache;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -54,7 +54,7 @@ class LogfileCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $cacheAdapter   = new Memory();
+        $cacheAdapter   = new ArrayCache();
         $cache          = new BrowscapCache($cacheAdapter);
 
         $this->object = new LogfileCommand('');

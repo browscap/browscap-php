@@ -34,8 +34,8 @@ use BrowscapPHP\Helper\Quoter;
 use BrowscapPHP\Parser\ParserInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use WurflCache\Adapter\AdapterInterface;
-use WurflCache\Adapter\File;
+use Psr\SimpleCache\CacheInterface;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -80,7 +80,7 @@ class Browscap
     private $logger = null;
 
     /**
-     * Set theformatter instance to use for the getBrowser() result
+     * Set the formatter instance to use for the getBrowser() result
      *
      * @param \BrowscapPHP\Formatter\FormatterInterface $formatter
      *
@@ -115,9 +115,7 @@ class Browscap
         if (null === $this->cache) {
             $cacheDirectory = __DIR__ . '/../resources/';
 
-            $cacheAdapter = new File(
-                [File::DIR => $cacheDirectory]
-            );
+            $cacheAdapter = new FilesystemCache('', 0, $cacheDirectory);
 
             $this->cache = new BrowscapCache($cacheAdapter);
         }
@@ -128,7 +126,7 @@ class Browscap
     /**
      * Sets a cache instance
      *
-     * @param \BrowscapPHP\Cache\BrowscapCacheInterface|\WurflCache\Adapter\AdapterInterface $cache
+     * @param \BrowscapPHP\Cache\BrowscapCacheInterface|\Psr\SimpleCache\CacheInterface $cache
      *
      * @throws \BrowscapPHP\Exception
      * @return \BrowscapPHP\Browscap
@@ -137,12 +135,12 @@ class Browscap
     {
         if ($cache instanceof BrowscapCacheInterface) {
             $this->cache = $cache;
-        } elseif ($cache instanceof AdapterInterface) {
+        } elseif ($cache instanceof CacheInterface) {
             $this->cache = new BrowscapCache($cache);
         } else {
             throw new Exception(
                 'the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCacheInterface or '
-                . 'an instanceof of \WurflCache\Adapter\AdapterInterface',
+                . 'an instanceof of \Psr\SimpleCache\CacheInterface',
                 Exception::CACHE_INCOMPATIBLE
             );
         }

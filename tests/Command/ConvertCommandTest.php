@@ -5,7 +5,7 @@ namespace BrowscapPHPTest\Command;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Command\ConvertCommand;
 use BrowscapPHP\Exception as BrowscapException;
-use WurflCache\Adapter\Memory;
+use Symfony\Component\Cache\Simple\ArrayCache; 
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -52,7 +52,7 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $cacheAdapter   = new Memory();
+        $cacheAdapter   = new ArrayCache();
         $cache          = new BrowscapCache($cacheAdapter);
         $defaultIniFile = 'resources/browscap.ini';
 

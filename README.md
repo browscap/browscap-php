@@ -54,7 +54,7 @@ What's changed in version 3.x
 
 * the namespace was changed to `BrowscapPHP` 
 * the `Browscap` class was split into pieces
-  * for caching the [WurflCache](https://github.com/mimmi20/WurflCache) package is used
+  * for caching the [Symfony/Cache](https://github.com/symfony/cache) package is used
   * for downloading the browscap.ini the [Guzzle HTTP](https://github.com/guzzle/guzzle) package is used
 
 ## Removed features
@@ -64,7 +64,7 @@ What's changed in version 3.x
 
 ## New features
 
-* now it is possible to use other caches than the file cache (see the [WurflCache](https://github.com/mimmi20/WurflCache) package formore information)
+* now it is possible to use other caches than the file cache (see the [Symfony/Cache](https://github.com/symfony/cache) package for more information)
 * now it is possible to write your own formatter to change the output format 
 * now it is possbile to set a PSR-3 compatible logger
 
@@ -83,7 +83,7 @@ $result = $bc->getBrowser();
 Change this to the base setup for version 3.x. to use the v2 cache directory
 ```php
 $bc = new \BrowscapPHP\Browscap();
-$adapter = new \WurflCache\Adapter\File([\WurflCache\Adapter\File::DIR => $cacheDir]);
+$adapter = new \Symfony\Component\Cache\Simple\FilesystemCache('', 0, $cacheDir); 
 $bc->setCache($adapter);
 $result = $bc->getBrowser();
 ```
@@ -104,25 +104,6 @@ $bc = new \BrowscapPHP\Browscap();
 $logger = new \Monolog\Logger('name');
 $bc->setLogger($logger);
 ```
-
-## Setting up a Memcache
-
-If you don't want to use a file cache, you may change the cache adapter. 
-This cache adapter has to implement the adapter interface from WurflCache\Adapter\AdapterInterface
-```php
-$memcacheConfiguration = [
-    'host'             => '127.0.0.1', // optional, defaults to '127.0.0.1'
-    'port'             => 11211,       // optional, defaults to 11211
-    'namespace'        => 'wurfl',     // optional, defaults to 'wurfl'
-    'cacheExpiration'  => 0,           // optional, defaults to 0 (cache does not expire), expiration time in seconds
-    'cacheVersion'     => '1234',      // optional, default value may change in external library
-];
-$adapter = new \WurflCache\Adapter\Memcached($memcacheConfiguration);
-$bc = new \BrowscapPHP\Browscap();
-$bc->setCache($adapter);
-```
-
-NOTE: Please look into the [WurflCache](https://github.com/mimmi20/WurflCache) package for infomation about the other cache adapters.
 
 ## Using the full browscap.ini file
 
