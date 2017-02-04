@@ -1,9 +1,9 @@
 {
-    "name": "grimsonmarc/browscap-php",
+    "name": "browscap/browscap-php",
     "type": "library",
     "description": "Standalone replacement for php's native get_browser() function",
     "keywords": ["get_browser", "browser", "capabilities", "user agent"],
-    "homepage": "https://github.com/grimsonmarc/browscap-php",
+    "homepage": "https://github.com/browscap/browscap-php",
     "license": "MIT",
     "authors": [
         {
