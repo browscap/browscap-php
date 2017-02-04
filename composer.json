@@ -1,9 +1,9 @@
 {
-    "name": "browscap/browscap-php",
+    "name": "grimsonmarc/browscap-php",
     "type": "library",
     "description": "Standalone replacement for php's native get_browser() function",
     "keywords": ["get_browser", "browser", "capabilities", "user agent"],
-    "homepage": "https://github.com/browscap/browscap-php",
+    "homepage": "https://github.com/grimsonmarc/browscap-php",
     "license": "MIT",
     "authors": [
         {
@@ -17,6 +17,10 @@
         {
             "name": "Thomas Mueller",
             "email": "t_mueller_stolzenhain@yahoo.de"
+        },
+        {
+            "name": "Marc Grimson",
+            "email": "grimson.marc@gmail.com"
         }
     ],
     "support": {
