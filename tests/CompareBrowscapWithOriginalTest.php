@@ -13,11 +13,10 @@ use WurflCache\Adapter\Memory;
  *
  * @group compare
  */
-class CompareBrowscapWithOriginalTest
-    extends \PHPUnit_Framework_TestCase
+class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Browscap
+     * @var \BrowscapPHP\Browscap
      */
     private static $object = null;
 
