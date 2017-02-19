@@ -180,8 +180,8 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
                 'Actual browscap result does not have "' . $bcProp . '" property'
             );
 
-            $libValue = (string) $libResult->{$bcProp};
-            $bcValue  = (string) $bcResult->{$bcProp};
+            $libValue = strtolower((string) $libResult->{$bcProp});
+            $bcValue  = strtolower((string) $bcResult->{$bcProp});
 
             self::assertSame(
                 $libValue,
