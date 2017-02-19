@@ -162,7 +162,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $bcResult  = self::$object->getBrowser($userAgent);
 
         foreach (array_keys($this->properties) as $bcProp) {
-            if (in_array($bcProp, ['browser_name_regex', 'browser_name_pattern', 'Parent'])) {
+            if (in_array($bcProp, ['browser_name_regex', 'Parent'])) {
                 continue;
             }
 
