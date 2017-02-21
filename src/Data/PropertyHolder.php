@@ -58,93 +58,93 @@ class PropertyHolder
     public function getPropertyType($propertyName)
     {
         $stringProperties = [
-            'Comment',
-            'Browser',
-            'Browser_Maker',
-            'Browser_Modus',
-            'Platform',
-            'Platform_Name',
-            'Platform_Description',
-            'Device_Name',
-            'Platform_Maker',
-            'Device_Code_Name',
-            'Device_Maker',
-            'Device_Brand_Name',
-            'RenderingEngine_Name',
-            'RenderingEngine_Description',
-            'RenderingEngine_Maker',
-            'Parent',
-            'PropertyName',
-            'CDF',
+            'Comment' => true,
+            'Browser' => true,
+            'Browser_Maker' => true,
+            'Browser_Modus' => true,
+            'Platform' => true,
+            'Platform_Name' => true,
+            'Platform_Description' => true,
+            'Device_Name' => true,
+            'Platform_Maker' => true,
+            'Device_Code_Name' => true,
+            'Device_Maker' => true,
+            'Device_Brand_Name' => true,
+            'RenderingEngine_Name' => true,
+            'RenderingEngine_Description' => true,
+            'RenderingEngine_Maker' => true,
+            'Parent' => true,
+            'PropertyName' => true,
+            'CDF' => true,
         ];
 
-        if (in_array($propertyName, $stringProperties)) {
+        if (isset($stringProperties[$propertyName])) {
             return self::TYPE_STRING;
         }
 
         $arrayProperties = [
-            'Browser_Type',
-            'Device_Type',
-            'Device_Pointing_Method',
-            'Browser_Bits',
-            'Platform_Bits',
+            'Browser_Type' => true,
+            'Device_Type' => true,
+            'Device_Pointing_Method' => true,
+            'Browser_Bits' => true,
+            'Platform_Bits' => true,
         ];
 
-        if (in_array($propertyName, $arrayProperties)) {
+        if (isset($arrayProperties[$propertyName])) {
             return self::TYPE_IN_ARRAY;
         }
 
         $genericProperties = [
-            'Platform_Version',
-            'RenderingEngine_Version',
-            'Released',
-            'Format',
-            'Type',
+            'Platform_Version' => true,
+            'RenderingEngine_Version' => true,
+            'Released' => true,
+            'Format' => true,
+            'Type' => true,
         ];
 
-        if (in_array($propertyName, $genericProperties)) {
+        if (isset($genericProperties[$propertyName])) {
             return self::TYPE_GENERIC;
         }
 
         $numericProperties = [
-            'Version',
-            'CssVersion',
-            'AolVersion',
-            'MajorVer',
-            'MinorVer',
+            'Version' => true,
+            'CssVersion' => true,
+            'AolVersion' => true,
+            'MajorVer' => true,
+            'MinorVer' => true,
         ];
 
-        if (in_array($propertyName, $numericProperties)) {
+        if (isset($numericProperties[$propertyName])) {
             return self::TYPE_NUMBER;
         }
 
         $booleanProperties = [
-            'Alpha',
-            'Beta',
-            'Win16',
-            'Win32',
-            'Win64',
-            'Frames',
-            'IFrames',
-            'Tables',
-            'Cookies',
-            'BackgroundSounds',
-            'JavaScript',
-            'VBScript',
-            'JavaApplets',
-            'ActiveXControls',
-            'isMobileDevice',
-            'isTablet',
-            'isSyndicationReader',
-            'Crawler',
-            'MasterParent',
-            'LiteMode',
-            'isFake',
-            'isAnonymized',
-            'isModified',
+            'Alpha' => true,
+            'Beta' => true,
+            'Win16' => true,
+            'Win32' => true,
+            'Win64' => true,
+            'Frames' => true,
+            'IFrames' => true,
+            'Tables' => true,
+            'Cookies' => true,
+            'BackgroundSounds' => true,
+            'JavaScript' => true,
+            'VBScript' => true,
+            'JavaApplets' => true,
+            'ActiveXControls' => true,
+            'isMobileDevice' => true,
+            'isTablet' => true,
+            'isSyndicationReader' => true,
+            'Crawler' => true,
+            'MasterParent' => true,
+            'LiteMode' => true,
+            'isFake' => true,
+            'isAnonymized' => true,
+            'isModified' => true,
         ];
 
-        if (in_array($propertyName, $booleanProperties)) {
+        if (isset($booleanProperties[$propertyName])) {
             return self::TYPE_BOOLEAN;
         }
 
@@ -164,46 +164,57 @@ class PropertyHolder
         switch ($property) {
             case 'Browser_Type':
                 $allowedValues = [
-                    'Useragent Anonymizer',
-                    'Browser',
-                    'Offline Browser',
-                    'Multimedia Player',
-                    'Library',
-                    'Feed Reader',
-                    'Email Client',
-                    'Bot/Crawler',
-                    'Application',
-                    'Tool',
-                    'unknown',
+                    'Useragent Anonymizer' => true,
+                    'Browser' => true,
+                    'Offline Browser' => true,
+                    'Multimedia Player' => true,
+                    'Library' => true,
+                    'Feed Reader' => true,
+                    'Email Client' => true,
+                    'Bot/Crawler' => true,
+                    'Application' => true,
+                    'Tool' => true,
+                    'unknown' => true,
                 ];
                 break;
             case 'Device_Type':
                 $allowedValues = [
-                    'Console',
-                    'TV Device',
-                    'Tablet',
-                    'Mobile Phone',
-                    'Smartphone',    // actual mobile phone with touchscreen
-                    'Feature Phone', // older mobile phone
-                    'Mobile Device',
-                    'FonePad',       // Tablet sized device with the capability to make phone calls
-                    'Desktop',
-                    'Ebook Reader',
-                    'Car Entertainment System',
-                    'Digital Camera',
-                    'unknown',
+                    'Console' => true,
+                    'TV Device' => true,
+                    'Tablet' => true,
+                    'Mobile Phone' => true,
+                    'Smartphone' => true,    // actual mobile phone with touchscreen
+                    'Feature Phone' => true, // older mobile phone
+                    'Mobile Device' => true,
+                    'FonePad' => true,       // Tablet sized device with the capability to make phone calls
+                    'Desktop' => true,
+                    'Ebook Reader' => true,
+                    'Car Entertainment System' => true,
+                    'Digital Camera' => true,
+                    'unknown' => true,
                 ];
                 break;
             case 'Device_Pointing_Method':
                 // This property is taken from http://www.scientiamobile.com/wurflCapability
                 $allowedValues = [
-                    'joystick', 'stylus', 'touchscreen', 'clickwheel', 'trackpad', 'trackball', 'mouse', 'unknown',
+                    'joystick' => true,
+                    'stylus' => true,
+                    'touchscreen' => true,
+                    'clickwheel' => true,
+                    'trackpad' => true,
+                    'trackball' => true,
+                    'mouse' => true,
+                    'unknown' => true,
                 ];
                 break;
             case 'Browser_Bits':
             case 'Platform_Bits':
                 $allowedValues = [
-                    '0', '8', '16', '32', '64',
+                    '0' => true,
+                    '8' => true,
+                    '16' => true,
+                    '32' => true,
+                    '64' => true,
                 ];
                 break;
             default:
@@ -211,7 +222,7 @@ class PropertyHolder
                 break;
         }
 
-        if (in_array($value, $allowedValues)) {
+        if (isset($allowedValues[$value])) {
             return $value;
         }
 
