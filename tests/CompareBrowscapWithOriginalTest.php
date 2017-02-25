@@ -119,7 +119,10 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $diff = array_diff($libPropertyKeys, $bcPropertyKeys);
 
         if (!empty($diff)) {
-            self::fail('the properties found by "get_browser()" differ from found by "\BrowscapPHP\Browscap::getBrowser()" : ' . serialize($diff));
+            self::fail(
+                'the properties found by "get_browser()" differ from found by "\BrowscapPHP\Browscap::getBrowser()" : '
+                . serialize($diff)
+            );
         }
 
         foreach (array_keys($this->properties) as $bcProp) {
@@ -133,7 +136,8 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             self::assertArrayHasKey(
                 $bcProp,
                 $libProperties,
-                'Property `' . $bcProp . '` from Browscap doesn\'t match anything in get_browser. ' . 'You may have an outdated browscap.ini file for your tests'
+                'Property `' . $bcProp . '` from Browscap doesn\'t match anything in get_browser. '
+                . 'You may have an outdated browscap.ini file for your tests'
             );
 
             unset($libProperties[$bcProp]);
