@@ -112,6 +112,7 @@ class PropertyHolder
             'AolVersion' => 1,
             'MajorVer' => 1,
             'MinorVer' => 1,
+            'aolVersion' => 1,
         ];
 
         if (array_key_exists($propertyName, $numericProperties)) {
@@ -142,6 +143,9 @@ class PropertyHolder
             'isFake' => 1,
             'isAnonymized' => 1,
             'isModified' => 1,
+            'isBanned' => 1,
+            'supportsCSS' => 1,
+            'AOL' => 1,
         ];
 
         if (array_key_exists($propertyName, $booleanProperties)) {
