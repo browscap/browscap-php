@@ -53,14 +53,14 @@ class GetPatternTest extends \PHPUnit_Framework_TestCase
                 'browscap.version',
                 null,
                 [
-                    'content'      => serialize(42),
+                    'content' => serialize(42),
                 ],
             ],
             [
                 'test.42',
                 null,
                 [
-                    'content'      => serialize('this is a test'),
+                    'content' => serialize('this is a test'),
                 ],
             ],
         ];
