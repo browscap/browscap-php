@@ -40,10 +40,10 @@ namespace BrowscapPHP\Data;
  */
 class PropertyHolder
 {
-    const TYPE_STRING = 'string';
-    const TYPE_GENERIC = 'generic';
-    const TYPE_NUMBER = 'number';
-    const TYPE_BOOLEAN = 'boolean';
+    const TYPE_STRING   = 'string';
+    const TYPE_GENERIC  = 'generic';
+    const TYPE_NUMBER   = 'number';
+    const TYPE_BOOLEAN  = 'boolean';
     const TYPE_IN_ARRAY = 'in_array';
 
     /**
@@ -218,7 +218,7 @@ class PropertyHolder
                 ];
                 break;
             default:
-                throw new \InvalidArgumentException('Property "'.$property.'" is not defined to be validated');
+                throw new \InvalidArgumentException('Property "' . $property . '" is not defined to be validated');
                 break;
         }
 
@@ -227,8 +227,8 @@ class PropertyHolder
         }
 
         throw new \InvalidArgumentException(
-            'invalid value given for Property "'.$property.'": given value "'.(string) $value.'", allowed: '
-            .json_encode($allowedValues)
+            'invalid value given for Property "' . $property . '": given value "' . (string) $value . '", allowed: '
+            . json_encode($allowedValues)
         );
     }
 }
