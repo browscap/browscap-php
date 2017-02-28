@@ -40,10 +40,10 @@ namespace BrowscapPHP\Data;
  */
 class PropertyHolder
 {
-    const TYPE_STRING   = 'string';
-    const TYPE_GENERIC  = 'generic';
-    const TYPE_NUMBER   = 'number';
-    const TYPE_BOOLEAN  = 'boolean';
+    const TYPE_STRING = 'string';
+    const TYPE_GENERIC = 'generic';
+    const TYPE_NUMBER = 'number';
+    const TYPE_BOOLEAN = 'boolean';
     const TYPE_IN_ARRAY = 'in_array';
 
     /**
@@ -58,93 +58,93 @@ class PropertyHolder
     public function getPropertyType($propertyName)
     {
         $stringProperties = [
-            'Comment' => true,
-            'Browser' => true,
-            'Browser_Maker' => true,
-            'Browser_Modus' => true,
-            'Platform' => true,
-            'Platform_Name' => true,
-            'Platform_Description' => true,
-            'Device_Name' => true,
-            'Platform_Maker' => true,
-            'Device_Code_Name' => true,
-            'Device_Maker' => true,
-            'Device_Brand_Name' => true,
-            'RenderingEngine_Name' => true,
-            'RenderingEngine_Description' => true,
-            'RenderingEngine_Maker' => true,
-            'Parent' => true,
-            'PropertyName' => true,
-            'CDF' => true,
+            'Comment' => 1,
+            'Browser' => 1,
+            'Browser_Maker' => 1,
+            'Browser_Modus' => 1,
+            'Platform' => 1,
+            'Platform_Name' => 1,
+            'Platform_Description' => 1,
+            'Device_Name' => 1,
+            'Platform_Maker' => 1,
+            'Device_Code_Name' => 1,
+            'Device_Maker' => 1,
+            'Device_Brand_Name' => 1,
+            'RenderingEngine_Name' => 1,
+            'RenderingEngine_Description' => 1,
+            'RenderingEngine_Maker' => 1,
+            'Parent' => 1,
+            'PropertyName' => 1,
+            'CDF' => 1,
         ];
 
-        if (isset($stringProperties[$propertyName])) {
+        if (array_key_exists($propertyName, $stringProperties)) {
             return self::TYPE_STRING;
         }
 
         $arrayProperties = [
-            'Browser_Type' => true,
-            'Device_Type' => true,
-            'Device_Pointing_Method' => true,
-            'Browser_Bits' => true,
-            'Platform_Bits' => true,
+            'Browser_Type' => 1,
+            'Device_Type' => 1,
+            'Device_Pointing_Method' => 1,
+            'Browser_Bits' => 1,
+            'Platform_Bits' => 1,
         ];
 
-        if (isset($arrayProperties[$propertyName])) {
+        if (array_key_exists($propertyName, $arrayProperties)) {
             return self::TYPE_IN_ARRAY;
         }
 
         $genericProperties = [
-            'Platform_Version' => true,
-            'RenderingEngine_Version' => true,
-            'Released' => true,
-            'Format' => true,
-            'Type' => true,
+            'Platform_Version' => 1,
+            'RenderingEngine_Version' => 1,
+            'Released' => 1,
+            'Format' => 1,
+            'Type' => 1,
         ];
 
-        if (isset($genericProperties[$propertyName])) {
+        if (array_key_exists($propertyName, $genericProperties)) {
             return self::TYPE_GENERIC;
         }
 
         $numericProperties = [
-            'Version' => true,
-            'CssVersion' => true,
-            'AolVersion' => true,
-            'MajorVer' => true,
-            'MinorVer' => true,
+            'Version' => 1,
+            'CssVersion' => 1,
+            'AolVersion' => 1,
+            'MajorVer' => 1,
+            'MinorVer' => 1,
         ];
 
-        if (isset($numericProperties[$propertyName])) {
+        if (array_key_exists($propertyName, $numericProperties)) {
             return self::TYPE_NUMBER;
         }
 
         $booleanProperties = [
-            'Alpha' => true,
-            'Beta' => true,
-            'Win16' => true,
-            'Win32' => true,
-            'Win64' => true,
-            'Frames' => true,
-            'IFrames' => true,
-            'Tables' => true,
-            'Cookies' => true,
-            'BackgroundSounds' => true,
-            'JavaScript' => true,
-            'VBScript' => true,
-            'JavaApplets' => true,
-            'ActiveXControls' => true,
-            'isMobileDevice' => true,
-            'isTablet' => true,
-            'isSyndicationReader' => true,
-            'Crawler' => true,
-            'MasterParent' => true,
-            'LiteMode' => true,
-            'isFake' => true,
-            'isAnonymized' => true,
-            'isModified' => true,
+            'Alpha' => 1,
+            'Beta' => 1,
+            'Win16' => 1,
+            'Win32' => 1,
+            'Win64' => 1,
+            'Frames' => 1,
+            'IFrames' => 1,
+            'Tables' => 1,
+            'Cookies' => 1,
+            'BackgroundSounds' => 1,
+            'JavaScript' => 1,
+            'VBScript' => 1,
+            'JavaApplets' => 1,
+            'ActiveXControls' => 1,
+            'isMobileDevice' => 1,
+            'isTablet' => 1,
+            'isSyndicationReader' => 1,
+            'Crawler' => 1,
+            'MasterParent' => 1,
+            'LiteMode' => 1,
+            'isFake' => 1,
+            'isAnonymized' => 1,
+            'isModified' => 1,
         ];
 
-        if (isset($booleanProperties[$propertyName])) {
+        if (array_key_exists($propertyName, $booleanProperties)) {
             return self::TYPE_BOOLEAN;
         }
 
@@ -164,71 +164,71 @@ class PropertyHolder
         switch ($property) {
             case 'Browser_Type':
                 $allowedValues = [
-                    'Useragent Anonymizer' => true,
-                    'Browser' => true,
-                    'Offline Browser' => true,
-                    'Multimedia Player' => true,
-                    'Library' => true,
-                    'Feed Reader' => true,
-                    'Email Client' => true,
-                    'Bot/Crawler' => true,
-                    'Application' => true,
-                    'Tool' => true,
-                    'unknown' => true,
+                    'Useragent Anonymizer' => 1,
+                    'Browser' => 1,
+                    'Offline Browser' => 1,
+                    'Multimedia Player' => 1,
+                    'Library' => 1,
+                    'Feed Reader' => 1,
+                    'Email Client' => 1,
+                    'Bot/Crawler' => 1,
+                    'Application' => 1,
+                    'Tool' => 1,
+                    'unknown' => 1,
                 ];
                 break;
             case 'Device_Type':
                 $allowedValues = [
-                    'Console' => true,
-                    'TV Device' => true,
-                    'Tablet' => true,
-                    'Mobile Phone' => true,
-                    'Smartphone' => true,    // actual mobile phone with touchscreen
-                    'Feature Phone' => true, // older mobile phone
-                    'Mobile Device' => true,
-                    'FonePad' => true,       // Tablet sized device with the capability to make phone calls
-                    'Desktop' => true,
-                    'Ebook Reader' => true,
-                    'Car Entertainment System' => true,
-                    'Digital Camera' => true,
-                    'unknown' => true,
+                    'Console' => 1,
+                    'TV Device' => 1,
+                    'Tablet' => 1,
+                    'Mobile Phone' => 1,
+                    'Smartphone' => 1,    // actual mobile phone with touchscreen
+                    'Feature Phone' => 1, // older mobile phone
+                    'Mobile Device' => 1,
+                    'FonePad' => 1,       // Tablet sized device with the capability to make phone calls
+                    'Desktop' => 1,
+                    'Ebook Reader' => 1,
+                    'Car Entertainment System' => 1,
+                    'Digital Camera' => 1,
+                    'unknown' => 1,
                 ];
                 break;
             case 'Device_Pointing_Method':
                 // This property is taken from http://www.scientiamobile.com/wurflCapability
                 $allowedValues = [
-                    'joystick' => true,
-                    'stylus' => true,
-                    'touchscreen' => true,
-                    'clickwheel' => true,
-                    'trackpad' => true,
-                    'trackball' => true,
-                    'mouse' => true,
-                    'unknown' => true,
+                    'joystick' => 1,
+                    'stylus' => 1,
+                    'touchscreen' => 1,
+                    'clickwheel' => 1,
+                    'trackpad' => 1,
+                    'trackball' => 1,
+                    'mouse' => 1,
+                    'unknown' => 1,
                 ];
                 break;
             case 'Browser_Bits':
             case 'Platform_Bits':
                 $allowedValues = [
-                    '0' => true,
-                    '8' => true,
-                    '16' => true,
-                    '32' => true,
-                    '64' => true,
+                    '0' => 1,
+                    '8' => 1,
+                    '16' => 1,
+                    '32' => 1,
+                    '64' => 1,
                 ];
                 break;
             default:
-                throw new \InvalidArgumentException('Property "' . $property . '" is not defined to be validated');
+                throw new \InvalidArgumentException('Property "'.$property.'" is not defined to be validated');
                 break;
         }
 
-        if (isset($allowedValues[$value])) {
+        if (array_key_exists($value, $allowedValues)) {
             return $value;
         }
 
         throw new \InvalidArgumentException(
-            'invalid value given for Property "' . $property . '": given value "' . (string) $value . '", allowed: '
-            . json_encode($allowedValues)
+            'invalid value given for Property "'.$property.'": given value "'.(string) $value.'", allowed: '
+            .json_encode($allowedValues)
         );
     }
 }
