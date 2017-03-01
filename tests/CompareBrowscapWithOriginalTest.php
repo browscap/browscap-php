@@ -16,7 +16,7 @@ use WurflCache\Adapter\Memory;
 class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Browscap
+     * @var \BrowscapPHP\Browscap
      */
     private static $object = null;
 
@@ -119,7 +119,10 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         $diff = array_diff($libPropertyKeys, $bcPropertyKeys);
 
         if (!empty($diff)) {
-            self::fail('the properties found by "get_browser()" differ from found by "Browser::getBrowser()"');
+            self::fail(
+                'the properties found by "get_browser()" differ from found by "\BrowscapPHP\Browscap::getBrowser()" : '
+                . serialize($diff)
+            );
         }
 
         foreach (array_keys($this->properties) as $bcProp) {
@@ -143,15 +146,17 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         self::assertSame(
             0,
             count($libProperties),
-            'There are ' . count($libProperties) . '(' . implode(', ', array_keys($libProperties))
-            . ') properties in get_browser that do not match those in Browscap.'
+            'There are ' . count($libProperties) . '(' . implode(
+                ', ',
+                array_keys($libProperties)
+            ) . ') properties in get_browser that do not match those in Browscap.'
         );
     }
 
     /**
      * @dataProvider providerUserAgent
-     * @depends testCheckProperties
-     * @group compare
+     * @depends      testCheckProperties
+     * @group        compare
      *
      * @param string $userAgent
      */
@@ -179,14 +184,16 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
                 'Actual browscap result does not have "' . $bcProp . '" property'
             );
 
-            $libValue = (string) $libResult->{$bcProp};
-            $bcValue  = (string) $bcResult->{$bcProp};
+            $libValue = strtolower((string) $libResult->{$bcProp});
+            $bcValue  = strtolower((string) $bcResult->{$bcProp});
 
             self::assertSame(
                 $libValue,
                 $bcValue,
-                'Expected actual "' . $bcProp . '" to be "' . $libValue . '" (was "' . $bcValue
-                . '"; used pattern: ' . $bcResult->browser_name_pattern . ')'
+                'Expected actual "' . $bcProp . '" to be "' . $libValue . '" '
+                . '(was "' . $bcValue . '"); ' . PHP_EOL
+                . 'used pattern [\BrowscapPHP\Browscap::getBrowser()]:' . strtolower($bcResult->browser_name_pattern) . PHP_EOL
+                . 'expected pattern [get_browser]:                    ' . strtolower($libResult->browser_name_pattern)
             );
         }
     }

@@ -6,47 +6,47 @@ php:
   - 7.0
   - 7.1
   - nightly
-  - hhvm
 
 os:
   - linux
 
 env:
-  matrix:
-    - PREFER_LOWEST="--prefer-lowest"
-    - PREFER_LOWEST=""
+  - COMPOSER_FLAGS="--prefer-lowest"
+  - COMPOSER_FLAGS=""
 
 matrix:
+  include:
+    - php: 7.0
+      env: COVERAGE=yes
+    - php: 7.0
+      env: EXECUTE_CS_CHECK=yes
+    - php: 7.1
+      env: COMPARE=yes
   allow_failures:
-  # may fail due a segmentation fault
     - php: nightly
-  # the tests may require > 4.8GB ram on hhvm, this exeeds the memory limit on the travis-ci boxes so we allow to fail these builds
-    - php: hhvm
-    - env: PREFER_LOWEST="--prefer-lowest"
 
 cache:
   directories:
-  - $TRAVIS_BUILD_DIR/resources
+    - $TRAVIS_BUILD_DIR/resources
+    - $HOME/.composer/cache
 
-before_script:
+before_install:
   - .travis-scripts/cache-browscap.sh
-  - if [ "`phpenv version-name`" != "hhvm" ]; then echo 'opcache.enable=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
-  - if [ "`phpenv version-name`" != "hhvm" ]; then echo 'opcache.enable_cli=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
-  - if [ "`phpenv version-name`" == "hhvm" ]; then echo 'opcache.enable=1' >> /etc/hhvm/php.ini; fi
-  - if [ "`phpenv version-name`" == "hhvm" ]; then echo 'opcache.enable_cli=1' >> /etc/hhvm/php.ini; fi
+  - if [[ $TRAVIS_PHP_VERSION != nightly && $COVERAGE != yes ]]; then phpenv config-rm xdebug.ini; fi
+  - echo 'opcache.enable=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo 'opcache.enable_cli=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - travis_retry composer self-update
-  - travis_retry composer update --optimize-autoloader --prefer-dist --prefer-stable --no-progress --no-interaction $PREFER_LOWEST
+
+install:
+  - travis_retry composer update --optimize-autoloader --prefer-dist --prefer-stable --no-progress --no-interaction -vv $COMPOSER_FLAGS
 
 script:
-# xdebug is not installed on hhvm and php7, so we are skipping the creation of code coverage data there
-  - if [ "`phpenv version-name`" == "5.6" ]; then php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --colors --verbose --exclude-group compare --coverage-text --coverage-clover=coverage.clover; fi
-  - if [ "`phpenv version-name`" != "5.6" ]; then php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --colors --verbose --exclude-group compare; fi
-  - php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --colors --verbose --group compare
-  - vendor/bin/phpcs
-  - vendor/bin/php-cs-fixer fix --dry-run -vv
+  - if [[ $COVERAGE == yes ]]; then php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --exclude-group compare --coverage-text --coverage-clover=coverage.clover; fi
+  - if [[ $COVERAGE != yes && $COMPARE != yes ]]; then php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --no-coverage --exclude-group compare; fi
+  - if [[ $COMPARE == yes ]]; then php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --no-coverage --group compare; fi
+  - if [[ $EXECUTE_CS_CHECK == yes ]]; then php -n -d memory_limit=768M vendor/bin/phpcs; fi
+  - if [[ $EXECUTE_CS_CHECK == yes ]]; then php -n -d memory_limit=768M vendor/bin/php-cs-fixer fix --dry-run -vv; fi
 
 after_script:
-# xdebug is not installed on hhvm and php7, so we have no code coverage data to send
-  - if [ "`phpenv version-name`" == "5.6" ]; then wget https://scrutinizer-ci.com/ocular.phar; fi
-  - if [ "`phpenv version-name`" == "5.6" ]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
+  - if [[ $COVERAGE = yes ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
 
