@@ -142,6 +142,12 @@ class PhpGetBrowser implements FormatterInterface
             }
         }
 
+        // Don't want to normally do this, just if it exists in the data file
+        // for our test runs
+        if (array_key_exists('patternid', $this->settings)) {
+            $output->patternid = $this->settings['patternid'];
+        }
+
         return $output;
     }
 }
