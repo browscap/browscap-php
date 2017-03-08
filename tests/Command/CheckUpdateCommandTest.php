@@ -4,7 +4,7 @@ namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Command\CheckUpdateCommand;
-use WurflCache\Adapter\Memory;
+use Symfony\Component\Cache\Simple\ArrayCache;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -51,7 +51,7 @@ class CheckUpdateCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $cacheAdapter   = new Memory();
+        $cacheAdapter   = new ArrayCache();
         $cache          = new BrowscapCache($cacheAdapter);
 
         $this->object = new CheckUpdateCommand('');

@@ -51,7 +51,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use WurflCache\Adapter\File;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 
 /**
  * commands to parse a log file and parse the useragents in it
@@ -518,7 +518,7 @@ class LogfileCommand extends Command
     private function getCache(InputInterface $input)
     {
         if (null === $this->cache) {
-            $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
+            $cacheAdapter = new FilesystemCache('', 0, $input->getOption('cache'));
             $this->cache  = new BrowscapCache($cacheAdapter);
         }
 

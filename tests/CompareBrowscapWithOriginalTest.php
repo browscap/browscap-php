@@ -5,7 +5,7 @@ namespace BrowscapPHPTest;
 use BrowscapPHP\Browscap;
 use BrowscapPHP\BrowscapUpdater;
 use BrowscapPHP\Cache\BrowscapCache;
-use WurflCache\Adapter\Memory;
+use Symfony\Component\Cache\Simple\ArrayCache;
 
 /**
  * Compares get_browser results for all matches in browscap.ini with results from Browscap class.
@@ -92,7 +92,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         // Now, load an INI file into BrowscapPHP\Browscap for testing the UAs
         self::$object = new Browscap();
 
-        $cacheAdapter = new Memory();
+        $cacheAdapter = new ArrayCache();
         $cache        = new BrowscapCache($cacheAdapter);
         $cache->flush();
 

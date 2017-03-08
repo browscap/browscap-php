@@ -29,10 +29,10 @@
 
 namespace BrowscapPHP\Cache;
 
-use WurflCache\Adapter\AdapterInterface;
+use Psr\SimpleCache\CacheInterface;
 
 /**
- * a cache proxy to be able to use the cache adapters provided by the WurflCache package
+ * a cache proxy to be able to use the cache adapters that implement the PSR-16 SimpleCache Cache interface
  *
  * @category   Browscap-PHP
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
@@ -46,7 +46,7 @@ class BrowscapCache implements BrowscapCacheInterface
     /**
      * Path to the cache directory
      *
-     * @var \WurflCache\Adapter\AdapterInterface
+     * @var \Psr\SimpleCache\CacheInterface
      */
     private $cache = null;
 
@@ -75,9 +75,9 @@ class BrowscapCache implements BrowscapCacheInterface
      * Constructor class, checks for the existence of (and loads) the cache and
      * if needed updated the definitions
      *
-     * @param \WurflCache\Adapter\AdapterInterface $adapter
+     * @param \Psr\SimpleCache\CacheInterface $adapter
      */
-    public function __construct(AdapterInterface $adapter)
+    public function __construct(CacheInterface $adapter)
     {
         $this->cache = $adapter;
     }
@@ -157,16 +157,15 @@ class BrowscapCache implements BrowscapCacheInterface
             $cacheId .= '.' . $this->getVersion();
         }
 
-        if (!$this->cache->hasItem($cacheId)) {
+        if (!$this->cache->has($cacheId)) {
             $success = false;
 
             return null;
         }
 
-        $success = null;
-        $data    = $this->cache->getItem($cacheId, $success);
+        $data = $this->cache->get($cacheId);
 
-        if (!$success) {
+        if (null === $data) {
             $success = false;
 
             return null;
@@ -204,7 +203,7 @@ class BrowscapCache implements BrowscapCacheInterface
         }
 
         // Save and return
-        return $this->cache->setItem($cacheId, $data);
+        return $this->cache->set($cacheId, $data);
     }
 
     /**
@@ -221,7 +220,7 @@ class BrowscapCache implements BrowscapCacheInterface
             $cacheId .= '.' . $this->getVersion();
         }
 
-        return $this->cache->hasItem($cacheId);
+        return $this->cache->has($cacheId);
     }
 
     /**
@@ -238,7 +237,7 @@ class BrowscapCache implements BrowscapCacheInterface
             $cacheId .= '.' . $this->getVersion();
         }
 
-        return $this->cache->removeItem($cacheId);
+        return $this->cache->delete($cacheId);
     }
 
     /**
@@ -248,6 +247,6 @@ class BrowscapCache implements BrowscapCacheInterface
      */
     public function flush()
     {
-        return $this->cache->flush();
+        return $this->cache->clear();
     }
 }

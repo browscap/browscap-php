@@ -37,7 +37,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use WurflCache\Adapter\File;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 
 /**
  * command to fetch a browscap ini file from the remote host, convert it into an array and store the content in a local
@@ -138,7 +138,7 @@ class CheckUpdateCommand extends Command
     private function getCache(InputInterface $input)
     {
         if (null === $this->cache) {
-            $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
+            $cacheAdapter = new FilesystemCache('', 0, $input->getOption('cache'));
             $this->cache  = new BrowscapCache($cacheAdapter);
         }
 

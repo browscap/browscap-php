@@ -29,10 +29,10 @@
 
 namespace BrowscapPHP\Cache;
 
-use WurflCache\Adapter\AdapterInterface;
+use Psr\SimpleCache\CacheInterface;
 
 /**
- * a cache proxy to be able to use the cache adapters provided by the WurflCache package
+ * a cache proxy to be able to use the cache adapters that implement the PSR-16 SimpleCache Cache interface
  *
  * @category   Browscap-PHP
  * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
@@ -54,9 +54,9 @@ interface BrowscapCacheInterface
      * Constructor class, checks for the existence of (and loads) the cache and
      * if needed updated the definitions
      *
-     * @param \WurflCache\Adapter\AdapterInterface $adapter
+     * @param \Psr\SimpleCache\CacheInterface $cache
      */
-    public function __construct(AdapterInterface $adapter);
+    public function __construct(CacheInterface $adapter);
 
     /**
      * Gets the version of the Browscap data

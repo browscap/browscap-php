@@ -38,7 +38,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use WurflCache\Adapter\File;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 
 /**
  * command to convert a downloaded Browscap ini file and write it to the cache
@@ -156,7 +156,7 @@ class ConvertCommand extends Command
     private function getCache(InputInterface $input)
     {
         if (null === $this->cache) {
-            $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
+            $cacheAdapter = new FilesystemCache('', 0, $input->getOption('cache'));
             $this->cache  = new BrowscapCache($cacheAdapter);
         }
 
