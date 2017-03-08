@@ -68,4 +68,30 @@ class PhpGetBrowserTest extends \PHPUnit_Framework_TestCase
         self::assertSame('TestComment', $return->comment);
         self::assertObjectHasAttribute('browser_type', $return);
     }
+
+    public function testPatternIdIsReturned()
+    {
+        $data = [
+            'Browser' => 'test',
+            'PatternId' => 'test.json::u0::c1',
+        ];
+
+        $this->object->setData($data);
+        $return = $this->object->getData();
+
+        self::assertObjectHasAttribute('patternid', $return);
+        self::assertSame('test.json::u0::c1', $return->patternid);
+    }
+
+    public function testPatternIdIsNotReturned()
+    {
+        $data = [
+            'Browser' => 'test',
+        ];
+
+        $this->object->setData($data);
+        $return = $this->object->getData();
+
+        self::assertObjectNotHasAttribute('patternid', $return);
+    }
 }

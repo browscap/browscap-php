@@ -76,6 +76,7 @@ class PropertyHolder
             'Parent' => 1,
             'PropertyName' => 1,
             'CDF' => 1,
+            'PatternId' => 1,
         ];
 
         if (array_key_exists($propertyName, $stringProperties)) {
