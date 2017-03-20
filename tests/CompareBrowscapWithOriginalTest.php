@@ -368,10 +368,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             ['Mozilla/4.0 (compatible; MSIE 4.0; Windows NT 4.0; .NET CLR 2.0.50727)'],
             ['Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; WOW64; Trident/8.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729; InfoPath.2; 360SE; ; 11sungb_AAPF0A95321C6D)'],
             ['Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.2; WOW64; Trident/8.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729)'],
-            ['Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; .NET CLR 2.0.50727; SLCC2; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; Tablet PC 2.0; .NET4.0C; .NET4.0E; Zune 4.7; Zune 4.0)'],
-            ['Mozilla/4.0 (Windows NT 5.1; AppleWebKit/799.8; compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Trident/6.0)'],
             ['Mozilla/5.0 (compatible; MSIE 10.0; AOL 9.7; AOLBuild 4343.55; Windows NT 6.1; WOW64; Trident/8.0)'],
-            ['Mozilla/5.0 (compatible; MSIE 8.0; compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; .NET4.0E; .NET4.0C; InfoPath.3; Trident/6.0)'],
             ['Mozilla/5.0 (Linux; Android 4.4.2; GT-N5110 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Safari/537.36 [FB_IAB/FB4A;FBAV/108.0.0.17.68;]'],
             ['Mozilla/5.0 (Linux; Android 4.4.2; GT-N5110 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Safari/537.36 [FB_IAB/FB4A;FBAV/109.0.0.15.71;]'],
             ['Mozilla/5.0 (Linux; Android 4.4.2; GT-N5110 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Safari/537.36 [FB_IAB/FB4A;FBAV/110.0.0.15.69;]'],
@@ -454,7 +451,6 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             ['Mozilla/5.0 (Linux; U; Android 5.0.2; en-us; Lenovo A6000 Build/LRX22G) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 UCBrowser/9.9.2.467 U3/0.8.0 Mobile Safari/534.30'],
             ['Mozilla/5.0 (Linux; U; Android 5.0; en-us; Lenovo A7000-a Build/LRX21M) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 UCBrowser/9.9.2.467 U3/0.8.0 Mobile Safari/534.30'],
             ['Mozilla/5.0 (Linux; U; Android 5.1; en-us; Lenovo A2010-a Build/LMY47D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 UCBrowser/9.9.2.467 U3/0.8.0 Mobile Safari/534.30'],
-            ['Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Iron/33.0.1800.0 Chrome/33.0.1800.0 Safari/537.36 Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1623.0 Safari/537.36'],
             ['nokia6120c/UC Browser8.0.3.107/69/444 UNTRUSTED/1.0'],
         ];
     }
