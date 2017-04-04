@@ -15,5 +15,6 @@ return PhpCsFixer\Config::create()
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
         'binary_operator_spaces' => true,
+        'combine_consecutive_unsets' => true,
     ])
     ->setFinder($finder);

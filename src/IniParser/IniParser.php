@@ -82,8 +82,7 @@ final class IniParser
             );
         }
 
-        unset($patternPositions);
-        unset($iniParts);
+        unset($patternPositions, $iniParts);
 
         $subkeys = array_flip(SubKey::getAllIniPartCacheSubKeys());
         foreach ($contents as $subkey => $cacheContent) {
