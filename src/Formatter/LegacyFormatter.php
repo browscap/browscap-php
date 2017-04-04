@@ -40,7 +40,7 @@ namespace BrowscapPHP\Formatter;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  */
-class LegacyFormatter implements FormatterInterface
+final class LegacyFormatter implements FormatterInterface
 {
     /**
      * Options for the formatter
@@ -79,14 +79,10 @@ class LegacyFormatter implements FormatterInterface
      * Sets the data (done by the parser)
      *
      * @param array $settings
-     *
-     * @return \BrowscapPHP\Formatter\PhpGetBrowser
      */
-    public function setData(array $settings)
+    public function setData(array $settings) : void
     {
         $this->settings = $settings;
-
-        return $this;
     }
 
     /**
@@ -94,7 +90,7 @@ class LegacyFormatter implements FormatterInterface
      *
      * @return \stdClass
      */
-    public function getData()
+    public function getData() : \stdClass
     {
         $output = new \stdClass();
 
@@ -103,7 +99,7 @@ class LegacyFormatter implements FormatterInterface
                 $key = strtolower($key);
             }
 
-            $output->$key = $property;
+            $output->{$key} = $property;
         }
 
         return $output;

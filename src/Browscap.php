@@ -1,35 +1,11 @@
 <?php
-/**
- * Copyright (c) 1998-2015 Browser Capabilities Project
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @category   Browscap-PHP
- * @copyright  1998-2015 Browser Capabilities Project
- * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/browscap/browscap-php/
- */
+declare(strict_types=1);
 
 namespace BrowscapPHP;
 
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
+use BrowscapPHP\Formatter\FormatterInterface;
 use BrowscapPHP\Helper\Quoter;
 use BrowscapPHP\Parser\ParserInterface;
 use Psr\Log\LoggerInterface;
@@ -39,45 +15,34 @@ use WurflCache\Adapter\File;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
- *
- * @category   Browscap-PHP
- * @author     Jonathan Stoppani <jonathan@stoppani.name>
- * @author     Vítor Brandão <noisebleed@noiselabs.org>
- * @author     Mikołaj Misiurewicz <quentin389+phpb@gmail.com>
- * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
- * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
- * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
- * @version    3.0
- * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/browscap/browscap-php/
  */
-class Browscap
+final class Browscap
 {
     /**
      * Parser to use
      *
-     * @var \BrowscapPHP\Parser\ParserInterface
+     * @var \BrowscapPHP\Parser\ParserInterface|null
      */
-    private $parser = null;
+    private $parser;
 
     /**
      * Formatter to use
      *
-     * @var \BrowscapPHP\Formatter\FormatterInterface
+     * @var \BrowscapPHP\Formatter\FormatterInterface|null
      */
-    private $formatter = null;
+    private $formatter;
 
     /**
      * The cache instance
      *
-     * @var \BrowscapPHP\Cache\BrowscapCacheInterface
+     * @var \BrowscapPHP\Cache\BrowscapCacheInterface|null
      */
-    private $cache = null;
+    private $cache;
 
     /**
-     * @var @var \Psr\Log\LoggerInterface
+     * @var \Psr\Log\LoggerInterface|null
      */
-    private $logger = null;
+    private $logger;
 
     /**
      * Set theformatter instance to use for the getBrowser() result
@@ -86,7 +51,7 @@ class Browscap
      *
      * @return \BrowscapPHP\Browscap
      */
-    public function setFormatter(Formatter\FormatterInterface $formatter)
+    public function setFormatter(Formatter\FormatterInterface $formatter) : self
     {
         $this->formatter = $formatter;
 
@@ -96,7 +61,7 @@ class Browscap
     /**
      * @return \BrowscapPHP\Formatter\FormatterInterface
      */
-    public function getFormatter()
+    public function getFormatter() : FormatterInterface
     {
         if (null === $this->formatter) {
             $this->setFormatter(new Formatter\PhpGetBrowser());
@@ -110,7 +75,7 @@ class Browscap
      *
      * @return \BrowscapPHP\Cache\BrowscapCacheInterface
      */
-    public function getCache()
+    public function getCache() : BrowscapCacheInterface
     {
         if (null === $this->cache) {
             $cacheDirectory = __DIR__ . '/../resources/';
@@ -133,7 +98,7 @@ class Browscap
      * @throws \BrowscapPHP\Exception
      * @return \BrowscapPHP\Browscap
      */
-    public function setCache($cache)
+    public function setCache($cache) : self
     {
         if ($cache instanceof BrowscapCacheInterface) {
             $this->cache = $cache;
@@ -157,7 +122,7 @@ class Browscap
      *
      * @return \BrowscapPHP\Browscap
      */
-    public function setParser(ParserInterface $parser)
+    public function setParser(ParserInterface $parser) : self
     {
         $this->parser = $parser;
 
@@ -169,7 +134,7 @@ class Browscap
      *
      * @return \BrowscapPHP\Parser\ParserInterface
      */
-    public function getParser()
+    public function getParser() : ParserInterface
     {
         if (null === $this->parser) {
             $cache  = $this->getCache();
@@ -192,7 +157,7 @@ class Browscap
      *
      * @return \BrowscapPHP\Browscap
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger) : self
     {
         $this->logger = $logger;
 
@@ -204,7 +169,7 @@ class Browscap
      *
      * @return \Psr\Log\LoggerInterface
      */
-    public function getLogger()
+    public function getLogger() : LoggerInterface
     {
         if (null === $this->logger) {
             $this->logger = new NullLogger();
@@ -224,7 +189,7 @@ class Browscap
      * @return \stdClass              the object containing the browsers details. Array if
      *                                $return_array is set to true.
      */
-    public function getBrowser($userAgent = null)
+    public function getBrowser(string $userAgent = null) : \stdClass
     {
         if (null === $this->getCache()->getVersion()) {
             // there is no active/warm cache available

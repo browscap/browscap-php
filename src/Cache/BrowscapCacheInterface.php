@@ -1,31 +1,5 @@
 <?php
-/**
- * Copyright (c) 1998-2015 Browser Capabilities Project
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @category   Browscap-PHP
- * @copyright  1998-2015 Browser Capabilities Project
- * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/browscap/browscap-php/
- * @since      added with version 3.0
- */
+declare(strict_types=1);
 
 namespace BrowscapPHP\Cache;
 
@@ -63,21 +37,21 @@ interface BrowscapCacheInterface
      *
      * @return int
      */
-    public function getVersion();
+    public function getVersion() : int;
 
     /**
      * Gets the release date of the Browscap data
      *
      * @return string
      */
-    public function getReleaseDate();
+    public function getReleaseDate() : string;
 
     /**
      * Gets the type of the Browscap data
      *
      * @return string
      */
-    public function getType();
+    public function getType() : string;
 
     /**
      * Get an item.
@@ -88,7 +62,7 @@ interface BrowscapCacheInterface
      *
      * @return mixed Data on success, null on failure
      */
-    public function getItem($cacheId, $withVersion = true, & $success = null);
+    public function getItem(string $cacheId, bool $withVersion = true, bool & $success = null) : ?array;
 
     /**
      * save the content into an php file
@@ -99,7 +73,7 @@ interface BrowscapCacheInterface
      *
      * @return bool whether the file was correctly written to the disk
      */
-    public function setItem($cacheId, $content, $withVersion = true);
+    public function setItem(string $cacheId, $content, bool $withVersion = true) : bool;
 
     /**
      * Test if an item exists.
@@ -109,7 +83,7 @@ interface BrowscapCacheInterface
      *
      * @return bool
      */
-    public function hasItem($cacheId, $withVersion = true);
+    public function hasItem(string $cacheId, bool $withVersion = true) : bool;
 
     /**
      * Remove an item.
@@ -119,12 +93,12 @@ interface BrowscapCacheInterface
      *
      * @return bool
      */
-    public function removeItem($cacheId, $withVersion = true);
+    public function removeItem(string $cacheId, bool $withVersion = true) : bool;
 
     /**
      * Flush the whole storage
      *
      * @return bool
      */
-    public function flush();
+    public function flush() : bool;
 }

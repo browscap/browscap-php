@@ -1,31 +1,5 @@
 <?php
-/**
- * Copyright (c) 1998-2015 Browser Capabilities Project
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @category   Browscap-PHP
- * @copyright  1998-2015 Browser Capabilities Project
- * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/browscap/browscap-php/
- * @since      added with version 3.0
- */
+declare(strict_types=1);
 
 namespace BrowscapPHP\IniParser;
 
@@ -37,16 +11,8 @@ use BrowscapPHP\Parser\Helper\SubKey;
 
 /**
  * Ini parser class (compatible with PHP 5.3+)
- *
- * @category   Browscap-PHP
- * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
- * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
- * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
- * @version    3.0
- * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/browscap/browscap-php/
  */
-class IniParser
+final class IniParser
 {
     /**
      * Options for regex patterns.
@@ -75,13 +41,13 @@ class IniParser
      *
      * @return \Generator
      */
-    public function createIniParts($content)
+    public function createIniParts(string $content) : \Generator
     {
         // get all patterns from the ini file in the correct order,
         // so that we can calculate with index number of the resulting array,
         // which part to use when the ini file is splitted into its sections.
-        preg_match_all('/(?<=\[)(?:[^\r\n]+)(?=\])/m', $content, $patternpositions);
-        $patternpositions = $patternpositions[0];
+        preg_match_all('/(?<=\[)(?:[^\r\n]+)(?=\])/m', $content, $patternPositions);
+        $patternPositions = $patternPositions[0];
 
         // split the ini file into sections and save the data in one line with a hash of the beloging
         // pattern (filtered in the previous step)
@@ -90,7 +56,7 @@ class IniParser
 
         $propertyFormatter = new PropertyFormatter(new PropertyHolder());
 
-        foreach ($patternpositions as $position => $pattern) {
+        foreach ($patternPositions as $position => $pattern) {
             $pattern     = strtolower($pattern);
             $patternhash = Pattern::getHashForParts($pattern);
             $subkey      = SubKey::getIniPartCacheSubKey($patternhash);
@@ -116,14 +82,14 @@ class IniParser
             );
         }
 
-        unset($patternpositions);
+        unset($patternPositions);
         unset($iniParts);
 
         $subkeys = array_flip(SubKey::getAllIniPartCacheSubKeys());
-        foreach ($contents as $subkey => $content) {
+        foreach ($contents as $subkey => $cacheContent) {
             $subkey = (string) $subkey;
 
-            yield [$subkey => $content];
+            yield [$subkey => $cacheContent];
 
             unset($subkeys[$subkey]);
         }
@@ -142,7 +108,7 @@ class IniParser
      *
      * @return \Generator
      */
-    public function createPatterns($content)
+    public function createPatterns($content) : \Generator
     {
         // get all relevant patterns from the INI file
         // - containing "*" or "?"
@@ -272,7 +238,7 @@ class IniParser
      *
      * @return int
      */
-    private function compareBcStrings($a, $b)
+    private function compareBcStrings(string $a, string $b) : int
     {
         $a_len = strlen($a);
         $b_len = strlen($b);

@@ -41,7 +41,7 @@ use BrowscapPHP\Exception\ReaderException;
  * @license    http://www.opensource.org/licenses/MIT MIT License
  * @link       https://github.com/browscap/browscap-php/
  */
-class ReaderCollection implements ReaderInterface
+final class ReaderCollection implements ReaderInterface
 {
     /**
      * @var \BrowscapPHP\Util\Logfile\AbstractReader[]
@@ -67,7 +67,7 @@ class ReaderCollection implements ReaderInterface
      *
      * @return bool
      */
-    public function test($line)
+    public function test(string $line) : bool
     {
         foreach ($this->readers as $reader) {
             if ($reader->test($line)) {
@@ -84,7 +84,7 @@ class ReaderCollection implements ReaderInterface
      * @throws \BrowscapPHP\Exception\ReaderException
      * @return string
      */
-    public function read($line)
+    public function read(string $line) : string
     {
         foreach ($this->readers as $reader) {
             if ($reader->test($line)) {
