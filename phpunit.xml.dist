@@ -6,8 +6,8 @@
     beStrictAboutOutputDuringTests="true"
     beStrictAboutTestsThatDoNotTestAnything="true"
     beStrictAboutTodoAnnotatedTests="true"
-    verbose="true"
-    colors="auto"
+    verbose="false"
+    colors="true"
     bootstrap="vendor/autoload.php"
     >
     <php>
