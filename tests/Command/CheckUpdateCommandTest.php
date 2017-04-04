@@ -20,8 +20,8 @@ final class CheckUpdateCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp() : void
     {
-        $cacheAdapter   = new Memory();
-        $cache          = new BrowscapCache($cacheAdapter);
+        $cacheAdapter = new Memory();
+        $cache = new BrowscapCache($cacheAdapter);
 
         $this->object = new CheckUpdateCommand('', $cache);
     }
@@ -49,7 +49,7 @@ final class CheckUpdateCommandTest extends \PHPUnit_Framework_TestCase
             ->method('addOption')
             ->will(self::returnSelf());
 
-        $class  = new \ReflectionClass(CheckUpdateCommand::class);
+        $class = new \ReflectionClass(CheckUpdateCommand::class);
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 

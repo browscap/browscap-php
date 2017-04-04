@@ -174,7 +174,7 @@ final class BrowscapUpdater
     public function convertString(string $iniString) : void
     {
         $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
-        $converter     = new Converter($this->getLogger(), $this->getCache());
+        $converter = new Converter($this->getLogger(), $this->getCache());
 
         $this->storeContent($converter, $iniString, $cachedVersion);
     }
@@ -226,7 +226,7 @@ final class BrowscapUpdater
 
         $content = $this->sanitizeContent($content);
 
-        $converter  = new Converter($this->getLogger(), $this->getCache());
+        $converter = new Converter($this->getLogger(), $this->getCache());
         $iniVersion = $converter->getIniVersion($content);
 
         if ($iniVersion > $cachedVersion) {
@@ -300,7 +300,7 @@ final class BrowscapUpdater
      */
     public function checkUpdate() : ?int
     {
-        $success       = null;
+        $success = null;
         $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
 
         if (!$cachedVersion) {
@@ -372,7 +372,7 @@ final class BrowscapUpdater
      */
     private function storeContent(Converter $converter, string $content, ?int $cachedVersion)
     {
-        $iniString  = $this->sanitizeContent($content);
+        $iniString = $this->sanitizeContent($content);
         $iniVersion = $converter->getIniVersion($iniString);
 
         if (!$cachedVersion || $iniVersion > $cachedVersion) {

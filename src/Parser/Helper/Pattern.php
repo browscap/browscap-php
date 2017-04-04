@@ -37,7 +37,7 @@ final class Pattern
      */
     public static function getHashForPattern(string $pattern, bool $variants = false)
     {
-        $regex   = '/^([^\.\*\?\s\r\n\\\\]+).*$/';
+        $regex = '/^([^\.\*\?\s\r\n\\\\]+).*$/';
         $pattern = substr($pattern, 0, 32);
         $matches = [];
 
@@ -51,7 +51,7 @@ final class Pattern
             $patternStarts = [];
 
             for ($i = strlen($string); $i >= 1; --$i) {
-                $string          = substr($string, 0, $i);
+                $string = substr($string, 0, $i);
                 $patternStarts[] = md5($string);
             }
 

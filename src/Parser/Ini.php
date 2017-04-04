@@ -42,8 +42,8 @@ final class Ini implements ParserInterface
         FormatterInterface $formatter
     ) {
         $this->patternHelper = $patternHelper;
-        $this->dataHelper    = $dataHelper;
-        $this->formatter     = $formatter;
+        $this->dataHelper = $dataHelper;
+        $this->formatter = $formatter;
     }
 
     /**
@@ -69,16 +69,16 @@ final class Ini implements ParserInterface
             $pattern = strtok($patterns, "\t");
 
             while ($pattern !== false) {
-                $pattern       = str_replace('[\d]', '(\d)', $pattern);
+                $pattern = str_replace('[\d]', '(\d)', $pattern);
                 $quotedPattern = '/^' . $pattern . '$/i';
-                $matches       = [];
+                $matches = [];
 
                 if (preg_match($quotedPattern, $userAgent, $matches)) {
                     // Insert the digits back into the pattern, so that we can search the settings for it
                     if (count($matches) > 1) {
                         array_shift($matches);
                         foreach ($matches as $oneMatch) {
-                            $numPos  = strpos($pattern, '(\d)');
+                            $numPos = strpos($pattern, '(\d)');
                             $pattern = substr_replace($pattern, $oneMatch, $numPos, 4);
                         }
                     }

@@ -110,8 +110,8 @@ final class BrowscapTest extends \PHPUnit_Framework_TestCase
 
     public function testGetBrowserWithoutUa() : void
     {
-        $browserObject          = new \StdClass();
-        $browserObject->parent  = 'something';
+        $browserObject = new \StdClass();
+        $browserObject->parent = 'something';
         $browserObject->comment = 'an comment';
 
         /** @var FormatterInterface|\PHPUnit_Framework_MockObject_MockObject $formatter */
@@ -136,8 +136,8 @@ final class BrowscapTest extends \PHPUnit_Framework_TestCase
 
     public function testGetBrowserWithUa() : void
     {
-        $browserObject          = new \StdClass();
-        $browserObject->parent  = 'something';
+        $browserObject = new \StdClass();
+        $browserObject->parent = 'something';
         $browserObject->comment = 'an comment';
 
         /** @var FormatterInterface|\PHPUnit_Framework_MockObject_MockObject $formatter */

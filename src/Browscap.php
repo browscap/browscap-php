@@ -137,12 +137,12 @@ final class Browscap
     public function getParser() : ParserInterface
     {
         if (null === $this->parser) {
-            $cache  = $this->getCache();
+            $cache = $this->getCache();
             $logger = $this->getLogger();
             $quoter = new Quoter();
 
             $patternHelper = new Parser\Helper\GetPattern($cache, $logger);
-            $dataHelper    = new Parser\Helper\GetData($cache, $logger, $quoter);
+            $dataHelper = new Parser\Helper\GetData($cache, $logger, $quoter);
 
             $this->parser = new Parser\Ini($patternHelper, $dataHelper, $this->getFormatter());
         }
@@ -198,7 +198,7 @@ final class Browscap
 
         // Automatically detect the useragent
         if (!isset($userAgent)) {
-            $support   = new Helper\Support($_SERVER);
+            $support = new Helper\Support($_SERVER);
             $userAgent = $support->getUserAgent();
         }
 

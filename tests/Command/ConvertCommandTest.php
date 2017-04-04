@@ -26,8 +26,8 @@ final class ConvertCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp() : void
     {
-        $cacheAdapter   = new Memory();
-        $cache          = new BrowscapCache($cacheAdapter);
+        $cacheAdapter = new Memory();
+        $cache = new BrowscapCache($cacheAdapter);
         $defaultIniFile = 'resources/browscap.ini';
 
         $this->object = new ConvertCommand('', $defaultIniFile, $cache);
@@ -56,7 +56,7 @@ final class ConvertCommandTest extends \PHPUnit_Framework_TestCase
             ->method('addOption')
             ->will(self::returnSelf());
 
-        $class  = new \ReflectionClass(ConvertCommand::class);
+        $class = new \ReflectionClass(ConvertCommand::class);
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 
@@ -84,7 +84,7 @@ final class ConvertCommandTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $class  = new \ReflectionClass(ConvertCommand::class);
+        $class = new \ReflectionClass(ConvertCommand::class);
         $method = $class->getMethod('execute');
         $method->setAccessible(true);
 

@@ -31,7 +31,7 @@ final class SubKey
     public static function getAllPatternCacheSubkeys() : array
     {
         $subkeys = [];
-        $chars   = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+        $chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
 
         foreach ($chars as $charOne) {
             foreach ($chars as $charTwo) {
@@ -61,7 +61,7 @@ final class SubKey
     public static function getAllIniPartCacheSubKeys() : array
     {
         $subKeys = [];
-        $chars   = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+        $chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
 
         foreach ($chars as $charOne) {
             foreach ($chars as $charTwo) {

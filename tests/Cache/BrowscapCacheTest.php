@@ -16,7 +16,7 @@ final class BrowscapCacheTest extends PHPUnit_Framework_TestCase
     public function testConstruct() : void
     {
         $adapter = new NullStorage();
-        $cache   = new BrowscapCache($adapter);
+        $cache = new BrowscapCache($adapter);
 
         self::assertInstanceOf(BrowscapCache::class, $cache);
     }
@@ -24,7 +24,7 @@ final class BrowscapCacheTest extends PHPUnit_Framework_TestCase
     public function testVersion() : void
     {
         $adapter = new Memory();
-        $cache   = new BrowscapCache($adapter);
+        $cache = new BrowscapCache($adapter);
 
         self::assertNull($cache->getVersion());
 
@@ -35,7 +35,7 @@ final class BrowscapCacheTest extends PHPUnit_Framework_TestCase
     public function testReleaseDate() : void
     {
         $adapter = new Memory();
-        $cache   = new BrowscapCache($adapter);
+        $cache = new BrowscapCache($adapter);
 
         self::assertNull($cache->getVersion());
 
@@ -46,7 +46,7 @@ final class BrowscapCacheTest extends PHPUnit_Framework_TestCase
     public function testType() : void
     {
         $adapter = new Memory();
-        $cache   = new BrowscapCache($adapter);
+        $cache = new BrowscapCache($adapter);
 
         self::assertNull($cache->getType());
 

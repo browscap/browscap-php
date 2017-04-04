@@ -33,7 +33,7 @@ class GetPattern implements GetPatternInterface
      */
     public function __construct(BrowscapCacheInterface $cache, LoggerInterface $logger)
     {
-        $this->cache  = $cache;
+        $this->cache = $cache;
         $this->logger = $logger;
     }
 
@@ -66,7 +66,7 @@ class GetPattern implements GetPatternInterface
 
                 continue;
             }
-            $success   = null;
+            $success = null;
 
             $file = $this->cache->getItem('browscap.patterns.' . $tmpSubkey, true, $success);
 

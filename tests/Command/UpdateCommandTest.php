@@ -25,8 +25,8 @@ final class UpdateCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp() : void
     {
-        $cacheAdapter   = new Memory();
-        $cache          = new BrowscapCache($cacheAdapter);
+        $cacheAdapter = new Memory();
+        $cache = new BrowscapCache($cacheAdapter);
 
         $this->object = new UpdateCommand('', $cache);
     }
@@ -54,7 +54,7 @@ final class UpdateCommandTest extends \PHPUnit_Framework_TestCase
             ->method('addOption')
             ->will(self::returnSelf());
 
-        $class  = new \ReflectionClass(UpdateCommand::class);
+        $class = new \ReflectionClass(UpdateCommand::class);
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 
@@ -65,14 +65,14 @@ final class UpdateCommandTest extends \PHPUnit_Framework_TestCase
     {
         self::markTestSkipped('not ready yet');
 
-        $input  = $this->getMockBuilder(ArgvInput::class)
+        $input = $this->getMockBuilder(ArgvInput::class)
             ->disableOriginalConstructor()
             ->getMock();
         $output = $this->getMockBuilder(ConsoleOutput::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $class  = new \ReflectionClass(UpdateCommand::class);
+        $class = new \ReflectionClass(UpdateCommand::class);
         $method = $class->getMethod('execute');
         $method->setAccessible(true);
 

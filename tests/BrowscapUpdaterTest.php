@@ -119,7 +119,7 @@ final class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
 
     public function testConvertFile() : void
     {
-        $content   = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+        $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]
 Version=5031
@@ -239,7 +239,7 @@ AolVersion=0
 
     public function testConvertString() : void
     {
-        $content   = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+        $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]
 Version=5031
@@ -402,7 +402,7 @@ AolVersion=0
         $logger = $this->createMock(LoggerInterface::class);
         $this->object->setLogger($logger);
 
-        $content   = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+        $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]
 Version=5031
@@ -871,7 +871,7 @@ AolVersion=0
         $logger = $this->createMock(LoggerInterface::class);
         $this->object->setLogger($logger);
 
-        $content   = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+        $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]
 Version=5031

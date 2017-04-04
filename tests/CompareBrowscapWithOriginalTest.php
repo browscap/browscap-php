@@ -90,7 +90,7 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         self::$object = new Browscap();
 
         $cacheAdapter = new Memory();
-        $cache        = new BrowscapCache($cacheAdapter);
+        $cache = new BrowscapCache($cacheAdapter);
         $cache->flush();
 
         $updater = new BrowscapUpdater();
@@ -106,12 +106,12 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
     public function testCheckProperties() : void
     {
         $libProperties = get_object_vars(get_browser('x'));
-        $bcProperties  = get_object_vars(self::$object->getBrowser('x'));
+        $bcProperties = get_object_vars(self::$object->getBrowser('x'));
 
         unset($libProperties['parent'], $bcProperties['parent']);
 
         $libPropertyKeys = array_keys($libProperties);
-        $bcPropertyKeys  = array_keys($bcProperties);
+        $bcPropertyKeys = array_keys($bcProperties);
 
         $diff = array_diff($libPropertyKeys, $bcPropertyKeys);
 
@@ -160,7 +160,7 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
     public function testCompare(string $userAgent) : void
     {
         $libResult = get_browser($userAgent);
-        $bcResult  = self::$object->getBrowser($userAgent);
+        $bcResult = self::$object->getBrowser($userAgent);
 
         foreach (array_keys($this->properties) as $bcProp) {
             if (in_array($bcProp, ['browser_name_regex', 'browser_name_pattern', 'Parent'])) {
@@ -182,7 +182,7 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             );
 
             $libValue = strtolower((string) $libResult->{$bcProp});
-            $bcValue  = strtolower((string) $bcResult->{$bcProp});
+            $bcValue = strtolower((string) $bcResult->{$bcProp});
 
             self::assertSame(
                 $libValue,

@@ -59,7 +59,7 @@ class FetchCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
         $loggerHelper = new LoggerHelper();
-        $logger       = $loggerHelper->create($input->getOption('debug'));
+        $logger = $loggerHelper->create($input->getOption('debug'));
 
         $file = $input->getArgument('file');
         if (!$file) {

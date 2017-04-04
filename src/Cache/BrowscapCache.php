@@ -129,7 +129,7 @@ final class BrowscapCache implements BrowscapCacheInterface
         }
 
         $success = null;
-        $data    = $this->cache->getItem($cacheId, $success);
+        $data = $this->cache->getItem($cacheId, $success);
 
         if (!$success) {
             $success = false;

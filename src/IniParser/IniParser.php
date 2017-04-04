@@ -20,9 +20,9 @@ final class IniParser
      * REGEX_DELIMITER: Delimiter of all the regex patterns in the whole class.
      * REGEX_MODIFIERS: Regex modifiers.
      */
-    const REGEX_DELIMITER               = '@';
-    const REGEX_MODIFIERS               = 'i';
-    const COMPRESSION_PATTERN_START     = '@';
+    const REGEX_DELIMITER = '@';
+    const REGEX_MODIFIERS = 'i';
+    const COMPRESSION_PATTERN_START = '@';
     const COMPRESSION_PATTERN_DELIMITER = '|';
 
     /**
@@ -57,9 +57,9 @@ final class IniParser
         $propertyFormatter = new PropertyFormatter(new PropertyHolder());
 
         foreach ($patternPositions as $position => $pattern) {
-            $pattern     = strtolower($pattern);
+            $pattern = strtolower($pattern);
             $patternhash = Pattern::getHashForParts($pattern);
-            $subkey      = SubKey::getIniPartCacheSubKey($patternhash);
+            $subkey = SubKey::getIniPartCacheSubKey($patternhash);
 
             if (!isset($contents[$subkey])) {
                 $contents[$subkey] = [];
@@ -126,7 +126,7 @@ final class IniParser
         }
 
         $quoterHelper = new Quoter();
-        $matches      = $matches[0];
+        $matches = $matches[0];
         usort($matches, [$this, 'compareBcStrings']);
 
         // build an array to structure the data. this requires some memory, but we need this step to be able to
@@ -138,9 +138,9 @@ final class IniParser
                 continue;
             }
 
-            $pattern     = strtolower($pattern);
+            $pattern = strtolower($pattern);
             $patternhash = Pattern::getHashForPattern($pattern, false);
-            $tmpLength   = Pattern::getPatternLength($pattern);
+            $tmpLength = Pattern::getPatternLength($pattern);
 
             // special handling of default entry
             if ($tmpLength === 0) {

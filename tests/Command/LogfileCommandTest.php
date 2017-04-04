@@ -28,8 +28,8 @@ final class LogfileCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp() : void
     {
-        $cacheAdapter   = new Memory();
-        $cache          = new BrowscapCache($cacheAdapter);
+        $cacheAdapter = new Memory();
+        $cache = new BrowscapCache($cacheAdapter);
 
         $this->object = new LogfileCommand('', $cache);
     }
@@ -57,7 +57,7 @@ final class LogfileCommandTest extends \PHPUnit_Framework_TestCase
             ->method('addOption')
             ->will(self::returnSelf());
 
-        $class  = new \ReflectionClass(LogfileCommand::class);
+        $class = new \ReflectionClass(LogfileCommand::class);
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 
@@ -68,7 +68,7 @@ final class LogfileCommandTest extends \PHPUnit_Framework_TestCase
     {
         self::markTestSkipped('not ready yet');
 
-        $content   = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+        $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]
 Version=5031
@@ -193,7 +193,7 @@ AolVersion=0
             ],
         ];
 
-        $input  = $this->getMockBuilder(ArgvInput::class)
+        $input = $this->getMockBuilder(ArgvInput::class)
             ->disableOriginalConstructor()
             ->setMethods(['getOption', 'getArgument'])
             ->getMock();
@@ -210,7 +210,7 @@ AolVersion=0
             ->disableOriginalConstructor()
             ->getMock();
 
-        $class  = new \ReflectionClass(LogfileCommand::class);
+        $class = new \ReflectionClass(LogfileCommand::class);
         $method = $class->getMethod('execute');
         $method->setAccessible(true);
 

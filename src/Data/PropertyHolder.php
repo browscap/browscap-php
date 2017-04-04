@@ -5,10 +5,10 @@ namespace BrowscapPHP\Data;
 
 final class PropertyHolder
 {
-    const TYPE_STRING   = 'string';
-    const TYPE_GENERIC  = 'generic';
-    const TYPE_NUMBER   = 'number';
-    const TYPE_BOOLEAN  = 'boolean';
+    const TYPE_STRING = 'string';
+    const TYPE_GENERIC = 'generic';
+    const TYPE_NUMBER = 'number';
+    const TYPE_BOOLEAN = 'boolean';
     const TYPE_IN_ARRAY = 'in_array';
 
     /**

@@ -51,7 +51,7 @@ final class FetchCommandTest extends \PHPUnit_Framework_TestCase
             ->method('addOption')
             ->will(self::returnSelf());
 
-        $class  = new \ReflectionClass(FetchCommand::class);
+        $class = new \ReflectionClass(FetchCommand::class);
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 
@@ -62,14 +62,14 @@ final class FetchCommandTest extends \PHPUnit_Framework_TestCase
     {
         self::markTestSkipped('not ready yet');
 
-        $input  = $this->getMockBuilder(ArgvInput::class)
+        $input = $this->getMockBuilder(ArgvInput::class)
             ->disableOriginalConstructor()
             ->getMock();
         $output = $this->getMockBuilder(ConsoleOutput::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $class  = new \ReflectionClass(FetchCommand::class);
+        $class = new \ReflectionClass(FetchCommand::class);
         $method = $class->getMethod('execute');
         $method->setAccessible(true);
 

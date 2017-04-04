@@ -39,7 +39,7 @@ final class ParserCommandTest extends \PHPUnit_Framework_TestCase
             ->method('addOption')
             ->willReturnSelf();
 
-        $class  = new \ReflectionClass(ParserCommand::class);
+        $class = new \ReflectionClass(ParserCommand::class);
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 
@@ -60,14 +60,14 @@ final class ParserCommandTest extends \PHPUnit_Framework_TestCase
 
         $object = new ParserCommand('', $cache);
 
-        $input  = $this->getMockBuilder(ArgvInput::class)
+        $input = $this->getMockBuilder(ArgvInput::class)
             ->disableOriginalConstructor()
             ->getMock();
         $output = $this->getMockBuilder(ConsoleOutput::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $class  = new \ReflectionClass(ParserCommand::class);
+        $class = new \ReflectionClass(ParserCommand::class);
         $method = $class->getMethod('execute');
         $method->setAccessible(true);
 

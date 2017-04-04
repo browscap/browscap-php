@@ -66,7 +66,7 @@ class ParserCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
         $loggerHelper = new LoggerHelper();
-        $logger       = $loggerHelper->create($input->getOption('debug'));
+        $logger = $loggerHelper->create($input->getOption('debug'));
 
         $browscap = new Browscap();
 
@@ -83,7 +83,7 @@ class ParserCommand extends Command
     {
         if (null === $this->cache) {
             $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
-            $this->cache  = new BrowscapCache($cacheAdapter);
+            $this->cache = new BrowscapCache($cacheAdapter);
         }
 
         return $this->cache;

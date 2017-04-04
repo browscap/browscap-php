@@ -139,11 +139,11 @@ class LogfileCommand extends Command
         }
 
         $loggerHelper = new LoggerHelper();
-        $logger       = $loggerHelper->create($input->getOption('debug'));
+        $logger = $loggerHelper->create($input->getOption('debug'));
 
-        $browscap   = new Browscap();
+        $browscap = new Browscap();
         $collection = ReaderFactory::factory();
-        $fs         = new Filesystem();
+        $fs = new Filesystem();
 
         $browscap
             ->setLogger($logger)
@@ -152,9 +152,9 @@ class LogfileCommand extends Command
         /** @var $file \Symfony\Component\Finder\SplFileInfo */
         foreach ($this->getFiles($input) as $file) {
             $this->uas = [];
-            $path      = $this->getPath($file);
+            $path = $this->getPath($file);
 
-            $this->countOk  = 0;
+            $this->countOk = 0;
             $this->countNok = 0;
 
             $logger->info('Analyzing file "' . $file->getPathname() . '"');
@@ -267,7 +267,7 @@ class LogfileCommand extends Command
     private function createAmountTypeContent() : string
     {
         $content = '';
-        $types   = ['B', 'T', 'P', 'D', 'N', 'U'];
+        $types = ['B', 'T', 'P', 'D', 'N', 'U'];
 
         foreach ($types as $type) {
             if (!isset($this->uasWithType[$type])) {
@@ -442,7 +442,7 @@ class LogfileCommand extends Command
     {
         if (null === $this->cache) {
             $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
-            $this->cache  = new BrowscapCache($cacheAdapter);
+            $this->cache = new BrowscapCache($cacheAdapter);
         }
 
         return $this->cache;

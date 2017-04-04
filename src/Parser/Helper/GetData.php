@@ -42,7 +42,7 @@ final class GetData implements GetDataInterface
      */
     public function __construct(BrowscapCacheInterface $cache, LoggerInterface $logger, Quoter $quoter)
     {
-        $this->cache  = $cache;
+        $this->cache = $cache;
         $this->logger = $logger;
         $this->quoter = $quoter;
     }
@@ -72,7 +72,7 @@ final class GetData implements GetDataInterface
             // If not an empty array will be returned and the calling function can easily check if a pattern
             // has been found.
             if (count($addedSettings) > 0) {
-                $settings['browser_name_regex']   = '/^' . $pattern . '$/';
+                $settings['browser_name_regex'] = '/^' . $pattern . '$/';
                 $settings['browser_name_pattern'] = $unquotedPattern;
             }
         }
@@ -105,9 +105,9 @@ final class GetData implements GetDataInterface
      */
     private function getIniPart(string $pattern) : array
     {
-        $pattern     = strtolower($pattern);
+        $pattern = strtolower($pattern);
         $patternhash = Pattern::getHashForParts($pattern);
-        $subkey      = SubKey::getIniPartCacheSubKey($patternhash);
+        $subkey = SubKey::getIniPartCacheSubKey($patternhash);
 
         if (!$this->cache->hasItem('browscap.iniparts.' . $subkey, true)) {
             $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" not found');
@@ -116,7 +116,7 @@ final class GetData implements GetDataInterface
         }
 
         $success = null;
-        $file    = $this->cache->getItem('browscap.iniparts.' . $subkey, true, $success);
+        $file = $this->cache->getItem('browscap.iniparts.' . $subkey, true, $success);
 
         if (!$success) {
             $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" not found');
@@ -131,7 +131,7 @@ final class GetData implements GetDataInterface
         }
 
         $propertyFormatter = new PropertyFormatter(new PropertyHolder());
-        $return            = [];
+        $return = [];
 
         foreach ($file as $buffer) {
             list($tmpBuffer, $patterns) = explode("\t", $buffer, 2);

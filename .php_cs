@@ -13,5 +13,7 @@ ini_set('memory_limit', '-1');
 return PhpCsFixer\Config::create()
     ->setRules([
         '@PSR2' => true,
+        'array_syntax' => ['syntax' => 'short'],
+        'binary_operator_spaces' => true,
     ])
     ->setFinder($finder);

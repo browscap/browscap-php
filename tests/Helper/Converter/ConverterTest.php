@@ -72,7 +72,7 @@ final class ConverterTest extends \PHPUnit_Framework_TestCase
 
     public function testConvertFile() : void
     {
-        $content   = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+        $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]
 Version=5031

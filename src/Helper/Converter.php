@@ -19,9 +19,9 @@ final class Converter
      * REGEX_DELIMITER: Delimiter of all the regex patterns in the whole class.
      * REGEX_MODIFIERS: Regex modifiers.
      */
-    const REGEX_DELIMITER               = '@';
-    const REGEX_MODIFIERS               = 'i';
-    const COMPRESSION_PATTERN_START     = '@';
+    const REGEX_DELIMITER = '@';
+    const REGEX_MODIFIERS = 'i';
+    const COMPRESSION_PATTERN_START = '@';
     const COMPRESSION_PATTERN_DELIMITER = '|';
 
     /**
@@ -58,7 +58,7 @@ final class Converter
     public function __construct(LoggerInterface $logger, BrowscapCacheInterface $cache)
     {
         $this->logger = $logger;
-        $this->cache  = $cache;
+        $this->cache = $cache;
     }
 
     /**
@@ -145,7 +145,7 @@ final class Converter
     public function getIniVersion(string $iniString) : int
     {
         $quoterHelper = new Quoter();
-        $key          = $quoterHelper->pregQuote(self::BROWSCAP_VERSION_KEY);
+        $key = $quoterHelper->pregQuote(self::BROWSCAP_VERSION_KEY);
 
         if (preg_match('/\.*\[' . $key . '\][^\[]*Version=(\d+)\D.*/', $iniString, $matches)) {
             if (isset($matches[1])) {

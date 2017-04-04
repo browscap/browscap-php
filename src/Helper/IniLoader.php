@@ -10,20 +10,20 @@ final class IniLoader
 {
     const PHP_INI_LITE = 'Lite_PHP_BrowscapINI';
     const PHP_INI_FULL = 'Full_PHP_BrowscapINI';
-    const PHP_INI      = 'PHP_BrowscapINI';
+    const PHP_INI = 'PHP_BrowscapINI';
 
     /**
      * The location from which download the ini file. The placeholder for the file should be represented by a %s.
      *
      * @var string
      */
-    private $remoteIniUrl     = 'http://browscap.org/stream?q=%q';
+    private $remoteIniUrl = 'http://browscap.org/stream?q=%q';
 
     /**
      * The location to use to check out if a new version of the browscap.ini file is available.
      * @var string
      */
-    private $remoteTimeUrl    = 'http://browscap.org/version';
+    private $remoteTimeUrl = 'http://browscap.org/version';
 
     /**
      * @var string
