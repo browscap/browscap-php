@@ -1,50 +1,24 @@
 <?php
+declare(strict_types = 1);
 
 namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Command\LogfileCommand;
 use org\bovigo\vfs\vfsStream;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use WurflCache\Adapter\Memory;
 
 /**
- * Browscap.ini parsing class with caching and update capabilities
- *
- * PHP version 5
- *
- * Copyright (c) 2006-2012 Jonathan Stoppani
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @author     Vítor Brandão <noisebleed@noiselabs.org>
- * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
- * @version    3.0
- * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/browscap/browscap-php/
- * @group      command
+ * @covers \BrowscapPHP\Command\LogfileCommand
  */
-class LogfileCommandTest extends \PHPUnit_Framework_TestCase
+final class LogfileCommandTest extends \PHPUnit_Framework_TestCase
 {
     const STORAGE_DIR = 'storage';
 
     /**
-     * @var \BrowscapPHP\Command\LogfileCommand
+     * @var LogfileCommand
      */
     private $object = null;
 
@@ -52,21 +26,17 @@ class LogfileCommandTest extends \PHPUnit_Framework_TestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp()
+    public function setUp() : void
     {
-        $cacheAdapter   = new Memory();
-        $cache          = new BrowscapCache($cacheAdapter);
+        $cacheAdapter = new Memory();
+        $cache = new BrowscapCache($cacheAdapter);
 
-        $this->object = new LogfileCommand('');
-        $this->object->setCache($cache);
+        $this->object = new LogfileCommand('', $cache);
     }
 
-    /**
-     *
-     */
-    public function testConfigure()
+    public function testConfigure() : void
     {
-        $object = $this->getMockBuilder(\BrowscapPHP\Command\LogfileCommand::class)
+        $object = $this->getMockBuilder(LogfileCommand::class)
             ->disableOriginalConstructor()
             ->setMethods(['setName', 'setDescription', 'addArgument', 'addOption'])
             ->getMock();
@@ -87,21 +57,18 @@ class LogfileCommandTest extends \PHPUnit_Framework_TestCase
             ->method('addOption')
             ->will(self::returnSelf());
 
-        $class  = new \ReflectionClass('\BrowscapPHP\Command\LogfileCommand');
+        $class = new \ReflectionClass(LogfileCommand::class);
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 
         self::assertNull($method->invoke($object));
     }
 
-    /**
-     *
-     */
-    public function testExecute()
+    public function testExecute() : void
     {
         self::markTestSkipped('not ready yet');
 
-        $content   = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+        $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]
 Version=5031
@@ -226,7 +193,7 @@ AolVersion=0
             ],
         ];
 
-        $input  = $this->getMockBuilder(\Symfony\Component\Console\Input\ArgvInput::class)
+        $input = $this->getMockBuilder(ArgvInput::class)
             ->disableOriginalConstructor()
             ->setMethods(['getOption', 'getArgument'])
             ->getMock();
@@ -239,11 +206,11 @@ AolVersion=0
             ->method('getArgument')
             ->will(self::returnValue(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.txt')));
 
-        $output = $this->getMockBuilder(\Symfony\Component\Console\Output\ConsoleOutput::class)
+        $output = $this->getMockBuilder(ConsoleOutput::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $class  = new \ReflectionClass('\BrowscapPHP\Command\LogfileCommand');
+        $class = new \ReflectionClass(LogfileCommand::class);
         $method = $class->getMethod('execute');
         $method->setAccessible(true);
 

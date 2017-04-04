@@ -47,6 +47,17 @@ vendor/bin/browscap-php browscap:update
     
 If you want to autoupdate the used cache, we recommend a separate cron job that calls the command listed above.
 
+What's changed in version 4.x
+-----------------------------
+
+BC breaks listed:
+
+ * Strict type hints have been added throughout. This may break some type assumptions made in earlier versions.
+ * `CheckUpdateCommand`, `ConvertCommand`, `LogfileCommand`, `ParserCommand`, `UpdateCommand` removed `setCache` methods
+   so that caches must now be constructor-injected
+ * Many classes are now `final` - use composition instead of inheritance
+ * `PropertyFormatter` now assumes any non-truthy values are `false`
+
 What's changed in version 3.x
 -----------------------------
 

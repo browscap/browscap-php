@@ -1,31 +1,5 @@
 <?php
-/**
- * Copyright (c) 1998-2015 Browser Capabilities Project
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @category   Browscap-PHP
- * @copyright  1998-2015 Browser Capabilities Project
- * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/browscap/browscap-php/
- * @since      added with version 3.0
- */
+declare(strict_types = 1);
 
 namespace BrowscapPHP\Command;
 
@@ -54,15 +28,7 @@ use Symfony\Component\Finder\SplFileInfo;
 use WurflCache\Adapter\File;
 
 /**
- * commands to parse a log file and parse the useragents in it
- *
- * @category   Browscap-PHP
- * @author     Dave Olsen, http://dmolsen.com
- * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
- * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
- * @version    3.0
- * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/browscap/browscap-php/
+ * Commands to parse a log file and parse the useragents in it
  */
 class LogfileCommand extends Command
 {
@@ -71,49 +37,50 @@ class LogfileCommand extends Command
      */
     private $undefinedClients = [];
 
-    private $uas         = [];
+    /**
+     * @var array
+     */
+    private $uas = [];
+
+    /**
+     * @var array
+     */
     private $uasWithType = [];
 
-    private $countOk    = 0;
-    private $countNok   = 0;
+    /**
+     * @var int
+     */
+    private $countOk = 0;
+
+    /**
+     * @var int
+     */
+    private $countNok = 0;
+
+    /**
+     * @var int
+     */
     private $totalCount = 0;
 
     /**
-     * @var BrowscapCacheInterface
+     * @var ?BrowscapCacheInterface
      */
-    private $cache = null;
+    private $cache;
 
     /**
      * @var string
      */
     private $defaultCacheFolder;
 
-    /**
-     * @param string $defaultCacheFolder
-     */
-    public function __construct($defaultCacheFolder)
+    public function __construct(string $defaultCacheFolder, ?BrowscapCacheInterface $cache = null)
     {
         $this->defaultCacheFolder = $defaultCacheFolder;
+        $this->cache = $cache;
 
         parent::__construct();
     }
 
-    /**
-     * @param \BrowscapPHP\Cache\BrowscapCacheInterface $cache
-     *
-     * @return $this
-     */
-    public function setCache(BrowscapCacheInterface $cache)
-    {
-        $this->cache = $cache;
-
-        return $this;
-    }
-
-    /**
-     * Configures the current command.
-     */
-    protected function configure()
+    protected function configure() : void
     {
         $this
             ->setName('browscap:log')
@@ -165,26 +132,18 @@ class LogfileCommand extends Command
             );
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @throws \UnexpectedValueException
-     * @throws \BrowscapPHP\Exception\InvalidArgumentException
-     * @return int|null|void
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        if (!$input->getOption('log-file') && !$input->getOption('log-dir')) {
+        if (! $input->getOption('log-file') && ! $input->getOption('log-dir')) {
             throw InvalidArgumentException::oneOfCommandArguments('log-file', 'log-dir');
         }
 
         $loggerHelper = new LoggerHelper();
-        $logger       = $loggerHelper->create($input->getOption('debug'));
+        $logger = $loggerHelper->create($input->getOption('debug'));
 
-        $browscap   = new Browscap();
+        $browscap = new Browscap();
         $collection = ReaderFactory::factory();
-        $fs         = new Filesystem();
+        $fs = new Filesystem();
 
         $browscap
             ->setLogger($logger)
@@ -193,9 +152,9 @@ class LogfileCommand extends Command
         /** @var $file \Symfony\Component\Finder\SplFileInfo */
         foreach ($this->getFiles($input) as $file) {
             $this->uas = [];
-            $path      = $this->getPath($file);
+            $path = $this->getPath($file);
 
-            $this->countOk  = 0;
+            $this->countOk = 0;
             $this->countNok = 0;
 
             $logger->info('Analyzing file "' . $file->getPathname() . '"');
@@ -280,7 +239,7 @@ class LogfileCommand extends Command
         }
     }
 
-    private function createAmountContent()
+    private function createAmountContent() : string
     {
         $counts = [];
 
@@ -305,13 +264,13 @@ class LogfileCommand extends Command
         return $content;
     }
 
-    private function createAmountTypeContent()
+    private function createAmountTypeContent() : string
     {
         $content = '';
-        $types   = ['B', 'T', 'P', 'D', 'N', 'U'];
+        $types = ['B', 'T', 'P', 'D', 'N', 'U'];
 
         foreach ($types as $type) {
-            if (!isset($this->uasWithType[$type])) {
+            if (! isset($this->uasWithType[$type])) {
                 continue;
             }
 
@@ -325,21 +284,12 @@ class LogfileCommand extends Command
         return $content;
     }
 
-    /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param \BrowscapPHP\Util\Logfile\ReaderCollection        $collection
-     * @param \BrowscapPHP\Browscap                             $browscap
-     * @param int                                               $line
-     *
-     * @throws UnknownBrowserException
-     * @throws UnknownBrowserTypeException
-     * @throws UnknownDeviceException
-     * @throws UnknownEngineException
-     * @throws UnknownPlatformException
-     * @throws \Exception
-     */
-    private function handleLine(OutputInterface $output, ReaderCollection $collection, Browscap $browscap, $line)
-    {
+    private function handleLine(
+        OutputInterface $output,
+        ReaderCollection $collection,
+        Browscap $browscap,
+        int $line
+    ) : void {
         $userAgentString = '';
 
         try {
@@ -389,7 +339,7 @@ class LogfileCommand extends Command
 
         if ('.' !== $type && 'E' !== $type) {
             // count all undetected useragents grouped by detection error
-            if (!isset($this->uasWithType[$type])) {
+            if (! isset($this->uasWithType[$type])) {
                 $this->uasWithType[$type] = [];
             }
 
@@ -401,14 +351,7 @@ class LogfileCommand extends Command
         }
     }
 
-    /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param string                                            $result
-     * @param bool                                              $end
-     *
-     * @return int
-     */
-    private function outputProgress(OutputInterface $output, $result, $end = false)
+    private function outputProgress(OutputInterface $output, string $result, bool $end = false) : void
     {
         if (($this->totalCount % 70) === 0 || $end) {
             $formatString = '  %' . strlen($this->countOk) . 'd OK, %' . strlen($this->countNok) . 'd NOK, Summary %'
@@ -428,19 +371,14 @@ class LogfileCommand extends Command
         $output->write($result);
     }
 
-    /**
-     * @param \stdClass $result
-     *
-     * @return string
-     */
-    private function getResult(\stdClass $result)
+    private function getResult(\stdClass $result) : string
     {
         if ('Default Browser' === $result->browser) {
-            throw new UnknownBrowserException('unknwon browser found');
+            throw new UnknownBrowserException('Unknown browser found');
         }
 
         if ('unknown' === $result->browser_type) {
-            throw new UnknownBrowserTypeException('unknwon browser type found');
+            throw new UnknownBrowserTypeException('Unknown browser type found');
         }
 
         if (in_array($result->browser_type, ['Bot/Crawler', 'Library'])) {
@@ -448,26 +386,21 @@ class LogfileCommand extends Command
         }
 
         if ('unknown' === $result->platform) {
-            throw new UnknownPlatformException('unknown platform found');
+            throw new UnknownPlatformException('Unknown platform found');
         }
 
         if ('unknown' === $result->device_type) {
-            throw new UnknownDeviceException('unknwon device type found');
+            throw new UnknownDeviceException('Unknown device type found');
         }
 
         if ('unknown' === $result->renderingengine_name) {
-            throw new UnknownEngineException('unknown rendering engine found');
+            throw new UnknownEngineException('Unknown rendering engine found');
         }
 
         return '.';
     }
 
-    /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     *
-     * @return \Symfony\Component\Finder\Finder
-     */
-    private function getFiles(InputInterface $input)
+    private function getFiles(InputInterface $input) : Finder
     {
         $finder = Finder::create();
 
@@ -488,12 +421,7 @@ class LogfileCommand extends Command
         return $finder;
     }
 
-    /**
-     * @param \Symfony\Component\Finder\SplFileInfo $file
-     *
-     * @return string
-     */
-    private function getPath(SplFileInfo $file)
+    private function getPath(SplFileInfo $file) : string
     {
         switch ($file->getExtension()) {
             case 'gz':
@@ -510,16 +438,11 @@ class LogfileCommand extends Command
         return $path;
     }
 
-    /**
-     * @param InputInterface $input
-     *
-     * @return BrowscapCacheInterface
-     */
-    private function getCache(InputInterface $input)
+    private function getCache(InputInterface $input) : BrowscapCacheInterface
     {
         if (null === $this->cache) {
             $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
-            $this->cache  = new BrowscapCache($cacheAdapter);
+            $this->cache = new BrowscapCache($cacheAdapter);
         }
 
         return $this->cache;

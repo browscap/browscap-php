@@ -1,30 +1,5 @@
 <?php
-/**
- * Copyright (c) 1998-2015 Browser Capabilities Project
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @category   Browscap-PHP
- * @copyright  1998-2015 Browser Capabilities Project
- * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/browscap/browscap-php/
- */
+declare(strict_types = 1);
 
 namespace BrowscapPHP;
 
@@ -35,6 +10,7 @@ use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\Filesystem;
 use BrowscapPHP\Helper\IniLoader;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use WurflCache\Adapter\AdapterInterface;
@@ -42,36 +18,25 @@ use WurflCache\Adapter\File;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
- *
- * @category   Browscap-PHP
- * @author     Jonathan Stoppani <jonathan@stoppani.name>
- * @author     Vítor Brandão <noisebleed@noiselabs.org>
- * @author     Mikołaj Misiurewicz <quentin389+phpb@gmail.com>
- * @author     Christoph Ziegenberg <christoph@ziegenberg.com>
- * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
- * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
- * @version    3.0
- * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/browscap/browscap-php/
  */
-class BrowscapUpdater
+final class BrowscapUpdater
 {
     /**
      * The cache instance
      *
-     * @var \BrowscapPHP\Cache\BrowscapCacheInterface
+     * @var \BrowscapPHP\Cache\BrowscapCacheInterface|null
      */
-    private $cache = null;
+    private $cache;
 
     /**
-     * @var @var \Psr\Log\LoggerInterface
+     * @var @var \Psr\Log\LoggerInterface|null
      */
-    private $logger = null;
+    private $logger;
 
     /**
-     * @var \GuzzleHttp\Client
+     * @var \GuzzleHttp\ClientInterface|null
      */
-    private $client = null;
+    private $client;
 
     /**
      * Curl connect timeout in seconds
@@ -85,7 +50,7 @@ class BrowscapUpdater
      *
      * @return \BrowscapPHP\Cache\BrowscapCacheInterface
      */
-    public function getCache()
+    public function getCache() : BrowscapCacheInterface
     {
         if (null === $this->cache) {
             $cacheDirectory = __DIR__ . '/../resources/';
@@ -104,12 +69,10 @@ class BrowscapUpdater
      * Sets a cache instance
      *
      * @param \BrowscapPHP\Cache\BrowscapCacheInterface|\WurflCache\Adapter\AdapterInterface $cache
-     *
      * @throws \BrowscapPHP\Exception
-     *
      * @return self
      */
-    public function setCache($cache)
+    public function setCache($cache) : self
     {
         if ($cache instanceof BrowscapCacheInterface) {
             $this->cache = $cache;
@@ -133,7 +96,7 @@ class BrowscapUpdater
      *
      * @return self
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger) : self
     {
         $this->logger = $logger;
 
@@ -145,7 +108,7 @@ class BrowscapUpdater
      *
      * @return \Psr\Log\LoggerInterface
      */
-    public function getLogger()
+    public function getLogger() : LoggerInterface
     {
         if (null === $this->logger) {
             $this->logger = new NullLogger();
@@ -159,15 +122,12 @@ class BrowscapUpdater
      *
      * @param int $connectTimeout
      */
-    public function setConnectTimeout($connectTimeout)
+    public function setConnectTimeout(int $connectTimeout) : void
     {
-        $this->connectTimeout = (int) $connectTimeout;
+        $this->connectTimeout = $connectTimeout;
     }
 
-    /**
-     * @return \GuzzleHttp\Client
-     */
-    public function getClient()
+    public function getClient() : ClientInterface
     {
         if (null === $this->client) {
             $this->client = new Client();
@@ -176,10 +136,7 @@ class BrowscapUpdater
         return $this->client;
     }
 
-    /**
-     * @param \GuzzleHttp\Client $client
-     */
-    public function setClient(Client $client)
+    public function setClient(ClientInterface $client)
     {
         $this->client = $client;
     }
@@ -188,16 +145,15 @@ class BrowscapUpdater
      * reads and parses an ini file and writes the results into the cache
      *
      * @param string $iniFile
-     *
      * @throws \BrowscapPHP\Exception
      */
-    public function convertFile($iniFile)
+    public function convertFile(string $iniFile) : void
     {
         if (empty($iniFile)) {
             throw new Exception('the file name can not be empty');
         }
 
-        if (!is_readable($iniFile)) {
+        if (! is_readable($iniFile)) {
             throw new Exception('it was not possible to read the local file ' . $iniFile);
         }
 
@@ -215,10 +171,10 @@ class BrowscapUpdater
      *
      * @param string $iniString
      */
-    public function convertString($iniString)
+    public function convertString(string $iniString) : void
     {
         $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
-        $converter     = new Converter($this->getLogger(), $this->getCache());
+        $converter = new Converter($this->getLogger(), $this->getCache());
 
         $this->storeContent($converter, $iniString, $cachedVersion);
     }
@@ -226,13 +182,14 @@ class BrowscapUpdater
     /**
      * fetches a remote file and stores it into a local folder
      *
-     * @param string $file       The name of the file where to store the remote content
+     * @param string $file The name of the file where to store the remote content
      * @param string $remoteFile The code for the remote file to load
      *
      * @throws \BrowscapPHP\Exception\FetcherException
      * @throws \BrowscapPHP\Helper\Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function fetch($file, $remoteFile = IniLoader::PHP_INI)
+    public function fetch(string $file, string $remoteFile = IniLoader::PHP_INI) : void
     {
         if (null === ($cachedVersion = $this->checkUpdate())) {
             // no newer version available
@@ -244,7 +201,7 @@ class BrowscapUpdater
         $uri = (new IniLoader())->setRemoteFilename($remoteFile)->getRemoteIniUrl();
 
         /** @var \Psr\Http\Message\ResponseInterface $response */
-        $response = $this->getClient()->get($uri, ['connect_timeout' => $this->connectTimeout]);
+        $response = $this->getClient()->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
 
         if ($response->getStatusCode() !== 200) {
             throw new FetcherException(
@@ -269,7 +226,7 @@ class BrowscapUpdater
 
         $content = $this->sanitizeContent($content);
 
-        $converter  = new Converter($this->getLogger(), $this->getCache());
+        $converter = new Converter($this->getLogger(), $this->getCache());
         $iniVersion = $converter->getIniVersion($content);
 
         if ($iniVersion > $cachedVersion) {
@@ -291,8 +248,9 @@ class BrowscapUpdater
      * @throws \BrowscapPHP\Exception\FileNotFoundException
      * @throws \BrowscapPHP\Helper\Exception
      * @throws \BrowscapPHP\Exception\FetcherException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function update($remoteFile = IniLoader::PHP_INI)
+    public function update(string $remoteFile = IniLoader::PHP_INI) : void
     {
         $this->getLogger()->debug('started fetching remote file');
 
@@ -304,7 +262,7 @@ class BrowscapUpdater
         $uri = (new IniLoader())->setRemoteFilename($remoteFile)->getRemoteIniUrl();
 
         /** @var \Psr\Http\Message\ResponseInterface $response */
-        $response = $this->getClient()->get($uri, ['connect_timeout' => $this->connectTimeout]);
+        $response = $this->getClient()->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
 
         if ($response->getStatusCode() !== 200) {
             throw new FetcherException(
@@ -322,7 +280,7 @@ class BrowscapUpdater
         if (empty($content)) {
             $error = error_get_last();
 
-            throw FetcherException::httpError($uri, $error['message']);
+            throw FetcherException::httpError($uri, $error['message'] ?? '');
         }
 
         $this->getLogger()->debug('finished fetching remote file');
@@ -337,15 +295,15 @@ class BrowscapUpdater
      *
      * @throws \BrowscapPHP\Helper\Exception
      * @throws \BrowscapPHP\Exception\FetcherException
-     * @return int|null                                The actual cached version if a newer version is available, null otherwise
-     * @return int|null                                The actual cached version if a newer version is available, null otherwise
+     * @return int|null The actual cached version if a newer version is available, null otherwise
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function checkUpdate()
+    public function checkUpdate() : ?int
     {
-        $success       = null;
+        $success = null;
         $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
 
-        if (!$cachedVersion) {
+        if (! $cachedVersion) {
             // could not load version from cache
             $this->getLogger()->info('there is no cached version available, please update from remote');
 
@@ -355,7 +313,7 @@ class BrowscapUpdater
         $uri = (new IniLoader())->getRemoteVersionUrl();
 
         /** @var \Psr\Http\Message\ResponseInterface $response */
-        $response = $this->getClient()->get($uri, ['connect_timeout' => $this->connectTimeout]);
+        $response = $this->getClient()->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
 
         if ($response->getStatusCode() !== 200) {
             throw new FetcherException(
@@ -375,7 +333,7 @@ class BrowscapUpdater
             );
         }
 
-        if (!$remoteVersion) {
+        if (! $remoteVersion) {
             // could not load remote version
             $this->getLogger()->info('could not load version from remote location');
 
@@ -396,12 +354,7 @@ class BrowscapUpdater
         return (int) $cachedVersion;
     }
 
-    /**
-     * @param string $content
-     *
-     * @return mixed
-     */
-    private function sanitizeContent($content)
+    private function sanitizeContent(string $content) : string
     {
         // replace everything between opening and closing php and asp tags
         $content = preg_replace('/<[?%].*[?%]>/', '', $content);
@@ -417,12 +370,12 @@ class BrowscapUpdater
      * @param string                        $content
      * @param int|null                      $cachedVersion
      */
-    private function storeContent(Converter $converter, $content, $cachedVersion)
+    private function storeContent(Converter $converter, string $content, ?int $cachedVersion)
     {
-        $iniString  = $this->sanitizeContent($content);
+        $iniString = $this->sanitizeContent($content);
         $iniVersion = $converter->getIniVersion($iniString);
 
-        if (!$cachedVersion || $iniVersion > $cachedVersion) {
+        if (! $cachedVersion || $iniVersion > $cachedVersion) {
             $converter
                 ->storeVersion()
                 ->convertString($iniString);

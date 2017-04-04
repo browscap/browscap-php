@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace BrowscapPHPTest\Command;
 
@@ -7,46 +8,49 @@ use PHPUnit_Framework_TestCase;
 use WurflCache\Adapter\Memory;
 use WurflCache\Adapter\NullStorage;
 
-class BrowscapCacheTest extends PHPUnit_Framework_TestCase
+/**
+ * @covers \BrowscapPHP\Cache\BrowscapCache
+ */
+final class BrowscapCacheTest extends PHPUnit_Framework_TestCase
 {
-    public function testConstruct()
+    public function testConstruct() : void
     {
         $adapter = new NullStorage();
-        $cache   = new BrowscapCache($adapter);
+        $cache = new BrowscapCache($adapter);
 
-        $this->assertInstanceOf('BrowscapPHP\Cache\BrowscapCache', $cache);
+        self::assertInstanceOf(BrowscapCache::class, $cache);
     }
 
-    public function testVersion()
+    public function testVersion() : void
     {
         $adapter = new Memory();
-        $cache   = new BrowscapCache($adapter);
+        $cache = new BrowscapCache($adapter);
 
-        $this->assertNull($cache->getVersion());
+        self::assertNull($cache->getVersion());
 
         $cache->setItem('browscap.version', 6012, false);
-        $this->assertEquals(6012, $cache->getVersion());
+        self::assertEquals(6012, $cache->getVersion());
     }
 
-    public function testReleaseDate()
+    public function testReleaseDate() : void
     {
         $adapter = new Memory();
-        $cache   = new BrowscapCache($adapter);
+        $cache = new BrowscapCache($adapter);
 
-        $this->assertNull($cache->getVersion());
+        self::assertNull($cache->getVersion());
 
         $cache->setItem('browscap.releaseDate', 'Thu, 04 Feb 2016 12:59:23 +0000', false);
-        $this->assertEquals('Thu, 04 Feb 2016 12:59:23 +0000', $cache->getReleaseDate());
+        self::assertEquals('Thu, 04 Feb 2016 12:59:23 +0000', $cache->getReleaseDate());
     }
 
-    public function testType()
+    public function testType() : void
     {
         $adapter = new Memory();
-        $cache   = new BrowscapCache($adapter);
+        $cache = new BrowscapCache($adapter);
 
-        $this->assertNull($cache->getType());
+        self::assertNull($cache->getType());
 
         $cache->setItem('browscap.type', 'LITE', false);
-        $this->assertEquals('LITE', $cache->getType());
+        self::assertEquals('LITE', $cache->getType());
     }
 }
