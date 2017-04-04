@@ -11,3 +11,4 @@ PHP_BrowscapINI
 ergebnis.txt
 tests/data/*
 !tests/data/.gitkeep
+.php_cs.cache
