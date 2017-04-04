@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHP\Parser;
 
@@ -61,7 +61,7 @@ final class Ini implements ParserInterface
         foreach ($this->patternHelper->getPatterns($userAgent) as $patterns) {
             $patternToMatch = '/^(?:' . str_replace("\t", ')|(?:', $patterns) . ')$/i';
 
-            if (!preg_match($patternToMatch, $userAgent)) {
+            if (! preg_match($patternToMatch, $userAgent)) {
                 continue;
             }
 

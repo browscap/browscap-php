@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHP\Util\Logfile;
 
@@ -32,7 +32,7 @@ abstract class AbstractReader implements ReaderInterface
     {
         $matches = $this->match($line);
 
-        if (!isset($matches['userAgentString'])) {
+        if (! isset($matches['userAgentString'])) {
             throw ReaderException::userAgentParserError($line);
         }
 

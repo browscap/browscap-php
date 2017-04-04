@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHP\Command;
 
@@ -62,7 +62,7 @@ class FetchCommand extends Command
         $logger = $loggerHelper->create($input->getOption('debug'));
 
         $file = $input->getArgument('file');
-        if (!$file) {
+        if (! $file) {
             $file = $this->defaultIniFile;
         }
 

@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHP;
 
@@ -153,7 +153,7 @@ final class BrowscapUpdater
             throw new Exception('the file name can not be empty');
         }
 
-        if (!is_readable($iniFile)) {
+        if (! is_readable($iniFile)) {
             throw new Exception('it was not possible to read the local file ' . $iniFile);
         }
 
@@ -303,7 +303,7 @@ final class BrowscapUpdater
         $success = null;
         $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
 
-        if (!$cachedVersion) {
+        if (! $cachedVersion) {
             // could not load version from cache
             $this->getLogger()->info('there is no cached version available, please update from remote');
 
@@ -333,7 +333,7 @@ final class BrowscapUpdater
             );
         }
 
-        if (!$remoteVersion) {
+        if (! $remoteVersion) {
             // could not load remote version
             $this->getLogger()->info('could not load version from remote location');
 
@@ -375,7 +375,7 @@ final class BrowscapUpdater
         $iniString = $this->sanitizeContent($content);
         $iniVersion = $converter->getIniVersion($iniString);
 
-        if (!$cachedVersion || $iniVersion > $cachedVersion) {
+        if (! $cachedVersion || $iniVersion > $cachedVersion) {
             $converter
                 ->storeVersion()
                 ->convertString($iniString);

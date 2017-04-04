@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHP\Parser\Helper;
 
@@ -61,7 +61,7 @@ class GetPattern implements GetPatternInterface
         foreach ($starts as $tmpStart) {
             $tmpSubkey = SubKey::getPatternCacheSubkey($tmpStart);
 
-            if (!$this->cache->hasItem('browscap.patterns.' . $tmpSubkey, true)) {
+            if (! $this->cache->hasItem('browscap.patterns.' . $tmpSubkey, true)) {
                 $this->logger->debug('cache key "browscap.patterns.' . $tmpSubkey . '" not found');
 
                 continue;
@@ -70,13 +70,13 @@ class GetPattern implements GetPatternInterface
 
             $file = $this->cache->getItem('browscap.patterns.' . $tmpSubkey, true, $success);
 
-            if (!$success) {
+            if (! $success) {
                 $this->logger->debug('cache key "browscap.patterns.' . $tmpSubkey . '" not found');
 
                 continue;
             }
 
-            if (!is_array($file) || !count($file)) {
+            if (! is_array($file) || ! count($file)) {
                 $this->logger->debug('cache key "browscap.patterns.' . $tmpSubkey . '" was empty');
 
                 continue;

@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHP;
 
@@ -197,7 +197,7 @@ final class Browscap
         }
 
         // Automatically detect the useragent
-        if (!isset($userAgent)) {
+        if (! isset($userAgent)) {
             $support = new Helper\Support($_SERVER);
             $userAgent = $support->getUserAgent();
         }

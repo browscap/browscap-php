@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHP\Cache;
 
@@ -7,13 +7,6 @@ use WurflCache\Adapter\AdapterInterface;
 
 /**
  * a cache proxy to be able to use the cache adapters provided by the WurflCache package
- *
- * @category   Browscap-PHP
- * @author     Thomas Müller <t_mueller_stolzenhain@yahoo.de>
- * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
- * @version    3.0
- * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/browscap/browscap-php/
  */
 interface BrowscapCacheInterface
 {
@@ -62,7 +55,7 @@ interface BrowscapCacheInterface
      *
      * @return mixed Data on success, null on failure
      */
-    public function getItem(string $cacheId, bool $withVersion = true, bool & $success = null);
+    public function getItem(string $cacheId, bool $withVersion = true, ?bool &$success = null);
 
     /**
      * save the content into an php file

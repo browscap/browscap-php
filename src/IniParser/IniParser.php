@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHP\IniParser;
 
@@ -61,7 +61,7 @@ final class IniParser
             $patternhash = Pattern::getHashForParts($pattern);
             $subkey = SubKey::getIniPartCacheSubKey($patternhash);
 
-            if (!isset($contents[$subkey])) {
+            if (! isset($contents[$subkey])) {
                 $contents[$subkey] = [];
             }
 
@@ -118,7 +118,7 @@ final class IniParser
             $matches
         );
 
-        if (empty($matches[0]) || !is_array($matches[0])) {
+        if (empty($matches[0]) || ! is_array($matches[0])) {
             yield [];
 
             return;
@@ -146,11 +146,11 @@ final class IniParser
                 $patternhash = str_repeat('z', 32);
             }
 
-            if (!isset($data[$patternhash])) {
+            if (! isset($data[$patternhash])) {
                 $data[$patternhash] = [];
             }
 
-            if (!isset($data[$patternhash][$tmpLength])) {
+            if (! isset($data[$patternhash][$tmpLength])) {
                 $data[$patternhash][$tmpLength] = [];
             }
 
@@ -162,7 +162,7 @@ final class IniParser
             if (strpbrk($pattern, '0123456789') !== false) {
                 $compressedPattern = preg_replace('/\d/', '[\d]', $pattern);
 
-                if (!in_array($compressedPattern, $data[$patternhash][$tmpLength])) {
+                if (! in_array($compressedPattern, $data[$patternhash][$tmpLength])) {
                     $data[$patternhash][$tmpLength][] = $compressedPattern;
                 }
             } else {
@@ -196,7 +196,7 @@ final class IniParser
 
             $subkey = SubKey::getPatternCacheSubkey($patternhash);
 
-            if (!isset($contents[$subkey])) {
+            if (! isset($contents[$subkey])) {
                 $contents[$subkey] = [];
             }
 

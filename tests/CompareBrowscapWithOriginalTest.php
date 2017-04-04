@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHPTest;
 
@@ -82,7 +82,7 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
     {
         $objectIniPath = ini_get('browscap');
 
-        if (!is_file($objectIniPath)) {
+        if (! is_file($objectIniPath)) {
             self::markTestSkipped('browscap not defined in php.ini');
         }
 
@@ -115,7 +115,7 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 
         $diff = array_diff($libPropertyKeys, $bcPropertyKeys);
 
-        if (!empty($diff)) {
+        if (! empty($diff)) {
             self::fail(
                 'the properties found by "get_browser()" differ from found by "\BrowscapPHP\Browscap::getBrowser()" : '
                 . serialize($diff)

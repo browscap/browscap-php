@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHP\Util\Logfile;
 
@@ -14,23 +14,23 @@ final class ApacheCommonLogFormatReader extends AbstractReader
     protected function getRegex() : string
     {
         return '/^'
-            . '(\S+)'                            # remote host (IP)
+            . '(\S+)'                            // remote host (IP)
             . '\s+'
-            . '(\S+)'                            # remote logname
+            . '(\S+)'                            // remote logname
             . '\s+'
-            . '(\S+)'                            # remote user
+            . '(\S+)'                            // remote user
             . '.*'
-            . '\[([^]]+)\]'                      # date/time
+            . '\[([^]]+)\]'                      // date/time
             . '[^"]+'
-            . '\"(.*)\"'                         # Verb(GET|POST|HEAD) Path HTTP Version
+            . '\"(.*)\"'                         // Verb(GET|POST|HEAD) Path HTTP Version
             . '\s+'
-            . '(.*)'                             # Status
+            . '(.*)'                             // Status
             . '\s+'
-            . '(.*)'                             # Length (include Header)
+            . '(.*)'                             // Length (include Header)
             . '[^"]+'
-            . '\"(.*)\"'                         # Referrer
+            . '\"(.*)\"'                         // Referrer
             . '[^"]+'
-            . '\"(?P<userAgentString>.+?)\".*'   # User Agent
+            . '\"(?P<userAgentString>.+?)\".*'   // User Agent
             . '$/x';
     }
 }

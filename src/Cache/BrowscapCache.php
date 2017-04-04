@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHP\Cache;
 
@@ -116,13 +116,13 @@ final class BrowscapCache implements BrowscapCacheInterface
      *
      * @return mixed Data on success, null on failure
      */
-    public function getItem(string $cacheId, bool $withVersion = true, ?bool & $success = null)
+    public function getItem(string $cacheId, bool $withVersion = true, ?bool &$success = null)
     {
         if ($withVersion) {
             $cacheId .= '.' . $this->getVersion();
         }
 
-        if (!$this->cache->hasItem($cacheId)) {
+        if (! $this->cache->hasItem($cacheId)) {
             $success = false;
 
             return null;
@@ -131,13 +131,13 @@ final class BrowscapCache implements BrowscapCacheInterface
         $success = null;
         $data = $this->cache->getItem($cacheId, $success);
 
-        if (!$success) {
+        if (! $success) {
             $success = false;
 
             return null;
         }
 
-        if (!isset($data['content'])) {
+        if (! isset($data['content'])) {
             $success = false;
 
             return null;

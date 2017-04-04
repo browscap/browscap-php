@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHP\Parser\Helper;
 
@@ -109,7 +109,7 @@ final class GetData implements GetDataInterface
         $patternhash = Pattern::getHashForParts($pattern);
         $subkey = SubKey::getIniPartCacheSubKey($patternhash);
 
-        if (!$this->cache->hasItem('browscap.iniparts.' . $subkey, true)) {
+        if (! $this->cache->hasItem('browscap.iniparts.' . $subkey, true)) {
             $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" not found');
 
             return [];
@@ -118,13 +118,13 @@ final class GetData implements GetDataInterface
         $success = null;
         $file = $this->cache->getItem('browscap.iniparts.' . $subkey, true, $success);
 
-        if (!$success) {
+        if (! $success) {
             $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" not found');
 
             return [];
         }
 
-        if (!is_array($file) || !count($file)) {
+        if (! is_array($file) || ! count($file)) {
             $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" was empty');
 
             return [];

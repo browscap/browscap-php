@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHP\Parser\Helper;
 
@@ -41,8 +41,8 @@ final class Pattern
         $pattern = substr($pattern, 0, 32);
         $matches = [];
 
-        if (!preg_match($regex, $pattern, $matches) || !isset($matches[1])) {
-            return ($variants ? [md5('')] : md5(''));
+        if (! preg_match($regex, $pattern, $matches) || ! isset($matches[1])) {
+            return $variants ? [md5('')] : md5('');
         }
 
         $string = $matches[1];

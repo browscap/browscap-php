@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHP\Command;
 
@@ -134,7 +134,7 @@ class LogfileCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        if (!$input->getOption('log-file') && !$input->getOption('log-dir')) {
+        if (! $input->getOption('log-file') && ! $input->getOption('log-dir')) {
             throw InvalidArgumentException::oneOfCommandArguments('log-file', 'log-dir');
         }
 
@@ -270,7 +270,7 @@ class LogfileCommand extends Command
         $types = ['B', 'T', 'P', 'D', 'N', 'U'];
 
         foreach ($types as $type) {
-            if (!isset($this->uasWithType[$type])) {
+            if (! isset($this->uasWithType[$type])) {
                 continue;
             }
 
@@ -339,7 +339,7 @@ class LogfileCommand extends Command
 
         if ('.' !== $type && 'E' !== $type) {
             // count all undetected useragents grouped by detection error
-            if (!isset($this->uasWithType[$type])) {
+            if (! isset($this->uasWithType[$type])) {
                 $this->uasWithType[$type] = [];
             }
 

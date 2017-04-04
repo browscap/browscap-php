@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHP\Helper;
 
@@ -90,7 +90,7 @@ final class Converter
 
     public function convertFile(string $iniFile) : void
     {
-        if (!$this->getFilesystem()->exists($iniFile)) {
+        if (! $this->getFilesystem()->exists($iniFile)) {
             throw FileNotFoundException::fileNotFound($iniFile);
         }
 
@@ -111,7 +111,7 @@ final class Converter
 
         foreach ($iniParser->createPatterns($iniString) as $patternsHashList) {
             foreach ($patternsHashList as $subkey => $content) {
-                if (!$this->cache->setItem('browscap.patterns.' . $subkey, $content, true)) {
+                if (! $this->cache->setItem('browscap.patterns.' . $subkey, $content, true)) {
                     $this->logger->error('could not write pattern data "' . $subkey . '" to the cache');
                 }
             }
@@ -123,7 +123,7 @@ final class Converter
 
         foreach ($iniParser->createIniParts($iniString) as $patternsContentList) {
             foreach ($patternsContentList as $subkey => $content) {
-                if (!$this->cache->setItem('browscap.iniparts.' . $subkey, $content, true)) {
+                if (! $this->cache->setItem('browscap.iniparts.' . $subkey, $content, true)) {
                     $this->logger->error('could not write property data "' . $subkey . '" to the cache');
                 }
             }

@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHPTest\Command;
 
@@ -70,7 +70,7 @@ final class ConvertCommandTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $objectIniPath = ini_get('browscap');
 
-        if (!is_file($objectIniPath)) {
+        if (! is_file($objectIniPath)) {
             $this->expectException(BrowscapException::class);
             $this->expectExceptionMessage('an error occured while converting the local file into the cache');
         } else {

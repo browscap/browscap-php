@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace BrowscapPHPTest\Helper\Converter;
 
@@ -160,9 +160,6 @@ AolVersion=0
         $this->object->convertString($content);
     }
 
-    /**
-     *
-     */
     public function testConvertStringWithoutPatternFound() : void
     {
         /** @var Filesystem|\PHPUnit_Framework_MockObject_MockObject $file */
