@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace BrowscapPHPTest;
 
@@ -12,8 +13,9 @@ use WurflCache\Adapter\Memory;
  * Also compares the execution times.
  *
  * @group compare
+ * @coversNothing
  */
-class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
+final class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \BrowscapPHP\Browscap
@@ -76,12 +78,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
         'RenderingEngine_Maker' => 'unknown',
     ];
 
-    /**
-     * This method is called before the first test of this test class is run.
-     *
-     * @since Method available since Release 3.4.0
-     */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass() : void
     {
         $objectIniPath = ini_get('browscap');
 
@@ -106,7 +103,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
     /**
      * @group compare
      */
-    public function testCheckProperties()
+    public function testCheckProperties() : void
     {
         $libProperties = get_object_vars(get_browser('x'));
         $bcProperties  = get_object_vars(self::$object->getBrowser('x'));
@@ -143,9 +140,9 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             unset($libProperties[$bcProp]);
         }
 
-        self::assertSame(
+        self::assertCount(
             0,
-            count($libProperties),
+            $libProperties,
             'There are ' . count($libProperties) . '(' . implode(
                 ', ',
                 array_keys($libProperties)
@@ -155,12 +152,12 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerUserAgent
-     * @depends      testCheckProperties
+     * @depends testCheckProperties
      * @group        compare
      *
      * @param string $userAgent
      */
-    public function testCompare($userAgent)
+    public function testCompare(string $userAgent) : void
     {
         $libResult = get_browser($userAgent);
         $bcResult  = self::$object->getBrowser($userAgent);
@@ -201,7 +198,7 @@ class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
     /**
      * @return array[]
      */
-    public function providerUserAgent()
+    public function providerUserAgent() : array
     {
         return [
             ['BlackBerry7100i/4.1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/103'],

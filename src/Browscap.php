@@ -189,7 +189,7 @@ final class Browscap
      * @return \stdClass              the object containing the browsers details. Array if
      *                                $return_array is set to true.
      */
-    public function getBrowser(string $userAgent = null) : \stdClass
+    public function getBrowser(string $userAgent = null) : ?\stdClass
     {
         if (null === $this->getCache()->getVersion()) {
             // there is no active/warm cache available

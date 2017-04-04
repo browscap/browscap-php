@@ -18,7 +18,7 @@ interface FormatterInterface
     /**
      * Gets the data (in the preferred format)
      *
-     * @return \stdClass
+     * @return \stdClass|null
      */
-    public function getData() : \stdClass;
+    public function getData() : ?\stdClass;
 }

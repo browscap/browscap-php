@@ -30,7 +30,7 @@ use WurflCache\Adapter\File;
 /**
  * Commands to parse a log file and parse the useragents in it
  */
-final class LogfileCommand extends Command
+class LogfileCommand extends Command
 {
     /**
      * @var array

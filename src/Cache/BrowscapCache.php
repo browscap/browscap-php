@@ -54,7 +54,7 @@ final class BrowscapCache implements BrowscapCacheInterface
      *
      * @return int
      */
-    public function getVersion() : int
+    public function getVersion() : ?int
     {
         if ($this->version === null) {
             $success = true;
@@ -91,10 +91,8 @@ final class BrowscapCache implements BrowscapCacheInterface
 
     /**
      * Gets the type of the Browscap data
-     *
-     * @return string
      */
-    public function getType() : string
+    public function getType() : ?string
     {
         if ($this->type === null) {
             $success = true;
@@ -118,7 +116,7 @@ final class BrowscapCache implements BrowscapCacheInterface
      *
      * @return mixed Data on success, null on failure
      */
-    public function getItem(string $cacheId, bool $withVersion = true, ?bool & $success = null) : ?array
+    public function getItem(string $cacheId, bool $withVersion = true, ?bool & $success = null)
     {
         if ($withVersion) {
             $cacheId .= '.' . $this->getVersion();

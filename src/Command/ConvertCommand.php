@@ -17,7 +17,7 @@ use WurflCache\Adapter\File;
 /**
  * Command to convert a downloaded Browscap ini file and write it to the cache
  */
-final class ConvertCommand extends Command
+class ConvertCommand extends Command
 {
     /**
      * @var ?BrowscapCacheInterface

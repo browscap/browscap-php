@@ -23,13 +23,13 @@ final class PropertyFormatter
     /**
      * formats the name of a property
      *
-     * @param string $value
+     * @param string|bool $value
      * @param string $property
      *
      * @return string|bool
      * @throws \Exception
      */
-    public function formatPropertyValue(string $value, string $property)
+    public function formatPropertyValue($value, string $property)
     {
         switch ($this->propertyHolder->getPropertyType($property)) {
             case PropertyHolder::TYPE_BOOLEAN:

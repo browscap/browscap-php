@@ -1,60 +1,29 @@
 <?php
+declare(strict_types=1);
 
 namespace BrowscapPHPTest\Helper\Converter;
 
+use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Helper\Converter;
+use BrowscapPHP\Helper\Filesystem;
+use Psr\Log\LoggerInterface;
 
 /**
- * Browscap.ini parsing class with caching and update capabilities
- *
- * PHP version 5
- *
- * Copyright (c) 2006-2012 Jonathan Stoppani
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @author     Vítor Brandão <noisebleed@noiselabs.org>
- * @copyright  Copyright (c) 1998-2015 Browser Capabilities Project
- * @version    3.0
- * @license    http://www.opensource.org/licenses/MIT MIT License
- * @link       https://github.com/browscap/browscap-php/
+ * @covers \BrowscapPHP\Helper\Converter
  */
-class ConverterConvertStringTest extends \PHPUnit_Framework_TestCase
+final class ConverterConvertStringTest extends \PHPUnit_Framework_TestCase
 {
     const STORAGE_DIR = 'storage';
 
     /**
      * @var \BrowscapPHP\Helper\Converter
      */
-    private $object = null;
+    private $object;
 
-    /**
-     * @var \org\bovigo\vfs\vfsStreamDirectory
-     */
-    private $root = null;
-
-    public function setUp()
+    public function setUp() : void
     {
-        $logger = $this->getMockBuilder(\Monolog\Logger::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['info', 'error'])
-            ->getMock();
+        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        $logger = $this->createMock(LoggerInterface::class);
         $logger->expects(self::exactly(4))
                ->method('info')
                ->will(self::returnValue(false));
@@ -62,10 +31,8 @@ class ConverterConvertStringTest extends \PHPUnit_Framework_TestCase
                ->method('error')
                ->will(self::returnValue(false));
 
-        $cache = $this->getMockBuilder(\BrowscapPHP\Cache\BrowscapCache::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['setItem'])
-            ->getMock();
+        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
+        $cache = $this->createMock(BrowscapCacheInterface::class);
         $cache->expects(self::any())
               ->method('setItem')
               ->will(self::returnValue(true));
@@ -73,12 +40,9 @@ class ConverterConvertStringTest extends \PHPUnit_Framework_TestCase
         $this->object = new Converter($logger, $cache);
     }
 
-    /**
-     *
-     */
-    public function testConvertString()
+    public function testConvertString() : void
     {
-        $file = $this->getMockBuilder(\BrowscapPHP\Helper\Filesystem::class)
+        $file = $this->getMockBuilder(Filesystem::class)
             ->disableOriginalConstructor()
             ->setMethods(['exists'])
             ->getMock();
@@ -193,15 +157,16 @@ CssVersion=0
 AolVersion=0
 ';
 
-        self::assertNull($this->object->convertString($content));
+        $this->object->convertString($content);
     }
 
     /**
      *
      */
-    public function testConvertStringWithoutPatternFaound()
+    public function testConvertStringWithoutPatternFound() : void
     {
-        $file = $this->getMockBuilder(\BrowscapPHP\Helper\Filesystem::class)
+        /** @var Filesystem|\PHPUnit_Framework_MockObject_MockObject $file */
+        $file = $this->getMockBuilder(Filesystem::class)
             ->disableOriginalConstructor()
             ->setMethods(['exists'])
             ->getMock();
@@ -285,6 +250,6 @@ CssVersion=0
 AolVersion=0
 ';
 
-        self::assertNull($this->object->convertString($content));
+        $this->object->convertString($content);
     }
 }

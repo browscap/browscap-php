@@ -17,7 +17,7 @@ use WurflCache\Adapter\File;
 /**
  * commands to parse a given useragent
  */
-final class ParserCommand extends Command
+class ParserCommand extends Command
 {
     /**
      * @var ?BrowscapCacheInterface

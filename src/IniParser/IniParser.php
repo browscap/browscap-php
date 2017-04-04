@@ -65,7 +65,7 @@ final class IniParser
                 $contents[$subkey] = [];
             }
 
-            $browserProperties = parse_ini_string($iniParts[($position + 1)], INI_SCANNER_RAW);
+            $browserProperties = parse_ini_string($iniParts[($position + 1)], false, INI_SCANNER_RAW);
 
             foreach (array_keys($browserProperties) as $property) {
                 $browserProperties[$property] = $propertyFormatter->formatPropertyValue(

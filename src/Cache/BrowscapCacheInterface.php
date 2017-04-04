@@ -37,7 +37,7 @@ interface BrowscapCacheInterface
      *
      * @return int
      */
-    public function getVersion() : int;
+    public function getVersion() : ?int;
 
     /**
      * Gets the release date of the Browscap data
@@ -51,7 +51,7 @@ interface BrowscapCacheInterface
      *
      * @return string
      */
-    public function getType() : string;
+    public function getType() : ?string;
 
     /**
      * Get an item.
@@ -62,7 +62,7 @@ interface BrowscapCacheInterface
      *
      * @return mixed Data on success, null on failure
      */
-    public function getItem(string $cacheId, bool $withVersion = true, bool & $success = null) : ?array;
+    public function getItem(string $cacheId, bool $withVersion = true, bool & $success = null);
 
     /**
      * save the content into an php file

@@ -90,7 +90,7 @@ final class LegacyFormatter implements FormatterInterface
      *
      * @return \stdClass
      */
-    public function getData() : \stdClass
+    public function getData() : ?\stdClass
     {
         $output = new \stdClass();
 

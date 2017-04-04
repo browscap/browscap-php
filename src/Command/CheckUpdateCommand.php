@@ -17,7 +17,7 @@ use WurflCache\Adapter\File;
  * Command to fetch a browscap ini file from the remote host, convert it into an array and store the content in a local
  * file
  */
-final class CheckUpdateCommand extends Command
+class CheckUpdateCommand extends Command
 {
     /**
      * @var ?BrowscapCacheInterface

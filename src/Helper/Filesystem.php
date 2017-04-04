@@ -9,7 +9,7 @@ use Symfony\Component\Filesystem\Filesystem as BaseFilesystem;
 /**
  * Provides basic utility to manipulate the file system.
  */
-final class Filesystem extends BaseFilesystem
+class Filesystem extends BaseFilesystem
 {
     /**
      * Atomically dumps content into a file.

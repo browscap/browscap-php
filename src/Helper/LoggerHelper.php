@@ -24,7 +24,7 @@ final class LoggerHelper
      * @return LoggerInterface
      * @throws \Exception
      */
-    public function create(bool $debug = false) : LoggerInterface
+    public function create(?bool $debug = false) : LoggerInterface
     {
         $logger = new Logger('browscap');
 

@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Command to fetch a browscap ini file from the remote host and store the content in a local file
  */
-final class FetchCommand extends Command
+class FetchCommand extends Command
 {
     /**
      * @var string
