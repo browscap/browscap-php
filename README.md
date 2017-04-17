@@ -193,7 +193,7 @@ If you only want to check if a new version of the browscap.ini is available, you
 vendor/bin/browscap-php browscap:check-update
 ```
 
-###options
+### options
 
 - `debug` (optional) if set more messages are printed to the console
 - `cache` (optional) the relative path to your cache directory
@@ -206,7 +206,7 @@ The `fetch` command downloads an ini file from browscap.org.
 vendor/bin/browscap-php browscap:fetch
 ```
 
-###options
+### options
 
 - `debug` (optional) if set more messages are printed to the console
 - `remote-file` (optional) only required if you dont want to download the standerd file, possible values are
@@ -223,7 +223,7 @@ The `convert` command reads a local stored browscap.ini file and writes the cont
 vendor/bin/browscap-php browscap:convert
 ```
 
-###options
+### options
 
 - `file` (optional) the relative path to the local file where the remote content is stored, this should be the same file as in the fetch command
 - `debug` (optional) if set more messages are printed to the console
@@ -237,7 +237,7 @@ The `update` command downloads an ini file from browscap.org and writes the cont
 vendor/bin/browscap-php browscap:update
 ```
 
-###options
+### options
 
 - `debug` (optional) if set more messages are printed to the console
 - `remote-file`(optional) only required if you dont want to download the standerd file, possible values are
@@ -254,7 +254,7 @@ The `parse` command parses a given user agent and writes the result to the conso
 vendor/bin/browscap-php browscap:parse
 ```
 
-###options
+### options
 
 - `user-agent` (required) the user agent which should be parsed
 - `debug` (optional) if set more messages are printed to the console
@@ -268,7 +268,7 @@ The `log` command parses a single access log file or a directory with access log
 vendor/bin/browscap-php browscap:log
 ```
 
-###options
+### options
 
 - `output` (required) the path to a log file where the results are stored
 - `debug` (optional) if set more messages are printed to the console
