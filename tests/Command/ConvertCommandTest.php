@@ -98,10 +98,6 @@ class ConvertCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        if (defined('HHVM_VERSION')) {
-            self::markTestSkipped('test will fail for hhvm');
-        }
-
         $input = $this->getMockBuilder(\Symfony\Component\Console\Input\ArgvInput::class)
             ->disableOriginalConstructor()
             ->getMock();
