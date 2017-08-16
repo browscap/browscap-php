@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace BrowscapPHP\Cache;
 
-use WurflCache\Adapter\AdapterInterface;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * A cache proxy to be able to use the cache adapters provided by the WurflCache package
@@ -13,7 +13,7 @@ final class BrowscapCache implements BrowscapCacheInterface
     /**
      * Path to the cache directory
      *
-     * @var \WurflCache\Adapter\AdapterInterface
+     * @var \Psr\SimpleCache\CacheInterface
      */
     private $cache = null;
 
@@ -42,9 +42,9 @@ final class BrowscapCache implements BrowscapCacheInterface
      * Constructor class, checks for the existence of (and loads) the cache and
      * if needed updated the definitions
      *
-     * @param \WurflCache\Adapter\AdapterInterface $adapter
+     * @param \Psr\SimpleCache\CacheInterface $adapter
      */
-    public function __construct(AdapterInterface $adapter)
+    public function __construct(CacheInterface $adapter)
     {
         $this->cache = $adapter;
     }
@@ -115,6 +115,7 @@ final class BrowscapCache implements BrowscapCacheInterface
      * @param bool   $success
      *
      * @return mixed Data on success, null on failure
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function getItem(string $cacheId, bool $withVersion = true, ?bool &$success = null)
     {
@@ -122,14 +123,13 @@ final class BrowscapCache implements BrowscapCacheInterface
             $cacheId .= '.' . $this->getVersion();
         }
 
-        if (! $this->cache->hasItem($cacheId)) {
+        if (! $this->cache->has($cacheId)) {
             $success = false;
 
             return null;
         }
 
-        $success = null;
-        $data = $this->cache->getItem($cacheId, $success);
+        $data = $this->cache->get($cacheId);
 
         if (! $success) {
             $success = false;
@@ -156,6 +156,7 @@ final class BrowscapCache implements BrowscapCacheInterface
      * @param bool   $withVersion
      *
      * @return bool whether the file was correctly written to the disk
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function setItem(string $cacheId, $content, bool $withVersion = true) : bool
     {
@@ -169,7 +170,7 @@ final class BrowscapCache implements BrowscapCacheInterface
         }
 
         // Save and return
-        return $this->cache->setItem($cacheId, $data);
+        return $this->cache->set($cacheId, $data);
     }
 
     /**
@@ -179,6 +180,7 @@ final class BrowscapCache implements BrowscapCacheInterface
      * @param bool   $withVersion
      *
      * @return bool
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function hasItem(string $cacheId, bool $withVersion = true) : bool
     {
@@ -186,7 +188,7 @@ final class BrowscapCache implements BrowscapCacheInterface
             $cacheId .= '.' . $this->getVersion();
         }
 
-        return $this->cache->hasItem($cacheId);
+        return $this->cache->has($cacheId);
     }
 
     /**
@@ -196,6 +198,7 @@ final class BrowscapCache implements BrowscapCacheInterface
      * @param bool   $withVersion
      *
      * @return bool
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function removeItem(string $cacheId, bool $withVersion = true) : bool
     {
@@ -203,7 +206,7 @@ final class BrowscapCache implements BrowscapCacheInterface
             $cacheId .= '.' . $this->getVersion();
         }
 
-        return $this->cache->removeItem($cacheId);
+        return $this->cache->delete($cacheId);
     }
 
     /**
@@ -213,6 +216,6 @@ final class BrowscapCache implements BrowscapCacheInterface
      */
     public function flush() : bool
     {
-        return $this->cache->flush();
+        return $this->cache->clear();
     }
 }

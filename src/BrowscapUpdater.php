@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace BrowscapPHP;
 
 use BrowscapPHP\Cache\BrowscapCache;
-use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception\FetcherException;
 use BrowscapPHP\Exception\NoCachedVersionException;
 use BrowscapPHP\Helper\Converter;
@@ -13,9 +12,7 @@ use BrowscapPHP\Helper\IniLoader;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
-use WurflCache\Adapter\AdapterInterface;
-use WurflCache\Adapter\File;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -25,7 +22,7 @@ final class BrowscapUpdater
     /**
      * The cache instance
      *
-     * @var \BrowscapPHP\Cache\BrowscapCacheInterface|null
+     * @var \BrowscapPHP\Cache\BrowscapCacheInterface
      */
     private $cache;
 
@@ -47,75 +44,15 @@ final class BrowscapUpdater
     private $connectTimeout = 5;
 
     /**
-     * Gets a cache instance
+     * Browscap constructor.
      *
-     * @return \BrowscapPHP\Cache\BrowscapCacheInterface
+     * @param \Psr\SimpleCache\CacheInterface  $cache
+     * @param LoggerInterface $logger
      */
-    public function getCache() : BrowscapCacheInterface
+    public function __construct(CacheInterface $cache, LoggerInterface $logger)
     {
-        if (null === $this->cache) {
-            $cacheDirectory = __DIR__ . '/../resources/';
-
-            $cacheAdapter = new File(
-                [File::DIR => $cacheDirectory]
-            );
-
-            $this->cache = new BrowscapCache($cacheAdapter);
-        }
-
-        return $this->cache;
-    }
-
-    /**
-     * Sets a cache instance
-     *
-     * @param \BrowscapPHP\Cache\BrowscapCacheInterface|\WurflCache\Adapter\AdapterInterface $cache
-     * @throws \BrowscapPHP\Exception
-     * @return self
-     */
-    public function setCache($cache) : self
-    {
-        if ($cache instanceof BrowscapCacheInterface) {
-            $this->cache = $cache;
-        } elseif ($cache instanceof AdapterInterface) {
-            $this->cache = new BrowscapCache($cache);
-        } else {
-            throw new Exception(
-                'the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCacheInterface or '
-                . 'an instanceof of \WurflCache\Adapter\AdapterInterface',
-                Exception::CACHE_INCOMPATIBLE
-            );
-        }
-
-        return $this;
-    }
-
-    /**
-     * Sets a logger instance
-     *
-     * @param \Psr\Log\LoggerInterface $logger
-     *
-     * @return self
-     */
-    public function setLogger(LoggerInterface $logger) : self
-    {
+        $this->cache  = new BrowscapCache($cache);
         $this->logger = $logger;
-
-        return $this;
-    }
-
-    /**
-     * returns a logger instance
-     *
-     * @return \Psr\Log\LoggerInterface
-     */
-    public function getLogger() : LoggerInterface
-    {
-        if (null === $this->logger) {
-            $this->logger = new NullLogger();
-        }
-
-        return $this->logger;
     }
 
     /**
@@ -174,8 +111,8 @@ final class BrowscapUpdater
      */
     public function convertString(string $iniString) : void
     {
-        $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
-        $converter = new Converter($this->getLogger(), $this->getCache());
+        $cachedVersion = $this->cache->getItem('browscap.version', false, $success);
+        $converter     = new Converter($this->logger, $this->cache);
 
         $this->storeContent($converter, $iniString, $cachedVersion);
     }
@@ -201,7 +138,7 @@ final class BrowscapUpdater
             $cachedVersion = 0;
         }
 
-        $this->getLogger()->debug('started fetching remote file');
+        $this->logger->debug('started fetching remote file');
 
         $uri = (new IniLoader())->setRemoteFilename($remoteFile)->getRemoteIniUrl();
 
@@ -226,12 +163,12 @@ final class BrowscapUpdater
             throw FetcherException::httpError($uri, $error['message']);
         }
 
-        $this->getLogger()->debug('finished fetching remote file');
-        $this->getLogger()->debug('started storing remote file into local file');
+        $this->logger->debug('finished fetching remote file');
+        $this->logger->debug('started storing remote file into local file');
 
         $content = $this->sanitizeContent($content);
 
-        $converter = new Converter($this->getLogger(), $this->getCache());
+        $converter = new Converter($this->logger, $this->cache);
         $iniVersion = $converter->getIniVersion($content);
 
         if ($iniVersion > $cachedVersion) {
@@ -239,7 +176,7 @@ final class BrowscapUpdater
             $fs->dumpFile($file, $content);
         }
 
-        $this->getLogger()->debug('finished storing remote file into local file');
+        $this->logger->debug('finished storing remote file into local file');
     }
 
     /**
@@ -257,7 +194,7 @@ final class BrowscapUpdater
      */
     public function update(string $remoteFile = IniLoader::PHP_INI) : void
     {
-        $this->getLogger()->debug('started fetching remote file');
+        $this->logger->debug('started fetching remote file');
 
         try {
             if (null === ($cachedVersion = $this->checkUpdate())) {
@@ -292,9 +229,9 @@ final class BrowscapUpdater
             throw FetcherException::httpError($uri, $error['message'] ?? '');
         }
 
-        $this->getLogger()->debug('finished fetching remote file');
+        $this->logger->debug('finished fetching remote file');
 
-        $converter = new Converter($this->getLogger(), $this->getCache());
+        $converter = new Converter($this->logger, $this->cache);
 
         $this->storeContent($converter, $content, $cachedVersion);
     }
@@ -311,7 +248,7 @@ final class BrowscapUpdater
     public function checkUpdate() : ?int
     {
         $success = null;
-        $cachedVersion = $this->getCache()->getItem('browscap.version', false, $success);
+        $cachedVersion = $this->cache->getItem('browscap.version', false, $success);
 
         if (! $cachedVersion) {
             // could not load version from cache
@@ -350,12 +287,12 @@ final class BrowscapUpdater
 
         if ($cachedVersion && $remoteVersion && $remoteVersion <= $cachedVersion) {
             // no newer version available
-            $this->getLogger()->info('there is no newer version available');
+            $this->logger->info('there is no newer version available');
 
             return null;
         }
 
-        $this->getLogger()->info(
+        $this->logger->info(
             'a newer version is available, local version: ' . $cachedVersion . ', remote version: ' . $remoteVersion
         );
 

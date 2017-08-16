@@ -10,7 +10,7 @@ use BrowscapPHP\Formatter\FormatterInterface;
 use BrowscapPHP\Parser\ParserInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use WurflCache\Adapter\AdapterInterface;
+use Psr\SimpleCache\CacheInterface;
 use BrowscapPHP\Parser\Ini;
 
 /**
@@ -27,7 +27,13 @@ final class BrowscapTest extends \PHPUnit_Framework_TestCase
 
     public function setUp() : void
     {
-        $this->object = new Browscap();
+        /** @var CacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
+        $cache = $this->createMock(CacheInterface::class);
+
+        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $this->object = new Browscap($cache, $logger);
     }
 
     public function testSetGetFormatter() : void
@@ -37,40 +43,6 @@ final class BrowscapTest extends \PHPUnit_Framework_TestCase
 
         self::assertSame($this->object, $this->object->setFormatter($formatter));
         self::assertSame($formatter, $this->object->getFormatter());
-    }
-
-    public function testGetCache() : void
-    {
-        self::assertInstanceOf(BrowscapCacheInterface::class, $this->object->getCache());
-    }
-
-    public function testSetGetCache() : void
-    {
-        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
-        $cache = $this->createMock(BrowscapCacheInterface::class);
-
-        self::assertSame($this->object, $this->object->setCache($cache));
-        self::assertSame($cache, $this->object->getCache());
-    }
-
-    public function testSetGetCacheWithAdapter() : void
-    {
-        /** @var AdapterInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
-        $cache = $this->createMock(AdapterInterface::class);
-
-        self::assertSame($this->object, $this->object->setCache($cache));
-        self::assertInstanceOf(BrowscapCacheInterface::class, $this->object->getCache());
-    }
-
-    public function testSetGetCacheWithWrongType() : void
-    {
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage(
-            'the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCacheInterface or an instanceof of \WurflCache\Adapter\AdapterInterface'
-        );
-
-        /** @noinspection PhpParamsInspection */
-        $this->object->setCache('test');
     }
 
     public function testGetParser() : void
@@ -85,20 +57,6 @@ final class BrowscapTest extends \PHPUnit_Framework_TestCase
 
         self::assertSame($this->object, $this->object->setParser($parser));
         self::assertSame($parser, $this->object->getParser());
-    }
-
-    public function testGetLogger() : void
-    {
-        self::assertInstanceOf(NullLogger::class, $this->object->getLogger());
-    }
-
-    public function testSetGetLogger() : void
-    {
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->createMock(LoggerInterface::class);
-
-        self::assertSame($this->object, $this->object->setLogger($logger));
-        self::assertSame($logger, $this->object->getLogger());
     }
 
     public function testGetBrowserWithoutCache() : void

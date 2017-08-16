@@ -4,14 +4,11 @@ declare(strict_types = 1);
 namespace BrowscapPHP;
 
 use BrowscapPHP\Cache\BrowscapCache;
-use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Formatter\FormatterInterface;
 use BrowscapPHP\Helper\Quoter;
 use BrowscapPHP\Parser\ParserInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
-use WurflCache\Adapter\AdapterInterface;
-use WurflCache\Adapter\File;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -35,7 +32,7 @@ final class Browscap
     /**
      * The cache instance
      *
-     * @var \BrowscapPHP\Cache\BrowscapCacheInterface|null
+     * @var \BrowscapPHP\Cache\BrowscapCacheInterface
      */
     private $cache;
 
@@ -43,6 +40,18 @@ final class Browscap
      * @var \Psr\Log\LoggerInterface|null
      */
     private $logger;
+
+    /**
+     * Browscap constructor.
+     *
+     * @param \Psr\SimpleCache\CacheInterface  $cache
+     * @param LoggerInterface $logger
+     */
+    public function __construct(CacheInterface $cache, LoggerInterface $logger)
+    {
+        $this->cache  = new BrowscapCache($cache);
+        $this->logger = $logger;
+    }
 
     /**
      * Set theformatter instance to use for the getBrowser() result
@@ -71,51 +80,6 @@ final class Browscap
     }
 
     /**
-     * Gets a cache instance
-     *
-     * @return \BrowscapPHP\Cache\BrowscapCacheInterface
-     */
-    public function getCache() : BrowscapCacheInterface
-    {
-        if (null === $this->cache) {
-            $cacheDirectory = __DIR__ . '/../resources/';
-
-            $cacheAdapter = new File(
-                [File::DIR => $cacheDirectory]
-            );
-
-            $this->cache = new BrowscapCache($cacheAdapter);
-        }
-
-        return $this->cache;
-    }
-
-    /**
-     * Sets a cache instance
-     *
-     * @param \BrowscapPHP\Cache\BrowscapCacheInterface|\WurflCache\Adapter\AdapterInterface $cache
-     *
-     * @throws \BrowscapPHP\Exception
-     * @return \BrowscapPHP\Browscap
-     */
-    public function setCache($cache) : self
-    {
-        if ($cache instanceof BrowscapCacheInterface) {
-            $this->cache = $cache;
-        } elseif ($cache instanceof AdapterInterface) {
-            $this->cache = new BrowscapCache($cache);
-        } else {
-            throw new Exception(
-                'the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCacheInterface or '
-                . 'an instanceof of \WurflCache\Adapter\AdapterInterface',
-                Exception::CACHE_INCOMPATIBLE
-            );
-        }
-
-        return $this;
-    }
-
-    /**
      * Sets the parser instance to use
      *
      * @param \BrowscapPHP\Parser\ParserInterface $parser
@@ -137,45 +101,13 @@ final class Browscap
     public function getParser() : ParserInterface
     {
         if (null === $this->parser) {
-            $cache = $this->getCache();
-            $logger = $this->getLogger();
-            $quoter = new Quoter();
-
-            $patternHelper = new Parser\Helper\GetPattern($cache, $logger);
-            $dataHelper = new Parser\Helper\GetData($cache, $logger, $quoter);
+            $patternHelper = new Parser\Helper\GetPattern($this->cache, $this->logger);
+            $dataHelper    = new Parser\Helper\GetData($this->cache, $this->logger, new Quoter());
 
             $this->parser = new Parser\Ini($patternHelper, $dataHelper, $this->getFormatter());
         }
 
         return $this->parser;
-    }
-
-    /**
-     * Sets a logger instance
-     *
-     * @param \Psr\Log\LoggerInterface $logger
-     *
-     * @return \BrowscapPHP\Browscap
-     */
-    public function setLogger(LoggerInterface $logger) : self
-    {
-        $this->logger = $logger;
-
-        return $this;
-    }
-
-    /**
-     * returns a logger instance
-     *
-     * @return \Psr\Log\LoggerInterface
-     */
-    public function getLogger() : LoggerInterface
-    {
-        if (null === $this->logger) {
-            $this->logger = new NullLogger();
-        }
-
-        return $this->logger;
     }
 
     /**
@@ -191,7 +123,7 @@ final class Browscap
      */
     public function getBrowser(string $userAgent = null) : ?\stdClass
     {
-        if (null === $this->getCache()->getVersion()) {
+        if (null === $this->cache->getVersion()) {
             // there is no active/warm cache available
             throw new Exception('there is no active cache available, please run the update command');
         }

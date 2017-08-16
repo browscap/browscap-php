@@ -12,8 +12,7 @@ use GuzzleHttp\Psr7\Response;
 use org\bovigo\vfs\vfsStream;
 use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
-use WurflCache\Adapter\AdapterInterface;
-use WurflCache\Adapter\Memory;
+use Psr\SimpleCache\CacheInterface;
 use BrowscapPHP\Cache\BrowscapCache;
 use Psr\Log\NullLogger;
 
@@ -31,44 +30,13 @@ final class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
 
     public function setUp() : void
     {
-        $this->object = new BrowscapUpdater();
-    }
+        /** @var CacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
+        $cache = $this->createMock(CacheInterface::class);
 
-    public function testGetCache() : void
-    {
-        self::assertInstanceOf(BrowscapCacheInterface::class, $this->object->getCache());
-    }
+        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        $logger = $this->createMock(LoggerInterface::class);
 
-    public function testSetGetCache() : void
-    {
-        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
-        $cache = $this->createMock(BrowscapCacheInterface::class);
-
-        self::assertSame($this->object, $this->object->setCache($cache));
-        self::assertSame($cache, $this->object->getCache());
-    }
-
-    public function testSetGetCacheWithAdapter() : void
-    {
-        /** @var AdapterInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
-        $cache = $this->createMock(AdapterInterface::class);
-
-        self::assertSame($this->object, $this->object->setCache($cache));
-        self::assertInstanceOf(BrowscapCache::class, $this->object->getCache());
-    }
-
-    public function testSetGetCacheWithWrongType() : void
-    {
-        $this->expectException(BrowscapException::class);
-        $this->expectExceptionMessage('the cache has to be an instance of \BrowscapPHP\Cache\BrowscapCacheInterface or an instanceof of \WurflCache\Adapter\AdapterInterface');
-
-        /** @noinspection PhpParamsInspection */
-        $this->object->setCache('test');
-    }
-
-    public function testGetLogger() : void
-    {
-        self::assertInstanceOf(NullLogger::class, $this->object->getLogger());
+        $this->object = new BrowscapUpdater($cache, $logger);
     }
 
     public function testSetConnectTimeout() : void
@@ -78,15 +46,6 @@ final class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
         $this->object->setConnectTimeout($timeout);
 
         self::assertAttributeSame($timeout, 'connectTimeout', $this->object);
-    }
-
-    public function testSetGetLogger() : void
-    {
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->createMock(LoggerInterface::class);
-
-        self::assertSame($this->object, $this->object->setLogger($logger));
-        self::assertSame($logger, $this->object->getLogger());
     }
 
     public function testGetClient() : void
@@ -354,10 +313,6 @@ AolVersion=0
 
     public function testFetchFail() : void
     {
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->createMock(LoggerInterface::class);
-        $this->object->setLogger($logger);
-
         $response = $this->createMock(Response::class);
         $response->expects(self::exactly(2))->method('getStatusCode')->will(self::returnValue(500));
 
@@ -398,10 +353,6 @@ AolVersion=0
 
     public function testFetchOK() : void
     {
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->createMock(LoggerInterface::class);
-        $this->object->setLogger($logger);
-
         $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]
@@ -551,10 +502,6 @@ AolVersion=0
 
     public function testFetchSanitizeOK() : void
     {
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->createMock(LoggerInterface::class);
-        $this->object->setLogger($logger);
-
         $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]
@@ -807,17 +754,6 @@ AolVersion=0
 
     public function testUpdateFailException() : void
     {
-        if (class_exists('\Browscap\Browscap')) {
-            self::markTestSkipped(
-                'if the \Browscap\Browscap class is available the browscap.ini file is not updated from a remote '
-                . 'location'
-            );
-        }
-
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->createMock(LoggerInterface::class);
-        $this->object->setLogger($logger);
-
         $body = $this->createMock(StreamInterface::class);
         $body->expects(self::once())->method('getContents')->willReturn(false);
 
@@ -860,17 +796,6 @@ AolVersion=0
 
     public function testUpdateOk() : void
     {
-        if (class_exists('\Browscap\Browscap')) {
-            self::markTestSkipped(
-                'if the \Browscap\Browscap class is available the browscap.ini file is not updated from a remote '
-                . 'location'
-            );
-        }
-
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->createMock(LoggerInterface::class);
-        $this->object->setLogger($logger);
-
         $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]
@@ -1016,10 +941,6 @@ AolVersion=0
 
     public function testCheckUpdateWithCacheFail() : void
     {
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->createMock(LoggerInterface::class);
-        $this->object->setLogger($logger);
-
         $body = $this->createMock(StreamInterface::class);
         $body->expects(self::never())->method('getContents');
 
@@ -1065,10 +986,6 @@ AolVersion=0
 
     public function testCheckUpdateWithException() : void
     {
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->createMock(LoggerInterface::class);
-        $this->object->setLogger($logger);
-
         $body = $this->createMock(StreamInterface::class);
         $body->expects(self::once())->method('getContents')->willThrowException(new \Exception());
 
@@ -1115,10 +1032,6 @@ AolVersion=0
     {
         $version = 6000;
 
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->createMock(LoggerInterface::class);
-        $this->object->setLogger($logger);
-
         $body = $this->createMock(StreamInterface::class);
         $body->expects(self::once())->method('getContents')->willReturn($version);
 
@@ -1159,10 +1072,6 @@ AolVersion=0
 
     public function testCheckUpdateWithNewerVersion() : void
     {
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->createMock(LoggerInterface::class);
-        $this->object->setLogger($logger);
-
         $body = $this->createMock(StreamInterface::class);
         $body->expects(self::once())->method('getContents')->willReturn(6001);
 
