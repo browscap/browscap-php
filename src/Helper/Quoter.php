@@ -6,7 +6,7 @@ namespace BrowscapPHP\Helper;
 /**
  * class to help quoting strings for using a regex
  */
-final class Quoter
+final class Quoter implements QuoterInterface
 {
     /**
      * Converts browscap match patterns into preg match patterns.

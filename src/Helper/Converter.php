@@ -11,19 +11,8 @@ use Psr\Log\LoggerInterface;
 /**
  * patternHelper to convert the ini data, parses the data and stores them into the cache
  */
-final class Converter
+final class Converter implements ConverterInterface
 {
-    /**
-     * Options for regex patterns.
-     *
-     * REGEX_DELIMITER: Delimiter of all the regex patterns in the whole class.
-     * REGEX_MODIFIERS: Regex modifiers.
-     */
-    const REGEX_DELIMITER = '@';
-    const REGEX_MODIFIERS = 'i';
-    const COMPRESSION_PATTERN_START = '@';
-    const COMPRESSION_PATTERN_DELIMITER = '|';
-
     /**
      * The key to search for in the INI file to find the browscap settings
      */
@@ -55,6 +44,12 @@ final class Converter
      */
     private $iniVersion = 0;
 
+    /**
+     * Converter constructor.
+     *
+     * @param LoggerInterface        $logger
+     * @param BrowscapCacheInterface $cache
+     */
     public function __construct(LoggerInterface $logger, BrowscapCacheInterface $cache)
     {
         $this->logger = $logger;
@@ -67,11 +62,9 @@ final class Converter
      * @param Filesystem $file
      * @return self
      */
-    public function setFilesystem(Filesystem $file) : self
+    public function setFilesystem(Filesystem $file) : void
     {
         $this->filessystem = $file;
-
-        return $this;
     }
 
     /**
@@ -88,6 +81,13 @@ final class Converter
         return $this->filessystem;
     }
 
+    /**
+     * converts a file
+     *
+     * @param string $iniFile
+     *
+     * @throws FileNotFoundException
+     */
     public function convertFile(string $iniFile) : void
     {
         if (! $this->getFilesystem()->exists($iniFile)) {
@@ -103,6 +103,11 @@ final class Converter
         $this->convertString($iniString);
     }
 
+    /**
+     * converts the string content
+     *
+     * @param string $iniString
+     */
     public function convertString(string $iniString) : void
     {
         $iniParser = new IniParser();
@@ -160,21 +165,18 @@ final class Converter
      * sets the version
      *
      * @param int $version
-     * @return Converter
      */
-    public function setVersion(int $version) : self
+    public function setVersion(int $version) : void
     {
         $this->iniVersion = $version;
-        return $this;
     }
 
     /**
      * stores the version of the ini file into cache
      */
-    public function storeVersion() : self
+    public function storeVersion() : void
     {
         $this->cache->setItem('browscap.version', $this->iniVersion, false);
-        return $this;
     }
 
     /**

@@ -13,7 +13,7 @@ use Psr\SimpleCache\CacheInterface;
 /**
  * Browscap.ini parsing class with caching and update capabilities
  */
-final class Browscap
+final class Browscap implements BrowscapInterface
 {
     /**
      * Parser to use
@@ -60,11 +60,9 @@ final class Browscap
      *
      * @return \BrowscapPHP\Browscap
      */
-    public function setFormatter(Formatter\FormatterInterface $formatter) : self
+    public function setFormatter(Formatter\FormatterInterface $formatter) : void
     {
         $this->formatter = $formatter;
-
-        return $this;
     }
 
     /**
@@ -86,11 +84,9 @@ final class Browscap
      *
      * @return \BrowscapPHP\Browscap
      */
-    public function setParser(ParserInterface $parser) : self
+    public function setParser(ParserInterface $parser) : void
     {
         $this->parser = $parser;
-
-        return $this;
     }
 
     /**
@@ -121,7 +117,7 @@ final class Browscap
      * @return \stdClass              the object containing the browsers details. Array if
      *                                $return_array is set to true.
      */
-    public function getBrowser(string $userAgent = null) : ?\stdClass
+    public function getBrowser(string $userAgent = null) : \stdClass
     {
         if (null === $this->cache->getVersion()) {
             // there is no active/warm cache available
@@ -129,8 +125,8 @@ final class Browscap
         }
 
         // Automatically detect the useragent
-        if (! isset($userAgent)) {
-            $support = new Helper\Support($_SERVER);
+        if (!is_string($userAgent)) {
+            $support   = new Helper\Support($_SERVER);
             $userAgent = $support->getUserAgent();
         }
 

@@ -6,15 +6,13 @@ namespace BrowscapPHPTest;
 use BrowscapPHP\BrowscapUpdater;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception as BrowscapException;
-use BrowscapPHP\Helper\IniLoader;
+use BrowscapPHP\Helper\IniLoaderInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
 use org\bovigo\vfs\vfsStream;
 use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
-use BrowscapPHP\Cache\BrowscapCache;
-use Psr\Log\NullLogger;
 
 /**
  * @covers \BrowscapPHP\BrowscapUpdater
@@ -348,7 +346,7 @@ AolVersion=0
         $this->expectExceptionMessage(
             'an error occured while fetching version data from URI http://browscap.org/version-number: StatusCode was 500'
         );
-        $this->object->fetch(IniLoader::PHP_INI);
+        $this->object->fetch(IniLoaderInterface::PHP_INI);
     }
 
     public function testFetchOK() : void
@@ -747,9 +745,9 @@ AolVersion=0
 
         $this->object->setCache($cache);
 
-        $this->object->fetch(IniLoader::PHP_INI);
+        $this->object->fetch(IniLoaderInterface::PHP_INI);
 
-        self::assertStringEqualsFile(IniLoader::PHP_INI, $expected);
+        self::assertStringEqualsFile(IniLoaderInterface::PHP_INI, $expected);
     }
 
     public function testUpdateFailException() : void

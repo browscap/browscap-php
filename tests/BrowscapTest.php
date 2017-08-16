@@ -68,13 +68,13 @@ final class BrowscapTest extends \PHPUnit_Framework_TestCase
 
     public function testGetBrowserWithoutUa() : void
     {
-        $browserObject = new \StdClass();
-        $browserObject->parent = 'something';
-        $browserObject->comment = 'an comment';
+        $expectedResult = new \StdClass();
+        $expectedResult->parent = 'something';
+        $expectedResult->comment = 'an comment';
 
         /** @var FormatterInterface|\PHPUnit_Framework_MockObject_MockObject $formatter */
         $formatter = $this->createMock(FormatterInterface::class);
-        $formatter->expects(self::once())->method('getData')->willReturn($browserObject);
+        $formatter->expects(self::once())->method('getData')->willReturn($expectedResult);
 
         /** @var ParserInterface|\PHPUnit_Framework_MockObject_MockObject $parser */
         $parser = $this->createMock(ParserInterface::class);
@@ -89,18 +89,18 @@ final class BrowscapTest extends \PHPUnit_Framework_TestCase
         $this->object->setCache($cache);
         $result = $this->object->getBrowser();
 
-        self::assertSame($browserObject, $result);
+        self::assertSame($expectedResult, $result);
     }
 
     public function testGetBrowserWithUa() : void
     {
-        $browserObject = new \StdClass();
-        $browserObject->parent = 'something';
-        $browserObject->comment = 'an comment';
+        $expectedResult = new \StdClass();
+        $expectedResult->parent = 'something';
+        $expectedResult->comment = 'an comment';
 
         /** @var FormatterInterface|\PHPUnit_Framework_MockObject_MockObject $formatter */
         $formatter = $this->createMock(FormatterInterface::class);
-        $formatter->expects(self::once())->method('getData')->willReturn($browserObject);
+        $formatter->expects(self::once())->method('getData')->willReturn($expectedResult);
 
         /** @var ParserInterface|\PHPUnit_Framework_MockObject_MockObject $parser */
         $parser = $this->createMock(ParserInterface::class);
@@ -115,14 +115,16 @@ final class BrowscapTest extends \PHPUnit_Framework_TestCase
         $this->object->setCache($cache);
         $result = $this->object->getBrowser('Mozilla/5.0 (compatible; Ask Jeeves/Teoma)');
 
-        self::assertSame($browserObject, $result);
+        self::assertSame($expectedResult, $result);
     }
 
     public function testGetBrowserWithDefaultResult() : void
     {
+        $expectedResult = new \stdClass();
+
         /** @var FormatterInterface|\PHPUnit_Framework_MockObject_MockObject $formatter */
         $formatter = $this->createMock(FormatterInterface::class);
-        $formatter->expects(self::once())->method('getData')->willReturn(null);
+        $formatter->expects(self::once())->method('getData')->willReturn($expectedResult);
 
         /** @var ParserInterface|\PHPUnit_Framework_MockObject_MockObject $parser */
         $parser = $this->createMock(ParserInterface::class);
@@ -137,6 +139,6 @@ final class BrowscapTest extends \PHPUnit_Framework_TestCase
         $this->object->setCache($cache);
         $result = $this->object->getBrowser('Mozilla/5.0 (compatible; Ask Jeeves/Teoma)');
 
-        self::assertNull($result);
+        self::assertSame($expectedResult, $result);
     }
 }

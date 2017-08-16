@@ -29,7 +29,7 @@ final class LegacyFormatter implements FormatterInterface
      *
      * @var array
      */
-    private $settings = [];
+    private $data = [];
 
     /**
      * LegacyFormatter constructor.
@@ -48,7 +48,7 @@ final class LegacyFormatter implements FormatterInterface
      */
     public function setData(array $settings) : void
     {
-        $this->settings = $settings;
+        $this->data = $settings;
     }
 
     /**
@@ -56,11 +56,11 @@ final class LegacyFormatter implements FormatterInterface
      *
      * @return \stdClass
      */
-    public function getData() : ?\stdClass
+    public function getData() : \stdClass
     {
         $output = new \stdClass();
 
-        foreach ($this->settings as $key => $property) {
+        foreach ($this->data as $key => $property) {
             if ($this->options['lowercase']) {
                 $key = strtolower($key);
             }

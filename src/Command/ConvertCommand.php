@@ -4,15 +4,14 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\BrowscapUpdater;
-use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Helper\LoggerHelper;
+use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use WurflCache\Adapter\File;
 
 /**
  * Command to convert a downloaded Browscap ini file and write it to the cache
@@ -20,7 +19,7 @@ use WurflCache\Adapter\File;
 class ConvertCommand extends Command
 {
     /**
-     * @var ?BrowscapCacheInterface
+     * @var ?CacheInterface
      */
     private $cache;
 
@@ -37,7 +36,7 @@ class ConvertCommand extends Command
     public function __construct(
         string $defaultCacheFolder,
         string $defaultIniFile,
-        ?BrowscapCacheInterface $cache = null
+        ?CacheInterface $cache = null
     ) {
         $this->defaultCacheFolder = $defaultCacheFolder;
         $this->defaultIniFile = $defaultIniFile;
@@ -74,15 +73,11 @@ class ConvertCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $loggerHelper = new LoggerHelper();
-        $logger = $loggerHelper->create($input->getOption('debug'));
+        $logger = LoggerHelper::createDefaultLogger($input->getOption('debug'));
 
         $logger->info('initializing converting process');
 
-        $browscap = new BrowscapUpdater();
-
-        $browscap->setLogger($logger);
-        $browscap->setCache($this->getCache($input));
+        $browscap = new BrowscapUpdater($this->getCache($input), $logger);
 
         $logger->info('started converting local file');
 
@@ -93,11 +88,11 @@ class ConvertCommand extends Command
         $logger->info('finished converting local file');
     }
 
-    private function getCache(InputInterface $input) : BrowscapCacheInterface
+    private function getCache(InputInterface $input) : CacheInterface
     {
         if (null === $this->cache) {
             $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
-            $this->cache = new BrowscapCache($cacheAdapter);
+            $this->cache = new CacheInterface($cacheAdapter);
         }
 
         return $this->cache;

@@ -6,12 +6,8 @@ namespace BrowscapPHP\Helper;
 /**
  * class to load the browscap.ini
  */
-final class IniLoader
+final class IniLoader implements IniLoaderInterface
 {
-    const PHP_INI_LITE = 'Lite_PHP_BrowscapINI';
-    const PHP_INI_FULL = 'Full_PHP_BrowscapINI';
-    const PHP_INI = 'PHP_BrowscapINI';
-
     /**
      * The location from which download the ini file. The placeholder for the file should be represented by a %s.
      *
@@ -33,7 +29,7 @@ final class IniLoader
     /**
      * @var string
      */
-    private $remoteFilename = self::PHP_INI;
+    private $remoteFilename = IniLoaderInterface::PHP_INI;
 
     /**
      * sets the name of the local ini file
@@ -41,9 +37,8 @@ final class IniLoader
      * @param string $name the file name
      *
      * @throws \BrowscapPHP\Helper\Exception
-     * @return \BrowscapPHP\Helper\IniLoader
      */
-    public function setRemoteFilename(string $name)
+    public function setRemoteFilename(string $name): void
     {
         if (empty($name)) {
             throw new Exception(
@@ -53,8 +48,6 @@ final class IniLoader
         }
 
         $this->remoteFilename = $name;
-
-        return $this;
     }
 
     /**

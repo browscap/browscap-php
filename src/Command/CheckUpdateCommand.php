@@ -7,6 +7,7 @@ use BrowscapPHP\BrowscapUpdater;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Helper\LoggerHelper;
+use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,7 +21,7 @@ use WurflCache\Adapter\File;
 class CheckUpdateCommand extends Command
 {
     /**
-     * @var ?BrowscapCacheInterface
+     * @var ?CacheInterface
      */
     private $cache;
 
@@ -29,7 +30,7 @@ class CheckUpdateCommand extends Command
      */
     private $defaultCacheFolder;
 
-    public function __construct(string $defaultCacheFolder, ?BrowscapCacheInterface $cache = null)
+    public function __construct(string $defaultCacheFolder, ?CacheInterface $cache = null)
     {
         $this->defaultCacheFolder = $defaultCacheFolder;
         $this->cache = $cache;
@@ -59,25 +60,21 @@ class CheckUpdateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $loggerHelper = new LoggerHelper();
-        $logger = $loggerHelper->create($input->getOption('debug'));
+        $logger = LoggerHelper::createDefaultLogger($input->getOption('debug'));
 
         $logger->debug('started checking for new version of remote file');
 
-        $browscap = new BrowscapUpdater();
-
-        $browscap->setLogger($logger);
-        $browscap->setCache($this->getCache($input));
+        $browscap = new BrowscapUpdater($this->getCache($input), $logger);
         $browscap->checkUpdate();
 
         $logger->debug('finished checking for new version of remote file');
     }
 
-    private function getCache(InputInterface $input) : BrowscapCacheInterface
+    private function getCache(InputInterface $input) : CacheInterface
     {
         if (null === $this->cache) {
             $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
-            $this->cache = new BrowscapCache($cacheAdapter);
+            $this->cache  = new CacheInterface($cacheAdapter);
         }
 
         return $this->cache;

@@ -141,7 +141,7 @@ NOTE: Please look into the [WurflCache](https://github.com/mimmi20/WurflCache) p
 
 ```php
 $bc = new \BrowscapPHP\BrowscapUpdater();
-$bc->update(\BrowscapPHP\Helper\IniLoader::PHP_INI_FULL);
+$bc->update(\BrowscapPHP\Helper\IniLoaderInterface::PHP_INI_FULL);
 ```
 
 ## Setting up a proxy configuration

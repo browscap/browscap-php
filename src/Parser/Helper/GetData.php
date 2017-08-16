@@ -7,6 +7,7 @@ use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Data\PropertyFormatter;
 use BrowscapPHP\Data\PropertyHolder;
 use BrowscapPHP\Helper\Quoter;
+use BrowscapPHP\Helper\QuoterInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -40,7 +41,7 @@ final class GetData implements GetDataInterface
      * @param \Psr\Log\LoggerInterface                  $logger
      * @param \BrowscapPHP\Helper\Quoter                $quoter
      */
-    public function __construct(BrowscapCacheInterface $cache, LoggerInterface $logger, Quoter $quoter)
+    public function __construct(BrowscapCacheInterface $cache, LoggerInterface $logger, QuoterInterface $quoter)
     {
         $this->cache = $cache;
         $this->logger = $logger;

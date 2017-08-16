@@ -33,16 +33,16 @@ final class Pattern
      *
      * @param  string       $pattern
      * @param  bool         $variants
-     * @return string|array
+     * @return array
      */
-    public static function getHashForPattern(string $pattern, bool $variants = false)
+    public static function getHashForPattern(string $pattern, bool $variants = false) : array
     {
         $regex = '/^([^\.\*\?\s\r\n\\\\]+).*$/';
         $pattern = substr($pattern, 0, 32);
         $matches = [];
 
         if (! preg_match($regex, $pattern, $matches) || ! isset($matches[1])) {
-            return $variants ? [md5('')] : md5('');
+            return [md5('')];
         }
 
         $string = $matches[1];
@@ -62,7 +62,7 @@ final class Pattern
             return $patternStarts;
         }
 
-        return md5($string);
+        return [md5($string)];
     }
 
     /**

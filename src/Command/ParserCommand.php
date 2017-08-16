@@ -4,15 +4,14 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\Browscap;
-use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Helper\LoggerHelper;
+use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use WurflCache\Adapter\File;
 
 /**
  * commands to parse a given useragent
@@ -20,7 +19,7 @@ use WurflCache\Adapter\File;
 class ParserCommand extends Command
 {
     /**
-     * @var ?BrowscapCacheInterface
+     * @var ?CacheInterface
      */
     private $cache;
 
@@ -29,7 +28,7 @@ class ParserCommand extends Command
      */
     private $defaultCacheFolder;
 
-    public function __construct($defaultCacheFolder, ?BrowscapCacheInterface $cache = null)
+    public function __construct(string $defaultCacheFolder, ?CacheInterface $cache = null)
     {
         $this->defaultCacheFolder = $defaultCacheFolder;
         $this->cache = $cache;
@@ -65,25 +64,20 @@ class ParserCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $loggerHelper = new LoggerHelper();
-        $logger = $loggerHelper->create($input->getOption('debug'));
+        $logger = LoggerHelper::createDefaultLogger($input->getOption('debug'));
 
-        $browscap = new Browscap();
-
-        $browscap
-            ->setLogger($logger)
-            ->setCache($this->getCache($input));
+        $browscap = new Browscap($this->getCache($input), $logger);
 
         $result = $browscap->getBrowser($input->getArgument('user-agent'));
 
         $output->writeln(json_encode($result, JSON_PRETTY_PRINT));
     }
 
-    private function getCache(InputInterface $input) : BrowscapCacheInterface
+    private function getCache(InputInterface $input) : CacheInterface
     {
         if (null === $this->cache) {
             $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
-            $this->cache = new BrowscapCache($cacheAdapter);
+            $this->cache = new CacheInterface($cacheAdapter);
         }
 
         return $this->cache;

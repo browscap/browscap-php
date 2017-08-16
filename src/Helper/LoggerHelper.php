@@ -17,6 +17,10 @@ use Psr\Log\LoggerInterface;
  */
 final class LoggerHelper
 {
+    private function __construct()
+    {
+    }
+
     /**
      * creates a \Monolog\Logger instance
      *
@@ -24,7 +28,7 @@ final class LoggerHelper
      * @return LoggerInterface
      * @throws \Exception
      */
-    public function create(?bool $debug = false) : LoggerInterface
+    public static function createDefaultLogger(?bool $debug = false) : LoggerInterface
     {
         $logger = new Logger('browscap');
 

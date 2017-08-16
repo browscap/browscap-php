@@ -7,8 +7,10 @@ use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Exception\FetcherException;
 use BrowscapPHP\Exception\NoCachedVersionException;
 use BrowscapPHP\Helper\Converter;
+use BrowscapPHP\Helper\ConverterInterface;
 use BrowscapPHP\Helper\Filesystem;
 use BrowscapPHP\Helper\IniLoader;
+use BrowscapPHP\Helper\IniLoaderInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Psr\Log\LoggerInterface;
@@ -17,8 +19,10 @@ use Psr\SimpleCache\CacheInterface;
 /**
  * Browscap.ini parsing class with caching and update capabilities
  */
-final class BrowscapUpdater
+final class BrowscapUpdater implements BrowscapUpdaterInterface
 {
+    const TIMEOUT = 5;
+
     /**
      * The cache instance
      *
@@ -41,42 +45,32 @@ final class BrowscapUpdater
      *
      * @var int
      */
-    private $connectTimeout = 5;
+    private $connectTimeout = self::TIMEOUT;
 
     /**
      * Browscap constructor.
      *
-     * @param \Psr\SimpleCache\CacheInterface  $cache
-     * @param LoggerInterface $logger
+     * @param \Psr\SimpleCache\CacheInterface $cache
+     * @param LoggerInterface                 $logger
+     * @param ClientInterface|null            $client
+     * @param int                             $connectTimeout
      */
-    public function __construct(CacheInterface $cache, LoggerInterface $logger)
+    public function __construct(
+        CacheInterface $cache,
+        LoggerInterface $logger,
+        ClientInterface $client = null,
+        int $connectTimeout = self::TIMEOUT
+    )
     {
         $this->cache  = new BrowscapCache($cache);
         $this->logger = $logger;
-    }
 
-    /**
-     * Sets the Connection Timeout
-     *
-     * @param int $connectTimeout
-     */
-    public function setConnectTimeout(int $connectTimeout) : void
-    {
-        $this->connectTimeout = $connectTimeout;
-    }
-
-    public function getClient() : ClientInterface
-    {
-        if (null === $this->client) {
-            $this->client = new Client();
+        if (null === $client) {
+            $client = new Client();
         }
 
-        return $this->client;
-    }
-
-    public function setClient(ClientInterface $client)
-    {
-        $this->client = $client;
+        $this->client         = $client;
+        $this->connectTimeout = $connectTimeout;
     }
 
     /**
@@ -127,7 +121,7 @@ final class BrowscapUpdater
      * @throws \BrowscapPHP\Helper\Exception
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function fetch(string $file, string $remoteFile = IniLoader::PHP_INI) : void
+    public function fetch(string $file, string $remoteFile = IniLoaderInterface::PHP_INI) : void
     {
         try {
             if (null === ($cachedVersion = $this->checkUpdate())) {
@@ -140,10 +134,13 @@ final class BrowscapUpdater
 
         $this->logger->debug('started fetching remote file');
 
-        $uri = (new IniLoader())->setRemoteFilename($remoteFile)->getRemoteIniUrl();
+        $loader = new IniLoader();
+        $loader->setRemoteFilename($remoteFile);
+
+        $uri = $loader->getRemoteIniUrl();
 
         /** @var \Psr\Http\Message\ResponseInterface $response */
-        $response = $this->getClient()->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
+        $response = $this->client->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
 
         if ($response->getStatusCode() !== 200) {
             throw new FetcherException(
@@ -192,7 +189,7 @@ final class BrowscapUpdater
      * @throws \BrowscapPHP\Exception\FetcherException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function update(string $remoteFile = IniLoader::PHP_INI) : void
+    public function update(string $remoteFile = IniLoaderInterface::PHP_INI) : void
     {
         $this->logger->debug('started fetching remote file');
 
@@ -205,10 +202,13 @@ final class BrowscapUpdater
             $cachedVersion = 0;
         }
 
-        $uri = (new IniLoader())->setRemoteFilename($remoteFile)->getRemoteIniUrl();
+        $loader = new IniLoader();
+        $loader->setRemoteFilename($remoteFile);
+
+        $uri = $loader->getRemoteIniUrl();
 
         /** @var \Psr\Http\Message\ResponseInterface $response */
-        $response = $this->getClient()->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
+        $response = $this->client->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
 
         if ($response->getStatusCode() !== 200) {
             throw new FetcherException(
@@ -258,7 +258,7 @@ final class BrowscapUpdater
         $uri = (new IniLoader())->getRemoteVersionUrl();
 
         /** @var \Psr\Http\Message\ResponseInterface $response */
-        $response = $this->getClient()->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
+        $response = $this->client->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
 
         if ($response->getStatusCode() !== 200) {
             throw new FetcherException(
@@ -311,19 +311,18 @@ final class BrowscapUpdater
     /**
      * reads and parses an ini string and writes the results into the cache
      *
-     * @param \BrowscapPHP\Helper\Converter $converter
-     * @param string                        $content
-     * @param int|null                      $cachedVersion
+     * @param \BrowscapPHP\Helper\ConverterInterface $converter
+     * @param string                                 $content
+     * @param int|null                               $cachedVersion
      */
-    private function storeContent(Converter $converter, string $content, ?int $cachedVersion)
+    private function storeContent(ConverterInterface $converter, string $content, ?int $cachedVersion)
     {
-        $iniString = $this->sanitizeContent($content);
+        $iniString  = $this->sanitizeContent($content);
         $iniVersion = $converter->getIniVersion($iniString);
 
         if (! $cachedVersion || $iniVersion > $cachedVersion) {
-            $converter
-                ->storeVersion()
-                ->convertString($iniString);
+            $converter->storeVersion();
+            $converter->convertString($iniString);
         }
     }
 }

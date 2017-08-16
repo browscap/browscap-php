@@ -13,13 +13,11 @@ class LoggerHelperTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreate() : void
     {
-        $helper = new LoggerHelper();
-        self::assertInstanceOf(Logger::class, $helper->create());
+        self::assertInstanceOf(Logger::class, LoggerHelper::createDefaultLogger());
     }
 
     public function testCreateInDebugMode() : void
     {
-        $helper = new LoggerHelper();
-        self::assertInstanceOf(Logger::class, $helper->create(true));
+        self::assertInstanceOf(Logger::class, LoggerHelper::createDefaultLogger(true));
     }
 }

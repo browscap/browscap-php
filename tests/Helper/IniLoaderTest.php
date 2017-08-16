@@ -5,6 +5,7 @@ namespace BrowscapPHPTest\Helper;
 
 use BrowscapPHP\Helper\Exception;
 use BrowscapPHP\Helper\IniLoader;
+use BrowscapPHP\Helper\IniLoaderInterface;
 
 /**
  * @covers \BrowscapPHP\Helper\IniLoader
@@ -35,13 +36,13 @@ final class IniLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetRemoteIniUrl() : void
     {
-        $this->object->setRemoteFilename(IniLoader::PHP_INI_LITE);
+        $this->object->setRemoteFilename(IniLoaderInterface::PHP_INI_LITE);
         self::assertSame('http://browscap.org/stream?q=Lite_PHP_BrowscapINI', $this->object->getRemoteIniUrl());
 
-        $this->object->setRemoteFilename(IniLoader::PHP_INI);
+        $this->object->setRemoteFilename(IniLoaderInterface::PHP_INI);
         self::assertSame('http://browscap.org/stream?q=PHP_BrowscapINI', $this->object->getRemoteIniUrl());
 
-        $this->object->setRemoteFilename(IniLoader::PHP_INI_FULL);
+        $this->object->setRemoteFilename(IniLoaderInterface::PHP_INI_FULL);
         self::assertSame('http://browscap.org/stream?q=Full_PHP_BrowscapINI', $this->object->getRemoteIniUrl());
     }
 

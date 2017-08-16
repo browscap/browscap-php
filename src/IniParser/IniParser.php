@@ -12,19 +12,8 @@ use BrowscapPHP\Parser\Helper\SubKey;
 /**
  * Ini parser class (compatible with PHP 5.3+)
  */
-final class IniParser
+final class IniParser implements ParserInterface
 {
-    /**
-     * Options for regex patterns.
-     *
-     * REGEX_DELIMITER: Delimiter of all the regex patterns in the whole class.
-     * REGEX_MODIFIERS: Regex modifiers.
-     */
-    const REGEX_DELIMITER = '@';
-    const REGEX_MODIFIERS = 'i';
-    const COMPRESSION_PATTERN_START = '@';
-    const COMPRESSION_PATTERN_DELIMITER = '|';
-
     /**
      * Number of pattern to combine for a faster regular expression search.
      *
@@ -138,7 +127,7 @@ final class IniParser
             }
 
             $pattern = strtolower($pattern);
-            $patternhash = Pattern::getHashForPattern($pattern, false);
+            $patternhash = Pattern::getHashForPattern($pattern, false)[0];
             $tmpLength = Pattern::getPatternLength($pattern);
 
             // special handling of default entry

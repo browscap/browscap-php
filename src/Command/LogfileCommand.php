@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\Browscap;
-use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception\InvalidArgumentException;
 use BrowscapPHP\Exception\ReaderException;
@@ -17,6 +16,7 @@ use BrowscapPHP\Helper\Filesystem;
 use BrowscapPHP\Helper\LoggerHelper;
 use BrowscapPHP\Util\Logfile\ReaderCollection;
 use BrowscapPHP\Util\Logfile\ReaderFactory;
+use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,7 +25,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use WurflCache\Adapter\File;
 
 /**
  * Commands to parse a log file and parse the useragents in it
@@ -63,7 +62,7 @@ class LogfileCommand extends Command
     private $totalCount = 0;
 
     /**
-     * @var ?BrowscapCacheInterface
+     * @var ?CacheInterface
      */
     private $cache;
 
@@ -72,7 +71,7 @@ class LogfileCommand extends Command
      */
     private $defaultCacheFolder;
 
-    public function __construct(string $defaultCacheFolder, ?BrowscapCacheInterface $cache = null)
+    public function __construct(string $defaultCacheFolder, ?CacheInterface $cache = null)
     {
         $this->defaultCacheFolder = $defaultCacheFolder;
         $this->cache = $cache;
@@ -138,16 +137,11 @@ class LogfileCommand extends Command
             throw InvalidArgumentException::oneOfCommandArguments('log-file', 'log-dir');
         }
 
-        $loggerHelper = new LoggerHelper();
-        $logger = $loggerHelper->create($input->getOption('debug'));
+        $logger = LoggerHelper::createDefaultLogger($input->getOption('debug'));
 
-        $browscap = new Browscap();
+        $browscap = new Browscap($this->getCache($input), $logger);
         $collection = ReaderFactory::factory();
         $fs = new Filesystem();
-
-        $browscap
-            ->setLogger($logger)
-            ->setCache($this->getCache($input));
 
         /** @var $file \Symfony\Component\Finder\SplFileInfo */
         foreach ($this->getFiles($input) as $file) {
@@ -438,11 +432,11 @@ class LogfileCommand extends Command
         return $path;
     }
 
-    private function getCache(InputInterface $input) : BrowscapCacheInterface
+    private function getCache(InputInterface $input) : CacheInterface
     {
         if (null === $this->cache) {
             $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
-            $this->cache = new BrowscapCache($cacheAdapter);
+            $this->cache = new CacheInterface($cacheAdapter);
         }
 
         return $this->cache;
