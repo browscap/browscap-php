@@ -5,8 +5,9 @@ namespace BrowscapPHPTest;
 
 use BrowscapPHP\Browscap;
 use BrowscapPHP\BrowscapUpdater;
-use BrowscapPHP\Cache\BrowscapCache;
-use WurflCache\Adapter\Memory;
+use Doctrine\Common\Cache\ArrayCache;
+use Psr\Log\NullLogger;
+use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 
 /**
  * Compares get_browser results for all matches in browscap.ini with results from Browscap class.
@@ -86,18 +87,16 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
             self::markTestSkipped('browscap not defined in php.ini');
         }
 
+        $memoryCache = new ArrayCache();
+        $cache = new SimpleCacheAdapter($memoryCache);
+
+        $logger = new NullLogger();
+
         // Now, load an INI file into BrowscapPHP\Browscap for testing the UAs
-        self::$object = new Browscap();
+        self::$object = new Browscap($cache, $logger);
 
-        $cacheAdapter = new Memory();
-        $cache = new BrowscapCache($cacheAdapter);
-        $cache->flush();
-
-        $updater = new BrowscapUpdater();
-        $updater->setCache($cache);
+        $updater = new BrowscapUpdater($cache, $logger);
         $updater->convertFile($objectIniPath);
-
-        self::$object->setCache($cache);
     }
 
     /**
