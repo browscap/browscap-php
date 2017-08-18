@@ -42,6 +42,7 @@ final class ConverterConvertStringTest extends \PHPUnit_Framework_TestCase
 
     public function testConvertString() : void
     {
+        /** @var Filesystem $file */
         $file = $this->getMockBuilder(Filesystem::class)
             ->disableOriginalConstructor()
             ->setMethods(['exists'])

@@ -6,7 +6,6 @@ namespace BrowscapPHP\Parser\Helper;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Data\PropertyFormatter;
 use BrowscapPHP\Data\PropertyHolder;
-use BrowscapPHP\Helper\Quoter;
 use BrowscapPHP\Helper\QuoterInterface;
 use Psr\Log\LoggerInterface;
 
@@ -39,7 +38,7 @@ final class GetData implements GetDataInterface
      *
      * @param \BrowscapPHP\Cache\BrowscapCacheInterface $cache
      * @param \Psr\Log\LoggerInterface                  $logger
-     * @param \BrowscapPHP\Helper\Quoter                $quoter
+     * @param \BrowscapPHP\Helper\QuoterInterface       $quoter
      */
     public function __construct(BrowscapCacheInterface $cache, LoggerInterface $logger, QuoterInterface $quoter)
     {
@@ -80,6 +79,7 @@ final class GetData implements GetDataInterface
 
         // check if parent pattern set, only keep the first one
         $parentPattern = null;
+
         if (isset($addedSettings['Parent'])) {
             $parentPattern = $addedSettings['Parent'];
 
@@ -91,7 +91,7 @@ final class GetData implements GetDataInterface
         // merge settings
         $settings += $addedSettings;
 
-        if ($parentPattern !== null) {
+        if (is_string($parentPattern)) {
             return $this->getSettings($this->quoter->pregQuote($parentPattern), $settings);
         }
 

@@ -4,6 +4,8 @@ declare(strict_types = 1);
 namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Command\FetchCommand;
+use Doctrine\Common\Cache\ArrayCache;
+use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -23,9 +25,12 @@ final class FetchCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp() : void
     {
+        $memoryCache = new ArrayCache();
+        $cache = new SimpleCacheAdapter($memoryCache);
+
         $defaultIniFile = 'resources/browscap.ini';
 
-        $this->object = new FetchCommand($defaultIniFile);
+        $this->object = new FetchCommand('', $defaultIniFile, $cache);
     }
 
     public function testConfigure() : void
@@ -47,7 +52,7 @@ final class FetchCommandTest extends \PHPUnit_Framework_TestCase
             ->method('addArgument')
             ->will(self::returnSelf());
         $object
-            ->expects(self::exactly(2))
+            ->expects(self::exactly(3))
             ->method('addOption')
             ->will(self::returnSelf());
 

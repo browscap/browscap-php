@@ -3,9 +3,9 @@ declare(strict_types = 1);
 
 namespace BrowscapPHPTest\Command;
 
-use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Command\CheckUpdateCommand;
-use WurflCache\Adapter\Memory;
+use Doctrine\Common\Cache\ArrayCache;
+use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 
 final class CheckUpdateCommandTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,8 +20,8 @@ final class CheckUpdateCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp() : void
     {
-        $cacheAdapter = new Memory();
-        $cache = new BrowscapCache($cacheAdapter);
+        $memoryCache = new ArrayCache();
+        $cache = new SimpleCacheAdapter($memoryCache);
 
         $this->object = new CheckUpdateCommand('', $cache);
     }

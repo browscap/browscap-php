@@ -4,10 +4,12 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\BrowscapUpdater;
-use BrowscapPHP\Helper\IniLoader;
 use BrowscapPHP\Helper\IniLoaderInterface;
 use BrowscapPHP\Helper\LoggerHelper;
+use Doctrine\Common\Cache\FilesystemCache;
+use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
+use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,11 +36,21 @@ class FetchCommand extends Command
      */
     private $defaultCacheFolder;
 
-    public function __construct(string $defaultCacheFolder, string $defaultIniFile, ?CacheInterface $cache = null)
-    {
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(
+        string $defaultCacheFolder,
+        string $defaultIniFile,
+        ?CacheInterface $cache = null,
+        ?LoggerInterface $logger = null
+    ) {
         $this->defaultCacheFolder = $defaultCacheFolder;
         $this->defaultIniFile = $defaultIniFile;
         $this->cache = $cache;
+        $this->logger = $logger;
 
         parent::__construct();
     }
@@ -79,7 +91,7 @@ class FetchCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $logger = LoggerHelper::createDefaultLogger($input->getOption('debug'));
+        $logger = $this->getLogger($input);
 
         $file = $input->getArgument('file');
         if (! $file) {
@@ -97,10 +109,19 @@ class FetchCommand extends Command
     private function getCache(InputInterface $input) : CacheInterface
     {
         if (null === $this->cache) {
-            $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
-            $this->cache = new CacheInterface($cacheAdapter);
+            $fileCache = new FilesystemCache($input->getOption('cache'));
+            $this->cache = new SimpleCacheAdapter($fileCache);
         }
 
         return $this->cache;
+    }
+
+    private function getLogger(InputInterface $input) : LoggerInterface
+    {
+        if (null === $this->logger) {
+            $this->logger = LoggerHelper::createDefaultLogger($input->getOption('debug'));
+        }
+
+        return $this->logger;
     }
 }

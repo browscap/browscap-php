@@ -77,7 +77,7 @@ final class IniParser implements ParserInterface
         foreach ($contents as $subkey => $cacheContent) {
             $subkey = (string) $subkey;
 
-            yield [$subkey => $cacheContent];
+            yield $subkey => $cacheContent;
 
             unset($subkeys[$subkey]);
         }
@@ -85,7 +85,7 @@ final class IniParser implements ParserInterface
         foreach (array_keys($subkeys) as $subkey) {
             $subkey = (string) $subkey;
 
-            yield [$subkey => []];
+            yield $subkey => '';
         }
     }
 
@@ -108,7 +108,7 @@ final class IniParser implements ParserInterface
         );
 
         if (empty($matches[0]) || ! is_array($matches[0])) {
-            yield [];
+            yield '' => '';
 
             return;
         }
@@ -208,7 +208,7 @@ final class IniParser implements ParserInterface
         foreach ($contents as $subkey => $content) {
             $subkey = (string) $subkey;
 
-            yield [$subkey => $content];
+            yield $subkey => $content;
 
             unset($subkeys[$subkey]);
         }
@@ -216,7 +216,7 @@ final class IniParser implements ParserInterface
         foreach (array_keys($subkeys) as $subkey) {
             $subkey = (string) $subkey;
 
-            yield [$subkey => []];
+            yield $subkey => '';
         }
     }
 

@@ -33,7 +33,7 @@ final class Pattern
      *
      * @param  string       $pattern
      * @param  bool         $variants
-     * @return array
+     * @return string[]
      */
     public static function getHashForPattern(string $pattern, bool $variants = false) : array
     {

@@ -19,7 +19,7 @@ interface IniLoaderInterface
      *
      * @throws \BrowscapPHP\Helper\Exception
      */
-    public function setRemoteFilename(string $name): void;
+    public function setRemoteFilename(string $name) : void;
 
     /**
      * returns the of the remote location for updating the ini file

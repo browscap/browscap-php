@@ -26,12 +26,7 @@ final class IniLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('the filename can not be empty');
-        self::assertSame($this->object, $this->object->setRemoteFilename(''));
-    }
-
-    public function testSetRemoteFilename() : void
-    {
-        self::assertSame($this->object, $this->object->setRemoteFilename('testFile'));
+        $this->object->setRemoteFilename('');
     }
 
     public function testGetRemoteIniUrl() : void

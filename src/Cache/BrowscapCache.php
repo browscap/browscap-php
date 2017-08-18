@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Cache;
 
 use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 /**
  * A cache proxy to be able to use the cache adapters provided by the WurflCache package
@@ -57,7 +58,7 @@ final class BrowscapCache implements BrowscapCacheInterface
     public function getVersion() : ?int
     {
         if ($this->version === null) {
-            $success = true;
+            $success = null;
 
             $version = $this->getItem('browscap.version', false, $success);
 
@@ -72,12 +73,12 @@ final class BrowscapCache implements BrowscapCacheInterface
     /**
      * Gets the release date of the Browscap data
      *
-     * @return string
+     * @return string|null
      */
-    public function getReleaseDate() : string
+    public function getReleaseDate() : ?string
     {
         if ($this->releaseDate === null) {
-            $success = true;
+            $success = null;
 
             $releaseDate = $this->getItem('browscap.releaseDate', false, $success);
 
@@ -95,7 +96,7 @@ final class BrowscapCache implements BrowscapCacheInterface
     public function getType() : ?string
     {
         if ($this->type === null) {
-            $success = true;
+            $success = null;
 
             $type = $this->getItem('browscap.type', false, $success);
 
@@ -112,7 +113,7 @@ final class BrowscapCache implements BrowscapCacheInterface
      *
      * @param string $cacheId
      * @param bool   $withVersion
-     * @param bool   $success
+     * @param bool   &$success
      *
      * @return mixed Data on success, null on failure
      * @throws \Psr\SimpleCache\InvalidArgumentException
@@ -123,21 +124,27 @@ final class BrowscapCache implements BrowscapCacheInterface
             $cacheId .= '.' . $this->getVersion();
         }
 
-        if (! $this->cache->has($cacheId)) {
+        try {
+            if (! $this->cache->has($cacheId)) {
+                $success = false;
+
+                return null;
+            }
+        } catch (InvalidArgumentException $e) {
             $success = false;
 
             return null;
         }
 
-        $data = $this->cache->get($cacheId);
-
-        if (! $success) {
+        try {
+            $data = $this->cache->get($cacheId);
+        } catch (InvalidArgumentException $e) {
             $success = false;
 
             return null;
         }
 
-        if (! isset($data['content'])) {
+        if (! is_array($data) || ! array_key_exists('content', $data)) {
             $success = false;
 
             return null;
@@ -169,8 +176,14 @@ final class BrowscapCache implements BrowscapCacheInterface
             $cacheId .= '.' . $this->getVersion();
         }
 
-        // Save and return
-        return $this->cache->set($cacheId, $data);
+        try {
+            // Save and return
+            return $this->cache->set($cacheId, $data);
+        } catch (InvalidArgumentException $e) {
+            // do nothing here
+        }
+
+        return false;
     }
 
     /**
@@ -188,7 +201,14 @@ final class BrowscapCache implements BrowscapCacheInterface
             $cacheId .= '.' . $this->getVersion();
         }
 
-        return $this->cache->has($cacheId);
+
+        try {
+            return $this->cache->has($cacheId);
+        } catch (InvalidArgumentException $e) {
+            // do nothing here
+        }
+
+        return false;
     }
 
     /**
@@ -206,7 +226,13 @@ final class BrowscapCache implements BrowscapCacheInterface
             $cacheId .= '.' . $this->getVersion();
         }
 
-        return $this->cache->delete($cacheId);
+        try {
+            return $this->cache->delete($cacheId);
+        } catch (InvalidArgumentException $e) {
+            // do nothing here
+        }
+
+        return false;
     }
 
     /**

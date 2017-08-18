@@ -4,15 +4,18 @@ declare(strict_types = 1);
 namespace BrowscapPHPTest;
 
 use BrowscapPHP\BrowscapUpdater;
+use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception as BrowscapException;
 use BrowscapPHP\Helper\IniLoaderInterface;
+use Doctrine\Common\Cache\ArrayCache;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
 use org\bovigo\vfs\vfsStream;
 use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
+use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 
 /**
  * @covers \BrowscapPHP\BrowscapUpdater
@@ -35,29 +38,6 @@ final class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
         $logger = $this->createMock(LoggerInterface::class);
 
         $this->object = new BrowscapUpdater($cache, $logger);
-    }
-
-    public function testSetConnectTimeout() : void
-    {
-        $timeout = random_int(1, 100);
-
-        $this->object->setConnectTimeout($timeout);
-
-        self::assertAttributeSame($timeout, 'connectTimeout', $this->object);
-    }
-
-    public function testGetClient() : void
-    {
-        self::assertInstanceOf(ClientInterface::class, $this->object->getClient());
-    }
-
-    public function testSetGetClient() : void
-    {
-        /** @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $client */
-        $client = $this->createMock(ClientInterface::class);
-
-        $this->object->setClient($client);
-        self::assertSame($client, $this->object->getClient());
     }
 
     public function testConvertEmptyFile() : void
@@ -186,12 +166,17 @@ AolVersion=0
 
         vfsStream::setup(self::STORAGE_DIR, null, $structure);
 
-        $cache = new Memory();
-        $this->object->setCache($cache);
+        $memoryCache = new ArrayCache();
+        $cache = new BrowscapCache(new SimpleCacheAdapter($memoryCache));
+
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('cache');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.ini'));
 
-        self::assertSame(5031, $this->object->getCache()->getVersion());
+        self::assertSame(5031, $cache->getVersion());
     }
 
     public function testConvertString() : void
@@ -301,12 +286,17 @@ CssVersion=0
 AolVersion=0
 ';
 
-        $cache = new Memory();
-        $this->object->setCache($cache);
+        $memoryCache = new ArrayCache();
+        $cache = new BrowscapCache(new SimpleCacheAdapter($memoryCache));
+
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('cache');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->object->convertString($content);
 
-        self::assertSame(5031, $this->object->getCache()->getVersion());
+        self::assertSame(5031, $cache->getVersion());
     }
 
     public function testFetchFail() : void
@@ -318,7 +308,10 @@ AolVersion=0
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())->method('request')->will(self::returnValue($response));
 
-        $this->object->setClient($client);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('client');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
             [
@@ -340,7 +333,10 @@ AolVersion=0
         $cache->expects(self::once())->method('getItem')->willReturnMap($map);
         $cache->expects(self::never())->method('setItem');
 
-        $this->object->setCache($cache);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('cache');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->expectException(BrowscapException\FetcherException::class);
         $this->expectExceptionMessage(
@@ -467,7 +463,10 @@ AolVersion=0
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())->method('request')->willReturn($response);
 
-        $this->object->setClient($client);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('client');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
             [
@@ -489,7 +488,10 @@ AolVersion=0
         $cache->expects(self::once())->method('getItem')->willReturnMap($map);
         $cache->expects(self::never())->method('setItem');
 
-        $this->object->setCache($cache);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('cache');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $cache);
 
         $file = 'resources/test.ini';
 
@@ -721,7 +723,10 @@ AolVersion=0
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())->method('request')->willReturn($response);
 
-        $this->object->setClient($client);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('client');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
             [
@@ -743,7 +748,10 @@ AolVersion=0
         $cache->expects(self::once())->method('getItem')->willReturnMap($map);
         $cache->expects(self::never())->method('setItem');
 
-        $this->object->setCache($cache);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('cache');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->object->fetch(IniLoaderInterface::PHP_INI);
 
@@ -763,7 +771,10 @@ AolVersion=0
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())->method('request')->willReturn($response);
 
-        $this->object->setClient($client);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('client');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
             [
@@ -785,7 +796,10 @@ AolVersion=0
         $cache->expects(self::once())->method('getItem')->willReturnMap($map);
         $cache->expects(self::never())->method('setItem');
 
-        $this->object->setCache($cache);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('cache');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->expectException(BrowscapException\FetcherException::class);
         $this->expectExceptionMessage('Could not fetch HTTP resource "http://browscap.org/stream?q=PHP_BrowscapINI":');
@@ -910,7 +924,10 @@ AolVersion=0
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())->method('request')->willReturn($response);
 
-        $this->object->setClient($client);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('client');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
             [
@@ -932,7 +949,10 @@ AolVersion=0
         $cache->expects(self::once())->method('getItem')->willReturnMap($map);
         $cache->expects(self::exactly(4355))->method('setItem');
 
-        $this->object->setCache($cache);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('cache');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->object->update();
     }
@@ -950,7 +970,10 @@ AolVersion=0
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::never())->method('request');
 
-        $this->object->setClient($client);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('client');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
             [
@@ -972,7 +995,10 @@ AolVersion=0
         $cache->expects(self::once())->method('getItem')->willReturnMap($map);
         $cache->expects(self::never())->method('setItem');
 
-        $this->object->setCache($cache);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('cache');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->expectException(BrowscapException\NoCachedVersionException::class);
         $this->expectExceptionMessage(
@@ -995,7 +1021,10 @@ AolVersion=0
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())->method('request')->willReturn($response);
 
-        $this->object->setClient($client);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('client');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
             [
@@ -1017,7 +1046,10 @@ AolVersion=0
         $cache->expects(self::once())->method('getItem')->willReturnMap($map);
         $cache->expects(self::never())->method('setItem');
 
-        $this->object->setCache($cache);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('cache');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->expectException(BrowscapException\FetcherException::class);
         $this->expectExceptionMessage(
@@ -1041,7 +1073,10 @@ AolVersion=0
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())->method('request')->willReturn($response);
 
-        $this->object->setClient($client);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('client');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
             [
@@ -1063,7 +1098,10 @@ AolVersion=0
         $cache->expects(self::once())->method('getItem')->willReturnMap($map);
         $cache->expects(self::never())->method('setItem');
 
-        $this->object->setCache($cache);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('cache');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $cache);
 
         self::assertNull($this->object->checkUpdate());
     }
@@ -1081,7 +1119,10 @@ AolVersion=0
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())->method('request')->willReturn($response);
 
-        $this->object->setClient($client);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('client');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
             [
@@ -1104,7 +1145,10 @@ AolVersion=0
         $cache->expects(self::any())->method('hasItem')->willReturn(true);
         $cache->expects(self::never())->method('setItem');
 
-        $this->object->setCache($cache);
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('cache');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $cache);
 
         self::assertSame(6000, $this->object->checkUpdate());
     }

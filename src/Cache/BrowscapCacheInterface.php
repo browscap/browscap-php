@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Cache;
 
 use Psr\SimpleCache\CacheInterface;
-use WurflCache\Adapter\AdapterInterface;
 
 /**
  * a cache proxy to be able to use the cache adapters provided by the WurflCache package
@@ -36,9 +35,9 @@ interface BrowscapCacheInterface
     /**
      * Gets the release date of the Browscap data
      *
-     * @return string
+     * @return string|null
      */
-    public function getReleaseDate() : string;
+    public function getReleaseDate() : ?string;
 
     /**
      * Gets the type of the Browscap data

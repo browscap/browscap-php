@@ -9,7 +9,6 @@ use BrowscapPHP\Exception;
 use BrowscapPHP\Formatter\FormatterInterface;
 use BrowscapPHP\Parser\ParserInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 use Psr\SimpleCache\CacheInterface;
 use BrowscapPHP\Parser\Ini;
 
@@ -41,7 +40,7 @@ final class BrowscapTest extends \PHPUnit_Framework_TestCase
         /** @var FormatterInterface|\PHPUnit_Framework_MockObject_MockObject $formatter */
         $formatter = $this->createMock(FormatterInterface::class);
 
-        self::assertSame($this->object, $this->object->setFormatter($formatter));
+        $this->object->setFormatter($formatter);
         self::assertSame($formatter, $this->object->getFormatter());
     }
 
@@ -55,7 +54,7 @@ final class BrowscapTest extends \PHPUnit_Framework_TestCase
         /** @var ParserInterface|\PHPUnit_Framework_MockObject_MockObject $parser */
         $parser = $this->createMock(ParserInterface::class);
 
-        self::assertSame($this->object, $this->object->setParser($parser));
+        $this->object->setParser($parser);
         self::assertSame($parser, $this->object->getParser());
     }
 
@@ -86,7 +85,12 @@ final class BrowscapTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setFormatter($formatter);
         $this->object->setParser($parser);
-        $this->object->setCache($cache);
+
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('cache');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $cache);
+
         $result = $this->object->getBrowser();
 
         self::assertSame($expectedResult, $result);
@@ -112,7 +116,12 @@ final class BrowscapTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setFormatter($formatter);
         $this->object->setParser($parser);
-        $this->object->setCache($cache);
+
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('cache');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $cache);
+
         $result = $this->object->getBrowser('Mozilla/5.0 (compatible; Ask Jeeves/Teoma)');
 
         self::assertSame($expectedResult, $result);
@@ -136,7 +145,12 @@ final class BrowscapTest extends \PHPUnit_Framework_TestCase
 
         $this->object->setFormatter($formatter);
         $this->object->setParser($parser);
-        $this->object->setCache($cache);
+
+        $reflection = new \ReflectionClass($this->object);
+        $reflectionAttrbute = $reflection->getProperty('cache');
+        $reflectionAttrbute->setAccessible(true);
+        $reflectionAttrbute->setValue($this->object, $cache);
+
         $result = $this->object->getBrowser('Mozilla/5.0 (compatible; Ask Jeeves/Teoma)');
 
         self::assertSame($expectedResult, $result);

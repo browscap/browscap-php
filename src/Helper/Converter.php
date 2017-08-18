@@ -60,7 +60,6 @@ final class Converter implements ConverterInterface
      * Sets a filesystem instance
      *
      * @param Filesystem $file
-     * @return self
      */
     public function setFilesystem(Filesystem $file) : void
     {
@@ -114,11 +113,13 @@ final class Converter implements ConverterInterface
 
         $this->logger->info('start creating patterns from the ini data');
 
-        foreach ($iniParser->createPatterns($iniString) as $patternsHashList) {
-            foreach ($patternsHashList as $subkey => $content) {
-                if (! $this->cache->setItem('browscap.patterns.' . $subkey, $content, true)) {
-                    $this->logger->error('could not write pattern data "' . $subkey . '" to the cache');
-                }
+        foreach ($iniParser->createPatterns($iniString) as $subkey => $content) {
+            if ('' === $subkey) {
+                continue;
+            }
+
+            if (! $this->cache->setItem('browscap.patterns.' . $subkey, $content, true)) {
+                $this->logger->error('could not write pattern data "' . $subkey . '" to the cache');
             }
         }
 
@@ -126,11 +127,13 @@ final class Converter implements ConverterInterface
 
         $this->logger->info('start creating data from the ini data');
 
-        foreach ($iniParser->createIniParts($iniString) as $patternsContentList) {
-            foreach ($patternsContentList as $subkey => $content) {
-                if (! $this->cache->setItem('browscap.iniparts.' . $subkey, $content, true)) {
-                    $this->logger->error('could not write property data "' . $subkey . '" to the cache');
-                }
+        foreach ($iniParser->createIniParts($iniString) as $subkey => $content) {
+            if ('' === $subkey) {
+                continue;
+            }
+
+            if (! $this->cache->setItem('browscap.iniparts.' . $subkey, $content, true)) {
+                $this->logger->error('could not write property data "' . $subkey . '" to the cache');
             }
         }
 

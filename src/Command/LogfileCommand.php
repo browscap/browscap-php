@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\Browscap;
-use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception\InvalidArgumentException;
 use BrowscapPHP\Exception\ReaderException;
 use BrowscapPHP\Exception\UnknownBrowserException;
@@ -16,7 +15,10 @@ use BrowscapPHP\Helper\Filesystem;
 use BrowscapPHP\Helper\LoggerHelper;
 use BrowscapPHP\Util\Logfile\ReaderCollection;
 use BrowscapPHP\Util\Logfile\ReaderFactory;
+use Doctrine\Common\Cache\FilesystemCache;
+use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
+use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -71,10 +73,19 @@ class LogfileCommand extends Command
      */
     private $defaultCacheFolder;
 
-    public function __construct(string $defaultCacheFolder, ?CacheInterface $cache = null)
-    {
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(
+        string $defaultCacheFolder,
+        ?CacheInterface $cache = null,
+        ?LoggerInterface $logger = null
+    ) {
         $this->defaultCacheFolder = $defaultCacheFolder;
         $this->cache = $cache;
+        $this->logger = $logger;
 
         parent::__construct();
     }
@@ -137,7 +148,7 @@ class LogfileCommand extends Command
             throw InvalidArgumentException::oneOfCommandArguments('log-file', 'log-dir');
         }
 
-        $logger = LoggerHelper::createDefaultLogger($input->getOption('debug'));
+        $logger = $this->getLogger($input);
 
         $browscap = new Browscap($this->getCache($input), $logger);
         $collection = ReaderFactory::factory();
@@ -282,7 +293,7 @@ class LogfileCommand extends Command
         OutputInterface $output,
         ReaderCollection $collection,
         Browscap $browscap,
-        int $line
+        string $line
     ) : void {
         $userAgentString = '';
 
@@ -435,10 +446,19 @@ class LogfileCommand extends Command
     private function getCache(InputInterface $input) : CacheInterface
     {
         if (null === $this->cache) {
-            $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
-            $this->cache = new CacheInterface($cacheAdapter);
+            $fileCache = new FilesystemCache($input->getOption('cache'));
+            $this->cache = new SimpleCacheAdapter($fileCache);
         }
 
         return $this->cache;
+    }
+
+    private function getLogger(InputInterface $input) : LoggerInterface
+    {
+        if (null === $this->logger) {
+            $this->logger = LoggerHelper::createDefaultLogger($input->getOption('debug'));
+        }
+
+        return $this->logger;
     }
 }

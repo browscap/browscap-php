@@ -3,11 +3,11 @@ declare(strict_types = 1);
 
 namespace BrowscapPHPTest\Command;
 
-use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Command\UpdateCommand;
+use Doctrine\Common\Cache\ArrayCache;
+use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use WurflCache\Adapter\Memory;
 
 /**
  * @covers \BrowscapPHP\Command\UpdateCommand
@@ -25,8 +25,8 @@ final class UpdateCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp() : void
     {
-        $cacheAdapter = new Memory();
-        $cache = new BrowscapCache($cacheAdapter);
+        $memoryCache = new ArrayCache();
+        $cache = new SimpleCacheAdapter($memoryCache);
 
         $this->object = new UpdateCommand('', $cache);
     }

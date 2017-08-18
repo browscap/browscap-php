@@ -49,7 +49,7 @@ final class Browscap implements BrowscapInterface
      */
     public function __construct(CacheInterface $cache, LoggerInterface $logger)
     {
-        $this->cache  = new BrowscapCache($cache);
+        $this->cache = new BrowscapCache($cache);
         $this->logger = $logger;
     }
 
@@ -57,8 +57,6 @@ final class Browscap implements BrowscapInterface
      * Set theformatter instance to use for the getBrowser() result
      *
      * @param \BrowscapPHP\Formatter\FormatterInterface $formatter
-     *
-     * @return \BrowscapPHP\Browscap
      */
     public function setFormatter(Formatter\FormatterInterface $formatter) : void
     {
@@ -81,8 +79,6 @@ final class Browscap implements BrowscapInterface
      * Sets the parser instance to use
      *
      * @param \BrowscapPHP\Parser\ParserInterface $parser
-     *
-     * @return \BrowscapPHP\Browscap
      */
     public function setParser(ParserInterface $parser) : void
     {
@@ -98,7 +94,7 @@ final class Browscap implements BrowscapInterface
     {
         if (null === $this->parser) {
             $patternHelper = new Parser\Helper\GetPattern($this->cache, $this->logger);
-            $dataHelper    = new Parser\Helper\GetData($this->cache, $this->logger, new Quoter());
+            $dataHelper = new Parser\Helper\GetData($this->cache, $this->logger, new Quoter());
 
             $this->parser = new Parser\Ini($patternHelper, $dataHelper, $this->getFormatter());
         }
@@ -125,8 +121,8 @@ final class Browscap implements BrowscapInterface
         }
 
         // Automatically detect the useragent
-        if (!is_string($userAgent)) {
-            $support   = new Helper\Support($_SERVER);
+        if (! is_string($userAgent)) {
+            $support = new Helper\Support($_SERVER);
             $userAgent = $support->getUserAgent();
         }
 
@@ -136,7 +132,7 @@ final class Browscap implements BrowscapInterface
         // if return is still NULL, updates are disabled... in this
         // case we return an empty formatter instance
         if ($formatter === null) {
-            return $this->getFormatter()->getData();
+            $formatter = $this->getFormatter();
         }
 
         return $formatter->getData();

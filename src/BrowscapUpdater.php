@@ -60,16 +60,15 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
         LoggerInterface $logger,
         ClientInterface $client = null,
         int $connectTimeout = self::TIMEOUT
-    )
-    {
-        $this->cache  = new BrowscapCache($cache);
+    ) {
+        $this->cache = new BrowscapCache($cache);
         $this->logger = $logger;
 
         if (null === $client) {
             $client = new Client();
         }
 
-        $this->client         = $client;
+        $this->client = $client;
         $this->connectTimeout = $connectTimeout;
     }
 
@@ -106,7 +105,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
     public function convertString(string $iniString) : void
     {
         $cachedVersion = $this->cache->getItem('browscap.version', false, $success);
-        $converter     = new Converter($this->logger, $this->cache);
+        $converter = new Converter($this->logger, $this->cache);
 
         $this->storeContent($converter, $iniString, $cachedVersion);
     }
@@ -317,7 +316,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
      */
     private function storeContent(ConverterInterface $converter, string $content, ?int $cachedVersion)
     {
-        $iniString  = $this->sanitizeContent($content);
+        $iniString = $this->sanitizeContent($content);
         $iniVersion = $converter->getIniVersion($iniString);
 
         if (! $cachedVersion || $iniVersion > $cachedVersion) {

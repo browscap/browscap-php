@@ -38,7 +38,7 @@ final class IniLoader implements IniLoaderInterface
      *
      * @throws \BrowscapPHP\Helper\Exception
      */
-    public function setRemoteFilename(string $name): void
+    public function setRemoteFilename(string $name) : void
     {
         if (empty($name)) {
             throw new Exception(

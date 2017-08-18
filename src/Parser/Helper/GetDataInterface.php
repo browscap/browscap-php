@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Parser\Helper;
 
 use BrowscapPHP\Cache\BrowscapCacheInterface;
-use BrowscapPHP\Helper\Quoter;
 use BrowscapPHP\Helper\QuoterInterface;
 use Psr\Log\LoggerInterface;
 

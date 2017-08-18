@@ -3,17 +3,7 @@ declare(strict_types = 1);
 
 namespace BrowscapPHP;
 
-use BrowscapPHP\Cache\BrowscapCache;
-use BrowscapPHP\Exception\FetcherException;
-use BrowscapPHP\Helper\Converter;
-use BrowscapPHP\Helper\ConverterInterface;
-use BrowscapPHP\Helper\Filesystem;
-use BrowscapPHP\Helper\IniLoader;
 use BrowscapPHP\Helper\IniLoaderInterface;
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
-use Psr\Log\LoggerInterface;
-use Psr\SimpleCache\CacheInterface;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities

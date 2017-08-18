@@ -4,9 +4,9 @@ declare(strict_types = 1);
 namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Cache\BrowscapCache;
+use Doctrine\Common\Cache\ArrayCache;
 use PHPUnit_Framework_TestCase;
-use WurflCache\Adapter\Memory;
-use WurflCache\Adapter\NullStorage;
+use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 
 /**
  * @covers \BrowscapPHP\Cache\BrowscapCache
@@ -15,7 +15,8 @@ final class BrowscapCacheTest extends PHPUnit_Framework_TestCase
 {
     public function testConstruct() : void
     {
-        $adapter = new NullStorage();
+        $memoryCache = new ArrayCache();
+        $adapter = new SimpleCacheAdapter($memoryCache);
         $cache = new BrowscapCache($adapter);
 
         self::assertInstanceOf(BrowscapCache::class, $cache);
@@ -23,7 +24,8 @@ final class BrowscapCacheTest extends PHPUnit_Framework_TestCase
 
     public function testVersion() : void
     {
-        $adapter = new Memory();
+        $memoryCache = new ArrayCache();
+        $adapter = new SimpleCacheAdapter($memoryCache);
         $cache = new BrowscapCache($adapter);
 
         self::assertNull($cache->getVersion());
@@ -34,7 +36,8 @@ final class BrowscapCacheTest extends PHPUnit_Framework_TestCase
 
     public function testReleaseDate() : void
     {
-        $adapter = new Memory();
+        $memoryCache = new ArrayCache();
+        $adapter = new SimpleCacheAdapter($memoryCache);
         $cache = new BrowscapCache($adapter);
 
         self::assertNull($cache->getVersion());
@@ -45,7 +48,8 @@ final class BrowscapCacheTest extends PHPUnit_Framework_TestCase
 
     public function testType() : void
     {
-        $adapter = new Memory();
+        $memoryCache = new ArrayCache();
+        $adapter = new SimpleCacheAdapter($memoryCache);
         $cache = new BrowscapCache($adapter);
 
         self::assertNull($cache->getType());
