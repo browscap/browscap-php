@@ -1055,7 +1055,12 @@ AolVersion=0
 
         $this->object->setCache($cache);
 
-        self::assertSame(0, $this->object->checkUpdate());
+        $this->expectException(BrowscapException\NoCachedVersionException::class);
+        $this->expectExceptionMessage(
+            'there is no cached version available, please update from remote'
+        );
+
+        $this->object->checkUpdate();
     }
 
     public function testCheckUpdateWithException() : void

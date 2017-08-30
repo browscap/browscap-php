@@ -6,6 +6,7 @@ namespace BrowscapPHP;
 use BrowscapPHP\Cache\BrowscapCache;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception\FetcherException;
+use BrowscapPHP\Exception\NoCachedVersionException;
 use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\Filesystem;
 use BrowscapPHP\Helper\IniLoader;
@@ -191,9 +192,13 @@ final class BrowscapUpdater
      */
     public function fetch(string $file, string $remoteFile = IniLoader::PHP_INI) : void
     {
-        if (null === ($cachedVersion = $this->checkUpdate())) {
-            // no newer version available
-            return;
+        try {
+            if (null === ($cachedVersion = $this->checkUpdate())) {
+                // no newer version available
+                return;
+            }
+        } catch (NoCachedVersionException $e) {
+            $cachedVersion = 0;
         }
 
         $this->getLogger()->debug('started fetching remote file');
@@ -254,9 +259,13 @@ final class BrowscapUpdater
     {
         $this->getLogger()->debug('started fetching remote file');
 
-        if (null === ($cachedVersion = $this->checkUpdate())) {
-            // no newer version available
-            return;
+        try {
+            if (null === ($cachedVersion = $this->checkUpdate())) {
+                // no newer version available
+                return;
+            }
+        } catch (NoCachedVersionException $e) {
+            $cachedVersion = 0;
         }
 
         $uri = (new IniLoader())->setRemoteFilename($remoteFile)->getRemoteIniUrl();
@@ -297,6 +306,7 @@ final class BrowscapUpdater
      * @throws \BrowscapPHP\Exception\FetcherException
      * @return int|null The actual cached version if a newer version is available, null otherwise
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \BrowscapPHP\Exception\NoCachedVersionException
      */
     public function checkUpdate() : ?int
     {
@@ -305,9 +315,7 @@ final class BrowscapUpdater
 
         if (! $cachedVersion) {
             // could not load version from cache
-            $this->getLogger()->info('there is no cached version available, please update from remote');
-
-            return 0;
+            throw new NoCachedVersionException('there is no cached version available, please update from remote');
         }
 
         $uri = (new IniLoader())->getRemoteVersionUrl();
@@ -335,9 +343,9 @@ final class BrowscapUpdater
 
         if (! $remoteVersion) {
             // could not load remote version
-            $this->getLogger()->info('could not load version from remote location');
-
-            return 0;
+            throw new FetcherException(
+                'could not load version from remote location'
+            );
         }
 
         if ($cachedVersion && $remoteVersion && $remoteVersion <= $cachedVersion) {
