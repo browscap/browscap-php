@@ -8,7 +8,7 @@ use BrowscapPHP\Parser\Helper\Pattern;
 /**
  * @covers \BrowscapPHP\Parser\Helper\Pattern
  */
-final class PatternTest extends \PHPUnit_Framework_TestCase
+final class PatternTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @group pattern

@@ -8,7 +8,7 @@ use BrowscapPHP\Command\UpdateCommand;
 /**
  * @covers \BrowscapPHP\Command\UpdateCommand
  */
-final class UpdateCommandTest extends \PHPUnit_Framework_TestCase
+final class UpdateCommandTest extends \PHPUnit\Framework\TestCase
 {
     public function testConfigure() : void
     {
@@ -29,7 +29,7 @@ final class UpdateCommandTest extends \PHPUnit_Framework_TestCase
             ->method('addArgument')
             ->will(self::returnSelf());
         $object
-            ->expects(self::exactly(4))
+            ->expects(self::exactly(3))
             ->method('addOption')
             ->will(self::returnSelf());
 

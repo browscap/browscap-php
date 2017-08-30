@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 /**
  * @covers \BrowscapPHP\Helper\Converter
  */
-final class ConverterConvertStringTest extends \PHPUnit_Framework_TestCase
+final class ConverterConvertStringTest extends \PHPUnit\Framework\TestCase
 {
     const STORAGE_DIR = 'storage';
 

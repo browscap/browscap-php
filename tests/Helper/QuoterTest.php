@@ -8,7 +8,7 @@ use BrowscapPHP\Helper\Quoter;
 /**
  * @covers \BrowscapPHP\Helper\Quoter
  */
-final class QuoterTest extends \PHPUnit_Framework_TestCase
+final class QuoterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \BrowscapPHP\Helper\Quoter

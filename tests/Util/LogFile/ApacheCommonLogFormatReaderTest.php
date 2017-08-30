@@ -9,7 +9,7 @@ use BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader;
 /**
  * @covers \BrowscapPHP\Util\Logfile\ApacheCommonLogFormatReader
  */
-final class ApacheCommonLogFormatReaderTest extends \PHPUnit_Framework_TestCase
+final class ApacheCommonLogFormatReaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ApacheCommonLogFormatReader

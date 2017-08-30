@@ -8,7 +8,7 @@ use BrowscapPHP\Command\FetchCommand;
 /**
  * @covers \BrowscapPHP\Command\FetchCommand
  */
-final class FetchCommandTest extends \PHPUnit_Framework_TestCase
+final class FetchCommandTest extends \PHPUnit\Framework\TestCase
 {
     public function testConfigure() : void
     {
@@ -29,7 +29,7 @@ final class FetchCommandTest extends \PHPUnit_Framework_TestCase
             ->method('addArgument')
             ->will(self::returnSelf());
         $object
-            ->expects(self::exactly(3))
+            ->expects(self::exactly(2))
             ->method('addOption')
             ->will(self::returnSelf());
 

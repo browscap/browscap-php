@@ -13,7 +13,7 @@ use BrowscapPHP\Helper\Filesystem;
 /**
  * @covers \BrowscapPHP\Helper\Converter
  */
-final class ConverterTest extends \PHPUnit_Framework_TestCase
+final class ConverterTest extends \PHPUnit\Framework\TestCase
 {
     const STORAGE_DIR = 'storage';
 

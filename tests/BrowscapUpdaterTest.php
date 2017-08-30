@@ -20,7 +20,7 @@ use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 /**
  * @covers \BrowscapPHP\BrowscapUpdater
  */
-final class BrowscapUpdaterTest extends \PHPUnit_Framework_TestCase
+final class BrowscapUpdaterTest extends \PHPUnit\Framework\TestCase
 {
     const STORAGE_DIR = 'storage';
 
@@ -166,8 +166,11 @@ AolVersion=0
 
         vfsStream::setup(self::STORAGE_DIR, null, $structure);
 
+        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        $logger = $this->createMock(LoggerInterface::class);
+
         $memoryCache = new ArrayCache();
-        $cache = new BrowscapCache(new SimpleCacheAdapter($memoryCache));
+        $cache = new BrowscapCache(new SimpleCacheAdapter($memoryCache), $logger);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -286,8 +289,11 @@ CssVersion=0
 AolVersion=0
 ';
 
+        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        $logger = $this->createMock(LoggerInterface::class);
+
         $memoryCache = new ArrayCache();
-        $cache = new BrowscapCache(new SimpleCacheAdapter($memoryCache));
+        $cache = new BrowscapCache(new SimpleCacheAdapter($memoryCache), $logger);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');

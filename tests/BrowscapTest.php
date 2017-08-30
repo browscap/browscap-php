@@ -15,7 +15,7 @@ use BrowscapPHP\Parser\Ini;
 /**
  * @covers \BrowscapPHP\Browscap
  */
-final class BrowscapTest extends \PHPUnit_Framework_TestCase
+final class BrowscapTest extends \PHPUnit\Framework\TestCase
 {
     const STORAGE_DIR = 'storage';
 

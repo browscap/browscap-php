@@ -8,7 +8,7 @@ use BrowscapPHP\Helper\Support;
 /**
  * @covers \BrowscapPHP\Helper\Support
  */
-final class SupportTest extends \PHPUnit_Framework_TestCase
+final class SupportTest extends \PHPUnit\Framework\TestCase
 {
     public function testUserAgentIsTakenFromServerArray() : void
     {

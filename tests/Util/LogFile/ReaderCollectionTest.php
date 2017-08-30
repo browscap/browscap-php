@@ -10,7 +10,7 @@ use BrowscapPHP\Util\Logfile\ReaderInterface;
 /**
  * @covers \BrowscapPHP\Util\Logfile\ReaderCollection
  */
-final class ReaderCollectionTest extends \PHPUnit_Framework_TestCase
+final class ReaderCollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ReaderCollection

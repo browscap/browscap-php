@@ -8,7 +8,7 @@ use BrowscapPHP\Exception\FetcherException;
 /**
  * @covers \BrowscapPHP\Exception\FetcherException
  */
-final class FetcherExceptionTest extends \PHPUnit_Framework_TestCase
+final class FetcherExceptionTest extends \PHPUnit\Framework\TestCase
 {
     public function testHttpError() : void
     {

@@ -8,7 +8,7 @@ use BrowscapPHP\Exception\FileNotFoundException;
 /**
  * @covers \BrowscapPHP\Exception\FileNotFoundException
  */
-final class FileNotFoundExceptionTest extends \PHPUnit_Framework_TestCase
+final class FileNotFoundExceptionTest extends \PHPUnit\Framework\TestCase
 {
     public function testFileNotFound() : void
     {

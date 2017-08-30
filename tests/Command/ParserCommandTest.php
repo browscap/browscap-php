@@ -5,7 +5,7 @@ namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Command\ParserCommand;
 
-final class ParserCommandTest extends \PHPUnit_Framework_TestCase
+final class ParserCommandTest extends \PHPUnit\Framework\TestCase
 {
     public function testConfigure() : void
     {
@@ -26,7 +26,7 @@ final class ParserCommandTest extends \PHPUnit_Framework_TestCase
             ->method('addArgument')
             ->willReturnSelf();
         $object
-            ->expects(self::exactly(2))
+            ->expects(self::once())
             ->method('addOption')
             ->willReturnSelf();
 

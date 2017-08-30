@@ -16,7 +16,7 @@ use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
  * @group compare
  * @coversNothing
  */
-final class CompareBrowscapWithOriginalTest extends \PHPUnit_Framework_TestCase
+final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \BrowscapPHP\Browscap

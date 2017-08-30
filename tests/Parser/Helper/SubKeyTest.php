@@ -8,7 +8,7 @@ use BrowscapPHP\Parser\Helper\SubKey;
 /**
  * @covers \BrowscapPHP\Parser\Helper\SubKey
  */
-final class SubKeyTest extends \PHPUnit_Framework_TestCase
+final class SubKeyTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetPatternCacheSubkey() : void
     {

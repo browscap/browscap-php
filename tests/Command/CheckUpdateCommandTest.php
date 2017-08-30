@@ -5,7 +5,7 @@ namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Command\CheckUpdateCommand;
 
-final class CheckUpdateCommandTest extends \PHPUnit_Framework_TestCase
+final class CheckUpdateCommandTest extends \PHPUnit\Framework\TestCase
 {
     public function testConfigure() : void
     {
@@ -26,7 +26,7 @@ final class CheckUpdateCommandTest extends \PHPUnit_Framework_TestCase
             ->method('addArgument')
             ->will(self::returnSelf());
         $object
-            ->expects(self::exactly(2))
+            ->expects(self::once())
             ->method('addOption')
             ->will(self::returnSelf());
 

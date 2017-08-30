@@ -10,7 +10,7 @@ use BrowscapPHP\Helper\IniLoaderInterface;
 /**
  * @covers \BrowscapPHP\Helper\IniLoader
  */
-final class IniLoaderTest extends \PHPUnit_Framework_TestCase
+final class IniLoaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var IniLoader

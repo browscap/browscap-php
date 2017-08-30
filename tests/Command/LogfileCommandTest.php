@@ -8,7 +8,7 @@ use BrowscapPHP\Command\LogfileCommand;
 /**
  * @covers \BrowscapPHP\Command\LogfileCommand
  */
-final class LogfileCommandTest extends \PHPUnit_Framework_TestCase
+final class LogfileCommandTest extends \PHPUnit\Framework\TestCase
 {
     public function testConfigure() : void
     {
@@ -29,7 +29,7 @@ final class LogfileCommandTest extends \PHPUnit_Framework_TestCase
             ->method('addArgument')
             ->will(self::returnSelf());
         $object
-            ->expects(self::exactly(6))
+            ->expects(self::exactly(5))
             ->method('addOption')
             ->will(self::returnSelf());
 

@@ -8,7 +8,7 @@ use BrowscapPHP\Command\ConvertCommand;
 /**
  * @covers \BrowscapPHP\Command\ConvertCommand
  */
-final class ConvertCommandTest extends \PHPUnit_Framework_TestCase
+final class ConvertCommandTest extends \PHPUnit\Framework\TestCase
 {
     public function testConfigure() : void
     {
@@ -29,7 +29,7 @@ final class ConvertCommandTest extends \PHPUnit_Framework_TestCase
             ->method('addArgument')
             ->will(self::returnSelf());
         $object
-            ->expects(self::exactly(2))
+            ->expects(self::once())
             ->method('addOption')
             ->will(self::returnSelf());
 

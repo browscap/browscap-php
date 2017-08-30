@@ -10,7 +10,7 @@ use Psr\Log\LoggerInterface;
 /**
  * @covers \BrowscapPHP\Parser\Helper\GetPattern
  */
-final class GetPatternTest extends \PHPUnit_Framework_TestCase
+final class GetPatternTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var GetPattern
