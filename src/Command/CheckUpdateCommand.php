@@ -21,28 +21,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CheckUpdateCommand extends Command
 {
     /**
-     * @var ?CacheInterface
-     */
-    private $cache;
-
-    /**
      * @var string
      */
     private $defaultCacheFolder;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(
-        string $defaultCacheFolder,
-        ?CacheInterface $cache = null,
-        ?LoggerInterface $logger = null
-    ) {
+    public function __construct(string $defaultCacheFolder)
+    {
         $this->defaultCacheFolder = $defaultCacheFolder;
-        $this->cache = $cache;
-        $this->logger = $logger;
 
         parent::__construct();
     }
@@ -52,12 +37,6 @@ class CheckUpdateCommand extends Command
         $this
             ->setName('browscap:check-update')
             ->setDescription('Checks if an updated INI file is available.')
-            ->addOption(
-                'debug',
-                'd',
-                InputOption::VALUE_NONE,
-                'Should the debug mode entered?'
-            )
             ->addOption(
                 'cache',
                 'c',
@@ -69,32 +48,16 @@ class CheckUpdateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $logger = $this->getLogger($input);
+        $logger = LoggerHelper::createDefaultLogger($output);
+
+        $fileCache = new FilesystemCache($input->getOption('cache'));
+        $cache     = new SimpleCacheAdapter($fileCache);
 
         $logger->debug('started checking for new version of remote file');
 
-        $browscap = new BrowscapUpdater($this->getCache($input), $logger);
+        $browscap = new BrowscapUpdater($cache, $logger);
         $browscap->checkUpdate();
 
         $logger->debug('finished checking for new version of remote file');
-    }
-
-    private function getCache(InputInterface $input) : CacheInterface
-    {
-        if (null === $this->cache) {
-            $fileCache = new FilesystemCache($input->getOption('cache'));
-            $this->cache = new SimpleCacheAdapter($fileCache);
-        }
-
-        return $this->cache;
-    }
-
-    private function getLogger(InputInterface $input) : LoggerInterface
-    {
-        if (null === $this->logger) {
-            $this->logger = LoggerHelper::createDefaultLogger($input->getOption('debug'));
-        }
-
-        return $this->logger;
     }
 }

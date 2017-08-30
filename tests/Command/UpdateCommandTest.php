@@ -14,23 +14,6 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  */
 final class UpdateCommandTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var UpdateCommand
-     */
-    private $object = null;
-
-    /**
-     * Sets up the fixture, for example, open a network connection.
-     * This method is called before a test is executed.
-     */
-    public function setUp() : void
-    {
-        $memoryCache = new ArrayCache();
-        $cache = new SimpleCacheAdapter($memoryCache);
-
-        $this->object = new UpdateCommand('', $cache);
-    }
-
     public function testConfigure() : void
     {
         $object = $this->getMockBuilder(UpdateCommand::class)
@@ -59,23 +42,5 @@ final class UpdateCommandTest extends \PHPUnit_Framework_TestCase
         $method->setAccessible(true);
 
         self::assertNull($method->invoke($object));
-    }
-
-    public function testExecute() : void
-    {
-        self::markTestSkipped('not ready yet');
-
-        $input = $this->getMockBuilder(ArgvInput::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $output = $this->getMockBuilder(ConsoleOutput::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $class = new \ReflectionClass(UpdateCommand::class);
-        $method = $class->getMethod('execute');
-        $method->setAccessible(true);
-
-        self::assertNull($method->invoke($this->object, $input, $output));
     }
 }

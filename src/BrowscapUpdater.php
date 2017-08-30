@@ -21,7 +21,7 @@ use Psr\SimpleCache\CacheInterface;
  */
 final class BrowscapUpdater implements BrowscapUpdaterInterface
 {
-    const TIMEOUT = 5;
+    public const DEFAULT_TIMEOUT = 5;
 
     /**
      * The cache instance
@@ -45,7 +45,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
      *
      * @var int
      */
-    private $connectTimeout = self::TIMEOUT;
+    private $connectTimeout;
 
     /**
      * Browscap constructor.
@@ -59,7 +59,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
         CacheInterface $cache,
         LoggerInterface $logger,
         ClientInterface $client = null,
-        int $connectTimeout = self::TIMEOUT
+        int $connectTimeout = self::DEFAULT_TIMEOUT
     ) {
         $this->cache = new BrowscapCache($cache);
         $this->logger = $logger;

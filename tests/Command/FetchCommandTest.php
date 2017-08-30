@@ -14,25 +14,6 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  */
 final class FetchCommandTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var FetchCommand
-     */
-    private $object;
-
-    /**
-     * Sets up the fixture, for example, open a network connection.
-     * This method is called before a test is executed.
-     */
-    public function setUp() : void
-    {
-        $memoryCache = new ArrayCache();
-        $cache = new SimpleCacheAdapter($memoryCache);
-
-        $defaultIniFile = 'resources/browscap.ini';
-
-        $this->object = new FetchCommand('', $defaultIniFile, $cache);
-    }
-
     public function testConfigure() : void
     {
         $object = $this->getMockBuilder(FetchCommand::class)
@@ -61,23 +42,5 @@ final class FetchCommandTest extends \PHPUnit_Framework_TestCase
         $method->setAccessible(true);
 
         self::assertNull($method->invoke($object));
-    }
-
-    public function testExecute() : void
-    {
-        self::markTestSkipped('not ready yet');
-
-        $input = $this->getMockBuilder(ArgvInput::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $output = $this->getMockBuilder(ConsoleOutput::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $class = new \ReflectionClass(FetchCommand::class);
-        $method = $class->getMethod('execute');
-        $method->setAccessible(true);
-
-        self::assertNull($method->invoke($this->object, $input, $output));
     }
 }

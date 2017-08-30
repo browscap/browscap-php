@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace BrowscapPHP\Cache;
 
+use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 
 /**
@@ -22,8 +23,9 @@ interface BrowscapCacheInterface
      * if needed updated the definitions
      *
      * @param \Psr\SimpleCache\CacheInterface $adapter
+     * @param LoggerInterface $logger
      */
-    public function __construct(CacheInterface $adapter);
+    public function __construct(CacheInterface $adapter, LoggerInterface $logger);
 
     /**
      * Gets the version of the Browscap data

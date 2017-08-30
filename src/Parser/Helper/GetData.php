@@ -8,6 +8,7 @@ use BrowscapPHP\Data\PropertyFormatter;
 use BrowscapPHP\Data\PropertyHolder;
 use BrowscapPHP\Helper\QuoterInterface;
 use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 /**
  * extracts the data and the data for theses pattern from the ini content, optimized for PHP 5.5+
@@ -110,14 +111,27 @@ final class GetData implements GetDataInterface
         $patternhash = Pattern::getHashForParts($pattern);
         $subkey = SubKey::getIniPartCacheSubKey($patternhash);
 
-        if (! $this->cache->hasItem('browscap.iniparts.' . $subkey, true)) {
-            $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" not found');
+        try {
+            if (! $this->cache->hasItem('browscap.iniparts.' . $subkey, true)) {
+                $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" not found');
+
+                return [];
+            }
+        } catch (InvalidArgumentException $e) {
+            $this->logger->error(new \InvalidArgumentException('an error occured while checking a inipart in the cache', 0, $e));
+            return [];
+        }
+
+
+        $success = null;
+        try {
+            $file = $this->cache->getItem('browscap.iniparts.' . $subkey, true, $success);
+        } catch (InvalidArgumentException $e) {
+            $this->logger->error(new \InvalidArgumentException('an error occured while reading a inipart from the cache', 0, $e));
 
             return [];
         }
 
-        $success = null;
-        $file = $this->cache->getItem('browscap.iniparts.' . $subkey, true, $success);
 
         if (! $success) {
             $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" not found');

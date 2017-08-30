@@ -9,23 +9,6 @@ use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 
 final class CheckUpdateCommandTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var \BrowscapPHP\Command\UpdateCommand
-     */
-    private $object;
-
-    /**
-     * Sets up the fixture, for example, open a network connection.
-     * This method is called before a test is executed.
-     */
-    public function setUp() : void
-    {
-        $memoryCache = new ArrayCache();
-        $cache = new SimpleCacheAdapter($memoryCache);
-
-        $this->object = new CheckUpdateCommand('', $cache);
-    }
-
     public function testConfigure() : void
     {
         $object = $this->getMockBuilder(CheckUpdateCommand::class)

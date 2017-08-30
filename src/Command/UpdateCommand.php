@@ -22,28 +22,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class UpdateCommand extends Command
 {
     /**
-     * @var ?CacheInterface
-     */
-    private $cache;
-
-    /**
      * @var string
      */
     private $defaultCacheFolder;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(
-        string $defaultCacheFolder,
-        ?CacheInterface $cache = null,
-        ?LoggerInterface $logger = null
-    ) {
+    public function __construct(string $defaultCacheFolder)
+    {
         $this->defaultCacheFolder = $defaultCacheFolder;
-        $this->cache = $cache;
-        $this->logger = $logger;
 
         parent::__construct();
     }
@@ -68,12 +53,6 @@ class UpdateCommand extends Command
                 'Do not backup the previously existing file'
             )
             ->addOption(
-                'debug',
-                'd',
-                InputOption::VALUE_NONE,
-                'Should the debug mode entered?'
-            )
-            ->addOption(
                 'cache',
                 'c',
                 InputOption::VALUE_OPTIONAL,
@@ -84,32 +63,16 @@ class UpdateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $logger = $this->getLogger($input);
+        $logger = LoggerHelper::createDefaultLogger($output);
+
+        $fileCache = new FilesystemCache($input->getOption('cache'));
+        $cache     = new SimpleCacheAdapter($fileCache);
 
         $logger->info('started updating cache with remote file');
 
-        $browscap = new BrowscapUpdater($this->getCache($input), $logger);
+        $browscap = new BrowscapUpdater($cache, $logger);
         $browscap->update($input->getOption('remote-file'));
 
         $logger->info('finished updating cache with remote file');
-    }
-
-    private function getCache(InputInterface $input) : CacheInterface
-    {
-        if (null === $this->cache) {
-            $fileCache = new FilesystemCache($input->getOption('cache'));
-            $this->cache = new SimpleCacheAdapter($fileCache);
-        }
-
-        return $this->cache;
-    }
-
-    private function getLogger(InputInterface $input) : LoggerInterface
-    {
-        if (null === $this->logger) {
-            $this->logger = LoggerHelper::createDefaultLogger($input->getOption('debug'));
-        }
-
-        return $this->logger;
     }
 }

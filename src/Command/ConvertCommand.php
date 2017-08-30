@@ -21,11 +21,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ConvertCommand extends Command
 {
     /**
-     * @var ?CacheInterface
-     */
-    private $cache;
-
-    /**
      * @var string
      */
     private $defaultIniFile;
@@ -35,21 +30,10 @@ class ConvertCommand extends Command
      */
     private $defaultCacheFolder;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(
-        string $defaultCacheFolder,
-        string $defaultIniFile,
-        ?CacheInterface $cache = null,
-        ?LoggerInterface $logger = null
-    ) {
+    public function __construct(string $defaultCacheFolder, string $defaultIniFile)
+    {
         $this->defaultCacheFolder = $defaultCacheFolder;
         $this->defaultIniFile = $defaultIniFile;
-        $this->cache = $cache;
-        $this->logger = $logger;
 
         parent::__construct();
     }
@@ -66,12 +50,6 @@ class ConvertCommand extends Command
                 $this->defaultIniFile
             )
             ->addOption(
-                'debug',
-                'd',
-                InputOption::VALUE_NONE,
-                'Should the debug mode entered?'
-            )
-            ->addOption(
                 'cache',
                 'c',
                 InputOption::VALUE_OPTIONAL,
@@ -82,33 +60,24 @@ class ConvertCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $logger = $this->getLogger($input);
+        $logger = LoggerHelper::createDefaultLogger($output);
+
+        $fileCache = new FilesystemCache($input->getOption('cache'));
+        $cache     = new SimpleCacheAdapter($fileCache);
 
         $logger->info('initializing converting process');
 
-        $browscap = new BrowscapUpdater($this->getCache($input), $logger);
+        $browscap = new BrowscapUpdater($cache, $logger);
 
         $logger->info('started converting local file');
 
-        $file = ($input->getArgument('file') ? $input->getArgument('file') : ($this->defaultIniFile));
+        $file = $input->getArgument('file');
+        if (! $file) {
+            $file = $this->defaultIniFile;
+        }
 
         $browscap->convertFile($file);
 
         $logger->info('finished converting local file');
-    }
-
-    private function getCache(InputInterface $input) : CacheInterface
-    {
-        if (null === $this->cache) {
-            $fileCache = new FilesystemCache($input->getOption('cache'));
-            $this->cache = new SimpleCacheAdapter($fileCache);
-        }
-
-        return $this->cache;
-    }
-
-    private function getLogger(InputInterface $input) : LoggerInterface
-    {
-        return LoggerHelper::createDefaultLogger($input->getOption('debug'));
     }
 }

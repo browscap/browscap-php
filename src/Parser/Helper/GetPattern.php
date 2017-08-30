@@ -5,6 +5,7 @@ namespace BrowscapPHP\Parser\Helper;
 
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 /**
  * extracts the pattern and the data for theses pattern from the ini content, optimized for PHP 5.5+
@@ -61,14 +62,27 @@ class GetPattern implements GetPatternInterface
         foreach ($starts as $tmpStart) {
             $tmpSubkey = SubKey::getPatternCacheSubkey($tmpStart);
 
-            if (! $this->cache->hasItem('browscap.patterns.' . $tmpSubkey, true)) {
-                $this->logger->debug('cache key "browscap.patterns.' . $tmpSubkey . '" not found');
+            try {
+                if (! $this->cache->hasItem('browscap.patterns.' . $tmpSubkey, true)) {
+                    $this->logger->debug('cache key "browscap.patterns.' . $tmpSubkey . '" not found');
+
+                    continue;
+                }
+            } catch (InvalidArgumentException $e) {
+                $this->logger->error(new \InvalidArgumentException('an error occured while checking a pattern in the cache', 0, $e));
+                continue;
+            }
+
+            $success = null;
+
+            try {
+                $file = $this->cache->getItem('browscap.patterns.' . $tmpSubkey, true, $success);
+            } catch (InvalidArgumentException $e) {
+                $this->logger->error(new \InvalidArgumentException('an error occured while reading the pattern data data from the cache', 0, $e));
 
                 continue;
             }
-            $success = null;
 
-            $file = $this->cache->getItem('browscap.patterns.' . $tmpSubkey, true, $success);
 
             if (! $success) {
                 $this->logger->debug('cache key "browscap.patterns.' . $tmpSubkey . '" not found');

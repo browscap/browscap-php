@@ -21,28 +21,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ParserCommand extends Command
 {
     /**
-     * @var ?CacheInterface
-     */
-    private $cache;
-
-    /**
      * @var string
      */
     private $defaultCacheFolder;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(
-        string $defaultCacheFolder,
-        ?CacheInterface $cache = null,
-        ?LoggerInterface $logger = null
-    ) {
+    public function __construct(string $defaultCacheFolder)
+    {
         $this->defaultCacheFolder = $defaultCacheFolder;
-        $this->cache = $cache;
-        $this->logger = $logger;
 
         parent::__construct();
     }
@@ -59,12 +44,6 @@ class ParserCommand extends Command
                 null
             )
             ->addOption(
-                'debug',
-                'd',
-                InputOption::VALUE_NONE,
-                'Should the debug mode entered?'
-            )
-            ->addOption(
                 'cache',
                 'c',
                 InputOption::VALUE_OPTIONAL,
@@ -75,31 +54,15 @@ class ParserCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $logger = $this->getLogger($input);
+        $logger = LoggerHelper::createDefaultLogger($output);
 
-        $browscap = new Browscap($this->getCache($input), $logger);
+        $fileCache = new FilesystemCache($input->getOption('cache'));
+        $cache     = new SimpleCacheAdapter($fileCache);
+
+        $browscap = new Browscap($cache, $logger);
 
         $result = $browscap->getBrowser($input->getArgument('user-agent'));
 
         $output->writeln(json_encode($result, JSON_PRETTY_PRINT));
-    }
-
-    private function getCache(InputInterface $input) : CacheInterface
-    {
-        if (null === $this->cache) {
-            $fileCache = new FilesystemCache($input->getOption('cache'));
-            $this->cache = new SimpleCacheAdapter($fileCache);
-        }
-
-        return $this->cache;
-    }
-
-    private function getLogger(InputInterface $input) : LoggerInterface
-    {
-        if (null === $this->logger) {
-            $this->logger = LoggerHelper::createDefaultLogger($input->getOption('debug'));
-        }
-
-        return $this->logger;
     }
 }

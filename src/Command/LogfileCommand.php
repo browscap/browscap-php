@@ -64,28 +64,13 @@ class LogfileCommand extends Command
     private $totalCount = 0;
 
     /**
-     * @var ?CacheInterface
-     */
-    private $cache;
-
-    /**
      * @var string
      */
     private $defaultCacheFolder;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(
-        string $defaultCacheFolder,
-        ?CacheInterface $cache = null,
-        ?LoggerInterface $logger = null
-    ) {
+    public function __construct(string $defaultCacheFolder)
+    {
         $this->defaultCacheFolder = $defaultCacheFolder;
-        $this->cache = $cache;
-        $this->logger = $logger;
 
         parent::__construct();
     }
@@ -128,12 +113,6 @@ class LogfileCommand extends Command
                 ['*error*']
             )
             ->addOption(
-                'debug',
-                null,
-                InputOption::VALUE_NONE,
-                'Should the debug mode entered?'
-            )
-            ->addOption(
                 'cache',
                 'c',
                 InputOption::VALUE_OPTIONAL,
@@ -148,9 +127,12 @@ class LogfileCommand extends Command
             throw InvalidArgumentException::oneOfCommandArguments('log-file', 'log-dir');
         }
 
-        $logger = $this->getLogger($input);
+        $logger = LoggerHelper::createDefaultLogger($output);
 
-        $browscap = new Browscap($this->getCache($input), $logger);
+        $fileCache = new FilesystemCache($input->getOption('cache'));
+        $cache     = new SimpleCacheAdapter($fileCache);
+
+        $browscap = new Browscap($cache, $logger);
         $collection = ReaderFactory::factory();
         $fs = new Filesystem();
 
@@ -441,24 +423,5 @@ class LogfileCommand extends Command
         }
 
         return $path;
-    }
-
-    private function getCache(InputInterface $input) : CacheInterface
-    {
-        if (null === $this->cache) {
-            $fileCache = new FilesystemCache($input->getOption('cache'));
-            $this->cache = new SimpleCacheAdapter($fileCache);
-        }
-
-        return $this->cache;
-    }
-
-    private function getLogger(InputInterface $input) : LoggerInterface
-    {
-        if (null === $this->logger) {
-            $this->logger = LoggerHelper::createDefaultLogger($input->getOption('debug'));
-        }
-
-        return $this->logger;
     }
 }
