@@ -26,7 +26,7 @@ final class SubKey
     /**
      * Gets all subkeys for the pattern cache files
      *
-     * @return array
+     * @return string[]
      */
     public static function getAllPatternCacheSubkeys() : array
     {
@@ -56,7 +56,7 @@ final class SubKey
     /**
      * Gets all sub keys for the inipart cache files
      *
-     * @return array
+     * @return string[]
      */
     public static function getAllIniPartCacheSubKeys() : array
     {

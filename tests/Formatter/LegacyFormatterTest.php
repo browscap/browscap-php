@@ -8,7 +8,7 @@ use BrowscapPHP\Formatter\LegacyFormatter;
 /**
  * @covers \BrowscapPHP\Formatter\LegacyFormatter
  */
-final class LegacyFormatterTest extends \PHPUnit_Framework_TestCase
+final class LegacyFormatterTest extends \PHPUnit\Framework\TestCase
 {
     public function formatterOptionsProvider() : array
     {

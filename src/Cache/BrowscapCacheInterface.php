@@ -3,7 +3,8 @@ declare(strict_types = 1);
 
 namespace BrowscapPHP\Cache;
 
-use WurflCache\Adapter\AdapterInterface;
+use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * a cache proxy to be able to use the cache adapters provided by the WurflCache package
@@ -21,9 +22,10 @@ interface BrowscapCacheInterface
      * Constructor class, checks for the existence of (and loads) the cache and
      * if needed updated the definitions
      *
-     * @param \WurflCache\Adapter\AdapterInterface $adapter
+     * @param \Psr\SimpleCache\CacheInterface $adapter
+     * @param LoggerInterface $logger
      */
-    public function __construct(AdapterInterface $adapter);
+    public function __construct(CacheInterface $adapter, LoggerInterface $logger);
 
     /**
      * Gets the version of the Browscap data
@@ -35,9 +37,9 @@ interface BrowscapCacheInterface
     /**
      * Gets the release date of the Browscap data
      *
-     * @return string
+     * @return string|null
      */
-    public function getReleaseDate() : string;
+    public function getReleaseDate() : ?string;
 
     /**
      * Gets the type of the Browscap data
@@ -54,6 +56,7 @@ interface BrowscapCacheInterface
      * @param bool   $success
      *
      * @return mixed Data on success, null on failure
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function getItem(string $cacheId, bool $withVersion = true, ?bool &$success = null);
 
@@ -65,6 +68,7 @@ interface BrowscapCacheInterface
      * @param bool   $withVersion
      *
      * @return bool whether the file was correctly written to the disk
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function setItem(string $cacheId, $content, bool $withVersion = true) : bool;
 
@@ -75,6 +79,7 @@ interface BrowscapCacheInterface
      * @param bool   $withVersion
      *
      * @return bool
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function hasItem(string $cacheId, bool $withVersion = true) : bool;
 
@@ -85,6 +90,7 @@ interface BrowscapCacheInterface
      * @param bool   $withVersion
      *
      * @return bool
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function removeItem(string $cacheId, bool $withVersion = true) : bool;
 
@@ -92,6 +98,7 @@ interface BrowscapCacheInterface
      * Flush the whole storage
      *
      * @return bool
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function flush() : bool;
 }

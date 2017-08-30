@@ -9,7 +9,7 @@ use BrowscapPHP\Util\Logfile\ReaderCollection;
 /**
  * @covers \BrowscapPHP\Util\Logfile\ReaderFactory
  */
-final class ReaderFactoryTest extends \PHPUnit_Framework_TestCase
+final class ReaderFactoryTest extends \PHPUnit\Framework\TestCase
 {
     public function testFactoryCreatesCollection() : void
     {

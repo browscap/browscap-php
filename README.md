@@ -50,7 +50,7 @@ If you want to autoupdate the used cache, we recommend a separate cron job that 
 What's changed in version 4.x
 -----------------------------
 
-BC breaks listed:
+## BC breaks listed
 
  * Strict type hints have been added throughout. This may break some type assumptions made in earlier versions.
  * `CheckUpdateCommand`, `ConvertCommand`, `LogfileCommand`, `ParserCommand`, `UpdateCommand` removed `setCache` methods
@@ -59,6 +59,13 @@ BC breaks listed:
  * `PropertyFormatter` now assumes any non-truthy values are `false`
  * `checkUpdate` method now throws an exception if we could not determine the "remote" version, or if there is no
    version in cache already.
+   
+## Changes
+
+* for caching the [Doctrine Cache](https://github.com/github.com/doctrine/cache) package is used
+  * Any other Cache compatible with [PSR-16](https://github.com/github.com/php-fig/simple-cache) could be used
+* instead of the `debug` flag for the CLI commands the verbose flag has to be used
+
 
 What's changed in version 3.x
 -----------------------------
@@ -141,7 +148,7 @@ NOTE: Please look into the [WurflCache](https://github.com/mimmi20/WurflCache) p
 
 ```php
 $bc = new \BrowscapPHP\BrowscapUpdater();
-$bc->update(\BrowscapPHP\Helper\IniLoader::PHP_INI_FULL);
+$bc->update(\BrowscapPHP\Helper\IniLoaderInterface::PHP_INI_FULL);
 ```
 
 ## Setting up a proxy configuration
@@ -197,7 +204,6 @@ vendor/bin/browscap-php browscap:check-update
 
 ### options
 
-- `debug` (optional) if set more messages are printed to the console
 - `cache` (optional) the relative path to your cache directory
 
 ## fetch
@@ -210,7 +216,7 @@ vendor/bin/browscap-php browscap:fetch
 
 ### options
 
-- `debug` (optional) if set more messages are printed to the console
+- `cache` (optional) the relative path to your cache directory
 - `remote-file` (optional) only required if you dont want to download the standerd file, possible values are
   - `PHP_BrowscapINI` downloads the standard file (default)
   - `Lite_PHP_BrowscapINI` downloads the lite file
@@ -228,7 +234,6 @@ vendor/bin/browscap-php browscap:convert
 ### options
 
 - `file` (optional) the relative path to the local file where the remote content is stored, this should be the same file as in the fetch command
-- `debug` (optional) if set more messages are printed to the console
 - `cache` (optional) the relative path to your cache directory
 
 ## update
@@ -241,7 +246,6 @@ vendor/bin/browscap-php browscap:update
 
 ### options
 
-- `debug` (optional) if set more messages are printed to the console
 - `remote-file`(optional) only required if you dont want to download the standerd file, possible values are
   - `PHP_BrowscapINI` downloads the standard file (default)
   - `Lite_PHP_BrowscapINI` downloads the lite file
@@ -259,7 +263,6 @@ vendor/bin/browscap-php browscap:parse
 ### options
 
 - `user-agent` (required) the user agent which should be parsed
-- `debug` (optional) if set more messages are printed to the console
 - `cache` (optional) the relative path to your cache directory
 
 ## log
@@ -273,7 +276,6 @@ vendor/bin/browscap-php browscap:log
 ### options
 
 - `output` (required) the path to a log file where the results are stored
-- `debug` (optional) if set more messages are printed to the console
 - `cache` (optional) the relative path to your cache directory
 - `log-file` (optional) the relative path to an access log file
 - `log-dir` (optional) the relative path to directory with the log files

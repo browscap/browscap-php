@@ -5,21 +5,18 @@ namespace BrowscapPHPTest\Helper;
 
 use BrowscapPHP\Helper\LoggerHelper;
 use Monolog\Logger;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @covers \BrowscapPHP\Helper\LoggerHelper
  */
-class LoggerHelperTest extends \PHPUnit_Framework_TestCase
+class LoggerHelperTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreate() : void
     {
-        $helper = new LoggerHelper();
-        self::assertInstanceOf(Logger::class, $helper->create());
-    }
+        /** @var OutputInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        $output = $this->createMock(OutputInterface::class);
 
-    public function testCreateInDebugMode() : void
-    {
-        $helper = new LoggerHelper();
-        self::assertInstanceOf(Logger::class, $helper->create(true));
+        self::assertInstanceOf(Logger::class, LoggerHelper::createDefaultLogger($output));
     }
 }

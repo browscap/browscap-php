@@ -4,15 +4,14 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\BrowscapUpdater;
-use BrowscapPHP\Cache\BrowscapCache;
-use BrowscapPHP\Cache\BrowscapCacheInterface;
-use BrowscapPHP\Helper\IniLoader;
+use BrowscapPHP\Helper\IniLoaderInterface;
 use BrowscapPHP\Helper\LoggerHelper;
+use Doctrine\Common\Cache\FilesystemCache;
+use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use WurflCache\Adapter\File;
 
 /**
  * Command to fetch a browscap ini file from the remote host, convert it into an array and store the content in a local
@@ -21,19 +20,13 @@ use WurflCache\Adapter\File;
 class UpdateCommand extends Command
 {
     /**
-     * @var ?BrowscapCacheInterface
-     */
-    private $cache;
-
-    /**
      * @var string
      */
     private $defaultCacheFolder;
 
-    public function __construct($defaultCacheFolder, ?BrowscapCacheInterface $cache = null)
+    public function __construct(string $defaultCacheFolder)
     {
         $this->defaultCacheFolder = $defaultCacheFolder;
-        $this->cache = $cache;
 
         parent::__construct();
     }
@@ -47,21 +40,15 @@ class UpdateCommand extends Command
                 'remote-file',
                 'r',
                 InputOption::VALUE_OPTIONAL,
-                'browscap.ini file to download from remote location (possible values are: ' . IniLoader::PHP_INI_LITE
-                . ', ' . IniLoader::PHP_INI . ', ' . IniLoader::PHP_INI_FULL . ')',
-                IniLoader::PHP_INI
+                'browscap.ini file to download from remote location (possible values are: ' . IniLoaderInterface::PHP_INI_LITE
+                . ', ' . IniLoaderInterface::PHP_INI . ', ' . IniLoaderInterface::PHP_INI_FULL . ')',
+                IniLoaderInterface::PHP_INI
             )
             ->addOption(
                 'no-backup',
                 null,
                 InputOption::VALUE_NONE,
                 'Do not backup the previously existing file'
-            )
-            ->addOption(
-                'debug',
-                'd',
-                InputOption::VALUE_NONE,
-                'Should the debug mode entered?'
             )
             ->addOption(
                 'cache',
@@ -74,27 +61,16 @@ class UpdateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $loggerHelper = new LoggerHelper();
-        $logger = $loggerHelper->create($input->getOption('debug'));
+        $logger = LoggerHelper::createDefaultLogger($output);
+
+        $fileCache = new FilesystemCache($input->getOption('cache'));
+        $cache = new SimpleCacheAdapter($fileCache);
 
         $logger->info('started updating cache with remote file');
 
-        $browscap = new BrowscapUpdater();
-
-        $browscap->setLogger($logger);
-        $browscap->setCache($this->getCache($input));
+        $browscap = new BrowscapUpdater($cache, $logger);
         $browscap->update($input->getOption('remote-file'));
 
         $logger->info('finished updating cache with remote file');
-    }
-
-    private function getCache(InputInterface $input) : BrowscapCacheInterface
-    {
-        if (null === $this->cache) {
-            $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
-            $this->cache = new BrowscapCache($cacheAdapter);
-        }
-
-        return $this->cache;
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Parser\Helper;
 
 use BrowscapPHP\Cache\BrowscapCacheInterface;
-use BrowscapPHP\Helper\Quoter;
+use BrowscapPHP\Helper\QuoterInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -17,9 +17,9 @@ interface GetDataInterface
      *
      * @param \BrowscapPHP\Cache\BrowscapCacheInterface $cache
      * @param \Psr\Log\LoggerInterface                  $logger
-     * @param \BrowscapPHP\Helper\Quoter                $quoter
+     * @param \BrowscapPHP\Helper\QuoterInterface       $quoter
      */
-    public function __construct(BrowscapCacheInterface $cache, LoggerInterface $logger, Quoter $quoter);
+    public function __construct(BrowscapCacheInterface $cache, LoggerInterface $logger, QuoterInterface $quoter);
 
     /**
      * Gets the settings for a given pattern (method calls itself to

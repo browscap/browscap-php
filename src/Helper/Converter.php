@@ -7,23 +7,13 @@ use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception\FileNotFoundException;
 use BrowscapPHP\IniParser\IniParser;
 use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 /**
  * patternHelper to convert the ini data, parses the data and stores them into the cache
  */
-final class Converter
+final class Converter implements ConverterInterface
 {
-    /**
-     * Options for regex patterns.
-     *
-     * REGEX_DELIMITER: Delimiter of all the regex patterns in the whole class.
-     * REGEX_MODIFIERS: Regex modifiers.
-     */
-    const REGEX_DELIMITER = '@';
-    const REGEX_MODIFIERS = 'i';
-    const COMPRESSION_PATTERN_START = '@';
-    const COMPRESSION_PATTERN_DELIMITER = '|';
-
     /**
      * The key to search for in the INI file to find the browscap settings
      */
@@ -55,6 +45,12 @@ final class Converter
      */
     private $iniVersion = 0;
 
+    /**
+     * Converter constructor.
+     *
+     * @param LoggerInterface        $logger
+     * @param BrowscapCacheInterface $cache
+     */
     public function __construct(LoggerInterface $logger, BrowscapCacheInterface $cache)
     {
         $this->logger = $logger;
@@ -65,13 +61,10 @@ final class Converter
      * Sets a filesystem instance
      *
      * @param Filesystem $file
-     * @return self
      */
-    public function setFilesystem(Filesystem $file) : self
+    public function setFilesystem(Filesystem $file) : void
     {
         $this->filessystem = $file;
-
-        return $this;
     }
 
     /**
@@ -88,6 +81,13 @@ final class Converter
         return $this->filessystem;
     }
 
+    /**
+     * converts a file
+     *
+     * @param string $iniFile
+     *
+     * @throws FileNotFoundException
+     */
     public function convertFile(string $iniFile) : void
     {
         if (! $this->getFilesystem()->exists($iniFile)) {
@@ -103,17 +103,28 @@ final class Converter
         $this->convertString($iniString);
     }
 
+    /**
+     * converts the string content
+     *
+     * @param string $iniString
+     */
     public function convertString(string $iniString) : void
     {
         $iniParser = new IniParser();
 
         $this->logger->info('start creating patterns from the ini data');
 
-        foreach ($iniParser->createPatterns($iniString) as $patternsHashList) {
-            foreach ($patternsHashList as $subkey => $content) {
+        foreach ($iniParser->createPatterns($iniString) as $subkey => $content) {
+            if ('' === $subkey) {
+                continue;
+            }
+
+            try {
                 if (! $this->cache->setItem('browscap.patterns.' . $subkey, $content, true)) {
                     $this->logger->error('could not write pattern data "' . $subkey . '" to the cache');
                 }
+            } catch (InvalidArgumentException $e) {
+                $this->logger->error(new \InvalidArgumentException('an error occured while writing pattern data into the cache', 0, $e));
             }
         }
 
@@ -121,16 +132,31 @@ final class Converter
 
         $this->logger->info('start creating data from the ini data');
 
-        foreach ($iniParser->createIniParts($iniString) as $patternsContentList) {
-            foreach ($patternsContentList as $subkey => $content) {
+        foreach ($iniParser->createIniParts($iniString) as $subkey => $content) {
+            if ('' === $subkey) {
+                continue;
+            }
+
+            try {
                 if (! $this->cache->setItem('browscap.iniparts.' . $subkey, $content, true)) {
                     $this->logger->error('could not write property data "' . $subkey . '" to the cache');
                 }
+            } catch (InvalidArgumentException $e) {
+                $this->logger->error(new \InvalidArgumentException('an error occured while writing property data into the cache', 0, $e));
             }
         }
 
-        $this->cache->setItem('browscap.releaseDate', $this->getIniReleaseDate($iniString), false);
-        $this->cache->setItem('browscap.type', $this->getIniType($iniString), false);
+        try {
+            $this->cache->setItem('browscap.releaseDate', $this->getIniReleaseDate($iniString), false);
+        } catch (InvalidArgumentException $e) {
+            $this->logger->error(new \InvalidArgumentException('an error occured while writing data release date into the cache', 0, $e));
+        }
+
+        try {
+            $this->cache->setItem('browscap.type', $this->getIniType($iniString), false);
+        } catch (InvalidArgumentException $e) {
+            $this->logger->error(new \InvalidArgumentException('an error occured while writing the data type into the cache', 0, $e));
+        }
 
         $this->logger->info('finished creating data from the ini data');
     }
@@ -160,21 +186,22 @@ final class Converter
      * sets the version
      *
      * @param int $version
-     * @return Converter
      */
-    public function setVersion(int $version) : self
+    public function setVersion(int $version) : void
     {
         $this->iniVersion = $version;
-        return $this;
     }
 
     /**
      * stores the version of the ini file into cache
      */
-    public function storeVersion() : self
+    public function storeVersion() : void
     {
-        $this->cache->setItem('browscap.version', $this->iniVersion, false);
-        return $this;
+        try {
+            $this->cache->setItem('browscap.version', $this->iniVersion, false);
+        } catch (InvalidArgumentException $e) {
+            $this->logger->error(new \InvalidArgumentException('an error occured while writing the data version into the cache', 0, $e));
+        }
     }
 
     /**

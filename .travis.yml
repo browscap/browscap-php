@@ -3,21 +3,12 @@ sudo: false
 
 php:
   - 7.1
-  - nightly
 
-os:
-  - linux
+os: linux
 
 env:
   - COMPOSER_FLAGS="--prefer-lowest"
   - COMPOSER_FLAGS=""
-
-matrix:
-  include:
-    - php: 7.1
-      env: COVERAGE=yes EXECUTE_CS_CHECK=yes COMPARE=yes
-  allow_failures:
-    - php: nightly
 
 cache:
   directories:
@@ -26,21 +17,43 @@ cache:
 
 before_install:
   - .travis-scripts/cache-browscap.sh
-  - if [[ $TRAVIS_PHP_VERSION != nightly && $COVERAGE != yes ]]; then phpenv config-rm xdebug.ini; fi
+  - if [[ $TRAVIS_PHP_VERSION == 7.1 && $COVERAGE != yes ]]; then phpenv config-rm xdebug.ini; fi
   - echo 'opcache.enable=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo 'opcache.enable_cli=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - travis_retry composer self-update
 
-install:
-  - travis_retry composer update --optimize-autoloader --prefer-dist --prefer-stable --no-progress --no-interaction -vv $COMPOSER_FLAGS
+install: travis_retry composer update --optimize-autoloader --prefer-dist --prefer-stable --no-progress --no-interaction -vv $COMPOSER_FLAGS
 
 script:
-  - if [[ $COVERAGE == yes ]]; then php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --exclude-group compare --coverage-text --coverage-clover=coverage.clover; fi
-  - if [[ $COVERAGE != yes && $COMPARE != yes ]]; then php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --no-coverage --exclude-group compare; fi
-  - if [[ $COMPARE == yes ]]; then php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --no-coverage --group compare; fi
-  - if [[ $EXECUTE_CS_CHECK == yes ]]; then php -n -d memory_limit=768M vendor/bin/phpcs; fi
-  - if [[ $EXECUTE_CS_CHECK == yes ]]; then php -n -d memory_limit=768M vendor/bin/php-cs-fixer fix --dry-run -vv; fi
+  - composer validate
+  - php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --no-coverage --colors --exclude-group compare
 
-after_script:
-  - if [[ $COVERAGE = yes ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
+jobs:
+  fast_finish: true
+  allow_failures:
+    - php: 7.2
+    - php: nightly
+  include:
+    - php: 7.2
+      env: COMPOSER_FLAGS="--ignore-platform-reqs"
+    - php: nightly
+      env: COMPOSER_FLAGS="--ignore-platform-reqs"
+    - stage: test with coverage
+      php: 7.1
+      env:
+        - COVERAGE=yes
+        - COMPOSER_FLAGS=""
+      script: php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --exclude-group compare --coverage-text --coverage-clover=coverage.clover
+      after_success:
+        - wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+    - stage: check coding style
+      php: 7.1
+      env: COMPOSER_FLAGS=""
+      script:
+        - php -n -d memory_limit=768M vendor/bin/phpcs
+        - php -n -d memory_limit=768M vendor/bin/php-cs-fixer fix --dry-run -vv
+    - stage: compare results
+      php: 7.1
+      env: COMPOSER_FLAGS=""
+      script: php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --no-coverage --group compare
 

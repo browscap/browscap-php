@@ -13,7 +13,7 @@ final class PhpGetBrowser implements FormatterInterface
      *
      * @var array
      */
-    private $settings = [];
+    private $data = [];
 
     /**
      * a list of possible properties
@@ -81,7 +81,7 @@ final class PhpGetBrowser implements FormatterInterface
     public function setData(array $settings) : void
     {
         foreach ($settings as $key => $value) {
-            $this->settings[strtolower($key)] = $value;
+            $this->data[strtolower($key)] = $value;
         }
     }
 
@@ -90,7 +90,7 @@ final class PhpGetBrowser implements FormatterInterface
      *
      * @return \stdClass
      */
-    public function getData() : ?\stdClass
+    public function getData() : \stdClass
     {
         $output = new \stdClass();
 
@@ -98,8 +98,8 @@ final class PhpGetBrowser implements FormatterInterface
         foreach ($propertyNames as $property) {
             $key = strtolower($property);
 
-            if (array_key_exists($key, $this->settings)) {
-                $output->{$key} = $this->settings[$key];
+            if (array_key_exists($key, $this->data)) {
+                $output->{$key} = $this->data[$key];
             } elseif ('parent' !== $key) {
                 $output->{$key} = $this->defaultProperties[$property];
             }
@@ -107,8 +107,8 @@ final class PhpGetBrowser implements FormatterInterface
 
         // Don't want to normally do this, just if it exists in the data file
         // for our test runs
-        if (array_key_exists('patternid', $this->settings)) {
-            $output->patternid = $this->settings['patternid'];
+        if (array_key_exists('patternid', $this->data)) {
+            $output->patternid = $this->data['patternid'];
         }
 
         return $output;

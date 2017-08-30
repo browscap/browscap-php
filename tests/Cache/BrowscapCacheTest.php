@@ -4,27 +4,35 @@ declare(strict_types = 1);
 namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Cache\BrowscapCache;
-use PHPUnit_Framework_TestCase;
-use WurflCache\Adapter\Memory;
-use WurflCache\Adapter\NullStorage;
+use Doctrine\Common\Cache\ArrayCache;
+use Psr\Log\LoggerInterface;
+use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 
 /**
  * @covers \BrowscapPHP\Cache\BrowscapCache
  */
-final class BrowscapCacheTest extends PHPUnit_Framework_TestCase
+final class BrowscapCacheTest extends \PHPUnit\Framework\TestCase
 {
     public function testConstruct() : void
     {
-        $adapter = new NullStorage();
-        $cache = new BrowscapCache($adapter);
+        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $memoryCache = new ArrayCache();
+        $adapter = new SimpleCacheAdapter($memoryCache);
+        $cache = new BrowscapCache($adapter, $logger);
 
         self::assertInstanceOf(BrowscapCache::class, $cache);
     }
 
     public function testVersion() : void
     {
-        $adapter = new Memory();
-        $cache = new BrowscapCache($adapter);
+        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $memoryCache = new ArrayCache();
+        $adapter = new SimpleCacheAdapter($memoryCache);
+        $cache = new BrowscapCache($adapter, $logger);
 
         self::assertNull($cache->getVersion());
 
@@ -34,8 +42,12 @@ final class BrowscapCacheTest extends PHPUnit_Framework_TestCase
 
     public function testReleaseDate() : void
     {
-        $adapter = new Memory();
-        $cache = new BrowscapCache($adapter);
+        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $memoryCache = new ArrayCache();
+        $adapter = new SimpleCacheAdapter($memoryCache);
+        $cache = new BrowscapCache($adapter, $logger);
 
         self::assertNull($cache->getVersion());
 
@@ -45,8 +57,12 @@ final class BrowscapCacheTest extends PHPUnit_Framework_TestCase
 
     public function testType() : void
     {
-        $adapter = new Memory();
-        $cache = new BrowscapCache($adapter);
+        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $memoryCache = new ArrayCache();
+        $adapter = new SimpleCacheAdapter($memoryCache);
+        $cache = new BrowscapCache($adapter, $logger);
 
         self::assertNull($cache->getType());
 

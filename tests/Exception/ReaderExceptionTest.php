@@ -8,7 +8,7 @@ use BrowscapPHP\Exception\ReaderException;
 /**
  * @covers \BrowscapPHP\Exception\ReaderException
  */
-class ReaderExceptionTest extends \PHPUnit_Framework_TestCase
+class ReaderExceptionTest extends \PHPUnit\Framework\TestCase
 {
     public function testUserAgentParserError()
     {

@@ -4,15 +4,14 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\Browscap;
-use BrowscapPHP\Cache\BrowscapCache;
-use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Helper\LoggerHelper;
+use Doctrine\Common\Cache\FilesystemCache;
+use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use WurflCache\Adapter\File;
 
 /**
  * commands to parse a given useragent
@@ -20,19 +19,13 @@ use WurflCache\Adapter\File;
 class ParserCommand extends Command
 {
     /**
-     * @var ?BrowscapCacheInterface
-     */
-    private $cache;
-
-    /**
      * @var string
      */
     private $defaultCacheFolder;
 
-    public function __construct($defaultCacheFolder, ?BrowscapCacheInterface $cache = null)
+    public function __construct(string $defaultCacheFolder)
     {
         $this->defaultCacheFolder = $defaultCacheFolder;
-        $this->cache = $cache;
 
         parent::__construct();
     }
@@ -49,12 +42,6 @@ class ParserCommand extends Command
                 null
             )
             ->addOption(
-                'debug',
-                'd',
-                InputOption::VALUE_NONE,
-                'Should the debug mode entered?'
-            )
-            ->addOption(
                 'cache',
                 'c',
                 InputOption::VALUE_OPTIONAL,
@@ -65,27 +52,15 @@ class ParserCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $loggerHelper = new LoggerHelper();
-        $logger = $loggerHelper->create($input->getOption('debug'));
+        $logger = LoggerHelper::createDefaultLogger($output);
 
-        $browscap = new Browscap();
+        $fileCache = new FilesystemCache($input->getOption('cache'));
+        $cache = new SimpleCacheAdapter($fileCache);
 
-        $browscap
-            ->setLogger($logger)
-            ->setCache($this->getCache($input));
+        $browscap = new Browscap($cache, $logger);
 
         $result = $browscap->getBrowser($input->getArgument('user-agent'));
 
         $output->writeln(json_encode($result, JSON_PRETTY_PRINT));
-    }
-
-    private function getCache(InputInterface $input) : BrowscapCacheInterface
-    {
-        if (null === $this->cache) {
-            $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
-            $this->cache = new BrowscapCache($cacheAdapter);
-        }
-
-        return $this->cache;
     }
 }

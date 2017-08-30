@@ -6,7 +6,7 @@ namespace BrowscapPHP\Helper;
 /**
  * class to help getting the user agent
  */
-final class Support
+final class Support implements SupportInterface
 {
     /**
      * @var array

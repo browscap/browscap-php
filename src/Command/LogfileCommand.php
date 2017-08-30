@@ -4,8 +4,6 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\Browscap;
-use BrowscapPHP\Cache\BrowscapCache;
-use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception\InvalidArgumentException;
 use BrowscapPHP\Exception\ReaderException;
 use BrowscapPHP\Exception\UnknownBrowserException;
@@ -17,6 +15,8 @@ use BrowscapPHP\Helper\Filesystem;
 use BrowscapPHP\Helper\LoggerHelper;
 use BrowscapPHP\Util\Logfile\ReaderCollection;
 use BrowscapPHP\Util\Logfile\ReaderFactory;
+use Doctrine\Common\Cache\FilesystemCache;
+use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,7 +25,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use WurflCache\Adapter\File;
 
 /**
  * Commands to parse a log file and parse the useragents in it
@@ -63,19 +62,13 @@ class LogfileCommand extends Command
     private $totalCount = 0;
 
     /**
-     * @var ?BrowscapCacheInterface
-     */
-    private $cache;
-
-    /**
      * @var string
      */
     private $defaultCacheFolder;
 
-    public function __construct(string $defaultCacheFolder, ?BrowscapCacheInterface $cache = null)
+    public function __construct(string $defaultCacheFolder)
     {
         $this->defaultCacheFolder = $defaultCacheFolder;
-        $this->cache = $cache;
 
         parent::__construct();
     }
@@ -118,12 +111,6 @@ class LogfileCommand extends Command
                 ['*error*']
             )
             ->addOption(
-                'debug',
-                null,
-                InputOption::VALUE_NONE,
-                'Should the debug mode entered?'
-            )
-            ->addOption(
                 'cache',
                 'c',
                 InputOption::VALUE_OPTIONAL,
@@ -138,16 +125,14 @@ class LogfileCommand extends Command
             throw InvalidArgumentException::oneOfCommandArguments('log-file', 'log-dir');
         }
 
-        $loggerHelper = new LoggerHelper();
-        $logger = $loggerHelper->create($input->getOption('debug'));
+        $logger = LoggerHelper::createDefaultLogger($output);
 
-        $browscap = new Browscap();
+        $fileCache = new FilesystemCache($input->getOption('cache'));
+        $cache = new SimpleCacheAdapter($fileCache);
+
+        $browscap = new Browscap($cache, $logger);
         $collection = ReaderFactory::factory();
         $fs = new Filesystem();
-
-        $browscap
-            ->setLogger($logger)
-            ->setCache($this->getCache($input));
 
         /** @var $file \Symfony\Component\Finder\SplFileInfo */
         foreach ($this->getFiles($input) as $file) {
@@ -288,7 +273,7 @@ class LogfileCommand extends Command
         OutputInterface $output,
         ReaderCollection $collection,
         Browscap $browscap,
-        int $line
+        string $line
     ) : void {
         $userAgentString = '';
 
@@ -436,15 +421,5 @@ class LogfileCommand extends Command
         }
 
         return $path;
-    }
-
-    private function getCache(InputInterface $input) : BrowscapCacheInterface
-    {
-        if (null === $this->cache) {
-            $cacheAdapter = new File([File::DIR => $input->getOption('cache')]);
-            $this->cache = new BrowscapCache($cacheAdapter);
-        }
-
-        return $this->cache;
     }
 }

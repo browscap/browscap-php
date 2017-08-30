@@ -13,7 +13,7 @@ use BrowscapPHP\Helper\Filesystem;
 /**
  * @covers \BrowscapPHP\Helper\Converter
  */
-final class ConverterTest extends \PHPUnit_Framework_TestCase
+final class ConverterTest extends \PHPUnit\Framework\TestCase
 {
     const STORAGE_DIR = 'storage';
 
@@ -51,7 +51,7 @@ final class ConverterTest extends \PHPUnit_Framework_TestCase
         /** @var Filesystem|\PHPUnit_Framework_MockObject_MockObject $file */
         $file = $this->createMock(Filesystem::class);
 
-        self::assertSame($this->object, $this->object->setFilesystem($file));
+        $this->object->setFilesystem($file);
         self::assertSame($file, $this->object->getFilesystem());
     }
 
@@ -216,6 +216,5 @@ Format=ASP
 Type=';
 
         self::assertSame(5031, $this->object->getIniVersion($content));
-        self::assertSame($this->object, $this->object->storeVersion());
     }
 }

@@ -12,19 +12,8 @@ use BrowscapPHP\Parser\Helper\SubKey;
 /**
  * Ini parser class (compatible with PHP 5.3+)
  */
-final class IniParser
+final class IniParser implements ParserInterface
 {
-    /**
-     * Options for regex patterns.
-     *
-     * REGEX_DELIMITER: Delimiter of all the regex patterns in the whole class.
-     * REGEX_MODIFIERS: Regex modifiers.
-     */
-    const REGEX_DELIMITER = '@';
-    const REGEX_MODIFIERS = 'i';
-    const COMPRESSION_PATTERN_START = '@';
-    const COMPRESSION_PATTERN_DELIMITER = '|';
-
     /**
      * Number of pattern to combine for a faster regular expression search.
      *
@@ -88,7 +77,7 @@ final class IniParser
         foreach ($contents as $subkey => $cacheContent) {
             $subkey = (string) $subkey;
 
-            yield [$subkey => $cacheContent];
+            yield $subkey => $cacheContent;
 
             unset($subkeys[$subkey]);
         }
@@ -96,7 +85,7 @@ final class IniParser
         foreach (array_keys($subkeys) as $subkey) {
             $subkey = (string) $subkey;
 
-            yield [$subkey => []];
+            yield $subkey => '';
         }
     }
 
@@ -119,7 +108,7 @@ final class IniParser
         );
 
         if (empty($matches[0]) || ! is_array($matches[0])) {
-            yield [];
+            yield '' => '';
 
             return;
         }
@@ -138,7 +127,7 @@ final class IniParser
             }
 
             $pattern = strtolower($pattern);
-            $patternhash = Pattern::getHashForPattern($pattern, false);
+            $patternhash = Pattern::getHashForPattern($pattern, false)[0];
             $tmpLength = Pattern::getPatternLength($pattern);
 
             // special handling of default entry
@@ -219,7 +208,7 @@ final class IniParser
         foreach ($contents as $subkey => $content) {
             $subkey = (string) $subkey;
 
-            yield [$subkey => $content];
+            yield $subkey => $content;
 
             unset($subkeys[$subkey]);
         }
@@ -227,7 +216,7 @@ final class IniParser
         foreach (array_keys($subkeys) as $subkey) {
             $subkey = (string) $subkey;
 
-            yield [$subkey => []];
+            yield $subkey => '';
         }
     }
 

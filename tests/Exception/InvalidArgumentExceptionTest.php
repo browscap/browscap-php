@@ -8,7 +8,7 @@ use BrowscapPHP\Exception\InvalidArgumentException;
 /**
  * @covers \BrowscapPHP\Exception\InvalidArgumentException
  */
-final class InvalidArgumentExceptionTest extends \PHPUnit_Framework_TestCase
+final class InvalidArgumentExceptionTest extends \PHPUnit\Framework\TestCase
 {
     public function testOneOfCommandArguments() : void
     {

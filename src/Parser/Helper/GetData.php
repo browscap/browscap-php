@@ -6,8 +6,9 @@ namespace BrowscapPHP\Parser\Helper;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Data\PropertyFormatter;
 use BrowscapPHP\Data\PropertyHolder;
-use BrowscapPHP\Helper\Quoter;
+use BrowscapPHP\Helper\QuoterInterface;
 use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 /**
  * extracts the data and the data for theses pattern from the ini content, optimized for PHP 5.5+
@@ -38,9 +39,9 @@ final class GetData implements GetDataInterface
      *
      * @param \BrowscapPHP\Cache\BrowscapCacheInterface $cache
      * @param \Psr\Log\LoggerInterface                  $logger
-     * @param \BrowscapPHP\Helper\Quoter                $quoter
+     * @param \BrowscapPHP\Helper\QuoterInterface       $quoter
      */
-    public function __construct(BrowscapCacheInterface $cache, LoggerInterface $logger, Quoter $quoter)
+    public function __construct(BrowscapCacheInterface $cache, LoggerInterface $logger, QuoterInterface $quoter)
     {
         $this->cache = $cache;
         $this->logger = $logger;
@@ -79,6 +80,7 @@ final class GetData implements GetDataInterface
 
         // check if parent pattern set, only keep the first one
         $parentPattern = null;
+
         if (isset($addedSettings['Parent'])) {
             $parentPattern = $addedSettings['Parent'];
 
@@ -90,7 +92,7 @@ final class GetData implements GetDataInterface
         // merge settings
         $settings += $addedSettings;
 
-        if ($parentPattern !== null) {
+        if (is_string($parentPattern)) {
             return $this->getSettings($this->quoter->pregQuote($parentPattern), $settings);
         }
 
@@ -109,14 +111,27 @@ final class GetData implements GetDataInterface
         $patternhash = Pattern::getHashForParts($pattern);
         $subkey = SubKey::getIniPartCacheSubKey($patternhash);
 
-        if (! $this->cache->hasItem('browscap.iniparts.' . $subkey, true)) {
-            $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" not found');
+        try {
+            if (! $this->cache->hasItem('browscap.iniparts.' . $subkey, true)) {
+                $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" not found');
+
+                return [];
+            }
+        } catch (InvalidArgumentException $e) {
+            $this->logger->error(new \InvalidArgumentException('an error occured while checking a inipart in the cache', 0, $e));
+            return [];
+        }
+
+
+        $success = null;
+        try {
+            $file = $this->cache->getItem('browscap.iniparts.' . $subkey, true, $success);
+        } catch (InvalidArgumentException $e) {
+            $this->logger->error(new \InvalidArgumentException('an error occured while reading a inipart from the cache', 0, $e));
 
             return [];
         }
 
-        $success = null;
-        $file = $this->cache->getItem('browscap.iniparts.' . $subkey, true, $success);
 
         if (! $success) {
             $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" not found');

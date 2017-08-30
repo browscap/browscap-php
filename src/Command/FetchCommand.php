@@ -4,8 +4,10 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\BrowscapUpdater;
-use BrowscapPHP\Helper\IniLoader;
+use BrowscapPHP\Helper\IniLoaderInterface;
 use BrowscapPHP\Helper\LoggerHelper;
+use Doctrine\Common\Cache\FilesystemCache;
+use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,8 +24,14 @@ class FetchCommand extends Command
      */
     private $defaultIniFile;
 
-    public function __construct(string $defaultIniFile)
+    /**
+     * @var string
+     */
+    private $defaultCacheFolder;
+
+    public function __construct(string $defaultCacheFolder, string $defaultIniFile)
     {
+        $this->defaultCacheFolder = $defaultCacheFolder;
         $this->defaultIniFile = $defaultIniFile;
 
         parent::__construct();
@@ -44,22 +52,25 @@ class FetchCommand extends Command
                 'remote-file',
                 'r',
                 InputOption::VALUE_OPTIONAL,
-                'browscap.ini file to download from remote location (possible values are: ' . IniLoader::PHP_INI_LITE
-                . ', ' . IniLoader::PHP_INI . ', ' . IniLoader::PHP_INI_FULL . ')',
-                IniLoader::PHP_INI
+                'browscap.ini file to download from remote location (possible values are: ' . IniLoaderInterface::PHP_INI_LITE
+                . ', ' . IniLoaderInterface::PHP_INI . ', ' . IniLoaderInterface::PHP_INI_FULL . ')',
+                IniLoaderInterface::PHP_INI
             )
             ->addOption(
-                'debug',
-                'd',
-                InputOption::VALUE_NONE,
-                'Should the debug mode entered?'
+                'cache',
+                'c',
+                InputOption::VALUE_OPTIONAL,
+                'Where the cache files are located',
+                $this->defaultCacheFolder
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
-        $loggerHelper = new LoggerHelper();
-        $logger = $loggerHelper->create($input->getOption('debug'));
+        $logger = LoggerHelper::createDefaultLogger($output);
+
+        $fileCache = new FilesystemCache($input->getOption('cache'));
+        $cache = new SimpleCacheAdapter($fileCache);
 
         $file = $input->getArgument('file');
         if (! $file) {
@@ -68,9 +79,7 @@ class FetchCommand extends Command
 
         $logger->info('started fetching remote file');
 
-        $browscap = new BrowscapUpdater();
-
-        $browscap->setLogger($logger);
+        $browscap = new BrowscapUpdater($cache, $logger);
         $browscap->fetch($file, $input->getOption('remote-file'));
 
         $logger->info('finished fetching remote file');
