@@ -6,8 +6,6 @@ namespace BrowscapPHP\Command;
 use BrowscapPHP\Browscap;
 use BrowscapPHP\Helper\LoggerHelper;
 use Doctrine\Common\Cache\FilesystemCache;
-use Psr\Log\LoggerInterface;
-use Psr\SimpleCache\CacheInterface;
 use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -57,7 +55,7 @@ class ParserCommand extends Command
         $logger = LoggerHelper::createDefaultLogger($output);
 
         $fileCache = new FilesystemCache($input->getOption('cache'));
-        $cache     = new SimpleCacheAdapter($fileCache);
+        $cache = new SimpleCacheAdapter($fileCache);
 
         $browscap = new Browscap($cache, $logger);
 

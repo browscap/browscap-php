@@ -4,12 +4,6 @@ declare(strict_types = 1);
 namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Command\ConvertCommand;
-use BrowscapPHP\Exception as BrowscapException;
-use Doctrine\Common\Cache\ArrayCache;
-use Psr\Log\NullLogger;
-use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * @covers \BrowscapPHP\Command\ConvertCommand

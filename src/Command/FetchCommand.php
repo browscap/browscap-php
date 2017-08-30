@@ -7,8 +7,6 @@ use BrowscapPHP\BrowscapUpdater;
 use BrowscapPHP\Helper\IniLoaderInterface;
 use BrowscapPHP\Helper\LoggerHelper;
 use Doctrine\Common\Cache\FilesystemCache;
-use Psr\Log\LoggerInterface;
-use Psr\SimpleCache\CacheInterface;
 use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -72,7 +70,7 @@ class FetchCommand extends Command
         $logger = LoggerHelper::createDefaultLogger($output);
 
         $fileCache = new FilesystemCache($input->getOption('cache'));
-        $cache     = new SimpleCacheAdapter($fileCache);
+        $cache = new SimpleCacheAdapter($fileCache);
 
         $file = $input->getArgument('file');
         if (! $file) {

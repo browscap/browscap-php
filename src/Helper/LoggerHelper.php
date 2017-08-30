@@ -4,10 +4,8 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Helper;
 
 use Monolog\ErrorHandler;
-use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Handler\PsrHandler;
-use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\MemoryPeakUsageProcessor;
 use Monolog\Processor\MemoryUsageProcessor;
@@ -33,9 +31,9 @@ final class LoggerHelper
      */
     public static function createDefaultLogger(OutputInterface $output) : LoggerInterface
     {
-        $logger        = new Logger('browscap');
+        $logger = new Logger('browscap');
         $consoleLogger = new ConsoleLogger($output);
-        $psrHandler    = new PsrHandler($consoleLogger);
+        $psrHandler = new PsrHandler($consoleLogger);
 
         $logger->pushHandler($psrHandler);
         $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, Logger::NOTICE));

@@ -126,7 +126,6 @@ final class Converter implements ConverterInterface
             } catch (InvalidArgumentException $e) {
                 $this->logger->error(new \InvalidArgumentException('an error occured while writing pattern data into the cache', 0, $e));
             }
-
         }
 
         $this->logger->info('finished creating patterns from the ini data');

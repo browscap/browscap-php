@@ -4,11 +4,6 @@ declare(strict_types = 1);
 namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Command\LogfileCommand;
-use Doctrine\Common\Cache\ArrayCache;
-use org\bovigo\vfs\vfsStream;
-use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * @covers \BrowscapPHP\Command\LogfileCommand

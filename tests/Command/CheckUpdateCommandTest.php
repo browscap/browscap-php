@@ -4,8 +4,6 @@ declare(strict_types = 1);
 namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Command\CheckUpdateCommand;
-use Doctrine\Common\Cache\ArrayCache;
-use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 
 final class CheckUpdateCommandTest extends \PHPUnit_Framework_TestCase
 {

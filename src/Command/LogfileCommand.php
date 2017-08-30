@@ -16,8 +16,6 @@ use BrowscapPHP\Helper\LoggerHelper;
 use BrowscapPHP\Util\Logfile\ReaderCollection;
 use BrowscapPHP\Util\Logfile\ReaderFactory;
 use Doctrine\Common\Cache\FilesystemCache;
-use Psr\Log\LoggerInterface;
-use Psr\SimpleCache\CacheInterface;
 use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -130,7 +128,7 @@ class LogfileCommand extends Command
         $logger = LoggerHelper::createDefaultLogger($output);
 
         $fileCache = new FilesystemCache($input->getOption('cache'));
-        $cache     = new SimpleCacheAdapter($fileCache);
+        $cache = new SimpleCacheAdapter($fileCache);
 
         $browscap = new Browscap($cache, $logger);
         $collection = ReaderFactory::factory();

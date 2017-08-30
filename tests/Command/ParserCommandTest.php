@@ -4,9 +4,6 @@ declare(strict_types = 1);
 namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Command\ParserCommand;
-use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 final class ParserCommandTest extends \PHPUnit_Framework_TestCase
 {

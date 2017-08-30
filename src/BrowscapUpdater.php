@@ -15,6 +15,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 /**
  * Browscap.ini parsing class with caching and update capabilities
@@ -61,7 +62,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
         ClientInterface $client = null,
         int $connectTimeout = self::DEFAULT_TIMEOUT
     ) {
-        $this->cache = new BrowscapCache($cache);
+        $this->cache = new BrowscapCache($cache, $logger);
         $this->logger = $logger;
 
         if (null === $client) {
@@ -104,7 +105,15 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
      */
     public function convertString(string $iniString) : void
     {
-        $cachedVersion = $this->cache->getItem('browscap.version', false, $success);
+        try {
+            $cachedVersion = $this->cache->getItem('browscap.version', false, $success);
+        } catch (InvalidArgumentException $e) {
+            $this->logger->error(new \InvalidArgumentException('an error occured while reading the data version from the cache', 0, $e));
+
+            return;
+        }
+
+
         $converter = new Converter($this->logger, $this->cache);
 
         $this->storeContent($converter, $iniString, $cachedVersion);
@@ -247,7 +256,11 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
     public function checkUpdate() : ?int
     {
         $success = null;
-        $cachedVersion = $this->cache->getItem('browscap.version', false, $success);
+        try {
+            $cachedVersion = $this->cache->getItem('browscap.version', false, $success);
+        } catch (InvalidArgumentException $e) {
+            throw new NoCachedVersionException('an error occured while reading the data version from the cache', 0, $e);
+        }
 
         if (! $cachedVersion) {
             // could not load version from cache
