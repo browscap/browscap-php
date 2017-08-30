@@ -17,7 +17,7 @@ cache:
 
 before_install:
   - .travis-scripts/cache-browscap.sh
-  - if [[ $TRAVIS_PHP_VERSION == 7.1 && $COVERAGE != yes ]]; then phpenv config-rm xdebug.ini; fi
+  - phpenv config-rm xdebug.ini
   - echo 'opcache.enable=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo 'opcache.enable_cli=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - travis_retry composer self-update
@@ -36,13 +36,28 @@ jobs:
   include:
     - php: 7.2
       env: COMPOSER_FLAGS="--ignore-platform-reqs"
+      before_install:
+        - .travis-scripts/cache-browscap.sh
+        - echo 'opcache.enable=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+        - echo 'opcache.enable_cli=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+        - travis_retry composer self-update
     - php: nightly
       env: COMPOSER_FLAGS="--ignore-platform-reqs"
+      before_install:
+        - .travis-scripts/cache-browscap.sh
+        - echo 'opcache.enable=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+        - echo 'opcache.enable_cli=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+        - travis_retry composer self-update
     - stage: test with coverage
       php: 7.1
       env:
         - COVERAGE=yes
         - COMPOSER_FLAGS=""
+      before_install:
+        - .travis-scripts/cache-browscap.sh
+        - echo 'opcache.enable=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+        - echo 'opcache.enable_cli=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+        - travis_retry composer self-update
       script: php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --exclude-group compare --coverage-text --coverage-clover=coverage.clover
       after_success:
         - wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover
@@ -50,7 +65,7 @@ jobs:
       php: 7.1
       env: COMPOSER_FLAGS=""
       script:
-        - php -n -d memory_limit=768M vendor/bin/phpcs
+        - vendor/bin/phpcs
         - php -n -d memory_limit=768M vendor/bin/php-cs-fixer fix --dry-run -vv
     - stage: compare results
       php: 7.1
