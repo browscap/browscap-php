@@ -31,7 +31,7 @@
         "symfony/filesystem": "^2.6 || ^3.0",
         "symfony/finder": "^2.6 || ^3.0",
         "symfony/console": "^2.6 || ^3.0",
-        "monolog/monolog": "^1.7"
+        "monolog/monolog": "^1.12"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.1",
