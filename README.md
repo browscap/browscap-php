@@ -57,6 +57,8 @@ BC breaks listed:
    so that caches must now be constructor-injected
  * Many classes are now `final` - use composition instead of inheritance
  * `PropertyFormatter` now assumes any non-truthy values are `false`
+ * `checkUpdate` method now throws an exception if we could not determine the "remote" version, or if there is no
+   version in cache already.
 
 What's changed in version 3.x
 -----------------------------
