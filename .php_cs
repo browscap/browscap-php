@@ -1,15 +1,6 @@
 <?php
 declare(strict_types=1);
 
-$header = <<<EOF
-This file is part of the browscap-php package.
-
-Copyright (c) 1998-2017, Browser Capabilities Project
-
-For the full copyright and license information, please view the LICENSE
-file that was distributed with this source code.
-EOF;
-
 $finder = PhpCsFixer\Finder::create()
     ->files()
     ->name('*.php')
@@ -47,7 +38,7 @@ return PhpCsFixer\Config::create()
         'function_typehint_space' => true,
         'general_phpdoc_annotation_remove' => ['expectedExceptionMessageRegExp', 'expectedException', 'expectedExceptionMessage'],
         'hash_to_slash_comment' => true,
-        'header_comment' => ['header' => $header, 'commentType' => 'PHPDoc', 'location' => 'after_open', 'separate' => 'bottom'],
+        'header_comment' => false,
         'heredoc_to_nowdoc' => true,
         'include' => true,
         'indentation_type' => true,
@@ -67,7 +58,7 @@ return PhpCsFixer\Config::create()
         'no_alias_functions' => true,
         'no_blank_lines_after_class_opening' => true,
         'no_blank_lines_after_phpdoc' => false,
-        'no_blank_lines_before_namespace' => true,
+        'no_blank_lines_before_namespace' => false,
         'no_closing_tag' => true,
         'no_empty_comment' => true,
         'no_empty_phpdoc' => true,
@@ -98,7 +89,7 @@ return PhpCsFixer\Config::create()
         'no_whitespace_in_blank_line' => true,
         'normalize_index_brace' => true,
         'not_operator_with_space' => false,
-        'not_operator_with_successor_space' => false,
+        'not_operator_with_successor_space' => true,
         'object_operator_without_whitespace' => true,
         'ordered_class_elements' => false,
         'ordered_imports' => true,
@@ -107,7 +98,8 @@ return PhpCsFixer\Config::create()
         'php_unit_fqcn_annotation' => true,
         'php_unit_strict' => false,
         'phpdoc_add_missing_param_annotation' => true,
-        'phpdoc_align' => true,
+        'phpdoc_align' => false,
+        'phpdoc_annotation_without_dot' => false,
         'phpdoc_inline_tag' => true,
         'phpdoc_no_access' => true,
         'phpdoc_no_alias_tag' => ['property-read' => 'property', 'property-write' => 'property', 'type' => 'var'],
@@ -130,12 +122,12 @@ return PhpCsFixer\Config::create()
         'psr0' => true,
         'psr4' => true,
         'random_api_migration' => true,
-        'return_type_declaration' => true,
+        'return_type_declaration' => ['space_before' => 'one'],
         'self_accessor' => true,
         'semicolon_after_instruction' => true,
         'short_scalar_cast' => true,
         'silenced_deprecation_error' => true,
-        'simplified_null_return' => true,
+        'simplified_null_return' => false,
         'single_blank_line_at_eof' => true,
         'single_blank_line_before_namespace' => false,
         'single_class_element_per_statement' => true,
@@ -152,7 +144,7 @@ return PhpCsFixer\Config::create()
         'ternary_to_null_coalescing' => false,
         'trailing_comma_in_multiline_array' => true,
         'trim_array_spaces' => true,
-        'unary_operator_spaces' => true,
+        'unary_operator_spaces' => false,
         'visibility_required' => true,
         'whitespace_after_comma_in_array' => true,
     ])
