@@ -16,6 +16,7 @@ final class SubKey
      * Gets the subkey for the pattern cache file, generated from the given string
      *
      * @param  string $string
+     *
      * @return string
      */
     public static function getPatternCacheSubkey(string $string) : string
@@ -46,6 +47,7 @@ final class SubKey
      * Gets the sub key for the ini parts cache file, generated from the given string
      *
      * @param  string $string
+     *
      * @return string
      */
     public static function getIniPartCacheSubKey(string $string) : string

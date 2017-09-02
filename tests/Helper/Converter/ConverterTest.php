@@ -6,9 +6,9 @@ namespace BrowscapPHPTest\Helper\Converter;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception\FileNotFoundException;
 use BrowscapPHP\Helper\Converter;
+use BrowscapPHP\Helper\Filesystem;
 use org\bovigo\vfs\vfsStream;
 use Psr\Log\LoggerInterface;
-use BrowscapPHP\Helper\Filesystem;
 
 /**
  * @covers \BrowscapPHP\Helper\Converter

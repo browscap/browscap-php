@@ -27,6 +27,7 @@ interface GetDataInterface
      *
      * @param  string $pattern
      * @param  array  $settings
+     *
      * @return array
      */
     public function getSettings(string $pattern, array $settings = []) : array;

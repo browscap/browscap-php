@@ -3,8 +3,8 @@ declare(strict_types = 1);
 
 namespace BrowscapPHPTest\Util\LogFile;
 
-use BrowscapPHP\Util\Logfile\ReaderFactory;
 use BrowscapPHP\Util\Logfile\ReaderCollection;
+use BrowscapPHP\Util\Logfile\ReaderFactory;
 
 /**
  * @covers \BrowscapPHP\Util\Logfile\ReaderFactory

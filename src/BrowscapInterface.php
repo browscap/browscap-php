@@ -45,6 +45,7 @@ interface BrowscapInterface
      * @param string $userAgent the user agent string
      *
      * @throws \BrowscapPHP\Exception
+     *
      * @return \stdClass              the object containing the browsers details. Array if
      *                                $return_array is set to true.
      */

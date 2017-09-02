@@ -17,6 +17,7 @@ final class IniLoader implements IniLoaderInterface
 
     /**
      * The location to use to check out if a new version of the browscap.ini file is available.
+     *
      * @var string
      */
     private $remoteTimeUrl = 'http://browscap.org/version';

@@ -7,10 +7,10 @@ use BrowscapPHP\Browscap;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception;
 use BrowscapPHP\Formatter\FormatterInterface;
+use BrowscapPHP\Parser\Ini;
 use BrowscapPHP\Parser\ParserInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
-use BrowscapPHP\Parser\Ini;
 
 /**
  * @covers \BrowscapPHP\Browscap

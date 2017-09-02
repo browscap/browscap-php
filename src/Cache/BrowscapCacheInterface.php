@@ -55,8 +55,9 @@ interface BrowscapCacheInterface
      * @param bool   $withVersion
      * @param bool   $success
      *
-     * @return mixed Data on success, null on failure
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     *
+     * @return mixed Data on success, null on failure
      */
     public function getItem(string $cacheId, bool $withVersion = true, ?bool &$success = null);
 
@@ -67,8 +68,9 @@ interface BrowscapCacheInterface
      * @param mixed  $content     The content to store
      * @param bool   $withVersion
      *
-     * @return bool whether the file was correctly written to the disk
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     *
+     * @return bool whether the file was correctly written to the disk
      */
     public function setItem(string $cacheId, $content, bool $withVersion = true) : bool;
 
@@ -78,8 +80,9 @@ interface BrowscapCacheInterface
      * @param string $cacheId
      * @param bool   $withVersion
      *
-     * @return bool
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     *
+     * @return bool
      */
     public function hasItem(string $cacheId, bool $withVersion = true) : bool;
 
@@ -89,16 +92,18 @@ interface BrowscapCacheInterface
      * @param string $cacheId
      * @param bool   $withVersion
      *
-     * @return bool
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     *
+     * @return bool
      */
     public function removeItem(string $cacheId, bool $withVersion = true) : bool;
 
     /**
      * Flush the whole storage
      *
-     * @return bool
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     *
+     * @return bool
      */
     public function flush() : bool;
 }

@@ -138,8 +138,9 @@ final class BrowscapCache implements BrowscapCacheInterface
      * @param bool   $withVersion
      * @param bool   &$success
      *
-     * @return mixed Data on success, null on failure
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     *
+     * @return mixed Data on success, null on failure
      */
     public function getItem(string $cacheId, bool $withVersion = true, ?bool &$success = null)
     {
@@ -173,8 +174,9 @@ final class BrowscapCache implements BrowscapCacheInterface
      * @param mixed  $content     The content to store
      * @param bool   $withVersion
      *
-     * @return bool whether the file was correctly written to the disk
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     *
+     * @return bool whether the file was correctly written to the disk
      */
     public function setItem(string $cacheId, $content, bool $withVersion = true) : bool
     {
@@ -197,15 +199,15 @@ final class BrowscapCache implements BrowscapCacheInterface
      * @param string $cacheId
      * @param bool   $withVersion
      *
-     * @return bool
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     *
+     * @return bool
      */
     public function hasItem(string $cacheId, bool $withVersion = true) : bool
     {
         if ($withVersion) {
             $cacheId .= '.' . $this->getVersion();
         }
-
 
         return $this->cache->has($cacheId);
     }
@@ -216,8 +218,9 @@ final class BrowscapCache implements BrowscapCacheInterface
      * @param string $cacheId
      * @param bool   $withVersion
      *
-     * @return bool
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     *
+     * @return bool
      */
     public function removeItem(string $cacheId, bool $withVersion = true) : bool
     {

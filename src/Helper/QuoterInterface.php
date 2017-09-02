@@ -22,6 +22,7 @@ interface QuoterInterface
      * Reverts the quoting of a pattern.
      *
      * @param  string $pattern
+     *
      * @return string
      */
     public function pregUnQuote(string $pattern) : string;

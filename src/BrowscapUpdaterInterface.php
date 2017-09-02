@@ -14,6 +14,7 @@ interface BrowscapUpdaterInterface
      * reads and parses an ini file and writes the results into the cache
      *
      * @param string $iniFile
+     *
      * @throws \BrowscapPHP\Exception
      */
     public function convertFile(string $iniFile) : void;
@@ -57,8 +58,9 @@ interface BrowscapUpdaterInterface
      *
      * @throws \BrowscapPHP\Helper\Exception
      * @throws \BrowscapPHP\Exception\FetcherException
-     * @return int|null The actual cached version if a newer version is available, null otherwise
      * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return int|null The actual cached version if a newer version is available, null otherwise
      */
     public function checkUpdate() : ?int;
 }

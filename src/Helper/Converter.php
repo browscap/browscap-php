@@ -208,6 +208,7 @@ final class Converter implements ConverterInterface
      * Parses the ini data to get the releaseDate of loaded ini file
      *
      * @param string $iniString The loaded ini data
+     *
      * @return string|null
      */
     private function getIniReleaseDate(string $iniString) : ?string
@@ -225,6 +226,7 @@ final class Converter implements ConverterInterface
      * Parses the ini data to get the releaseDate of loaded ini file
      *
      * @param string $iniString The loaded ini data
+     *
      * @return string|null
      */
     private function getIniType(string $iniString) : ?string
