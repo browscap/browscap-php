@@ -15,6 +15,7 @@ interface ParserInterface
      * (or null if no data available, no even the default browser)
      *
      * @param  string                  $userAgent
+     *
      * @return FormatterInterface|null
      */
     public function getBrowser(string $userAgent) : ?FormatterInterface;

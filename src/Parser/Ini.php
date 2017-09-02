@@ -51,6 +51,7 @@ final class Ini implements ParserInterface
      * (or null if no data avaailble, no even the default browser)
      *
      * @param  string                  $userAgent
+     *
      * @return FormatterInterface|null
      */
     public function getBrowser(string $userAgent) : ?FormatterInterface

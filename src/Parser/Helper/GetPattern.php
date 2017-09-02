@@ -83,7 +83,6 @@ class GetPattern implements GetPatternInterface
                 continue;
             }
 
-
             if (! $success) {
                 $this->logger->debug('cache key "browscap.patterns.' . $tmpSubkey . '" not found');
 

@@ -54,6 +54,7 @@ final class GetData implements GetDataInterface
      *
      * @param  string $pattern
      * @param  array  $settings
+     *
      * @return array
      */
     public function getSettings(string $pattern, array $settings = []) : array
@@ -103,6 +104,7 @@ final class GetData implements GetDataInterface
      * Gets the relevant part (array of settings) of the ini file for a given pattern.
      *
      * @param  string $pattern
+     *
      * @return array
      */
     private function getIniPart(string $pattern) : array
@@ -119,9 +121,9 @@ final class GetData implements GetDataInterface
             }
         } catch (InvalidArgumentException $e) {
             $this->logger->error(new \InvalidArgumentException('an error occured while checking a inipart in the cache', 0, $e));
+
             return [];
         }
-
 
         $success = null;
         try {
@@ -131,7 +133,6 @@ final class GetData implements GetDataInterface
 
             return [];
         }
-
 
         if (! $success) {
             $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" not found');

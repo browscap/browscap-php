@@ -19,6 +19,7 @@ final class IniParser implements ParserInterface
      *
      * @important The number of patterns that can be processed in one step
      *            is limited by the internal regular expression limits.
+     *
      * @var int
      */
     const COUNT_PATTERN = 50;

@@ -77,6 +77,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
      * reads and parses an ini file and writes the results into the cache
      *
      * @param string $iniFile
+     *
      * @throws \BrowscapPHP\Exception
      */
     public function convertFile(string $iniFile) : void
@@ -112,7 +113,6 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
 
             return;
         }
-
 
         $converter = new Converter($this->logger, $this->cache);
 
@@ -249,9 +249,10 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
      *
      * @throws \BrowscapPHP\Helper\Exception
      * @throws \BrowscapPHP\Exception\FetcherException
-     * @return int|null The actual cached version if a newer version is available, null otherwise
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \BrowscapPHP\Exception\NoCachedVersionException
+     *
+     * @return int|null The actual cached version if a newer version is available, null otherwise
      */
     public function checkUpdate() : ?int
     {

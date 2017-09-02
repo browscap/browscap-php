@@ -33,6 +33,7 @@ final class Pattern
      *
      * @param  string       $pattern
      * @param  bool         $variants
+     *
      * @return string[]
      */
     public static function getHashForPattern(string $pattern, bool $variants = false) : array
@@ -82,6 +83,7 @@ final class Pattern
      * check against the user agent length)
      *
      * @param  string $pattern
+     *
      * @return int
      */
     public static function getPatternLength(string $pattern) : int

@@ -26,8 +26,9 @@ final class PropertyFormatter
      * @param string|bool $value
      * @param string $property
      *
-     * @return string|bool
      * @throws \Exception
+     *
+     * @return string|bool
      */
     public function formatPropertyValue($value, string $property)
     {
@@ -36,6 +37,7 @@ final class PropertyFormatter
                 if (true === $value || $value === 'true' || $value === '1') {
                     return true;
                 }
+
                 return false;
                 break;
             case PropertyHolder::TYPE_IN_ARRAY:

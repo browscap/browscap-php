@@ -26,6 +26,7 @@ abstract class AbstractReader implements ReaderInterface
      * @param string $line
      *
      * @throws \BrowscapPHP\Exception\ReaderException
+     *
      * @return string
      */
     public function read(string $line) : string

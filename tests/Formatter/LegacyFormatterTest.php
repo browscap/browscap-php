@@ -32,6 +32,7 @@ final class LegacyFormatterTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider formatterOptionsProvider
+     *
      * @param array $options
      * @param \stdClass $expectedResult
      */

@@ -42,6 +42,7 @@ final class ApacheCommonLogFormatReaderTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider regexproviderOk
+     *
      * @param string $ua
      */
     public function testTestOk(string $ua) : void
