@@ -16,13 +16,6 @@ interface ConverterInterface
     public function setFilesystem(Filesystem $file) : void;
 
     /**
-     * Returns a filesystem instance
-     *
-     * @return Filesystem
-     */
-    public function getFilesystem() : Filesystem;
-
-    /**
      * converts a file
      *
      * @param string $iniFile

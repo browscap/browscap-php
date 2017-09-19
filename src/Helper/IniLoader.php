@@ -13,19 +13,19 @@ final class IniLoader implements IniLoaderInterface
      *
      * @var string
      */
-    private $remoteIniUrl = 'http://browscap.org/stream?q=%q';
+    private const REMOTE_INI_URI = 'http://browscap.org/stream?q=%q';
 
     /**
      * The location to use to check out if a new version of the browscap.ini file is available.
      *
      * @var string
      */
-    private $remoteTimeUrl = 'http://browscap.org/version';
+    private const REMOTE_TIME_URI = 'http://browscap.org/version';
 
     /**
      * @var string
      */
-    private $remoteVersionUrl = 'http://browscap.org/version-number';
+    private const REMOTE_VERSION_URI = 'http://browscap.org/version-number';
 
     /**
      * @var string
@@ -58,7 +58,7 @@ final class IniLoader implements IniLoaderInterface
      */
     public function getRemoteIniUrl() : string
     {
-        return str_replace('%q', $this->remoteFilename, $this->remoteIniUrl);
+        return str_replace('%q', $this->remoteFilename, self::REMOTE_INI_URI);
     }
 
     /**
@@ -68,7 +68,7 @@ final class IniLoader implements IniLoaderInterface
      */
     public function getRemoteTimeUrl() : string
     {
-        return $this->remoteTimeUrl;
+        return self::REMOTE_TIME_URI;
     }
 
     /**
@@ -78,6 +78,6 @@ final class IniLoader implements IniLoaderInterface
      */
     public function getRemoteVersionUrl() : string
     {
-        return $this->remoteVersionUrl;
+        return self::REMOTE_VERSION_URI;
     }
 }

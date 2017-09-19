@@ -15,7 +15,7 @@ use Psr\Log\LoggerInterface;
  */
 final class ConverterTest extends \PHPUnit\Framework\TestCase
 {
-    const STORAGE_DIR = 'storage';
+    private const STORAGE_DIR = 'storage';
 
     /**
      * @var \BrowscapPHP\Helper\Converter
@@ -46,13 +46,15 @@ final class ConverterTest extends \PHPUnit\Framework\TestCase
 
     public function testSetGetFilesystem() : void
     {
-        self::assertInstanceOf(Filesystem::class, $this->object->getFilesystem());
-
         /** @var Filesystem|\PHPUnit_Framework_MockObject_MockObject $file */
         $file = $this->createMock(Filesystem::class);
 
         $this->object->setFilesystem($file);
-        self::assertSame($file, $this->object->getFilesystem());
+
+        $property = new \ReflectionProperty($this->object, 'filessystem');
+        $property->setAccessible(true);
+
+        self::assertSame($file, $property->getValue($this->object));
     }
 
     public function testConvertMissingFile() : void

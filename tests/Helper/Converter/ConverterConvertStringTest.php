@@ -13,8 +13,6 @@ use Psr\Log\LoggerInterface;
  */
 final class ConverterConvertStringTest extends \PHPUnit\Framework\TestCase
 {
-    const STORAGE_DIR = 'storage';
-
     /**
      * @var \BrowscapPHP\Helper\Converter
      */
@@ -22,7 +20,6 @@ final class ConverterConvertStringTest extends \PHPUnit\Framework\TestCase
 
     public function setUp() : void
     {
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects(self::exactly(4))
                ->method('info')
@@ -42,7 +39,6 @@ final class ConverterConvertStringTest extends \PHPUnit\Framework\TestCase
 
     public function testConvertString() : void
     {
-        /** @var Filesystem $file */
         $file = $this->getMockBuilder(Filesystem::class)
             ->disableOriginalConstructor()
             ->setMethods(['exists'])

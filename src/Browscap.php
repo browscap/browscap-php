@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace BrowscapPHP;
 
 use BrowscapPHP\Cache\BrowscapCache;
-use BrowscapPHP\Formatter\FormatterInterface;
 use BrowscapPHP\Helper\Quoter;
 use BrowscapPHP\Parser\ParserInterface;
 use Psr\Log\LoggerInterface;
@@ -25,7 +24,7 @@ final class Browscap implements BrowscapInterface
     /**
      * Formatter to use
      *
-     * @var \BrowscapPHP\Formatter\FormatterInterface|null
+     * @var \BrowscapPHP\Formatter\FormatterInterface
      */
     private $formatter;
 
@@ -37,7 +36,7 @@ final class Browscap implements BrowscapInterface
     private $cache;
 
     /**
-     * @var \Psr\Log\LoggerInterface|null
+     * @var \Psr\Log\LoggerInterface
      */
     private $logger;
 
@@ -51,6 +50,8 @@ final class Browscap implements BrowscapInterface
     {
         $this->cache = new BrowscapCache($cache, $logger);
         $this->logger = $logger;
+
+        $this->formatter = new Formatter\PhpGetBrowser();
     }
 
     /**
@@ -61,18 +62,6 @@ final class Browscap implements BrowscapInterface
     public function setFormatter(Formatter\FormatterInterface $formatter) : void
     {
         $this->formatter = $formatter;
-    }
-
-    /**
-     * @return \BrowscapPHP\Formatter\FormatterInterface
-     */
-    public function getFormatter() : FormatterInterface
-    {
-        if (null === $this->formatter) {
-            $this->setFormatter(new Formatter\PhpGetBrowser());
-        }
-
-        return $this->formatter;
     }
 
     /**
@@ -96,7 +85,7 @@ final class Browscap implements BrowscapInterface
             $patternHelper = new Parser\Helper\GetPattern($this->cache, $this->logger);
             $dataHelper = new Parser\Helper\GetData($this->cache, $this->logger, new Quoter());
 
-            $this->parser = new Parser\Ini($patternHelper, $dataHelper, $this->getFormatter());
+            $this->parser = new Parser\Ini($patternHelper, $dataHelper, $this->formatter);
         }
 
         return $this->parser;
@@ -118,7 +107,7 @@ final class Browscap implements BrowscapInterface
     {
         if (null === $this->cache->getVersion()) {
             // there is no active/warm cache available
-            throw new Exception('there is no active cache available, please run the update command');
+            throw new Exception('there is no active cache available, please use the BrowscapUpdater and run the update command');
         }
 
         // Automatically detect the useragent
@@ -132,8 +121,8 @@ final class Browscap implements BrowscapInterface
 
         // if return is still NULL, updates are disabled... in this
         // case we return an empty formatter instance
-        if ($formatter === null) {
-            $formatter = $this->getFormatter();
+        if (null === $formatter) {
+            $formatter = $this->formatter;
         }
 
         return $formatter->getData();

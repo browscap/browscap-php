@@ -17,10 +17,10 @@ final class BrowscapCache implements BrowscapCacheInterface
      *
      * @var \Psr\SimpleCache\CacheInterface
      */
-    private $cache = null;
+    private $cache;
 
     /**
-     * @var \Psr\Log\LoggerInterface|null
+     * @var \Psr\Log\LoggerInterface
      */
     private $logger;
 
@@ -29,7 +29,7 @@ final class BrowscapCache implements BrowscapCacheInterface
      *
      * @var int
      */
-    private $version = null;
+    private $version;
 
     /**
      * Release date of the Browscap data (read from INI file)
@@ -65,7 +65,7 @@ final class BrowscapCache implements BrowscapCacheInterface
      */
     public function getVersion() : ?int
     {
-        if ($this->version === null) {
+        if (null === $this->version) {
             $success = null;
 
             try {
@@ -75,7 +75,7 @@ final class BrowscapCache implements BrowscapCacheInterface
                 $version = null;
             }
 
-            if ($version !== null && $success) {
+            if (null !== $version && $success) {
                 $this->version = (int) $version;
             }
         }
@@ -90,7 +90,7 @@ final class BrowscapCache implements BrowscapCacheInterface
      */
     public function getReleaseDate() : ?string
     {
-        if ($this->releaseDate === null) {
+        if (null === $this->releaseDate) {
             $success = null;
 
             try {
@@ -100,7 +100,7 @@ final class BrowscapCache implements BrowscapCacheInterface
                 $releaseDate = null;
             }
 
-            if ($releaseDate !== null && $success) {
+            if (null !== $releaseDate && $success) {
                 $this->releaseDate = $releaseDate;
             }
         }
@@ -113,7 +113,7 @@ final class BrowscapCache implements BrowscapCacheInterface
      */
     public function getType() : ?string
     {
-        if ($this->type === null) {
+        if (null === $this->type) {
             $success = null;
 
             try {
@@ -123,7 +123,7 @@ final class BrowscapCache implements BrowscapCacheInterface
                 $type = null;
             }
 
-            if ($type !== null && $success) {
+            if (null !== $type && $success) {
                 $this->type = $type;
             }
         }

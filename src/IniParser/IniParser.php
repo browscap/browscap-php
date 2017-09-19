@@ -22,7 +22,7 @@ final class IniParser implements ParserInterface
      *
      * @var int
      */
-    const COUNT_PATTERN = 50;
+    private const COUNT_PATTERN = 50;
 
     /**
      * Creates new ini part cache files
@@ -132,7 +132,7 @@ final class IniParser implements ParserInterface
             $tmpLength = Pattern::getPatternLength($pattern);
 
             // special handling of default entry
-            if ($tmpLength === 0) {
+            if (0 === $tmpLength) {
                 $patternhash = str_repeat('z', 32);
             }
 
@@ -149,7 +149,7 @@ final class IniParser implements ParserInterface
             // Check if the pattern contains digits - in this case we replace them with a digit regular expression,
             // so that very similar patterns (e.g. only with different browser version numbers) can be compressed.
             // This helps to speed up the first (and most expensive) part of the pattern search a lot.
-            if (strpbrk($pattern, '0123456789') !== false) {
+            if (false !== strpbrk($pattern, '0123456789')) {
                 $compressedPattern = preg_replace('/\d/', '[\d]', $pattern);
 
                 if (! in_array($compressedPattern, $data[$patternhash][$tmpLength])) {

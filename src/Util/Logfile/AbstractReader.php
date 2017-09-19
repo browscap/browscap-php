@@ -19,7 +19,7 @@ abstract class AbstractReader implements ReaderInterface
     {
         $matches = $this->match($line);
 
-        return isset($matches['userAgentString']);
+        return array_key_exists('userAgentString', $matches);
     }
 
     /**
@@ -33,7 +33,7 @@ abstract class AbstractReader implements ReaderInterface
     {
         $matches = $this->match($line);
 
-        if (! isset($matches['userAgentString'])) {
+        if (! array_key_exists('userAgentString', $matches)) {
             throw ReaderException::userAgentParserError($line);
         }
 

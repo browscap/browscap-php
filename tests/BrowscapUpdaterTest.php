@@ -22,7 +22,7 @@ use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
  */
 final class BrowscapUpdaterTest extends \PHPUnit\Framework\TestCase
 {
-    const STORAGE_DIR = 'storage';
+    private const STORAGE_DIR = 'storage';
 
     /**
      * @var BrowscapUpdater

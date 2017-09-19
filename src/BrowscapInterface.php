@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace BrowscapPHP;
 
-use BrowscapPHP\Formatter\FormatterInterface;
 use BrowscapPHP\Parser\ParserInterface;
 
 /**
@@ -17,11 +16,6 @@ interface BrowscapInterface
      * @param \BrowscapPHP\Formatter\FormatterInterface $formatter
      */
     public function setFormatter(Formatter\FormatterInterface $formatter) : void;
-
-    /**
-     * @return \BrowscapPHP\Formatter\FormatterInterface
-     */
-    public function getFormatter() : FormatterInterface;
 
     /**
      * Sets the parser instance to use

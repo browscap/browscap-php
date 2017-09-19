@@ -148,6 +148,7 @@ class LogfileCommand extends Command
 
             if (empty($lines)) {
                 $logger->info('Skipping empty file "' . $file->getPathname() . '"');
+
                 continue;
             }
 
@@ -338,7 +339,7 @@ class LogfileCommand extends Command
 
     private function outputProgress(OutputInterface $output, string $result, bool $end = false) : void
     {
-        if (($this->totalCount % 70) === 0 || $end) {
+        if (0 === ($this->totalCount % 70) || $end) {
             $formatString = '  %' . strlen($this->countOk) . 'd OK, %' . strlen($this->countNok) . 'd NOK, Summary %'
                 . strlen($this->totalCount) . 'd';
 
@@ -411,12 +412,15 @@ class LogfileCommand extends Command
         switch ($file->getExtension()) {
             case 'gz':
                 $path = 'compress.zlib://' . $file->getPathname();
+
                 break;
             case 'bz2':
                 $path = 'compress.bzip2://' . $file->getPathname();
+
                 break;
             default:
                 $path = $file->getPathname();
+
                 break;
         }
 

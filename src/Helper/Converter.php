@@ -17,26 +17,26 @@ final class Converter implements ConverterInterface
     /**
      * The key to search for in the INI file to find the browscap settings
      */
-    const BROWSCAP_VERSION_KEY = 'GJK_Browscap_Version';
+    private const BROWSCAP_VERSION_KEY = 'GJK_Browscap_Version';
 
     /**
      * @var \Psr\Log\LoggerInterface
      */
-    private $logger = null;
+    private $logger;
 
     /**
      * The cache instance
      *
      * @var \BrowscapPHP\Cache\BrowscapCacheInterface
      */
-    private $cache = null;
+    private $cache;
 
     /**
      * a filesystem patternHelper instance
      *
      * @var Filesystem
      */
-    private $filessystem = null;
+    private $filessystem;
 
     /**
      * version of the ini file
@@ -55,6 +55,7 @@ final class Converter implements ConverterInterface
     {
         $this->logger = $logger;
         $this->cache = $cache;
+        $this->filessystem = new Filesystem();
     }
 
     /**
@@ -68,20 +69,6 @@ final class Converter implements ConverterInterface
     }
 
     /**
-     * Returns a filesystem instance
-     *
-     * @return Filesystem
-     */
-    public function getFilesystem() : Filesystem
-    {
-        if (null === $this->filessystem) {
-            $this->filessystem = new Filesystem();
-        }
-
-        return $this->filessystem;
-    }
-
-    /**
      * converts a file
      *
      * @param string $iniFile
@@ -90,7 +77,7 @@ final class Converter implements ConverterInterface
      */
     public function convertFile(string $iniFile) : void
     {
-        if (! $this->getFilesystem()->exists($iniFile)) {
+        if (! $this->filessystem->exists($iniFile)) {
             throw FileNotFoundException::fileNotFound($iniFile);
         }
 

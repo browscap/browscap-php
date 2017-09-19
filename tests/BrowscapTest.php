@@ -17,8 +17,6 @@ use Psr\SimpleCache\CacheInterface;
  */
 final class BrowscapTest extends \PHPUnit\Framework\TestCase
 {
-    const STORAGE_DIR = 'storage';
-
     /**
      * @var \BrowscapPHP\Browscap
      */
@@ -41,7 +39,11 @@ final class BrowscapTest extends \PHPUnit\Framework\TestCase
         $formatter = $this->createMock(FormatterInterface::class);
 
         $this->object->setFormatter($formatter);
-        self::assertSame($formatter, $this->object->getFormatter());
+
+        $property = new \ReflectionProperty($this->object, 'formatter');
+        $property->setAccessible(true);
+
+        self::assertSame($formatter, $property->getValue($this->object));
     }
 
     public function testGetParser() : void
@@ -61,7 +63,7 @@ final class BrowscapTest extends \PHPUnit\Framework\TestCase
     public function testGetBrowserWithoutCache() : void
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('there is no active cache available, please run the update command');
+        $this->expectExceptionMessage('there is no active cache available, please use the BrowscapUpdater and run the update command');
         $this->object->getBrowser();
     }
 

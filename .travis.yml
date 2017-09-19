@@ -17,7 +17,7 @@ cache:
 
 before_install:
   - .travis-scripts/cache-browscap.sh
-  - phpenv config-rm xdebug.ini
+  - phpenv config-rm xdebug.ini || echo "xdebug not available"
   - echo 'opcache.enable=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo 'opcache.enable_cli=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - travis_retry composer self-update
@@ -25,8 +25,8 @@ before_install:
 install: travis_retry composer update --optimize-autoloader --prefer-dist --prefer-stable --no-progress --no-interaction -vv $COMPOSER_FLAGS
 
 script:
-  - composer validate
-  - php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --no-coverage --colors --exclude-group compare
+  - composer validate --strict
+  - vendor/bin/phpunit -c phpunit.xml.dist --no-coverage --colors --verbose --exclude-group compare
 
 jobs:
   fast_finish: true
@@ -36,18 +36,8 @@ jobs:
   include:
     - php: 7.2
       env: COMPOSER_FLAGS="--ignore-platform-reqs"
-      before_install:
-        - .travis-scripts/cache-browscap.sh
-        - echo 'opcache.enable=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-        - echo 'opcache.enable_cli=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-        - travis_retry composer self-update
     - php: nightly
       env: COMPOSER_FLAGS="--ignore-platform-reqs"
-      before_install:
-        - .travis-scripts/cache-browscap.sh
-        - echo 'opcache.enable=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-        - echo 'opcache.enable_cli=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-        - travis_retry composer self-update
     - stage: test with coverage
       php: 7.1
       env:
@@ -58,7 +48,7 @@ jobs:
         - echo 'opcache.enable=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
         - echo 'opcache.enable_cli=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
         - travis_retry composer self-update
-      script: php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --exclude-group compare --coverage-text --coverage-clover=coverage.clover
+      script: vendor/bin/phpunit -c phpunit.xml.dist --colors --verbose --exclude-group compare --coverage-text --coverage-clover=coverage.clover
       after_success:
         - wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover
     - stage: check coding style
@@ -67,8 +57,12 @@ jobs:
       script:
         - vendor/bin/phpcs
         - php -n -d memory_limit=768M vendor/bin/php-cs-fixer fix --dry-run -vv
+    - stage: static code analysis
+      php: 7.1
+      env: COMPOSER_FLAGS=""
+      script: vendor/bin/phpstan analyse -l 7 -c phpstan.neon --autoload-file=vendor/autoload.php --memory-limit=768M --no-progress src tests
     - stage: compare results
       php: 7.1
       env: COMPOSER_FLAGS=""
-      script: php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit --no-coverage --group compare
+      script: php -d browscap=$TRAVIS_BUILD_DIR/resources/browscap.ini vendor/bin/phpunit -c phpunit.xml.dist --colors --verbose --no-coverage --group compare
 

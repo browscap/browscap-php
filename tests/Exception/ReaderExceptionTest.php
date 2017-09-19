@@ -10,7 +10,7 @@ use BrowscapPHP\Exception\ReaderException;
  */
 class ReaderExceptionTest extends \PHPUnit\Framework\TestCase
 {
-    public function testUserAgentParserError()
+    public function testUserAgentParserError() : void
     {
         $exception = ReaderException::userAgentParserError('42');
 

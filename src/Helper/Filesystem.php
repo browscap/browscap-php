@@ -16,12 +16,12 @@ class Filesystem extends BaseFilesystem
      *
      * @param  string      $filename The file to be written to.
      * @param  string      $content  The data to write into the file.
-     * @param  int         $mode     The file mode (octal). If null, file permissions are not modified
+     * @param  int|null    $mode     The file mode (octal). If null, file permissions are not modified
      *                               Deprecated since version 2.3.12, to be removed in 3.0.
      *
      * @throws IOException If the file cannot be written to.
      */
-    public function dumpFile($filename, $content, $mode = 0666)
+    public function dumpFile($filename, $content, ?int $mode = 0666) : void
     {
         $dir = dirname($filename);
 

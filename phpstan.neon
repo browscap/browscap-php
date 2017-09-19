@@ -1,0 +1,10 @@
+parameters:
+  autoload_files:
+    - %currentWorkingDirectory%/vendor/squizlabs/php_codesniffer/autoload.php
+    - %currentWorkingDirectory%/vendor/squizlabs/php_codesniffer/src/Util/Tokens.php
+  excludes_analyse:
+    - */tests/*/data/*
+    - */tests/*/Full2Test.php
+  ignoreErrors:
+    - '~PHPUnit_Framework_MockObject_MockObject~'
+    - '~Strict comparison using === between true and false will always evaluate to false~'

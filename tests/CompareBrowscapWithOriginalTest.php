@@ -126,6 +126,7 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
 
             if (in_array($bcProp, ['browser_name_regex', 'browser_name_pattern', 'parent'])) {
                 unset($libProperties[$bcProp]);
+
                 continue;
             }
 

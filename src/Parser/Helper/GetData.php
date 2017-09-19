@@ -30,7 +30,7 @@ final class GetData implements GetDataInterface
     private $logger;
 
     /**
-     * @var \BrowscapPHP\Helper\Quoter
+     * @var \BrowscapPHP\Helper\QuoterInterface
      */
     private $quoter;
 
@@ -67,13 +67,13 @@ final class GetData implements GetDataInterface
         $addedSettings = $this->getIniPart($unquotedPattern);
 
         // set some additional data
-        if (count($settings) === 0) {
+        if (0 === count($settings)) {
             // The optimization with replaced digits get can now result in setting searches, for which we
             // won't find a result - so only add the pattern information, is settings have been found.
             //
             // If not an empty array will be returned and the calling function can easily check if a pattern
             // has been found.
-            if (count($addedSettings) > 0) {
+            if (0 < count($addedSettings)) {
                 $settings['browser_name_regex'] = '/^' . $pattern . '$/';
                 $settings['browser_name_pattern'] = $unquotedPattern;
             }
@@ -126,6 +126,7 @@ final class GetData implements GetDataInterface
         }
 
         $success = null;
+
         try {
             $file = $this->cache->getItem('browscap.iniparts.' . $subkey, true, $success);
         } catch (InvalidArgumentException $e) {
@@ -150,7 +151,7 @@ final class GetData implements GetDataInterface
         $return = [];
 
         foreach ($file as $buffer) {
-            list($tmpBuffer, $patterns) = explode("\t", $buffer, 2);
+            [$tmpBuffer, $patterns] = explode("\t", $buffer, 2);
 
             if ($tmpBuffer === $patternhash) {
                 $return = json_decode($patterns, true);

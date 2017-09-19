@@ -5,11 +5,11 @@ namespace BrowscapPHP\Data;
 
 final class PropertyHolder
 {
-    const TYPE_STRING = 'string';
-    const TYPE_GENERIC = 'generic';
-    const TYPE_NUMBER = 'number';
-    const TYPE_BOOLEAN = 'boolean';
-    const TYPE_IN_ARRAY = 'in_array';
+    public const TYPE_STRING = 'string';
+    public const TYPE_GENERIC = 'generic';
+    public const TYPE_NUMBER = 'number';
+    public const TYPE_BOOLEAN = 'boolean';
+    public const TYPE_IN_ARRAY = 'in_array';
 
     /**
      * Get the type of a property.
@@ -146,6 +146,7 @@ final class PropertyHolder
                     'Tool' => 1,
                     'unknown' => 1,
                 ];
+
                 break;
             case 'Device_Type':
                 $allowedValues = [
@@ -163,6 +164,7 @@ final class PropertyHolder
                     'Digital Camera' => 1,
                     'unknown' => 1,
                 ];
+
                 break;
             case 'Device_Pointing_Method':
                 // This property is taken from http://www.scientiamobile.com/wurflCapability
@@ -176,6 +178,7 @@ final class PropertyHolder
                     'mouse' => 1,
                     'unknown' => 1,
                 ];
+
                 break;
             case 'Browser_Bits':
             case 'Platform_Bits':
@@ -186,6 +189,7 @@ final class PropertyHolder
                     '32' => 1,
                     '64' => 1,
                 ];
+
                 break;
             default:
                 throw new \InvalidArgumentException('Property "' . $property . '" is not defined to be validated');
@@ -196,7 +200,7 @@ final class PropertyHolder
         }
 
         throw new \InvalidArgumentException(
-            'invalid value given for Property "' . $property . '": given value "' . (string) $value . '", allowed: '
+            'invalid value given for Property "' . $property . '": given value "' . $value . '", allowed: '
             . json_encode($allowedValues)
         );
     }

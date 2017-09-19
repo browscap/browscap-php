@@ -70,6 +70,7 @@ class GetPattern implements GetPatternInterface
                 }
             } catch (InvalidArgumentException $e) {
                 $this->logger->error(new \InvalidArgumentException('an error occured while checking a pattern in the cache', 0, $e));
+
                 continue;
             }
 
@@ -98,7 +99,7 @@ class GetPattern implements GetPatternInterface
             $found = false;
 
             foreach ($file as $buffer) {
-                list($tmpBuffer, $len, $patterns) = explode("\t", $buffer, 3);
+                [$tmpBuffer, $len, $patterns] = explode("\t", $buffer, 3);
 
                 if ($tmpBuffer === $tmpStart) {
                     if ($len <= $length) {
@@ -106,7 +107,7 @@ class GetPattern implements GetPatternInterface
                     }
 
                     $found = true;
-                } elseif ($found === true) {
+                } elseif (true === $found) {
                     break;
                 }
             }
