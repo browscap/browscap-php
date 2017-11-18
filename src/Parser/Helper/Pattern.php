@@ -51,7 +51,7 @@ final class Pattern
         if (true === $variants) {
             $patternStarts = [];
 
-            for ($i = strlen($string); $i >= 1; --$i) {
+            for ($i = strlen($string); 1 <= $i; --$i) {
                 $string = substr($string, 0, $i);
                 $patternStarts[] = md5($string);
             }

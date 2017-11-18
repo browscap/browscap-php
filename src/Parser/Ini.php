@@ -69,14 +69,14 @@ final class Ini implements ParserInterface
             // strtok() requires less memory than explode()
             $pattern = strtok($patterns, "\t");
 
-            while ($pattern !== false) {
+            while (false !== $pattern) {
                 $pattern = str_replace('[\d]', '(\d)', $pattern);
                 $quotedPattern = '/^' . $pattern . '$/i';
                 $matches = [];
 
                 if (preg_match($quotedPattern, $userAgent, $matches)) {
                     // Insert the digits back into the pattern, so that we can search the settings for it
-                    if (count($matches) > 1) {
+                    if (1 < count($matches)) {
                         array_shift($matches);
                         foreach ($matches as $oneMatch) {
                             $numPos = strpos($pattern, '(\d)');
@@ -89,9 +89,10 @@ final class Ini implements ParserInterface
                     // search for the next pattern.
                     $settings = $this->dataHelper->getSettings($pattern);
 
-                    if (count($settings) > 0) {
+                    if (0 < count($settings)) {
                         $formatter = $this->formatter;
                         $formatter->setData($settings);
+
                         break 2;
                     }
                 }

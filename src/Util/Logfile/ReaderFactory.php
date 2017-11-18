@@ -9,35 +9,14 @@ namespace BrowscapPHP\Util\Logfile;
 final class ReaderFactory
 {
     /**
-     * @var ReaderInterface[]
-     */
-    private static $readers = [];
-
-    /**
      * @return \BrowscapPHP\Util\Logfile\ReaderCollection
      */
     public static function factory() : ReaderCollection
     {
         $collection = new ReaderCollection();
 
-        foreach (self::getReaders() as $reader) {
-            $collection->addReader($reader);
-        }
+        $collection->addReader(new ApacheCommonLogFormatReader());
 
         return $collection;
-    }
-
-    /**
-     * @return \BrowscapPHP\Util\Logfile\ReaderInterface[]
-     */
-    private static function getReaders() : array
-    {
-        if (self::$readers) {
-            return self::$readers;
-        }
-
-        self::$readers[] = new ApacheCommonLogFormatReader();
-
-        return self::$readers;
     }
 }

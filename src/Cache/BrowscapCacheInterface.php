@@ -12,13 +12,6 @@ use Psr\SimpleCache\CacheInterface;
 interface BrowscapCacheInterface
 {
     /**
-     * The cache livetime in seconds.
-     *
-     * @var int
-     */
-    const CACHE_LIVETIME = 315360000; // ~10 years (60 * 60 * 24 * 365 * 10)
-
-    /**
      * Constructor class, checks for the existence of (and loads) the cache and
      * if needed updated the definitions
      *

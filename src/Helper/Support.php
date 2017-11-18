@@ -54,6 +54,7 @@ final class Support implements SupportInterface
                 && $this->source[$header]
             ) {
                 $userAgent = $this->cleanParam($this->source[$header]);
+
                 break;
             }
         }

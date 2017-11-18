@@ -32,12 +32,12 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
     private $cache;
 
     /**
-     * @var @var \Psr\Log\LoggerInterface|null
+     * @var @var \Psr\Log\LoggerInterface
      */
     private $logger;
 
     /**
-     * @var \GuzzleHttp\ClientInterface|null
+     * @var \GuzzleHttp\ClientInterface
      */
     private $client;
 
@@ -150,7 +150,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
         /** @var \Psr\Http\Message\ResponseInterface $response */
         $response = $this->client->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
 
-        if ($response->getStatusCode() !== 200) {
+        if (200 !== $response->getStatusCode()) {
             throw new FetcherException(
                 'an error occured while fetching remote data from URI ' . $uri . ': StatusCode was '
                 . $response->getStatusCode()
@@ -165,6 +165,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
 
         if (empty($content)) {
             $error = error_get_last();
+
             throw FetcherException::httpError($uri, $error['message']);
         }
 
@@ -218,7 +219,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
         /** @var \Psr\Http\Message\ResponseInterface $response */
         $response = $this->client->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
 
-        if ($response->getStatusCode() !== 200) {
+        if (200 !== $response->getStatusCode()) {
             throw new FetcherException(
                 'an error occured while fetching remote data from URI ' . $uri . ': StatusCode was '
                 . $response->getStatusCode()
@@ -257,6 +258,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
     public function checkUpdate() : ?int
     {
         $success = null;
+
         try {
             $cachedVersion = $this->cache->getItem('browscap.version', false, $success);
         } catch (InvalidArgumentException $e) {
@@ -273,7 +275,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
         /** @var \Psr\Http\Message\ResponseInterface $response */
         $response = $this->client->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
 
-        if ($response->getStatusCode() !== 200) {
+        if (200 !== $response->getStatusCode()) {
             throw new FetcherException(
                 'an error occured while fetching version data from URI ' . $uri . ': StatusCode was '
                 . $response->getStatusCode()
@@ -328,7 +330,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
      * @param string                                 $content
      * @param int|null                               $cachedVersion
      */
-    private function storeContent(ConverterInterface $converter, string $content, ?int $cachedVersion)
+    private function storeContent(ConverterInterface $converter, string $content, ?int $cachedVersion) : void
     {
         $iniString = $this->sanitizeContent($content);
         $iniVersion = $converter->getIniVersion($iniString);

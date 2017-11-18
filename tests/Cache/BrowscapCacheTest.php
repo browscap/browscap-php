@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace BrowscapPHPTest\Command;
+namespace BrowscapPHPTest\Cache;
 
 use BrowscapPHP\Cache\BrowscapCache;
 use Doctrine\Common\Cache\ArrayCache;

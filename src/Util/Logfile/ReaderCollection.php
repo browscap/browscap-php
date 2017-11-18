@@ -11,7 +11,7 @@ use BrowscapPHP\Exception\ReaderException;
 final class ReaderCollection implements ReaderInterface
 {
     /**
-     * @var \BrowscapPHP\Util\Logfile\AbstractReader[]
+     * @var \BrowscapPHP\Util\Logfile\ReaderInterface[]
      */
     private $readers = [];
 
