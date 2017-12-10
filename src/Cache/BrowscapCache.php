@@ -136,7 +136,7 @@ final class BrowscapCache implements BrowscapCacheInterface
      *
      * @param string $cacheId
      * @param bool   $withVersion
-     * @param bool   &$success
+     * @param bool   $success
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
      *

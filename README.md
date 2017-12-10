@@ -91,58 +91,33 @@ What's changed in version 3.x
 Setup Examples
 --------------
 
-## Update your setup to version 3.x
+## Update your setup to version 4.x
 
-This is the base setup in version 2.x.
-```php
-// setup in version 2.x
-$bc = new \phpbrowscap\Browscap($cacheDir);
-$result = $bc->getBrowser();
-```
-
-Change this to the base setup for version 3.x. to use the v2 cache directory
+This is the base setup in version 3.x.
 ```php
 $bc = new \BrowscapPHP\Browscap();
+
 $adapter = new \WurflCache\Adapter\File([\WurflCache\Adapter\File::DIR => $cacheDir]);
 $bc->setCache($adapter);
+
+$logger = new \Monolog\Logger('name');
+$bc->setLogger($logger);
+
 $result = $bc->getBrowser();
 ```
 
-Note: In version 2.x a cache directory was required, but version 3.x has a default directory.
-If you don't require a specific cache directory, the setup becomes more simple.
+Change this to the base setup for version 4.x. to use the v3 cache directory
 ```php
-$result = (new \BrowscapPHP\Browscap())->getBrowser();
-```
+$fileCache = new \Doctrine\Common\Cache\FilesystemCache($cacheDir);
+$cache = new \Roave\DoctrineSimpleCache\SimpleCacheAdapter($fileCache);
 
-## Setting up a logger
-
-If you want to log something that happens with the detector you may set an logger.
-This logger has to implement the PSR3 logger interface from [Psr\Log](https://github.com/php-fig/log)
-
-```php
-$bc = new \BrowscapPHP\Browscap();
 $logger = new \Monolog\Logger('name');
-$bc->setLogger($logger);
+
+$bc = new \BrowscapPHP\Browscap($cache, $logger);
+$result = $bc->getBrowser();
 ```
 
-## Setting up a Memcache
-
-If you don't want to use a file cache, you may change the cache adapter. 
-This cache adapter has to implement the adapter interface from WurflCache\Adapter\AdapterInterface
-```php
-$memcacheConfiguration = [
-    'host'             => '127.0.0.1', // optional, defaults to '127.0.0.1'
-    'port'             => 11211,       // optional, defaults to 11211
-    'namespace'        => 'wurfl',     // optional, defaults to 'wurfl'
-    'cacheExpiration'  => 0,           // optional, defaults to 0 (cache does not expire), expiration time in seconds
-    'cacheVersion'     => '1234',      // optional, default value may change in external library
-];
-$adapter = new \WurflCache\Adapter\Memcached($memcacheConfiguration);
-$bc = new \BrowscapPHP\Browscap();
-$bc->setCache($adapter);
-```
-
-NOTE: Please look into the [WurflCache](https://github.com/mimmi20/WurflCache) package for infomation about the other cache adapters.
+NOTE: You may use any other cache which implements the [PSR-16](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-16-simple-cache.md) interface.
 
 ## Using the full browscap.ini file
 
@@ -187,8 +162,6 @@ $current_browser = $bc->getBrowser($the_user_agent);
 
 the CLI commands
 ----------------
-
-In version 3 some CLI commands were added.
 
 NOTE: If you don't want to use a file cache, you could not use the CLI commands. It is not possible to use other caches there at the moment.
 NOTE: Each operation (fetch, update, check-update) which fetches data from the remote host browscap.org may run into the 

@@ -6,5 +6,4 @@ parameters:
     - */tests/*/data/*
     - */tests/*/Full2Test.php
   ignoreErrors:
-    - '~PHPUnit_Framework_MockObject_MockObject~'
-    - '~Strict comparison using === between true and false will always evaluate to false~'
+    - '~MockObject~'

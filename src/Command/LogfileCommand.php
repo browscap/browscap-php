@@ -134,7 +134,7 @@ class LogfileCommand extends Command
         $collection = ReaderFactory::factory();
         $fs = new Filesystem();
 
-        /** @var $file \Symfony\Component\Finder\SplFileInfo */
+        /** @var \Symfony\Component\Finder\SplFileInfo $file */
         foreach ($this->getFiles($input) as $file) {
             $this->uas = [];
             $path = $this->getPath($file);
