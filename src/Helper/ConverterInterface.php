@@ -42,8 +42,6 @@ interface ConverterInterface
      * sets the version
      *
      * @param int $version
-     *
-     * @return ConverterInterface
      */
     public function setVersion(int $version) : void;
 

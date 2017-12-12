@@ -32,7 +32,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
     private $cache;
 
     /**
-     * @var @var \Psr\Log\LoggerInterface
+     * @var \Psr\Log\LoggerInterface
      */
     private $logger;
 

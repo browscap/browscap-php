@@ -69,7 +69,7 @@ final class Pattern
     /**
      * returns a hash for one pattern
      *
-     * @param $pattern
+     * @param string $pattern
      *
      * @return string
      */

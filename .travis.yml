@@ -15,6 +15,14 @@ cache:
     - $TRAVIS_BUILD_DIR/resources
     - $HOME/.composer/cache
 
+stages:
+  - composer validate
+  - test
+  - test with coverage
+  - check coding style
+  - static code analysis
+  - compare results
+
 before_install:
   - .travis-scripts/cache-browscap.sh
   - phpenv config-rm xdebug.ini || echo "xdebug not available"
@@ -51,6 +59,14 @@ jobs:
       script: vendor/bin/phpunit -c phpunit.xml.dist --colors --verbose --exclude-group compare --coverage-text --coverage-clover=coverage.clover
       after_success:
         - wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+    - stage: composer validate
+      php: 7.1
+      before_install:
+        - phpenv config-rm xdebug.ini || echo "xdebug not available"
+        - echo 'opcache.enable=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+        - echo 'opcache.enable_cli=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+      install: skip
+      script: composer validate --strict
     - stage: check coding style
       php: 7.1
       env: COMPOSER_FLAGS=""
