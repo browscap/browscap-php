@@ -17,10 +17,10 @@ cache:
 
 stages:
   - composer validate
-  - test
-  - test with coverage
   - check coding style
   - static code analysis
+  - test
+  - test with coverage
   - compare results
 
 before_install:
@@ -60,6 +60,7 @@ jobs:
 
     - stage: composer validate
       php: 7.1
+      env: COMPOSER_FLAGS=""
       before_install:
         - phpenv config-rm xdebug.ini || echo "xdebug not available"
         - echo 'opcache.enable=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
