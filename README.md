@@ -5,7 +5,7 @@ This is a userland replacement for PHP's native `get_browser()` function, which 
 
 **Note that you are currently viewing the 4.x series. If you're looking for any 2.x version, please read the documentation for that branch [here](https://github.com/browscap/browscap-php/tree/2.x).**
 
-[![Build Status](https://secure.travis-ci.org/browscap/browscap-php.png?branch=master)](http://travis-ci.org/browscap/browscap-php)
+[![Build Status](https://secure.travis-ci.org/browscap/browscap-php.png?branch=master)](http://travis-ci.org/browscap/browscap-php) [![codecov](https://codecov.io/gh/browscap/browscap-php/branch/master/graph/badge.svg)](https://codecov.io/gh/browscap/browscap-php)
 
 Installation
 ------------
