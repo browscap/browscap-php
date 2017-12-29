@@ -32,7 +32,6 @@ $application = new Application('browscap.php');
 $application->add(new Command\ConvertCommand($cacheDirectory, $defaultIniFile));
 $application->add(new Command\UpdateCommand($cacheDirectory));
 $application->add(new Command\ParserCommand($cacheDirectory));
-$application->add(new Command\LogfileCommand($cacheDirectory));
 $application->add(new Command\FetchCommand($cacheDirectory, $defaultIniFile));
 $application->add(new Command\CheckUpdateCommand($cacheDirectory));
 

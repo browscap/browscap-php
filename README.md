@@ -5,7 +5,7 @@ This is a userland replacement for PHP's native `get_browser()` function, which 
 
 **Note that you are currently viewing the 4.x series. If you're looking for any 2.x version, please read the documentation for that branch [here](https://github.com/browscap/browscap-php/tree/2.x).**
 
-[![Build Status](https://secure.travis-ci.org/browscap/browscap-php.png?branch=master)](http://travis-ci.org/browscap/browscap-php) [![Code Coverage](https://scrutinizer-ci.com/g/browscap/browscap-php/badges/coverage.png?s=61cb32ca83d2053ed9b140690b6e18dfa00e4639)](https://scrutinizer-ci.com/g/browscap/browscap-php/) [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/browscap/browscap-php/badges/quality-score.png?s=db1cc1699b1cb6ac6ae46754ef9612217eba5526)](https://scrutinizer-ci.com/g/browscap/browscap-php/)
+[![Build Status](https://secure.travis-ci.org/browscap/browscap-php.png?branch=master)](http://travis-ci.org/browscap/browscap-php) [![codecov](https://codecov.io/gh/browscap/browscap-php/branch/master/graph/badge.svg)](https://codecov.io/gh/browscap/browscap-php)
 
 Installation
 ------------
@@ -59,6 +59,7 @@ What's changed in version 4.x
  * `PropertyFormatter` now assumes any non-truthy values are `false`
  * `checkUpdate` method now throws an exception if we could not determine the "remote" version, or if there is no
    version in cache already.
+ * `log` method was removed
    
 ## Changes
 
@@ -237,26 +238,6 @@ vendor/bin/browscap-php browscap:parse
 
 - `user-agent` (required) the user agent which should be parsed
 - `cache` (optional) the relative path to your cache directory
-
-## log
-
-The `log` command parses a single access log file or a directory with access log files and writes the results into an output file. 
-
-```php
-vendor/bin/browscap-php browscap:log
-```
-
-### options
-
-- `output` (required) the path to a log file where the results are stored
-- `cache` (optional) the relative path to your cache directory
-- `log-file` (optional) the relative path to an access log file
-- `log-dir` (optional) the relative path to directory with the log files
-- `include` (optional) a glob compatible list of files which should be included, only used in comination with the `log-dir` option
-- `exclude` (optional) a glob compatible list of files which should be excluded from parsing, only used in comination with the `log-dir` option
-
-NOTE: One of both options `log-file` and `log-dir` is required.
-NOTE: At the moment only Apache access logs are supported.
 
 CLI Examples
 ------------
