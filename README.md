@@ -63,7 +63,7 @@ What's changed in version 4.x
    
 ## Changes
 
-* for caching the [Doctrine Cache](https://github.com/github.com/doctrine/cache) package is used
+* for caching the [Doctrine Cache](https://github.com/doctrine/cache) package is used
   * Any other Cache compatible with [PSR-16](https://github.com/github.com/php-fig/simple-cache) could be used
 * instead of the `debug` flag for the CLI commands the verbose flag has to be used
 
