@@ -19,9 +19,10 @@ composer require browscap/browscap-php
 Then you may identify the current user agent this way:
 
 ```php
-use BrowscapPHP\Browscap;
+$cache = new \Roave\DoctrineSimpleCache\SimpleCacheAdapter($doctrineFileCache); // or maybe any other PSR-16 compatible caches
+$logger = new \Monolog\Logger('name'); // or maybe any other PSR-3 compatible logger
 
-$browscap = new Browscap();
+$browscap = new \BrowscapPHP\Browscap($cache, $logger);
 $info = $browscap->getBrowser();
 ```
 
@@ -157,7 +158,7 @@ $current_browser = $bc->getBrowser();
 ## Using a sample useragent 
 
 ```php
-$bc = new \BrowscapPHP\Browscap();
+$bc = new \BrowscapPHP\Browscap($cache, $logger);
 $current_browser = $bc->getBrowser($the_user_agent);
 ```
 
