@@ -37,7 +37,7 @@ final class BrowscapCacheTest extends \PHPUnit\Framework\TestCase
         self::assertNull($cache->getVersion());
 
         $cache->setItem('browscap.version', 6012, false);
-        self::assertEquals(6012, $cache->getVersion());
+        self::assertSame(6012, $cache->getVersion());
     }
 
     public function testReleaseDate() : void
@@ -52,7 +52,7 @@ final class BrowscapCacheTest extends \PHPUnit\Framework\TestCase
         self::assertNull($cache->getVersion());
 
         $cache->setItem('browscap.releaseDate', 'Thu, 04 Feb 2016 12:59:23 +0000', false);
-        self::assertEquals('Thu, 04 Feb 2016 12:59:23 +0000', $cache->getReleaseDate());
+        self::assertSame('Thu, 04 Feb 2016 12:59:23 +0000', $cache->getReleaseDate());
     }
 
     public function testType() : void
@@ -67,6 +67,6 @@ final class BrowscapCacheTest extends \PHPUnit\Framework\TestCase
         self::assertNull($cache->getType());
 
         $cache->setItem('browscap.type', 'LITE', false);
-        self::assertEquals('LITE', $cache->getType());
+        self::assertSame('LITE', $cache->getType());
     }
 }

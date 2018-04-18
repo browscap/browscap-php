@@ -46,6 +46,6 @@ final class LegacyFormatterTest extends \PHPUnit\Framework\TestCase
         $formatter = new LegacyFormatter($options);
         $formatter->setData($data);
         $return = $formatter->getData();
-        self::assertEquals($expectedResult, $return);
+        self::assertSame($expectedResult, $return);
     }
 }
