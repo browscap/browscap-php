@@ -124,7 +124,7 @@ return PhpCsFixer\Config::create()
         'php_unit_mock' => ['target' => 'newest'],
         'php_unit_namespaced' => ['target' => 'newest'],
         'php_unit_no_expectation_annotation' => ['target' => 'newest', 'use_class_const' => true],
-        'php_unit_strict' => ['assertions' => ['assertAttributeEquals', 'assertAttributeNotEquals', 'assertEquals', 'assertNotEquals']],
+        'php_unit_strict' => ['assertions' => ['assertAttributeEquals', 'assertAttributeNotEquals', 'assertNotEquals']],
         'php_unit_test_annotation' => ['case' => 'camel', 'style' => 'prefix'],
         'php_unit_test_class_requires_covers' => false,
         'phpdoc_add_missing_param_annotation' => ['only_untyped' => false],
