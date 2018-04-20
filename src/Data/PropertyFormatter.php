@@ -39,6 +39,7 @@ final class PropertyFormatter
                 }
 
                 return false;
+
                 break;
             case PropertyHolder::TYPE_IN_ARRAY:
                 try {

@@ -32,14 +32,14 @@ final class ConverterTest extends \PHPUnit\Framework\TestCase
         /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects(self::never())
-               ->method('info')
-               ->will(self::returnValue(false));
+            ->method('info')
+            ->will(self::returnValue(false));
 
         /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
         $cache->expects(self::any())
-              ->method('setItem')
-              ->will(self::returnValue(true));
+            ->method('setItem')
+            ->will(self::returnValue(true));
 
         $this->object = new Converter($logger, $cache);
     }

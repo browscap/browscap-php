@@ -22,17 +22,17 @@ final class ConverterConvertStringTest extends \PHPUnit\Framework\TestCase
     {
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects(self::exactly(4))
-               ->method('info')
-               ->will(self::returnValue(false));
+            ->method('info')
+            ->will(self::returnValue(false));
         $logger->expects(self::never())
-               ->method('error')
-               ->will(self::returnValue(false));
+            ->method('error')
+            ->will(self::returnValue(false));
 
         /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
         $cache->expects(self::any())
-              ->method('setItem')
-              ->will(self::returnValue(true));
+            ->method('setItem')
+            ->will(self::returnValue(true));
 
         $this->object = new Converter($logger, $cache);
     }
