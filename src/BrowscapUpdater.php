@@ -4,8 +4,13 @@ declare(strict_types = 1);
 namespace BrowscapPHP;
 
 use BrowscapPHP\Cache\BrowscapCache;
+use BrowscapPHP\Exception\ErrorCachedVersionException;
+use BrowscapPHP\Exception\ErrorReadingFileException;
 use BrowscapPHP\Exception\FetcherException;
+use BrowscapPHP\Exception\FileNameMissingException;
+use BrowscapPHP\Exception\FileNotFoundException;
 use BrowscapPHP\Exception\NoCachedVersionException;
+use BrowscapPHP\Exception\NoNewVersionException;
 use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\ConverterInterface;
 use BrowscapPHP\Helper\Filesystem;
@@ -78,22 +83,24 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
      *
      * @param string $iniFile
      *
-     * @throws \BrowscapPHP\Exception
+     * @throws \BrowscapPHP\Exception\FileNameMissingException
+     * @throws \BrowscapPHP\Exception\FileNotFoundException
+     * @throws \BrowscapPHP\Exception\ErrorReadingFileException
      */
     public function convertFile(string $iniFile) : void
     {
         if (empty($iniFile)) {
-            throw new Exception('the file name can not be empty');
+            throw new FileNameMissingException('the file name can not be empty');
         }
 
         if (! is_readable($iniFile)) {
-            throw new Exception('it was not possible to read the local file ' . $iniFile);
+            throw new FileNotFoundException('it was not possible to read the local file ' . $iniFile);
         }
 
-        try {
-            $iniString = file_get_contents($iniFile);
-        } catch (Helper\Exception $e) {
-            throw new Exception('an error occured while converting the local file into the cache', 0, $e);
+        $iniString = file_get_contents($iniFile);
+
+        if (false === $iniString) {
+            throw new ErrorReadingFileException('an error occured while converting the local file into the cache');
         }
 
         $this->convertString($iniString);
@@ -128,14 +135,14 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
      * @throws \BrowscapPHP\Exception\FetcherException
      * @throws \BrowscapPHP\Helper\Exception
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \BrowscapPHP\Exception\ErrorCachedVersionException
      */
     public function fetch(string $file, string $remoteFile = IniLoaderInterface::PHP_INI) : void
     {
         try {
-            if (null === ($cachedVersion = $this->checkUpdate())) {
-                // no newer version available
-                return;
-            }
+            $cachedVersion = $this->checkUpdate();
+        } catch (NoNewVersionException $e) {
+            return;
         } catch (NoCachedVersionException $e) {
             $cachedVersion = 0;
         }
@@ -152,8 +159,11 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
 
         if (200 !== $response->getStatusCode()) {
             throw new FetcherException(
-                'an error occured while fetching remote data from URI ' . $uri . ': StatusCode was '
-                . $response->getStatusCode()
+                sprintf(
+                    'an error occured while fetching remote data from URI %s: StatusCode was %d',
+                    $uri,
+                    $response->getStatusCode()
+                )
             );
         }
 
@@ -187,26 +197,24 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
 
     /**
      * fetches a remote file, parses it and writes the result into the cache
-     *
      * if the local stored information are in the same version as the remote data no actions are
      * taken
      *
      * @param string $remoteFile The code for the remote file to load
      *
-     * @throws \BrowscapPHP\Exception\FileNotFoundException
-     * @throws \BrowscapPHP\Helper\Exception
      * @throws \BrowscapPHP\Exception\FetcherException
+     * @throws \BrowscapPHP\Helper\Exception
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \BrowscapPHP\Exception\ErrorCachedVersionException
      */
     public function update(string $remoteFile = IniLoaderInterface::PHP_INI) : void
     {
         $this->logger->debug('started fetching remote file');
 
         try {
-            if (null === ($cachedVersion = $this->checkUpdate())) {
-                // no newer version available
-                return;
-            }
+            $cachedVersion = $this->checkUpdate();
+        } catch (NoNewVersionException $e) {
+            return;
         } catch (NoCachedVersionException $e) {
             $cachedVersion = 0;
         }
@@ -221,8 +229,11 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
 
         if (200 !== $response->getStatusCode()) {
             throw new FetcherException(
-                'an error occured while fetching remote data from URI ' . $uri . ': StatusCode was '
-                . $response->getStatusCode()
+                sprintf(
+                    'an error occured while fetching remote data from URI %s: StatusCode was %d',
+                    $uri,
+                    $response->getStatusCode()
+                )
             );
         }
 
@@ -239,19 +250,22 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
         }
 
         $this->logger->debug('finished fetching remote file');
+        $this->logger->debug('started updating cache from remote file');
 
         $converter = new Converter($this->logger, $this->cache);
-
         $this->storeContent($converter, $content, $cachedVersion);
+
+        $this->logger->debug('finished updating cache from remote file');
     }
 
     /**
      * checks if an update on a remote location for the local file or the cache
      *
-     * @throws \BrowscapPHP\Helper\Exception
      * @throws \BrowscapPHP\Exception\FetcherException
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \BrowscapPHP\Exception\NoCachedVersionException
+     * @throws \BrowscapPHP\Exception\ErrorCachedVersionException
+     * @throws \BrowscapPHP\Exception\NoNewVersionException
      *
      * @return int|null The actual cached version if a newer version is available, null otherwise
      */
@@ -262,7 +276,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
         try {
             $cachedVersion = $this->cache->getItem('browscap.version', false, $success);
         } catch (InvalidArgumentException $e) {
-            throw new NoCachedVersionException('an error occured while reading the data version from the cache', 0, $e);
+            throw new ErrorCachedVersionException('an error occured while reading the data version from the cache', 0, $e);
         }
 
         if (! $cachedVersion) {
@@ -277,17 +291,23 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
 
         if (200 !== $response->getStatusCode()) {
             throw new FetcherException(
-                'an error occured while fetching version data from URI ' . $uri . ': StatusCode was '
-                . $response->getStatusCode()
+                sprintf(
+                    'an error occured while fetching version data from URI %s: StatusCode was %d',
+                    $uri,
+                    $response->getStatusCode()
+                )
             );
         }
 
         try {
             $remoteVersion = $response->getBody()->getContents();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new FetcherException(
-                'an error occured while fetching version data from URI ' . $uri . ': StatusCode was '
-                . $response->getStatusCode(),
+                sprintf(
+                    'an error occured while fetching version data from URI %s: StatusCode was %d',
+                    $uri,
+                    $response->getStatusCode()
+                ),
                 0,
                 $e
             );
@@ -301,10 +321,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
         }
 
         if ($cachedVersion && $remoteVersion && $remoteVersion <= $cachedVersion) {
-            // no newer version available
-            $this->logger->info('there is no newer version available');
-
-            return null;
+            throw new NoNewVersionException('there is no newer version available');
         }
 
         $this->logger->info(

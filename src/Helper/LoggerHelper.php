@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Helper;
 
 use Monolog\ErrorHandler;
-use Monolog\Handler\ErrorLogHandler;
 use Monolog\Handler\PsrHandler;
 use Monolog\Logger;
 use Monolog\Processor\MemoryPeakUsageProcessor;
@@ -36,7 +35,6 @@ final class LoggerHelper
         $psrHandler = new PsrHandler($consoleLogger);
 
         $logger->pushHandler($psrHandler);
-        $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, Logger::NOTICE));
 
         /** @var callable $memoryProcessor */
         $memoryProcessor = new MemoryUsageProcessor(true);
