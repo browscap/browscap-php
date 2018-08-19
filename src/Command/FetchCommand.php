@@ -10,7 +10,6 @@ use BrowscapPHP\Helper\Exception;
 use BrowscapPHP\Helper\IniLoaderInterface;
 use BrowscapPHP\Helper\LoggerHelper;
 use Doctrine\Common\Cache\FilesystemCache;
-use GuzzleHttp\Exception\GuzzleException;
 use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
