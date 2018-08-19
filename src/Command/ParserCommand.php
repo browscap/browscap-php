@@ -71,7 +71,7 @@ class ParserCommand extends Command
         } catch (Exception $e) {
             $logger->debug($e);
 
-            return 13;
+            return 11;
         }
 
         $output->writeln(json_encode($result, JSON_PRETTY_PRINT));

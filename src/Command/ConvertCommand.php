@@ -83,15 +83,15 @@ class ConvertCommand extends Command
 
         try {
             $browscap->convertFile($file);
-        } catch (Exception\FileNotFoundException $e) {
+        } catch (Exception\FileNameMissingException $e) {
             $logger->debug($e);
 
             return 6;
-        } catch (Exception\ErrorReadingFileException $e) {
+        } catch (Exception\FileNotFoundException $e) {
             $logger->debug($e);
 
             return 7;
-        } catch (Exception\FileNameMissingException $e) {
+        } catch (Exception\ErrorReadingFileException $e) {
             $logger->debug($e);
 
             return 8;

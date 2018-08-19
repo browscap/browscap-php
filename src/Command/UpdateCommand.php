@@ -76,22 +76,18 @@ class UpdateCommand extends Command
 
         try {
             $browscap->update($input->getOption('remote-file'));
-        } catch (FetcherException $e) {
-            $logger->debug($e);
-
-            return 14;
         } catch (ErrorCachedVersionException $e) {
             $logger->debug($e);
 
-            return 15;
-        } catch (GuzzleException $e) {
+            return 3;
+        } catch (FetcherException $e) {
             $logger->debug($e);
 
-            return 16;
+            return 9;
         } catch (Exception $e) {
             $logger->debug($e);
 
-            return 17;
+            return 10;
         }
 
         $logger->info('finished updating cache with remote file');

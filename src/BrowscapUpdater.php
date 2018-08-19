@@ -134,7 +134,6 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
      *
      * @throws \BrowscapPHP\Exception\FetcherException
      * @throws \BrowscapPHP\Helper\Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \BrowscapPHP\Exception\ErrorCachedVersionException
      */
     public function fetch(string $file, string $remoteFile = IniLoaderInterface::PHP_INI) : void
@@ -154,8 +153,19 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
 
         $uri = $loader->getRemoteIniUrl();
 
-        /** @var \Psr\Http\Message\ResponseInterface $response */
-        $response = $this->client->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
+        try {
+            /** @var \Psr\Http\Message\ResponseInterface $response */
+            $response = $this->client->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
+        } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+            throw new FetcherException(
+                sprintf(
+                    'an error occured while fetching remote data from URI %s',
+                    $uri
+                ),
+                0,
+                $e
+            );
+        }
 
         if (200 !== $response->getStatusCode()) {
             throw new FetcherException(
@@ -204,7 +214,6 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
      *
      * @throws \BrowscapPHP\Exception\FetcherException
      * @throws \BrowscapPHP\Helper\Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \BrowscapPHP\Exception\ErrorCachedVersionException
      */
     public function update(string $remoteFile = IniLoaderInterface::PHP_INI) : void
@@ -224,8 +233,19 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
 
         $uri = $loader->getRemoteIniUrl();
 
-        /** @var \Psr\Http\Message\ResponseInterface $response */
-        $response = $this->client->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
+        try {
+            /** @var \Psr\Http\Message\ResponseInterface $response */
+            $response = $this->client->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
+        } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+            throw new FetcherException(
+                sprintf(
+                    'an error occured while fetching remote data from URI %s',
+                    $uri
+                ),
+                0,
+                $e
+            );
+        }
 
         if (200 !== $response->getStatusCode()) {
             throw new FetcherException(
@@ -262,7 +282,6 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
      * checks if an update on a remote location for the local file or the cache
      *
      * @throws \BrowscapPHP\Exception\FetcherException
-     * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \BrowscapPHP\Exception\NoCachedVersionException
      * @throws \BrowscapPHP\Exception\ErrorCachedVersionException
      * @throws \BrowscapPHP\Exception\NoNewVersionException
@@ -286,8 +305,19 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
 
         $uri = (new IniLoader())->getRemoteVersionUrl();
 
-        /** @var \Psr\Http\Message\ResponseInterface $response */
-        $response = $this->client->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
+        try {
+            /** @var \Psr\Http\Message\ResponseInterface $response */
+            $response = $this->client->request('get', $uri, ['connect_timeout' => $this->connectTimeout]);
+        } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+            throw new FetcherException(
+                sprintf(
+                    'an error occured while fetching version data from URI %s',
+                    $uri
+                ),
+                0,
+                $e
+            );
+        }
 
         if (200 !== $response->getStatusCode()) {
             throw new FetcherException(

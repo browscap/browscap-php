@@ -93,22 +93,18 @@ class FetchCommand extends Command
 
         try {
             $browscap->fetch($file, $input->getOption('remote-file'));
+        } catch (ErrorCachedVersionException $e) {
+            $logger->debug($e);
+
+            return 3;
         } catch (FetcherException $e) {
             $logger->debug($e);
 
             return 9;
-        } catch (ErrorCachedVersionException $e) {
-            $logger->debug($e);
-
-            return 10;
-        } catch (GuzzleException $e) {
-            $logger->debug($e);
-
-            return 11;
         } catch (Exception $e) {
             $logger->debug($e);
 
-            return 12;
+            return 10;
         }
 
         $logger->info('finished fetching remote file');

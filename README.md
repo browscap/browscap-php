@@ -169,6 +169,8 @@ NOTE: If you don't want to use a file cache, you could not use the CLI commands.
 NOTE: Each operation (fetch, update, check-update) which fetches data from the remote host browscap.org may run into the 
 rate limit of that site. If this happens an Exception is thrown.
 
+Each CLI command returns `zero` if everything went fine.
+
 ## check-update
 
 If you only want to check if a new version of the browscap.ini is available, you can use the `check-update` command.
@@ -180,6 +182,14 @@ vendor/bin/browscap-php browscap:check-update
 ### options
 
 - `cache` (optional) the relative path to your cache directory
+
+### return codes
+
+- 1: no cached version found
+- 2: no new version availble
+- 3: an error occured while checking the cached version
+- 4: an error occured while fetching the remote version
+- 5: an other error occured 
 
 ## fetch
 
@@ -198,6 +208,12 @@ vendor/bin/browscap-php browscap:fetch
   - `Full_PHP_BrowscapINI` downloads the full file
 - `file` (optional) the relative path to the local file where the remote content is stored
 
+### return codes
+
+- 3: an error occured while checking the cached version
+- 9: an error occured while fetching the remote data
+- 10: an other error occured 
+
 ## convert
 
 The `convert` command reads a local stored browscap.ini file and writes the contents into a cache. 
@@ -210,6 +226,12 @@ vendor/bin/browscap-php browscap:convert
 
 - `file` (optional) the relative path to the local file where the remote content is stored, this should be the same file as in the fetch command
 - `cache` (optional) the relative path to your cache directory
+
+### return codes
+
+- 6: the name of the file to convert is missing
+- 7: the file to convert is not available or not readable
+- 8: an other error occured while reading the file
 
 ## update
 
@@ -227,6 +249,12 @@ vendor/bin/browscap-php browscap:update
   - `Full_PHP_BrowscapINI` downloads the full file
 - `cache` (optional) the relative path to your cache directory
 
+### return codes
+
+- 3: an error occured while checking the cached version
+- 9: an error occured while fetching the remote data
+- 10: an other error occured 
+
 ## parse
 
 The `parse` command parses a given user agent and writes the result to the console.
@@ -239,6 +267,10 @@ vendor/bin/browscap-php browscap:parse
 
 - `user-agent` (required) the user agent which should be parsed
 - `cache` (optional) the relative path to your cache directory
+
+### return codes
+
+- 11: an other error occured while parsing the useragent
 
 CLI Examples
 ------------
