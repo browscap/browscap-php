@@ -4,6 +4,9 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\BrowscapUpdater;
+use BrowscapPHP\Exception\ErrorCachedVersionException;
+use BrowscapPHP\Exception\FetcherException;
+use BrowscapPHP\Helper\Exception;
 use BrowscapPHP\Helper\IniLoaderInterface;
 use BrowscapPHP\Helper\LoggerHelper;
 use Doctrine\Common\Cache\FilesystemCache;
@@ -65,7 +68,13 @@ class FetchCommand extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) : void
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface   $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     *
+     * @return int
+     */
+    protected function execute(InputInterface $input, OutputInterface $output) : int
     {
         $logger = LoggerHelper::createDefaultLogger($output);
 
@@ -80,8 +89,25 @@ class FetchCommand extends Command
         $logger->info('started fetching remote file');
 
         $browscap = new BrowscapUpdater($cache, $logger);
-        $browscap->fetch($file, $input->getOption('remote-file'));
+
+        try {
+            $browscap->fetch($file, $input->getOption('remote-file'));
+        } catch (ErrorCachedVersionException $e) {
+            $logger->debug($e);
+
+            return 3;
+        } catch (FetcherException $e) {
+            $logger->debug($e);
+
+            return 9;
+        } catch (Exception $e) {
+            $logger->debug($e);
+
+            return 10;
+        }
 
         $logger->info('finished fetching remote file');
+
+        return 0;
     }
 }

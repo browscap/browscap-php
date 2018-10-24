@@ -40,16 +40,24 @@ final class BrowscapUpdaterTest extends \PHPUnit\Framework\TestCase
         $this->object = new BrowscapUpdater($cache, $logger);
     }
 
+    /**
+     * @throws \BrowscapPHP\Exception\FileNameMissingException
+     * @throws \BrowscapPHP\Exception\FileNotFoundException
+     */
     public function testConvertEmptyFile() : void
     {
-        $this->expectException(BrowscapException::class);
+        $this->expectException(BrowscapException\FileNameMissingException::class);
         $this->expectExceptionMessage('the file name can not be empty');
         $this->object->convertFile('');
     }
 
+    /**
+     * @throws \BrowscapPHP\Exception\FileNameMissingException
+     * @throws \BrowscapPHP\Exception\FileNotFoundException
+     */
     public function testConvertNotReadableFile() : void
     {
-        $this->expectException(BrowscapException::class);
+        $this->expectException(BrowscapException\FileNotFoundException::class);
         $this->expectExceptionMessage('it was not possible to read the local file /this/file/does/not/exist');
         $this->object->convertFile('/this/file/does/not/exist');
     }
@@ -177,7 +185,7 @@ AolVersion=0
         $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
-        $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.ini'));
+        $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . \DIRECTORY_SEPARATOR . 'test.ini'));
 
         self::assertSame(5031, $cache->getVersion());
     }
@@ -1064,6 +1072,10 @@ AolVersion=0
         $this->object->checkUpdate();
     }
 
+    /**
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \ReflectionException
+     */
     public function testCheckUpdateWithoutNewerVersion() : void
     {
         $version = 6000;
@@ -1109,7 +1121,12 @@ AolVersion=0
         $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
-        self::assertNull($this->object->checkUpdate());
+        $this->expectException(BrowscapException\NoNewVersionException::class);
+        $this->expectExceptionMessage(
+            'there is no newer version available'
+        );
+
+        $this->object->checkUpdate();
     }
 
     public function testCheckUpdateWithNewerVersion() : void

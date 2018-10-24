@@ -4,6 +4,9 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\BrowscapUpdater;
+use BrowscapPHP\Exception\ErrorCachedVersionException;
+use BrowscapPHP\Exception\FetcherException;
+use BrowscapPHP\Helper\Exception;
 use BrowscapPHP\Helper\IniLoaderInterface;
 use BrowscapPHP\Helper\LoggerHelper;
 use Doctrine\Common\Cache\FilesystemCache;
@@ -59,7 +62,7 @@ class UpdateCommand extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) : void
+    protected function execute(InputInterface $input, OutputInterface $output) : int
     {
         $logger = LoggerHelper::createDefaultLogger($output);
 
@@ -69,8 +72,25 @@ class UpdateCommand extends Command
         $logger->info('started updating cache with remote file');
 
         $browscap = new BrowscapUpdater($cache, $logger);
-        $browscap->update($input->getOption('remote-file'));
+
+        try {
+            $browscap->update($input->getOption('remote-file'));
+        } catch (ErrorCachedVersionException $e) {
+            $logger->debug($e);
+
+            return 3;
+        } catch (FetcherException $e) {
+            $logger->debug($e);
+
+            return 9;
+        } catch (Exception $e) {
+            $logger->debug($e);
+
+            return 10;
+        }
 
         $logger->info('finished updating cache with remote file');
+
+        return 0;
     }
 }

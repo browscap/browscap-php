@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\Browscap;
+use BrowscapPHP\Exception;
 use BrowscapPHP\Helper\LoggerHelper;
 use Doctrine\Common\Cache\FilesystemCache;
 use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
@@ -50,7 +51,13 @@ class ParserCommand extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) : void
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface   $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     *
+     * @return int
+     */
+    protected function execute(InputInterface $input, OutputInterface $output) : int
     {
         $logger = LoggerHelper::createDefaultLogger($output);
 
@@ -59,8 +66,16 @@ class ParserCommand extends Command
 
         $browscap = new Browscap($cache, $logger);
 
-        $result = $browscap->getBrowser($input->getArgument('user-agent'));
+        try {
+            $result = $browscap->getBrowser($input->getArgument('user-agent'));
+        } catch (Exception $e) {
+            $logger->debug($e);
+
+            return 11;
+        }
 
         $output->writeln(json_encode($result, JSON_PRETTY_PRINT));
+
+        return 0;
     }
 }

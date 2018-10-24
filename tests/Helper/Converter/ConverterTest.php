@@ -196,7 +196,7 @@ AolVersion=0
 
         $this->expectException(FileNotFoundException::class);
         $this->expectExceptionMessage('File "vfs://storage/test.ini" does not exist');
-        $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.ini'));
+        $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . \DIRECTORY_SEPARATOR . 'test.ini'));
     }
 
     public function testGetIniVersion() : void

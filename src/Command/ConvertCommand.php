@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\BrowscapUpdater;
+use BrowscapPHP\Exception;
 use BrowscapPHP\Helper\LoggerHelper;
 use Doctrine\Common\Cache\FilesystemCache;
 use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
@@ -56,7 +57,13 @@ class ConvertCommand extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) : void
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface   $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     *
+     * @return int
+     */
+    protected function execute(InputInterface $input, OutputInterface $output) : int
     {
         $logger = LoggerHelper::createDefaultLogger($output);
 
@@ -74,8 +81,24 @@ class ConvertCommand extends Command
             $file = $this->defaultIniFile;
         }
 
-        $browscap->convertFile($file);
+        try {
+            $browscap->convertFile($file);
+        } catch (Exception\FileNameMissingException $e) {
+            $logger->debug($e);
+
+            return 6;
+        } catch (Exception\FileNotFoundException $e) {
+            $logger->debug($e);
+
+            return 7;
+        } catch (Exception\ErrorReadingFileException $e) {
+            $logger->debug($e);
+
+            return 8;
+        }
 
         $logger->info('finished converting local file');
+
+        return 0;
     }
 }
