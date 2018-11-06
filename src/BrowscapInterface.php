@@ -40,8 +40,7 @@ interface BrowscapInterface
      *
      * @throws \BrowscapPHP\Exception
      *
-     * @return \stdClass              the object containing the browsers details. Array if
-     *                                $return_array is set to true.
+     * @return \stdClass              the object containing the browsers details.
      */
     public function getBrowser(string $userAgent = null) : \stdClass;
 }
