@@ -7,6 +7,7 @@ use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Data\PropertyFormatter;
 use BrowscapPHP\Data\PropertyHolder;
 use BrowscapPHP\Helper\QuoterInterface;
+use ExceptionalJSON\DecodeErrorException;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 
@@ -54,6 +55,8 @@ final class GetData implements GetDataInterface
      *
      * @param  string $pattern
      * @param  array  $settings
+     *
+     * @throws \UnexpectedValueException
      *
      * @return array
      */
@@ -154,12 +157,18 @@ final class GetData implements GetDataInterface
             [$tmpBuffer, $patterns] = explode("\t", $buffer, 2);
 
             if ($tmpBuffer === $patternhash) {
-                $return = json_decode($patterns, true);
+                try {
+                    $return = \ExceptionalJSON\decode($patterns, true);
+                } catch (DecodeErrorException $e) {
+                    $this->logger->error('data for cache key "browscap.iniparts.' . $subkey . '" are not valid json');
+
+                    return [];
+                }
 
                 foreach (array_keys($return) as $property) {
                     $return[$property] = $propertyFormatter->formatPropertyValue(
                         $return[$property],
-                        $property
+                        (string) $property
                     );
                 }
 

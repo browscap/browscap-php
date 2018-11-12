@@ -2,5 +2,19 @@ parameters:
   excludes_analyse:
     - */tests/*/data/*
     - */tests/*/Full2Test.php
+  includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+    - vendor/pepakriz/phpstan-exception-rules/extension.neon
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+    - vendor/phpstan/phpstan-beberlei-assert/extension.neon
+  parameters:
+    exceptionRules:
+      reportUnusedCatchesOfUncheckedExceptions: false
+      uncheckedExceptions: []
   ignoreErrors:
     - '~MockObject~'
+    - '~expects string, .*Exception given~'
+    - '~expects string, Throwable given~'
+    - '~Exception is not subtype of Throwable~'

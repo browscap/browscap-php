@@ -26,8 +26,6 @@ final class PropertyFormatter
      * @param bool|string $value
      * @param string $property
      *
-     * @throws \Exception
-     *
      * @return bool|string
      */
     public function formatPropertyValue($value, string $property)

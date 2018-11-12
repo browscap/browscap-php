@@ -79,11 +79,16 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
         'RenderingEngine_Maker' => 'unknown',
     ];
 
+    /**
+     * @throws \BrowscapPHP\Exception\FileNameMissingException
+     * @throws \BrowscapPHP\Exception\FileNotFoundException
+     * @throws \PHPUnit\Framework\SkippedTestError
+     */
     public static function setUpBeforeClass() : void
     {
         $objectIniPath = ini_get('browscap');
 
-        if (! is_file($objectIniPath)) {
+        if (false === $objectIniPath || ! is_file($objectIniPath)) {
             self::markTestSkipped('browscap not defined in php.ini');
         }
 
@@ -96,11 +101,13 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
         self::$object = new Browscap($cache, $logger);
 
         $updater = new BrowscapUpdater($cache, $logger);
-        $updater->convertFile($objectIniPath);
+        $updater->convertFile((string) $objectIniPath);
     }
 
     /**
      * @group compare
+     *
+     * @throws \BrowscapPHP\Exception
      */
     public function testCheckProperties() : void
     {
@@ -152,10 +159,12 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider providerUserAgent
-     * @depends testCheckProperties
+     * @depends      testCheckProperties
      * @group        compare
      *
      * @param string $userAgent
+     *
+     * @throws \BrowscapPHP\Exception
      */
     public function testCompare(string $userAgent) : void
     {

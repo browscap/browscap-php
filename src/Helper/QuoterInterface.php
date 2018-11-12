@@ -14,6 +14,8 @@ interface QuoterInterface
      * @param string $user_agent
      * @param string $delimiter
      *
+     * @throws \UnexpectedValueException
+     *
      * @return string
      */
     public function pregQuote(string $user_agent, string $delimiter = '/') : string;

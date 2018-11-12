@@ -75,7 +75,7 @@ jobs:
     - stage: static code analysis
       php: 7.1
       env: COMPOSER_FLAGS=""
-      script: vendor/bin/phpstan analyse -l 7 -c phpstan.neon --autoload-file=vendor/autoload.php --memory-limit=768M --no-progress src tests
+      script: vendor/bin/phpstan analyse -l max -c phpstan.neon --autoload-file=vendor/autoload.php --memory-limit=768M --no-progress src tests
 
     - stage: compare results
       php: 7.1

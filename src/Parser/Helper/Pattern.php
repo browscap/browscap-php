@@ -42,7 +42,11 @@ final class Pattern
         $pattern = substr($pattern, 0, 32);
         $matches = [];
 
-        if (! preg_match($regex, $pattern, $matches) || ! isset($matches[1])) {
+        if (! preg_match($regex, $pattern, $matches)) {
+            return [md5('')];
+        }
+
+        if (! isset($matches[1])) {
             return [md5('')];
         }
 

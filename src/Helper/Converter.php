@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Helper;
 
 use BrowscapPHP\Cache\BrowscapCacheInterface;
+use BrowscapPHP\Exception\ErrorReadingFileException;
 use BrowscapPHP\Exception\FileNotFoundException;
 use BrowscapPHP\IniParser\IniParser;
 use Psr\Log\LoggerInterface;
@@ -74,6 +75,7 @@ final class Converter implements ConverterInterface
      * @param string $iniFile
      *
      * @throws FileNotFoundException
+     * @throws ErrorReadingFileException
      */
     public function convertFile(string $iniFile) : void
     {
@@ -86,6 +88,10 @@ final class Converter implements ConverterInterface
         $iniString = file_get_contents($iniFile);
 
         $this->logger->info('finished reading file');
+
+        if (!is_string($iniString)) {
+            throw new ErrorReadingFileException(sprintf('could not read file %s', $iniFile));
+        }
 
         $this->convertString($iniString);
     }
@@ -119,18 +125,22 @@ final class Converter implements ConverterInterface
 
         $this->logger->info('start creating data from the ini data');
 
-        foreach ($iniParser->createIniParts($iniString) as $subkey => $content) {
-            if ('' === $subkey) {
-                continue;
-            }
-
-            try {
-                if (! $this->cache->setItem('browscap.iniparts.' . $subkey, $content, true)) {
-                    $this->logger->error('could not write property data "' . $subkey . '" to the cache');
+        try {
+            foreach ($iniParser->createIniParts($iniString) as $subkey => $content) {
+                if ('' === $subkey) {
+                    continue;
                 }
-            } catch (InvalidArgumentException $e) {
-                $this->logger->error(new \InvalidArgumentException('an error occured while writing property data into the cache', 0, $e));
+
+                try {
+                    if (! $this->cache->setItem('browscap.iniparts.' . $subkey, $content, true)) {
+                        $this->logger->error('could not write property data "' . $subkey . '" to the cache');
+                    }
+                } catch (InvalidArgumentException $e) {
+                    $this->logger->error(new \InvalidArgumentException('an error occured while writing property data into the cache', 0, $e));
+                }
             }
+        } catch (\OutOfRangeException | \UnexpectedValueException $e) {
+            $this->logger->error(new \InvalidArgumentException('an error occured while writing property data into the cache', 0, $e));
         }
 
         try {

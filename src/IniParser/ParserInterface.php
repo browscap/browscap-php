@@ -15,6 +15,8 @@ interface ParserInterface
      *
      * @param string $content
      *
+     * @throws \OutOfRangeException
+     *
      * @return \Generator
      */
     public function createIniParts(string $content) : \Generator;

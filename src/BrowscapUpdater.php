@@ -367,7 +367,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
         $content = preg_replace('/<[?%].*[?%]>/', '', $content);
 
         // replace opening and closing php and asp tags
-        return str_replace(['<?', '<%', '?>', '%>'], '', $content);
+        return str_replace(['<?', '<%', '?>', '%>'], '', (string) $content);
     }
 
     /**

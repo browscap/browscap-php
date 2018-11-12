@@ -115,8 +115,13 @@ final class Browscap implements BrowscapInterface
             $userAgent = $support->getUserAgent();
         }
 
-        // try to get browser data
-        $formatter = $this->getParser()->getBrowser($userAgent);
+        try {
+            // try to get browser data
+            $formatter = $this->getParser()->getBrowser($userAgent);
+        } catch (\UnexpectedValueException $e) {
+            $this->logger->error(sprintf('could not parse useragent "%s"', $userAgent));
+            $formatter = null;
+        }
 
         // if return is still NULL, updates are disabled... in this
         // case we return an empty formatter instance

@@ -16,6 +16,8 @@ interface ParserInterface
      *
      * @param  string                  $userAgent
      *
+     * @throws \UnexpectedValueException
+     *
      * @return FormatterInterface|null
      */
     public function getBrowser(string $userAgent) : ?FormatterInterface;

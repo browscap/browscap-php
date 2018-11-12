@@ -78,9 +78,12 @@ class FetchCommand extends Command
     {
         $logger = LoggerHelper::createDefaultLogger($output);
 
-        $fileCache = new FilesystemCache($input->getOption('cache'));
+        /** @var string $cacheOption */
+        $cacheOption = $input->getOption('cache');
+        $fileCache = new FilesystemCache($cacheOption);
         $cache = new SimpleCacheAdapter($fileCache);
 
+        /** @var string $file */
         $file = $input->getArgument('file');
         if (! $file) {
             $file = $this->defaultIniFile;
@@ -90,8 +93,11 @@ class FetchCommand extends Command
 
         $browscap = new BrowscapUpdater($cache, $logger);
 
+        /** @var string $remoteFileOption */
+        $remoteFileOption = $input->getOption('remote-file');
+
         try {
-            $browscap->fetch($file, $input->getOption('remote-file'));
+            $browscap->fetch($file, $remoteFileOption);
         } catch (ErrorCachedVersionException $e) {
             $logger->debug($e);
 
