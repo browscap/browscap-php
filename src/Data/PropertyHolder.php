@@ -16,8 +16,6 @@ final class PropertyHolder
      *
      * @param string $propertyName
      *
-     * @throws \Exception
-     *
      * @return string
      */
     public function getPropertyType(string $propertyName) : string
@@ -201,7 +199,7 @@ final class PropertyHolder
 
         throw new \InvalidArgumentException(
             'invalid value given for Property "' . $property . '": given value "' . $value . '", allowed: '
-            . json_encode($allowedValues)
+            . \ExceptionalJSON\encode($allowedValues)
         );
     }
 }

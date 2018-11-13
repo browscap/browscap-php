@@ -7,6 +7,7 @@ use BrowscapPHP\Browscap;
 use BrowscapPHP\Exception;
 use BrowscapPHP\Helper\LoggerHelper;
 use Doctrine\Common\Cache\FilesystemCache;
+use ExceptionalJSON\EncodeErrorException;
 use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -61,20 +62,31 @@ class ParserCommand extends Command
     {
         $logger = LoggerHelper::createDefaultLogger($output);
 
-        $fileCache = new FilesystemCache($input->getOption('cache'));
+        /** @var string $cacheOption */
+        $cacheOption = $input->getOption('cache');
+        $fileCache = new FilesystemCache($cacheOption);
         $cache = new SimpleCacheAdapter($fileCache);
 
         $browscap = new Browscap($cache, $logger);
 
+        /** @var string $uaArgument */
+        $uaArgument = $input->getArgument('user-agent');
+
         try {
-            $result = $browscap->getBrowser($input->getArgument('user-agent'));
+            $result = $browscap->getBrowser($uaArgument);
         } catch (Exception $e) {
             $logger->debug($e);
 
             return 11;
         }
 
-        $output->writeln(json_encode($result, JSON_PRETTY_PRINT));
+        try {
+            $output->writeln(\ExceptionalJSON\encode($result, JSON_PRETTY_PRINT));
+        } catch (EncodeErrorException $e) {
+            $logger->error($e);
+
+            return 11;
+        }
 
         return 0;
     }

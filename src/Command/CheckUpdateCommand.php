@@ -58,7 +58,9 @@ class CheckUpdateCommand extends Command
     {
         $logger = LoggerHelper::createDefaultLogger($output);
 
-        $fileCache = new FilesystemCache($input->getOption('cache'));
+        /** @var string $cacheOption */
+        $cacheOption = $input->getOption('cache');
+        $fileCache = new FilesystemCache($cacheOption);
         $cache = new SimpleCacheAdapter($fileCache);
 
         $logger->debug('started checking for new version of remote file');

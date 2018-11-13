@@ -69,7 +69,7 @@ final class BrowscapTest extends \PHPUnit\Framework\TestCase
 
     public function testGetBrowserWithoutUa() : void
     {
-        $expectedResult = new \StdClass();
+        $expectedResult = new \stdClass();
         $expectedResult->parent = 'something';
         $expectedResult->comment = 'an comment';
 
@@ -100,7 +100,7 @@ final class BrowscapTest extends \PHPUnit\Framework\TestCase
 
     public function testGetBrowserWithUa() : void
     {
-        $expectedResult = new \StdClass();
+        $expectedResult = new \stdClass();
         $expectedResult->parent = 'something';
         $expectedResult->comment = 'an comment';
 

@@ -28,6 +28,8 @@ interface GetDataInterface
      * @param  string $pattern
      * @param  array  $settings
      *
+     * @throws \UnexpectedValueException
+     *
      * @return array
      */
     public function getSettings(string $pattern, array $settings = []) : array;

@@ -8,6 +8,7 @@ use BrowscapPHP\Data\PropertyHolder;
 use BrowscapPHP\Helper\Quoter;
 use BrowscapPHP\Parser\Helper\Pattern;
 use BrowscapPHP\Parser\Helper\SubKey;
+use ExceptionalJSON\EncodeErrorException;
 
 /**
  * Ini parser class (compatible with PHP 5.3+)
@@ -29,6 +30,9 @@ final class IniParser implements ParserInterface
      *
      * @param string $content
      *
+     * @throws \OutOfRangeException
+     * @throws \UnexpectedValueException
+     *
      * @return \Generator
      */
     public function createIniParts(string $content) : \Generator
@@ -42,6 +46,10 @@ final class IniParser implements ParserInterface
         // split the ini file into sections and save the data in one line with a hash of the beloging
         // pattern (filtered in the previous step)
         $iniParts = preg_split('/\[[^\r\n]+\]/', $content);
+        if (false === $iniParts) {
+            throw new \UnexpectedValueException('an error occured while splitting content into parts');
+        }
+
         $contents = [];
 
         $propertyFormatter = new PropertyFormatter(new PropertyHolder());
@@ -55,7 +63,15 @@ final class IniParser implements ParserInterface
                 $contents[$subkey] = [];
             }
 
+            if (!array_key_exists($position + 1, $iniParts)) {
+                throw new \OutOfRangeException(sprintf('could not find position %d inside iniparts', $position + 1));
+            }
+
             $browserProperties = parse_ini_string($iniParts[($position + 1)], false, INI_SCANNER_RAW);
+
+            if (false === $browserProperties) {
+                throw new \UnexpectedValueException(sprintf('could ini parse position %d inside iniparts', $position + 1));
+            }
 
             foreach (array_keys($browserProperties) as $property) {
                 $browserProperties[$property] = $propertyFormatter->formatPropertyValue(
@@ -64,20 +80,22 @@ final class IniParser implements ParserInterface
                 );
             }
 
-            // the position has to be moved by one, because the header of the ini file
-            // is also returned as a part
-            $contents[$subkey][] = $patternhash . "\t" . json_encode(
-                $browserProperties,
-                JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
-            );
+            try {
+                // the position has to be moved by one, because the header of the ini file
+                // is also returned as a part
+                $contents[$subkey][] = $patternhash . "\t" . \ExceptionalJSON\encode(
+                    $browserProperties,
+                    JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
+                );
+            } catch (EncodeErrorException $e) {
+                throw new \UnexpectedValueException('json encoding content failed', 0, $e);
+            }
         }
 
         unset($patternPositions, $iniParts);
 
         $subkeys = array_flip(SubKey::getAllIniPartCacheSubKeys());
         foreach ($contents as $subkey => $cacheContent) {
-            $subkey = (string) $subkey;
-
             yield $subkey => $cacheContent;
 
             unset($subkeys[$subkey]);
@@ -207,8 +225,6 @@ final class IniParser implements ParserInterface
 
         $subkeys = SubKey::getAllPatternCacheSubkeys();
         foreach ($contents as $subkey => $content) {
-            $subkey = (string) $subkey;
-
             yield $subkey => $content;
 
             unset($subkeys[$subkey]);

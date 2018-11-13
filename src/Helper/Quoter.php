@@ -29,33 +29,45 @@ final class Quoter implements QuoterInterface
      *
      * @param  string $pattern
      *
+     * @throws \UnexpectedValueException
+     *
      * @return string
      */
     public function pregUnQuote(string $pattern) : string
     {
         // Fast check, because most parent pattern like 'DefaultProperties' don't need a replacement
-        if (preg_match('/[^a-z\s]/i', $pattern)) {
-            // Undo the \\x replacement, that is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
-            // @source https://github.com/browscap/browscap-php
-            $pattern = preg_replace(
-                ['/(?<!\\\\)\\.\\*/', '/(?<!\\\\)\\./', '/(?<!\\\\)\\\\x/'],
-                ['\\*', '\\?', '\\x'],
-                $pattern
-            );
+        if (!preg_match('/[^a-z\s]/i', $pattern)) {
+            return $pattern;
+        }
 
-            // Undo preg_quote
-            $pattern = str_replace(
-                [
-                    '\\\\', '\\+', '\\*', '\\?', '\\[', '\\^', '\\]', '\\$', '\\(', '\\)', '\\{', '\\}', '\\=',
-                    '\\!', '\\<', '\\>', '\\|', '\\:', '\\-', '\\.', '\\/',
-                ],
-                [
-                    '\\', '+', '*', '?', '[', '^', ']', '$', '(', ')', '{', '}', '=', '!', '<', '>', '|', ':',
-                    '-', '.', '/',
-                ],
-                $pattern
+        $origPattern = $pattern;
+
+        // Undo the \\x replacement, that is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
+        // @source https://github.com/browscap/browscap-php
+        $pattern = preg_replace(
+            ['/(?<!\\\\)\\.\\*/', '/(?<!\\\\)\\./', '/(?<!\\\\)\\\\x/'],
+            ['\\*', '\\?', '\\x'],
+            $pattern
+        );
+
+        if (null === $pattern) {
+            throw new \UnexpectedValueException(
+                sprintf('an error occured while handling pattern %s', $origPattern)
             );
         }
+
+        // Undo preg_quote
+        $pattern = str_replace(
+            [
+                '\\\\', '\\+', '\\*', '\\?', '\\[', '\\^', '\\]', '\\$', '\\(', '\\)', '\\{', '\\}', '\\=',
+                '\\!', '\\<', '\\>', '\\|', '\\:', '\\-', '\\.', '\\/',
+            ],
+            [
+                '\\', '+', '*', '?', '[', '^', ']', '$', '(', ')', '{', '}', '=', '!', '<', '>', '|', ':',
+                '-', '.', '/',
+            ],
+            $pattern
+        );
 
         return $pattern;
     }

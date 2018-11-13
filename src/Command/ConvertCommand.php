@@ -67,7 +67,9 @@ class ConvertCommand extends Command
     {
         $logger = LoggerHelper::createDefaultLogger($output);
 
-        $fileCache = new FilesystemCache($input->getOption('cache'));
+        /** @var string $cacheOption */
+        $cacheOption = $input->getOption('cache');
+        $fileCache = new FilesystemCache($cacheOption);
         $cache = new SimpleCacheAdapter($fileCache);
 
         $logger->info('initializing converting process');
@@ -76,6 +78,7 @@ class ConvertCommand extends Command
 
         $logger->info('started converting local file');
 
+        /** @var string $file */
         $file = $input->getArgument('file');
         if (! $file) {
             $file = $this->defaultIniFile;

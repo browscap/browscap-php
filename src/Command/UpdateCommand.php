@@ -66,15 +66,20 @@ class UpdateCommand extends Command
     {
         $logger = LoggerHelper::createDefaultLogger($output);
 
-        $fileCache = new FilesystemCache($input->getOption('cache'));
+        /** @var string $cacheOption */
+        $cacheOption = $input->getOption('cache');
+        $fileCache = new FilesystemCache($cacheOption);
         $cache = new SimpleCacheAdapter($fileCache);
 
         $logger->info('started updating cache with remote file');
 
         $browscap = new BrowscapUpdater($cache, $logger);
 
+        /** @var string $remoteFileOption */
+        $remoteFileOption = $input->getOption('remote-file');
+
         try {
-            $browscap->update($input->getOption('remote-file'));
+            $browscap->update($remoteFileOption);
         } catch (ErrorCachedVersionException $e) {
             $logger->debug($e);
 
