@@ -89,6 +89,8 @@ class FetchCommand extends Command
             $file = $this->defaultIniFile;
         }
 
+        $output->writeln(sprintf('write fetched file to %s', $file));
+
         $logger->info('started fetching remote file');
 
         $browscap = new BrowscapUpdater($cache, $logger);

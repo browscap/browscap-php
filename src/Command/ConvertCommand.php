@@ -84,6 +84,8 @@ class ConvertCommand extends Command
             $file = $this->defaultIniFile;
         }
 
+        $output->writeln(sprintf('converting file %s', $file));
+
         try {
             $browscap->convertFile($file);
         } catch (Exception\FileNameMissingException $e) {
