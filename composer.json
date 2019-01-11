@@ -26,7 +26,7 @@
     ],
     "require": {
         "ext-json": "*",
-        "php": ">=7.1.0,<7.3.0",
+        "php": ">=7.1.0,<7.4.0",
         "daverandom/exceptional-json": "^1.0.4",
         "guzzlehttp/guzzle": "^6.2",
         "monolog/monolog": "^1.23",
