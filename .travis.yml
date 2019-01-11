@@ -39,6 +39,8 @@ jobs:
   allow_failures:
     - php: nightly
   include:
+    - php: 7.3
+      env: COMPOSER_FLAGS="--ignore-platform-reqs"
     - php: 7.2
       env: COMPOSER_FLAGS="--ignore-platform-reqs"
     - php: nightly
