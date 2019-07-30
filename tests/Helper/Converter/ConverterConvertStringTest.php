@@ -23,16 +23,16 @@ final class ConverterConvertStringTest extends \PHPUnit\Framework\TestCase
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects(self::exactly(4))
             ->method('info')
-            ->will(self::returnValue(false));
+            ->willReturn(false);
         $logger->expects(self::never())
             ->method('error')
-            ->will(self::returnValue(false));
+            ->willReturn(false);
 
         /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
         $cache->expects(self::any())
             ->method('setItem')
-            ->will(self::returnValue(true));
+            ->willReturn(true);
 
         $this->object = new Converter($logger, $cache);
     }
@@ -45,7 +45,7 @@ final class ConverterConvertStringTest extends \PHPUnit\Framework\TestCase
             ->getMock();
         $file->expects(self::never())
             ->method('exists')
-            ->will(self::returnValue(false));
+            ->willReturn(false);
 
         $this->object->setFilesystem($file);
 
@@ -166,7 +166,7 @@ AolVersion=0
             ->getMock();
         $file->expects(self::never())
             ->method('exists')
-            ->will(self::returnValue(false));
+            ->willReturn(false);
 
         $this->object->setFilesystem($file);
 
