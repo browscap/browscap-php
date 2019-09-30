@@ -41,7 +41,7 @@ final class GetPatternTest extends \PHPUnit\Framework\TestCase
         $cache
             ->expects(self::never())
             ->method('getItem')
-            ->will(self::returnValueMap($map));
+            ->willReturnMap($map);
 
         /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);

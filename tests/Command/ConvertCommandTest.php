@@ -19,19 +19,19 @@ final class ConvertCommandTest extends \PHPUnit\Framework\TestCase
         $object
             ->expects(self::once())
             ->method('setName')
-            ->will(self::returnSelf());
+            ->willReturnSelf();
         $object
             ->expects(self::once())
             ->method('setDescription')
-            ->will(self::returnSelf());
+            ->willReturnSelf();
         $object
             ->expects(self::once())
             ->method('addArgument')
-            ->will(self::returnSelf());
+            ->willReturnSelf();
         $object
             ->expects(self::once())
             ->method('addOption')
-            ->will(self::returnSelf());
+            ->willReturnSelf();
 
         $class = new \ReflectionClass(ConvertCommand::class);
         $method = $class->getMethod('configure');

@@ -316,11 +316,11 @@ AolVersion=0
     public function testFetchFail() : void
     {
         $response = $this->createMock(Response::class);
-        $response->expects(self::exactly(2))->method('getStatusCode')->will(self::returnValue(500));
+        $response->expects(self::exactly(2))->method('getStatusCode')->willReturn(500);
 
         /** @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(self::once())->method('request')->will(self::returnValue($response));
+        $client->expects(self::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');

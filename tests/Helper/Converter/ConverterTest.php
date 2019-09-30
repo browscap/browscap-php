@@ -33,13 +33,13 @@ final class ConverterTest extends \PHPUnit\Framework\TestCase
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects(self::never())
             ->method('info')
-            ->will(self::returnValue(false));
+            ->willReturn(false);
 
         /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
         $cache->expects(self::any())
             ->method('setItem')
-            ->will(self::returnValue(true));
+            ->willReturn(true);
 
         $this->object = new Converter($logger, $cache);
     }
@@ -63,7 +63,7 @@ final class ConverterTest extends \PHPUnit\Framework\TestCase
         $file = $this->createMock(Filesystem::class);
         $file->expects(self::once())
             ->method('exists')
-            ->will(self::returnValue(false));
+            ->willReturn(false);
 
         $this->object->setFilesystem($file);
 
@@ -190,7 +190,7 @@ AolVersion=0
         $file = $this->createMock(Filesystem::class);
         $file->expects(self::once())
             ->method('exists')
-            ->will(self::returnValue(false));
+            ->willReturn(false);
 
         $this->object->setFilesystem($file);
 
@@ -205,7 +205,7 @@ AolVersion=0
         $file = $this->createMock(Filesystem::class);
         $file->expects(self::never())
             ->method('exists')
-            ->will(self::returnValue(false));
+            ->willReturn(false);
 
         $this->object->setFilesystem($file);
 

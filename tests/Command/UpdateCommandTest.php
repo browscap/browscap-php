@@ -19,19 +19,19 @@ final class UpdateCommandTest extends \PHPUnit\Framework\TestCase
         $object
             ->expects(self::once())
             ->method('setName')
-            ->will(self::returnSelf());
+            ->willReturnSelf();
         $object
             ->expects(self::once())
             ->method('setDescription')
-            ->will(self::returnSelf());
+            ->willReturnSelf();
         $object
             ->expects(self::never())
             ->method('addArgument')
-            ->will(self::returnSelf());
+            ->willReturnSelf();
         $object
             ->expects(self::exactly(3))
             ->method('addOption')
-            ->will(self::returnSelf());
+            ->willReturnSelf();
 
         $class = new \ReflectionClass(UpdateCommand::class);
         $method = $class->getMethod('configure');
