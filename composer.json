@@ -38,7 +38,7 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.13",
         "mikey179/vfsstream": "^1.6",
-        "pepakriz/phpstan-exception-rules": "^0.3",
+        "pepakriz/phpstan-exception-rules": "^0.3 || ^0.4",
         "phpstan/phpstan": "^0.10",
         "phpstan/phpstan-beberlei-assert": "^0.10",
         "phpstan/phpstan-deprecation-rules": "^0.10",
