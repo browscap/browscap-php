@@ -38,7 +38,10 @@ jobs:
   fast_finish: true
   allow_failures:
     - php: nightly
+    - php: 7.4snapshot
   include:
+    - php: 7.4snapshot
+      env: COMPOSER_FLAGS="--ignore-platform-reqs"
     - php: 7.3
       env: COMPOSER_FLAGS="--ignore-platform-reqs"
     - php: 7.2
