@@ -25,8 +25,8 @@ interface GetDataInterface
      * Gets the settings for a given pattern (method calls itself to
      * get the data from the parent patterns)
      *
-     * @param  string $pattern
-     * @param  array  $settings
+     * @param string $pattern
+     * @param array  $settings
      *
      * @throws \UnexpectedValueException
      *

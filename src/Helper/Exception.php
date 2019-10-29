@@ -8,6 +8,6 @@ use BrowscapPHP\Exception as BaseException;
 /**
  * Exception to handle errors inside the helpers.
  */
-class Exception extends BaseException
+final class Exception extends BaseException
 {
 }

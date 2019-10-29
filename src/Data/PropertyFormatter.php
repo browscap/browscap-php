@@ -24,29 +24,22 @@ final class PropertyFormatter
      * formats the name of a property
      *
      * @param bool|string $value
-     * @param string $property
+     * @param string      $property
+     *
+     * @throws \InvalidArgumentException
      *
      * @return bool|string
      */
     public function formatPropertyValue($value, string $property)
     {
-        switch ($this->propertyHolder->getPropertyType($property)) {
-            case PropertyHolder::TYPE_BOOLEAN:
-                if (true === $value || 'true' === $value || '1' === $value) {
-                    return true;
-                }
-
-                return false;
-            case PropertyHolder::TYPE_IN_ARRAY:
-                try {
-                    return $this->propertyHolder->checkValueInArray($property, (string) $value);
-                } catch (\InvalidArgumentException $ex) {
-                    // nothing to do here
-                }
-
-                return '';
+        if (PropertyHolder::TYPE_BOOLEAN !== $this->propertyHolder->getPropertyType($property)) {
+            return $value;
         }
 
-        return $value;
+        if (true === $value || 'true' === $value || '1' === $value) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -7,6 +7,11 @@ use BrowscapPHP\Command\ParserCommand;
 
 final class ParserCommandTest extends \PHPUnit\Framework\TestCase
 {
+    /**
+     * @throws \ReflectionException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     */
     public function testConfigure() : void
     {
         $object = $this->getMockBuilder(ParserCommand::class)
@@ -14,19 +19,19 @@ final class ParserCommandTest extends \PHPUnit\Framework\TestCase
             ->setMethods(['setName', 'setDescription', 'addArgument', 'addOption'])
             ->getMock();
         $object
-            ->expects(self::once())
+            ->expects(static::once())
             ->method('setName')
             ->willReturn($object);
         $object
-            ->expects(self::once())
+            ->expects(static::once())
             ->method('setDescription')
             ->willReturnSelf();
         $object
-            ->expects(self::once())
+            ->expects(static::once())
             ->method('addArgument')
             ->willReturnSelf();
         $object
-            ->expects(self::once())
+            ->expects(static::once())
             ->method('addOption')
             ->willReturnSelf();
 
@@ -34,6 +39,6 @@ final class ParserCommandTest extends \PHPUnit\Framework\TestCase
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 
-        self::assertNull($method->invoke($object));
+        static::assertNull($method->invoke($object));
     }
 }

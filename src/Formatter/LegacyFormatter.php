@@ -62,7 +62,7 @@ final class LegacyFormatter implements FormatterInterface
 
         foreach ($this->data as $key => $property) {
             if ($this->options['lowercase']) {
-                $key = strtolower($key);
+                $key = mb_strtolower($key);
             }
 
             $output->{$key} = $property;

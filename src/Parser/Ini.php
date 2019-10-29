@@ -50,7 +50,7 @@ final class Ini implements ParserInterface
      * Gets the browser data formatr for the given user agent
      * (or null if no data avaailble, no even the default browser)
      *
-     * @param  string                  $userAgent
+     * @param string $userAgent
      *
      * @throws \UnexpectedValueException
      *
@@ -58,7 +58,7 @@ final class Ini implements ParserInterface
      */
     public function getBrowser(string $userAgent) : ?FormatterInterface
     {
-        $userAgent = strtolower($userAgent);
+        $userAgent = mb_strtolower($userAgent);
         $formatter = null;
 
         foreach ($this->patternHelper->getPatterns($userAgent) as $patterns) {
@@ -76,12 +76,12 @@ final class Ini implements ParserInterface
                 $quotedPattern = '/^' . $pattern . '$/i';
                 $matches = [];
 
-                if (preg_match($quotedPattern, $userAgent, $matches)) {
+                if (0 < preg_match($quotedPattern, $userAgent, $matches)) {
                     // Insert the digits back into the pattern, so that we can search the settings for it
                     if (1 < count($matches)) {
                         array_shift($matches);
                         foreach ($matches as $oneMatch) {
-                            $numPos = (int) strpos($pattern, '(\d)');
+                            $numPos = (int) mb_strpos($pattern, '(\d)');
                             $pattern = substr_replace($pattern, $oneMatch, $numPos, 4);
                         }
                     }

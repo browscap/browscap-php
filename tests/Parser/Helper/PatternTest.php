@@ -5,22 +5,25 @@ namespace BrowscapPHPTest\Parser\Helper;
 
 use BrowscapPHP\Parser\Helper\Pattern;
 
-/**
- * @covers \BrowscapPHP\Parser\Helper\Pattern
- */
 final class PatternTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @group pattern
+     *
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testGetPatternStartWithoutVariants() : void
     {
         $pattern = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.68 Safari/537.36';
-        self::assertSame('aaa556aeec36ac3edfe2f5deea5f1d28', Pattern::getHashForPattern(strtolower($pattern), false)[0]);
+        static::assertSame('aaa556aeec36ac3edfe2f5deea5f1d28', Pattern::getHashForPattern(mb_strtolower($pattern), false)[0]);
     }
 
     /**
      * @group pattern
+     *
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testGetPatternStartWithVariants() : void
     {
@@ -38,23 +41,29 @@ final class PatternTest extends \PHPUnit\Framework\TestCase
             9 => 'd41d8cd98f00b204e9800998ecf8427e',
         ];
 
-        self::assertSame($expected, Pattern::getHashForPattern(strtolower($pattern), true));
+        static::assertSame($expected, Pattern::getHashForPattern(mb_strtolower($pattern), true));
     }
 
     /**
      * @group pattern
+     *
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testGetPatternLength() : void
     {
-        self::assertSame(4, Pattern::getPatternLength('abcd'));
+        static::assertSame(4, Pattern::getPatternLength('abcd'));
     }
 
     /**
      * @group pattern
+     *
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testGetHashForParts() : void
     {
-        self::assertSame(
+        static::assertSame(
             '529f1ddb64ea27d5cc6fc8ce8048d9e7',
             Pattern::getHashForParts('mozilla/5.0 (*linux i686*rv:0.9*) gecko*')
         );

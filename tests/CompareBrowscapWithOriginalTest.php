@@ -14,7 +14,6 @@ use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
  * Also compares the execution times.
  *
  * @group compare
- * @coversNothing
  */
 final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
 {
@@ -83,13 +82,16 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
      * @throws \BrowscapPHP\Exception\FileNameMissingException
      * @throws \BrowscapPHP\Exception\FileNotFoundException
      * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws \BrowscapPHP\Exception\ErrorReadingFileException
+     * @throws \Roave\DoctrineSimpleCache\Exception\CacheException
+     * @throws \PHPUnit\Framework\SyntheticSkippedError
      */
     public static function setUpBeforeClass() : void
     {
         $objectIniPath = ini_get('browscap');
 
         if (false === $objectIniPath || ! is_file($objectIniPath)) {
-            self::markTestSkipped('browscap not defined in php.ini');
+            static::markTestSkipped('browscap not defined in php.ini');
         }
 
         $memoryCache = new ArrayCache();
@@ -101,13 +103,16 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
         self::$object = new Browscap($cache, $logger);
 
         $updater = new BrowscapUpdater($cache, $logger);
-        $updater->convertFile((string) $objectIniPath);
+        $updater->convertFile($objectIniPath);
     }
 
     /**
      * @group compare
      *
      * @throws \BrowscapPHP\Exception
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      */
     public function testCheckProperties() : void
     {
@@ -123,23 +128,23 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
 
         $diff = array_diff($libPropertyKeys, $bcPropertyKeys);
 
-        if (! empty($diff)) {
-            self::fail(
+        if ($diff !== []) {
+            static::fail(
                 'the properties found by "get_browser()" differ from found by "\BrowscapPHP\Browscap::getBrowser()" : '
                 . serialize($diff)
             );
         }
 
         foreach (array_keys($this->properties) as $bcProp) {
-            $bcProp = strtolower($bcProp);
+            $bcProp = mb_strtolower($bcProp);
 
-            if (in_array($bcProp, ['browser_name_regex', 'browser_name_pattern', 'parent'])) {
+            if (in_array($bcProp, ['browser_name_regex', 'browser_name_pattern', 'parent'], true)) {
                 unset($libProperties[$bcProp]);
 
                 continue;
             }
 
-            self::assertArrayHasKey(
+            static::assertArrayHasKey(
                 $bcProp,
                 $libProperties,
                 'Property `' . $bcProp . '` from Browscap doesn\'t match anything in get_browser. '
@@ -149,7 +154,7 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
             unset($libProperties[$bcProp]);
         }
 
-        self::assertCount(
+        static::assertCount(
             0,
             $libProperties,
             'There are ' . count($libProperties) . '(' . implode(
@@ -167,6 +172,9 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
      * @param string $userAgent
      *
      * @throws \BrowscapPHP\Exception
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \PHPUnit\Framework\Exception
      */
     public function testCompare(string $userAgent) : void
     {
@@ -178,34 +186,34 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
         $bcResult = self::$object->getBrowser($userAgent);
 
         foreach (array_keys($this->properties) as $bcProp) {
-            if (in_array($bcProp, ['browser_name_regex', 'browser_name_pattern', 'Parent'])) {
+            if (in_array($bcProp, ['browser_name_regex', 'browser_name_pattern', 'Parent'], true)) {
                 continue;
             }
 
-            $bcProp = strtolower($bcProp);
+            $bcProp = mb_strtolower((string) $bcProp);
 
-            self::assertObjectHasAttribute(
+            static::assertObjectHasAttribute(
                 $bcProp,
                 $libResult,
                 'Actual library result does not have "' . $bcProp . '" property'
             );
 
-            self::assertObjectHasAttribute(
+            static::assertObjectHasAttribute(
                 $bcProp,
                 $bcResult,
                 'Actual browscap result does not have "' . $bcProp . '" property'
             );
 
-            $libValue = strtolower((string) $libResult->{$bcProp});
-            $bcValue = strtolower((string) $bcResult->{$bcProp});
+            $libValue = mb_strtolower((string) $libResult->{$bcProp});
+            $bcValue = mb_strtolower((string) $bcResult->{$bcProp});
 
-            self::assertSame(
+            static::assertSame(
                 $libValue,
                 $bcValue,
                 'Expected actual "' . $bcProp . '" to be "' . $libValue . '" '
                 . '(was "' . $bcValue . '"); ' . PHP_EOL
-                . 'used pattern [\BrowscapPHP\Browscap::getBrowser()]:' . strtolower($bcResult->browser_name_pattern) . PHP_EOL
-                . 'expected pattern [get_browser]:                    ' . strtolower($libResult->browser_name_pattern)
+                . 'used pattern [\BrowscapPHP\Browscap::getBrowser()]:' . mb_strtolower($bcResult->browser_name_pattern) . PHP_EOL
+                . 'expected pattern [get_browser]:                    ' . mb_strtolower($libResult->browser_name_pattern)
             );
         }
     }

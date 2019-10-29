@@ -21,6 +21,12 @@ if (!$foundVendorAutoload) {
     throw new \Exception('Could not find autoload path in any of the searched locations');
 }
 
+// Ensure symfony packages installed
+if (!class_exists(\Symfony\Component\Console\Application::class)) {
+  echo 'You must include the symfony packages, see composer.json "suggest" section' . PHP_EOL;
+  exit(1);
+}
+
 use BrowscapPHP\Exception;
 use Symfony\Component\Console\Application;
 use BrowscapPHP\Command;
@@ -29,6 +35,10 @@ $cacheDirectory = $baseDir . '/resources/';
 $defaultIniFile = $baseDir . '/resources/browscap.ini';
 
 $application = new Application('browscap.php');
+
+$loggerHelper = new Command\Helper\LoggerHelper();
+$application->getHelperSet()->set($loggerHelper);
+
 $application->add(new Command\ConvertCommand($cacheDirectory, $defaultIniFile));
 $application->add(new Command\UpdateCommand($cacheDirectory));
 $application->add(new Command\ParserCommand($cacheDirectory));

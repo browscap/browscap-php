@@ -5,11 +5,13 @@ namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Command\FetchCommand;
 
-/**
- * @covers \BrowscapPHP\Command\FetchCommand
- */
 final class FetchCommandTest extends \PHPUnit\Framework\TestCase
 {
+    /**
+     * @throws \ReflectionException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     */
     public function testConfigure() : void
     {
         $object = $this->getMockBuilder(FetchCommand::class)
@@ -17,19 +19,19 @@ final class FetchCommandTest extends \PHPUnit\Framework\TestCase
             ->setMethods(['setName', 'setDescription', 'addArgument', 'addOption'])
             ->getMock();
         $object
-            ->expects(self::once())
+            ->expects(static::once())
             ->method('setName')
             ->willReturnSelf();
         $object
-            ->expects(self::once())
+            ->expects(static::once())
             ->method('setDescription')
             ->willReturnSelf();
         $object
-            ->expects(self::once())
+            ->expects(static::once())
             ->method('addArgument')
             ->willReturnSelf();
         $object
-            ->expects(self::exactly(2))
+            ->expects(static::exactly(2))
             ->method('addOption')
             ->willReturnSelf();
 
@@ -37,6 +39,6 @@ final class FetchCommandTest extends \PHPUnit\Framework\TestCase
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 
-        self::assertNull($method->invoke($object));
+        static::assertNull($method->invoke($object));
     }
 }

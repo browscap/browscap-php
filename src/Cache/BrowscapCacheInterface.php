@@ -16,7 +16,7 @@ interface BrowscapCacheInterface
      * if needed updated the definitions
      *
      * @param \Psr\SimpleCache\CacheInterface $adapter
-     * @param LoggerInterface $logger
+     * @param LoggerInterface                 $logger
      */
     public function __construct(CacheInterface $adapter, LoggerInterface $logger);
 

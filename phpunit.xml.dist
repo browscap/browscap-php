@@ -5,13 +5,19 @@
     xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
     backupGlobals="false"
     backupStaticAttributes="false"
+    beStrictAboutChangesToGlobalState="true"
+    beStrictAboutCoversAnnotation="false"
     beStrictAboutOutputDuringTests="true"
     beStrictAboutTestsThatDoNotTestAnything="true"
     beStrictAboutTodoAnnotatedTests="true"
     verbose="false"
     colors="true"
     failOnWarning="true"
+    failOnRisky="true"
     bootstrap="vendor/autoload.php"
+    enforceTimeLimit="false"
+    executionOrder="default"
+    resolveDependencies="true"
     >
     <php>
         <ini name="error_reporting" value="-1"/>

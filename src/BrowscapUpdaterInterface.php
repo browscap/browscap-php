@@ -29,7 +29,7 @@ interface BrowscapUpdaterInterface
     /**
      * fetches a remote file and stores it into a local folder
      *
-     * @param string $file The name of the file where to store the remote content
+     * @param string $file       The name of the file where to store the remote content
      * @param string $remoteFile The code for the remote file to load
      *
      * @throws \BrowscapPHP\Exception\FetcherException

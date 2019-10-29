@@ -9,6 +9,7 @@ use BrowscapPHP\Helper\Quoter;
 use BrowscapPHP\Parser\Helper\Pattern;
 use BrowscapPHP\Parser\Helper\SubKey;
 use ExceptionalJSON\EncodeErrorException;
+use JsonClass\Json;
 
 /**
  * Ini parser class (compatible with PHP 5.3+)
@@ -32,6 +33,7 @@ final class IniParser implements ParserInterface
      *
      * @throws \OutOfRangeException
      * @throws \UnexpectedValueException
+     * @throws \InvalidArgumentException
      *
      * @return \Generator
      */
@@ -55,7 +57,7 @@ final class IniParser implements ParserInterface
         $propertyFormatter = new PropertyFormatter(new PropertyHolder());
 
         foreach ($patternPositions as $position => $pattern) {
-            $pattern = strtolower($pattern);
+            $pattern = mb_strtolower($pattern);
             $patternhash = Pattern::getHashForParts($pattern);
             $subkey = SubKey::getIniPartCacheSubKey($patternhash);
 
@@ -63,7 +65,7 @@ final class IniParser implements ParserInterface
                 $contents[$subkey] = [];
             }
 
-            if (!array_key_exists($position + 1, $iniParts)) {
+            if (! array_key_exists($position + 1, $iniParts)) {
                 throw new \OutOfRangeException(sprintf('could not find position %d inside iniparts', $position + 1));
             }
 
@@ -83,7 +85,7 @@ final class IniParser implements ParserInterface
             try {
                 // the position has to be moved by one, because the header of the ini file
                 // is also returned as a part
-                $contents[$subkey][] = $patternhash . "\t" . \ExceptionalJSON\encode(
+                $contents[$subkey][] = $patternhash . "\t" . (new Json())->encode(
                     $browserProperties,
                     JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
                 );
@@ -115,7 +117,7 @@ final class IniParser implements ParserInterface
      *
      * @return \Generator
      */
-    public function createPatterns($content) : \Generator
+    public function createPatterns(string $content) : \Generator
     {
         // get all relevant patterns from the INI file
         // - containing "*" or "?"
@@ -145,7 +147,7 @@ final class IniParser implements ParserInterface
                 continue;
             }
 
-            $pattern = strtolower($pattern);
+            $pattern = mb_strtolower($pattern);
             $patternhash = Pattern::getHashForPattern($pattern, false)[0];
             $tmpLength = Pattern::getPatternLength($pattern);
 
@@ -170,7 +172,7 @@ final class IniParser implements ParserInterface
             if (false !== strpbrk($pattern, '0123456789')) {
                 $compressedPattern = preg_replace('/\d/', '[\d]', $pattern);
 
-                if (! in_array($compressedPattern, $data[$patternhash][$tmpLength])) {
+                if (! in_array($compressedPattern, $data[$patternhash][$tmpLength], true)) {
                     $data[$patternhash][$tmpLength][] = $compressedPattern;
                 }
             } else {
@@ -224,8 +226,8 @@ final class IniParser implements ParserInterface
         unset($data);
 
         $subkeys = SubKey::getAllPatternCacheSubkeys();
-        foreach ($contents as $subkey => $content) {
-            yield $subkey => $content;
+        foreach ($contents as $subkey => $subkeyContent) {
+            yield $subkey => $subkeyContent;
 
             unset($subkeys[$subkey]);
         }
@@ -245,8 +247,8 @@ final class IniParser implements ParserInterface
      */
     private function compareBcStrings(string $a, string $b) : int
     {
-        $a_len = strlen($a);
-        $b_len = strlen($b);
+        $a_len = mb_strlen($a);
+        $b_len = mb_strlen($b);
 
         if ($a_len > $b_len) {
             return -1;
@@ -256,8 +258,8 @@ final class IniParser implements ParserInterface
             return 1;
         }
 
-        $a_len = strlen(str_replace(['*', '?'], '', $a));
-        $b_len = strlen(str_replace(['*', '?'], '', $b));
+        $a_len = mb_strlen(str_replace(['*', '?'], '', $a));
+        $b_len = mb_strlen(str_replace(['*', '?'], '', $b));
 
         if ($a_len > $b_len) {
             return -1;

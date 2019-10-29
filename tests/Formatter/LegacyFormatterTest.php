@@ -5,9 +5,6 @@ namespace BrowscapPHPTest\Formatter;
 
 use BrowscapPHP\Formatter\LegacyFormatter;
 
-/**
- * @covers \BrowscapPHP\Formatter\LegacyFormatter
- */
 final class LegacyFormatterTest extends \PHPUnit\Framework\TestCase
 {
     public function formatterOptionsProvider() : array
@@ -33,8 +30,11 @@ final class LegacyFormatterTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider formatterOptionsProvider
      *
-     * @param array $options
+     * @param array     $options
      * @param \stdClass $expectedResult
+     *
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testSetGetData(array $options, \stdClass $expectedResult) : void
     {
@@ -46,6 +46,6 @@ final class LegacyFormatterTest extends \PHPUnit\Framework\TestCase
         $formatter = new LegacyFormatter($options);
         $formatter->setData($data);
         $return = $formatter->getData();
-        self::assertEquals($expectedResult, $return);
+        static::assertEquals($expectedResult, $return);
     }
 }

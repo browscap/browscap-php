@@ -13,7 +13,6 @@ use BrowscapPHP\Exception\NoCachedVersionException;
 use BrowscapPHP\Exception\NoNewVersionException;
 use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\ConverterInterface;
-use BrowscapPHP\Helper\Filesystem;
 use BrowscapPHP\Helper\IniLoader;
 use BrowscapPHP\Helper\IniLoaderInterface;
 use GuzzleHttp\Client;
@@ -129,7 +128,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
     /**
      * fetches a remote file and stores it into a local folder
      *
-     * @param string $file The name of the file where to store the remote content
+     * @param string $file       The name of the file where to store the remote content
      * @param string $remoteFile The code for the remote file to load
      *
      * @throws \BrowscapPHP\Exception\FetcherException
@@ -205,8 +204,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
         $iniVersion = $converter->getIniVersion($content);
 
         if ($iniVersion > $cachedVersion) {
-            $fs = new Filesystem();
-            $fs->dumpFile($file, $content);
+            $this->dumpFile($file, $content);
         }
 
         $this->logger->debug('finished storing remote file into local file');
@@ -392,6 +390,42 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
         if (! $cachedVersion || $iniVersion > $cachedVersion) {
             $converter->storeVersion();
             $converter->convertString($iniString);
+        }
+    }
+
+    /**
+     *  Atomically dumps content into a file.
+     *
+     * @param string          $filename The file to be written to
+     * @param resource|string $content  The data to write into the file
+     *
+     * @throws FetcherException
+     */
+    private function dumpFile($filename, $content) : void
+    {
+        $dir = dirname($filename);
+
+        if (! is_dir($dir)) {
+            mkdir($dir);
+        }
+
+        if (! is_writable($dir)) {
+            throw new FetcherException(sprintf('Unable to write to the "%s" directory.', $dir), 0, null);
+        }
+
+        // "tempnam" did not work with VFSStream for tests
+        $tmpFile = dirname($filename) . '/temp_' . md5(time() . basename($filename));
+
+        if (false === @file_put_contents($tmpFile, $content)) {
+            throw new FetcherException(sprintf('Failed to write file "%s".', $tmpFile), 0, null);
+        }
+
+        if (false === @chmod($tmpFile, file_exists($filename) ? (int) fileperms($filename) : 0666 & ~umask())) {
+            throw new FetcherException(sprintf('Failed to chmod file "%s".', $tmpFile), 0, null);
+        }
+
+        if (false === @rename($tmpFile, $filename)) {
+            throw new FetcherException(sprintf('Failed to rename file "%s" to "%s".', $tmpFile, $filename), 0, null);
         }
     }
 }

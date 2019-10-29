@@ -27,7 +27,7 @@ final class Quoter implements QuoterInterface
     /**
      * Reverts the quoting of a pattern.
      *
-     * @param  string $pattern
+     * @param string $pattern
      *
      * @throws \UnexpectedValueException
      *
@@ -36,14 +36,17 @@ final class Quoter implements QuoterInterface
     public function pregUnQuote(string $pattern) : string
     {
         // Fast check, because most parent pattern like 'DefaultProperties' don't need a replacement
-        if (!preg_match('/[^a-z\s]/i', $pattern)) {
+        if (! preg_match('/[^a-z\s]/i', $pattern)) {
             return $pattern;
         }
 
         $origPattern = $pattern;
 
-        // Undo the \\x replacement, that is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
-        // @source https://github.com/browscap/browscap-php
+        /**
+         * Undo the \\x replacement, that is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
+         *
+         * @source https://github.com/browscap/browscap-php
+         */
         $pattern = preg_replace(
             ['/(?<!\\\\)\\.\\*/', '/(?<!\\\\)\\./', '/(?<!\\\\)\\\\x/'],
             ['\\*', '\\?', '\\x'],

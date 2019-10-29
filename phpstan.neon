@@ -1,23 +1,53 @@
 parameters:
+  level: max
+  paths:
+    - src
+    - tests
+  autoload_files:
+    - %currentWorkingDirectory%/vendor/autoload.php
   excludes_analyse:
     - */tests/*/data/*
     - */tests/*/Full2Test.php
   checkMissingIterableValueType: false
-#  exceptionRules:
-#    reportUnusedCatchesOfUncheckedExceptions: false
-#    uncheckedExceptions: []
+  exceptionRules:
+    reportUnusedCatchesOfUncheckedExceptions: false
+    uncheckedExceptions: []
+  classesAllowedToBeExtended:
+    - Symfony\Component\Console\Command\Command
+    - Symfony\Component\Console\Helper\Helper
+    - Symfony\Component\Filesystem\Filesystem
+    - BrowscapPHP\Exception
+    - BrowscapPHP\Exception\DomainException
+    - InvalidArgumentException
+    - DomainException
+    - Exception
   ignoreErrors:
     - '~MockObject~'
     - '~expects string, .*Exception given~'
     - '~expects string, Throwable given~'
     - '~Exception is not subtype of Throwable~'
-    - '~does not match assigned variable~'
+    - '~Useless @throws~'
+    - '~will always evaluate to true~'
+    - '~PHPDoc tag @throws with type.* is not compatible with parent~'
+    - '~Unused @throws ReflectionException annotation~'
+    - '~has a nullable return type declaration~'
+    - '~Constructor in .* has parameter .* with default value~'
+    - '~Method .* has parameter .* with null as default value~'
+    - '~Method .* has parameter .* with a nullable type declaration~'
+    - '~Language construct isset\(\) should not be used~'
+    - '~Language construct empty\(\) should not be used~'
+    - '~Construct empty\(\) is not allowed~'
+    - '~Only booleans are allowed in~'
+    - '~Error suppression via "@" should not be used~'
+    - '~Throwable is never thrown in the corresponding try block~'
+    - '~Class BrowscapPHP\\Exception is neither abstract nor final~'
+    - '~Class BrowscapPHP\\Command\\.*Command is neither abstract nor final~'
+    - '~Unused @throws .* annotation~'
 
-
-#includes:
-#  - vendor/phpstan/phpstan-strict-rules/rules.neon
-#  - vendor/phpstan/phpstan-phpunit/extension.neon
-#  - vendor/phpstan/phpstan-phpunit/rules.neon
-#  - vendor/pepakriz/phpstan-exception-rules/extension.neon
-#  - vendor/phpstan/phpstan-deprecation-rules/rules.neon
-#  - vendor/phpstan/phpstan-beberlei-assert/extension.neon
+includes:
+  - vendor/phpstan/phpstan-strict-rules/rules.neon
+  - vendor/phpstan/phpstan-phpunit/extension.neon
+  - vendor/phpstan/phpstan-phpunit/rules.neon
+  - vendor/pepakriz/phpstan-exception-rules/extension.neon
+  - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+  - vendor/localheinz/phpstan-rules/rules.neon

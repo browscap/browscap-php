@@ -33,13 +33,6 @@ final class Converter implements ConverterInterface
     private $cache;
 
     /**
-     * a filesystem patternHelper instance
-     *
-     * @var Filesystem
-     */
-    private $filessystem;
-
-    /**
      * version of the ini file
      *
      * @var int
@@ -56,17 +49,6 @@ final class Converter implements ConverterInterface
     {
         $this->logger = $logger;
         $this->cache = $cache;
-        $this->filessystem = new Filesystem();
-    }
-
-    /**
-     * Sets a filesystem instance
-     *
-     * @param Filesystem $file
-     */
-    public function setFilesystem(Filesystem $file) : void
-    {
-        $this->filessystem = $file;
     }
 
     /**
@@ -74,12 +56,12 @@ final class Converter implements ConverterInterface
      *
      * @param string $iniFile
      *
-     * @throws FileNotFoundException
-     * @throws ErrorReadingFileException
+     * @throws \BrowscapPHP\Exception\FileNotFoundException
+     * @throws \BrowscapPHP\Exception\ErrorReadingFileException
      */
     public function convertFile(string $iniFile) : void
     {
-        if (! $this->filessystem->exists($iniFile)) {
+        if (! file_exists($iniFile)) {
             throw FileNotFoundException::fileNotFound($iniFile);
         }
 
@@ -89,7 +71,7 @@ final class Converter implements ConverterInterface
 
         $this->logger->info('finished reading file');
 
-        if (!is_string($iniString)) {
+        if (! is_string($iniString)) {
             throw new ErrorReadingFileException(sprintf('could not read file %s', $iniFile));
         }
 
@@ -139,7 +121,7 @@ final class Converter implements ConverterInterface
                     $this->logger->error(new \InvalidArgumentException('an error occured while writing property data into the cache', 0, $e));
                 }
             }
-        } catch (\OutOfRangeException | \UnexpectedValueException $e) {
+        } catch (\OutOfRangeException | \UnexpectedValueException | \InvalidArgumentException $e) {
             $this->logger->error(new \InvalidArgumentException('an error occured while writing property data into the cache', 0, $e));
         }
 

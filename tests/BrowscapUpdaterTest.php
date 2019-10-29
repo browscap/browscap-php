@@ -17,9 +17,6 @@ use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 
-/**
- * @covers \BrowscapPHP\BrowscapUpdater
- */
 final class BrowscapUpdaterTest extends \PHPUnit\Framework\TestCase
 {
     private const STORAGE_DIR = 'storage';
@@ -29,12 +26,16 @@ final class BrowscapUpdaterTest extends \PHPUnit\Framework\TestCase
      */
     private $object;
 
+    /**
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
+     */
     protected function setUp() : void
     {
-        /** @var CacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
+        /** @var CacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(CacheInterface::class);
 
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        /** @var LoggerInterface|\PHPUnit\Framework\MockObject\MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
 
         $this->object = new BrowscapUpdater($cache, $logger);
@@ -43,6 +44,7 @@ final class BrowscapUpdaterTest extends \PHPUnit\Framework\TestCase
     /**
      * @throws \BrowscapPHP\Exception\FileNameMissingException
      * @throws \BrowscapPHP\Exception\FileNotFoundException
+     * @throws \BrowscapPHP\Exception\ErrorReadingFileException
      */
     public function testConvertEmptyFile() : void
     {
@@ -54,6 +56,7 @@ final class BrowscapUpdaterTest extends \PHPUnit\Framework\TestCase
     /**
      * @throws \BrowscapPHP\Exception\FileNameMissingException
      * @throws \BrowscapPHP\Exception\FileNotFoundException
+     * @throws \BrowscapPHP\Exception\ErrorReadingFileException
      */
     public function testConvertNotReadableFile() : void
     {
@@ -62,6 +65,17 @@ final class BrowscapUpdaterTest extends \PHPUnit\Framework\TestCase
         $this->object->convertFile('/this/file/does/not/exist');
     }
 
+    /**
+     * @throws \BrowscapPHP\Exception\FileNameMissingException
+     * @throws \BrowscapPHP\Exception\FileNotFoundException
+     * @throws \ReflectionException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \BrowscapPHP\Exception\ErrorReadingFileException
+     * @throws \Roave\DoctrineSimpleCache\Exception\CacheException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
+     */
     public function testConvertFile() : void
     {
         $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
@@ -174,7 +188,7 @@ AolVersion=0
 
         vfsStream::setup(self::STORAGE_DIR, null, $structure);
 
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        /** @var LoggerInterface|\PHPUnit\Framework\MockObject\MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
 
         $memoryCache = new ArrayCache();
@@ -187,9 +201,17 @@ AolVersion=0
 
         $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . \DIRECTORY_SEPARATOR . 'test.ini'));
 
-        self::assertSame(5031, $cache->getVersion());
+        static::assertSame(5031, $cache->getVersion());
     }
 
+    /**
+     * @throws \ReflectionException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \Roave\DoctrineSimpleCache\Exception\CacheException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
+     */
     public function testConvertString() : void
     {
         $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
@@ -297,7 +319,7 @@ CssVersion=0
 AolVersion=0
 ';
 
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        /** @var LoggerInterface|\PHPUnit\Framework\MockObject\MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
 
         $memoryCache = new ArrayCache();
@@ -310,17 +332,25 @@ AolVersion=0
 
         $this->object->convertString($content);
 
-        self::assertSame(5031, $cache->getVersion());
+        static::assertSame(5031, $cache->getVersion());
     }
 
+    /**
+     * @throws \BrowscapPHP\Helper\Exception
+     * @throws \ReflectionException
+     * @throws \BrowscapPHP\Exception\FetcherException
+     * @throws \BrowscapPHP\Exception\ErrorCachedVersionException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
+     */
     public function testFetchFail() : void
     {
         $response = $this->createMock(Response::class);
-        $response->expects(self::exactly(2))->method('getStatusCode')->willReturn(500);
+        $response->expects(static::exactly(2))->method('getStatusCode')->willReturn(500);
 
-        /** @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $client */
+        /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(self::once())->method('request')->willReturn($response);
+        $client->expects(static::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -342,10 +372,10 @@ AolVersion=0
             ],
         ];
 
-        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
+        /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(self::once())->method('getItem')->willReturnMap($map);
-        $cache->expects(self::never())->method('setItem');
+        $cache->expects(static::once())->method('getItem')->willReturnMap($map);
+        $cache->expects(static::never())->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -359,6 +389,16 @@ AolVersion=0
         $this->object->fetch(IniLoaderInterface::PHP_INI);
     }
 
+    /**
+     * @throws \BrowscapPHP\Helper\Exception
+     * @throws \ReflectionException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \BrowscapPHP\Exception\FetcherException
+     * @throws \BrowscapPHP\Exception\ErrorCachedVersionException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
+     */
     public function testFetchOK() : void
     {
         $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
@@ -467,15 +507,15 @@ AolVersion=0
 ';
 
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(self::once())->method('getContents')->willReturn($content);
+        $body->expects(static::once())->method('getContents')->willReturn($content);
 
         $response = $this->createMock(Response::class);
-        $response->expects(self::once())->method('getStatusCode')->willReturn(200);
-        $response->expects(self::once())->method('getBody')->willReturn($body);
+        $response->expects(static::once())->method('getStatusCode')->willReturn(200);
+        $response->expects(static::once())->method('getBody')->willReturn($body);
 
-        /** @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $client */
+        /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(self::once())->method('request')->willReturn($response);
+        $client->expects(static::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -497,10 +537,10 @@ AolVersion=0
             ],
         ];
 
-        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
+        /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(self::once())->method('getItem')->willReturnMap($map);
-        $cache->expects(self::never())->method('setItem');
+        $cache->expects(static::once())->method('getItem')->willReturnMap($map);
+        $cache->expects(static::never())->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -511,9 +551,19 @@ AolVersion=0
 
         $this->object->fetch($file);
 
-        self::assertStringEqualsFile($file, $content);
+        static::assertStringEqualsFile($file, $content);
     }
 
+    /**
+     * @throws \BrowscapPHP\Helper\Exception
+     * @throws \ReflectionException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \BrowscapPHP\Exception\FetcherException
+     * @throws \BrowscapPHP\Exception\ErrorCachedVersionException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
+     */
     public function testFetchSanitizeOK() : void
     {
         $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
@@ -727,15 +777,15 @@ AolVersion=0
 ';
 
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(self::once())->method('getContents')->willReturn($content);
+        $body->expects(static::once())->method('getContents')->willReturn($content);
 
         $response = $this->createMock(Response::class);
-        $response->expects(self::once())->method('getStatusCode')->willReturn(200);
-        $response->expects(self::once())->method('getBody')->willReturn($body);
+        $response->expects(static::once())->method('getStatusCode')->willReturn(200);
+        $response->expects(static::once())->method('getBody')->willReturn($body);
 
-        /** @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $client */
+        /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(self::once())->method('request')->willReturn($response);
+        $client->expects(static::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -757,10 +807,10 @@ AolVersion=0
             ],
         ];
 
-        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
+        /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(self::once())->method('getItem')->willReturnMap($map);
-        $cache->expects(self::never())->method('setItem');
+        $cache->expects(static::once())->method('getItem')->willReturnMap($map);
+        $cache->expects(static::never())->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -769,21 +819,29 @@ AolVersion=0
 
         $this->object->fetch(IniLoaderInterface::PHP_INI);
 
-        self::assertStringEqualsFile(IniLoaderInterface::PHP_INI, $expected);
+        static::assertStringEqualsFile(IniLoaderInterface::PHP_INI, $expected);
     }
 
+    /**
+     * @throws \BrowscapPHP\Helper\Exception
+     * @throws \ReflectionException
+     * @throws \BrowscapPHP\Exception\FetcherException
+     * @throws \BrowscapPHP\Exception\ErrorCachedVersionException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
+     */
     public function testUpdateFailException() : void
     {
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(self::once())->method('getContents')->willReturn(false);
+        $body->expects(static::once())->method('getContents')->willReturn(false);
 
         $response = $this->createMock(Response::class);
-        $response->expects(self::once())->method('getStatusCode')->willReturn(200);
-        $response->expects(self::once())->method('getBody')->willReturn($body);
+        $response->expects(static::once())->method('getStatusCode')->willReturn(200);
+        $response->expects(static::once())->method('getBody')->willReturn($body);
 
-        /** @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $client */
+        /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(self::once())->method('request')->willReturn($response);
+        $client->expects(static::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -805,10 +863,10 @@ AolVersion=0
             ],
         ];
 
-        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
+        /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(self::once())->method('getItem')->willReturnMap($map);
-        $cache->expects(self::never())->method('setItem');
+        $cache->expects(static::once())->method('getItem')->willReturnMap($map);
+        $cache->expects(static::never())->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -820,6 +878,14 @@ AolVersion=0
         $this->object->update();
     }
 
+    /**
+     * @throws \BrowscapPHP\Helper\Exception
+     * @throws \ReflectionException
+     * @throws \BrowscapPHP\Exception\FetcherException
+     * @throws \BrowscapPHP\Exception\ErrorCachedVersionException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
+     */
     public function testUpdateOk() : void
     {
         $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
@@ -928,15 +994,15 @@ AolVersion=0
 ';
 
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(self::once())->method('getContents')->willReturn($content);
+        $body->expects(static::once())->method('getContents')->willReturn($content);
 
         $response = $this->createMock(Response::class);
-        $response->expects(self::once())->method('getStatusCode')->willReturn(200);
-        $response->expects(self::once())->method('getBody')->willReturn($body);
+        $response->expects(static::once())->method('getStatusCode')->willReturn(200);
+        $response->expects(static::once())->method('getBody')->willReturn($body);
 
-        /** @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $client */
+        /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(self::once())->method('request')->willReturn($response);
+        $client->expects(static::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -958,10 +1024,10 @@ AolVersion=0
             ],
         ];
 
-        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
+        /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(self::once())->method('getItem')->willReturnMap($map);
-        $cache->expects(self::exactly(4355))->method('setItem');
+        $cache->expects(static::once())->method('getItem')->willReturnMap($map);
+        $cache->expects(static::exactly(4355))->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -971,18 +1037,27 @@ AolVersion=0
         $this->object->update();
     }
 
+    /**
+     * @throws \ReflectionException
+     * @throws \BrowscapPHP\Exception\NoNewVersionException
+     * @throws \BrowscapPHP\Exception\NoCachedVersionException
+     * @throws \BrowscapPHP\Exception\FetcherException
+     * @throws \BrowscapPHP\Exception\ErrorCachedVersionException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
+     */
     public function testCheckUpdateWithCacheFail() : void
     {
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(self::never())->method('getContents');
+        $body->expects(static::never())->method('getContents');
 
         $response = $this->createMock(Response::class);
-        $response->expects(self::never())->method('getStatusCode');
-        $response->expects(self::never())->method('getBody');
+        $response->expects(static::never())->method('getStatusCode');
+        $response->expects(static::never())->method('getBody');
 
-        /** @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $client */
+        /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(self::never())->method('request');
+        $client->expects(static::never())->method('request');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -1004,10 +1079,10 @@ AolVersion=0
             ],
         ];
 
-        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
+        /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(self::once())->method('getItem')->willReturnMap($map);
-        $cache->expects(self::never())->method('setItem');
+        $cache->expects(static::once())->method('getItem')->willReturnMap($map);
+        $cache->expects(static::never())->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -1022,18 +1097,27 @@ AolVersion=0
         $this->object->checkUpdate();
     }
 
+    /**
+     * @throws \ReflectionException
+     * @throws \BrowscapPHP\Exception\NoNewVersionException
+     * @throws \BrowscapPHP\Exception\NoCachedVersionException
+     * @throws \BrowscapPHP\Exception\FetcherException
+     * @throws \BrowscapPHP\Exception\ErrorCachedVersionException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
+     */
     public function testCheckUpdateWithException() : void
     {
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(self::once())->method('getContents')->willThrowException(new \Exception());
+        $body->expects(static::once())->method('getContents')->willThrowException(new \Exception());
 
         $response = $this->createMock(Response::class);
-        $response->expects(self::exactly(2))->method('getStatusCode')->willReturn(200);
-        $response->expects(self::once())->method('getBody')->willReturn($body);
+        $response->expects(static::exactly(2))->method('getStatusCode')->willReturn(200);
+        $response->expects(static::once())->method('getBody')->willReturn($body);
 
-        /** @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $client */
+        /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(self::once())->method('request')->willReturn($response);
+        $client->expects(static::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -1055,10 +1139,10 @@ AolVersion=0
             ],
         ];
 
-        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
+        /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(self::once())->method('getItem')->willReturnMap($map);
-        $cache->expects(self::never())->method('setItem');
+        $cache->expects(static::once())->method('getItem')->willReturnMap($map);
+        $cache->expects(static::never())->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -1073,23 +1157,28 @@ AolVersion=0
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \ReflectionException
+     * @throws \BrowscapPHP\Exception\NoNewVersionException
+     * @throws \BrowscapPHP\Exception\NoCachedVersionException
+     * @throws \BrowscapPHP\Exception\FetcherException
+     * @throws \BrowscapPHP\Exception\ErrorCachedVersionException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
      */
     public function testCheckUpdateWithoutNewerVersion() : void
     {
         $version = 6000;
 
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(self::once())->method('getContents')->willReturn($version);
+        $body->expects(static::once())->method('getContents')->willReturn($version);
 
         $response = $this->createMock(Response::class);
-        $response->expects(self::once())->method('getStatusCode')->willReturn(200);
-        $response->expects(self::once())->method('getBody')->willReturn($body);
+        $response->expects(static::once())->method('getStatusCode')->willReturn(200);
+        $response->expects(static::once())->method('getBody')->willReturn($body);
 
-        /** @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $client */
+        /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(self::once())->method('request')->willReturn($response);
+        $client->expects(static::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -1111,10 +1200,10 @@ AolVersion=0
             ],
         ];
 
-        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
+        /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(self::once())->method('getItem')->willReturnMap($map);
-        $cache->expects(self::never())->method('setItem');
+        $cache->expects(static::once())->method('getItem')->willReturnMap($map);
+        $cache->expects(static::never())->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -1129,18 +1218,29 @@ AolVersion=0
         $this->object->checkUpdate();
     }
 
+    /**
+     * @throws \ReflectionException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \BrowscapPHP\Exception\NoNewVersionException
+     * @throws \BrowscapPHP\Exception\NoCachedVersionException
+     * @throws \BrowscapPHP\Exception\FetcherException
+     * @throws \BrowscapPHP\Exception\ErrorCachedVersionException
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
+     */
     public function testCheckUpdateWithNewerVersion() : void
     {
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(self::once())->method('getContents')->willReturn(6001);
+        $body->expects(static::once())->method('getContents')->willReturn(6001);
 
         $response = $this->createMock(Response::class);
-        $response->expects(self::once())->method('getStatusCode')->willReturn(200);
-        $response->expects(self::once())->method('getBody')->willReturn($body);
+        $response->expects(static::once())->method('getStatusCode')->willReturn(200);
+        $response->expects(static::once())->method('getBody')->willReturn($body);
 
-        /** @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $client */
+        /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(self::once())->method('request')->willReturn($response);
+        $client->expects(static::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -1162,17 +1262,17 @@ AolVersion=0
             ],
         ];
 
-        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
+        /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(self::any())->method('getItem')->willReturnMap($map);
-        $cache->expects(self::any())->method('hasItem')->willReturn(true);
-        $cache->expects(self::never())->method('setItem');
+        $cache->expects(static::any())->method('getItem')->willReturnMap($map);
+        $cache->expects(static::any())->method('hasItem')->willReturn(true);
+        $cache->expects(static::never())->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
         $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
-        self::assertSame(6000, $this->object->checkUpdate());
+        static::assertSame(6000, $this->object->checkUpdate());
     }
 }

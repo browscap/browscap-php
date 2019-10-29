@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace BrowscapPHP\Helper;
+namespace BrowscapPHP\Command\Helper;
 
 use Monolog\ErrorHandler;
 use Monolog\Handler\PsrHandler;
@@ -9,16 +9,18 @@ use Monolog\Logger;
 use Monolog\Processor\MemoryPeakUsageProcessor;
 use Monolog\Processor\MemoryUsageProcessor;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class LoggerHelper
  */
-final class LoggerHelper
+final class LoggerHelper extends Helper
 {
-    private function __construct()
+    public function getName() : string
     {
+        return 'logger';
     }
 
     /**
@@ -28,7 +30,7 @@ final class LoggerHelper
      *
      * @return LoggerInterface
      */
-    public static function createDefaultLogger(OutputInterface $output) : LoggerInterface
+    public function build(OutputInterface $output) : LoggerInterface
     {
         $logger = new Logger('browscap');
         $consoleLogger = new ConsoleLogger($output);

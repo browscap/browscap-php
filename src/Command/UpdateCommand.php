@@ -4,11 +4,11 @@ declare(strict_types = 1);
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\BrowscapUpdater;
+use BrowscapPHP\Command\Helper\LoggerHelper;
 use BrowscapPHP\Exception\ErrorCachedVersionException;
 use BrowscapPHP\Exception\FetcherException;
 use BrowscapPHP\Helper\Exception;
 use BrowscapPHP\Helper\IniLoaderInterface;
-use BrowscapPHP\Helper\LoggerHelper;
 use Doctrine\Common\Cache\FilesystemCache;
 use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
 use Symfony\Component\Console\Command\Command;
@@ -34,6 +34,9 @@ class UpdateCommand extends Command
         parent::__construct();
     }
 
+    /**
+     * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
+     */
     protected function configure() : void
     {
         $this
@@ -62,9 +65,23 @@ class UpdateCommand extends Command
             );
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @throws \Symfony\Component\Console\Exception\LogicException
+     * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
+     * @throws \Roave\DoctrineSimpleCache\Exception\CacheException
+     * @throws \InvalidArgumentException
+     *
+     * @return int
+     */
     protected function execute(InputInterface $input, OutputInterface $output) : int
     {
-        $logger = LoggerHelper::createDefaultLogger($output);
+        /** @var LoggerHelper $loggerHelper */
+        $loggerHelper = $this->getHelper('logger');
+
+        $logger = $loggerHelper->build($output);
 
         /** @var string $cacheOption */
         $cacheOption = $input->getOption('cache');

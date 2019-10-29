@@ -14,10 +14,7 @@ jobs:
           php-version: 8.0
 
       - name: Composer validate
-        run: |
-          composer install
-          composer validate --strict
-          composer normalize --dry-run
+        run: composer validate --strict
 
   unit-tests:
     strategy:

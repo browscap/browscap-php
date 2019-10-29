@@ -81,7 +81,7 @@ final class PhpGetBrowser implements FormatterInterface
     public function setData(array $settings) : void
     {
         foreach ($settings as $key => $value) {
-            $this->data[strtolower($key)] = $value;
+            $this->data[mb_strtolower($key)] = $value;
         }
     }
 
@@ -96,7 +96,7 @@ final class PhpGetBrowser implements FormatterInterface
 
         $propertyNames = array_keys($this->defaultProperties);
         foreach ($propertyNames as $property) {
-            $key = strtolower($property);
+            $key = mb_strtolower($property);
 
             if (array_key_exists($key, $this->data)) {
                 $output->{$key} = $this->data[$key];

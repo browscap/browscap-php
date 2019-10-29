@@ -10,7 +10,7 @@ use Psr\SimpleCache\InvalidArgumentException;
 /**
  * extracts the pattern and the data for theses pattern from the ini content, optimized for PHP 5.5+
  */
-class GetPattern implements GetPatternInterface
+final class GetPattern implements GetPatternInterface
 {
     /**
      * The cache instance
@@ -52,7 +52,7 @@ class GetPattern implements GetPatternInterface
     public function getPatterns(string $userAgent) : \Generator
     {
         $starts = Pattern::getHashForPattern($userAgent, true);
-        $length = strlen($userAgent);
+        $length = mb_strlen($userAgent);
 
         // add special key to fall back to the default browser
         $starts[] = str_repeat('z', 32);

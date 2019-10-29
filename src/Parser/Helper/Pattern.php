@@ -31,22 +31,22 @@ final class Pattern
      * results in an array with hashes for "Mozilla/5.0", "Mozilla/5.", "Mozilla/5",
      * "Mozilla/" ... "M", so that the pattern hash is included.
      *
-     * @param  string       $pattern
-     * @param  bool         $variants
+     * @param string $pattern
+     * @param bool   $variants
      *
      * @return string[]
      */
     public static function getHashForPattern(string $pattern, bool $variants = false) : array
     {
         $regex = '/^([^\.\*\?\s\r\n\\\\]+).*$/';
-        $pattern = substr($pattern, 0, 32);
+        $pattern = mb_substr($pattern, 0, 32);
         $matches = [];
 
         if (! preg_match($regex, $pattern, $matches)) {
             return [md5('')];
         }
 
-        if (! isset($matches[1])) {
+        if (! array_key_exists(1, $matches)) {
             return [md5('')];
         }
 
@@ -55,8 +55,8 @@ final class Pattern
         if (true === $variants) {
             $patternStarts = [];
 
-            for ($i = strlen($string); 1 <= $i; --$i) {
-                $string = substr($string, 0, $i);
+            for ($i = mb_strlen($string); 1 <= $i; --$i) {
+                $string = mb_substr($string, 0, $i);
                 $patternStarts[] = md5($string);
             }
 
@@ -86,12 +86,12 @@ final class Pattern
      * Gets the minimum length of the patern (used in the getPatterns() method to
      * check against the user agent length)
      *
-     * @param  string $pattern
+     * @param string $pattern
      *
      * @return int
      */
     public static function getPatternLength(string $pattern) : int
     {
-        return strlen(str_replace('*', '', $pattern));
+        return mb_strlen(str_replace('*', '', $pattern));
     }
 }

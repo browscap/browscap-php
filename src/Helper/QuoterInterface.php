@@ -23,7 +23,7 @@ interface QuoterInterface
     /**
      * Reverts the quoting of a pattern.
      *
-     * @param  string $pattern
+     * @param string $pattern
      *
      * @return string
      */

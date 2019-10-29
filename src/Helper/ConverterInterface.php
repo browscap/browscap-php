@@ -9,13 +9,6 @@ namespace BrowscapPHP\Helper;
 interface ConverterInterface
 {
     /**
-     * Sets a filesystem instance
-     *
-     * @param Filesystem $file
-     */
-    public function setFilesystem(Filesystem $file) : void;
-
-    /**
      * converts a file
      *
      * @param string $iniFile

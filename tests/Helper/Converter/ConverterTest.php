@@ -6,13 +6,9 @@ namespace BrowscapPHPTest\Helper\Converter;
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception\FileNotFoundException;
 use BrowscapPHP\Helper\Converter;
-use BrowscapPHP\Helper\Filesystem;
 use org\bovigo\vfs\vfsStream;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \BrowscapPHP\Helper\Converter
- */
 final class ConverterTest extends \PHPUnit\Framework\TestCase
 {
     private const STORAGE_DIR = 'storage';
@@ -27,51 +23,42 @@ final class ConverterTest extends \PHPUnit\Framework\TestCase
      */
     private $root;
 
+    /**
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
+     */
     protected function setUp() : void
     {
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        /** @var LoggerInterface|\PHPUnit\Framework\MockObject\MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects(self::never())
+        $logger->expects(static::never())
             ->method('info')
             ->willReturn(false);
 
-        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
+        /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(self::any())
+        $cache->expects(static::any())
             ->method('setItem')
             ->willReturn(true);
 
         $this->object = new Converter($logger, $cache);
     }
 
-    public function testSetGetFilesystem() : void
-    {
-        /** @var Filesystem|\PHPUnit_Framework_MockObject_MockObject $file */
-        $file = $this->createMock(Filesystem::class);
-
-        $this->object->setFilesystem($file);
-
-        $property = new \ReflectionProperty($this->object, 'filessystem');
-        $property->setAccessible(true);
-
-        self::assertSame($file, $property->getValue($this->object));
-    }
-
+    /**
+     * @throws \BrowscapPHP\Exception\FileNotFoundException
+     * @throws \BrowscapPHP\Exception\ErrorReadingFileException
+     */
     public function testConvertMissingFile() : void
     {
-        /** @var Filesystem|\PHPUnit_Framework_MockObject_MockObject $file */
-        $file = $this->createMock(Filesystem::class);
-        $file->expects(self::once())
-            ->method('exists')
-            ->willReturn(false);
-
-        $this->object->setFilesystem($file);
-
         $this->expectException(FileNotFoundException::class);
         $this->expectExceptionMessage('testFile');
         $this->object->convertFile('testFile');
     }
 
+    /**
+     * @throws \BrowscapPHP\Exception\FileNotFoundException
+     * @throws \BrowscapPHP\Exception\ErrorReadingFileException
+     */
     public function testConvertFile() : void
     {
         $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
@@ -186,29 +173,17 @@ AolVersion=0
 
         $this->root = vfsStream::setup(self::STORAGE_DIR, null, $structure);
 
-        /** @var Filesystem|\PHPUnit_Framework_MockObject_MockObject $file */
-        $file = $this->createMock(Filesystem::class);
-        $file->expects(self::once())
-            ->method('exists')
-            ->willReturn(false);
-
-        $this->object->setFilesystem($file);
-
         $this->expectException(FileNotFoundException::class);
         $this->expectExceptionMessage('File "vfs://storage/test.ini" does not exist');
         $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . \DIRECTORY_SEPARATOR . 'test.ini'));
     }
 
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
     public function testGetIniVersion() : void
     {
-        /** @var Filesystem|\PHPUnit_Framework_MockObject_MockObject $file */
-        $file = $this->createMock(Filesystem::class);
-        $file->expects(self::never())
-            ->method('exists')
-            ->willReturn(false);
-
-        $this->object->setFilesystem($file);
-
         $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]
@@ -217,6 +192,6 @@ Released=Mon, 30 Jun 2014 17:55:58 +0200
 Format=ASP
 Type=';
 
-        self::assertSame(5031, $this->object->getIniVersion($content));
+        static::assertSame(5031, $this->object->getIniVersion($content));
     }
 }

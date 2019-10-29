@@ -43,8 +43,8 @@ final class Browscap implements BrowscapInterface
     /**
      * Browscap constructor.
      *
-     * @param \Psr\SimpleCache\CacheInterface  $cache
-     * @param LoggerInterface $logger
+     * @param \Psr\SimpleCache\CacheInterface $cache
+     * @param LoggerInterface                 $logger
      */
     public function __construct(CacheInterface $cache, LoggerInterface $logger)
     {
@@ -100,7 +100,7 @@ final class Browscap implements BrowscapInterface
      *
      * @throws \BrowscapPHP\Exception
      *
-     * @return \stdClass              the object containing the browsers details.
+     * @return \stdClass the object containing the browsers details
      */
     public function getBrowser(?string $userAgent = null) : \stdClass
     {

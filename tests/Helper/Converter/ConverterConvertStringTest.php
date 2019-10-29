@@ -5,12 +5,8 @@ namespace BrowscapPHPTest\Helper\Converter;
 
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Helper\Converter;
-use BrowscapPHP\Helper\Filesystem;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \BrowscapPHP\Helper\Converter
- */
 final class ConverterConvertStringTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -18,19 +14,23 @@ final class ConverterConvertStringTest extends \PHPUnit\Framework\TestCase
      */
     private $object;
 
+    /**
+     * @throws \InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
+     */
     protected function setUp() : void
     {
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects(self::exactly(4))
+        $logger->expects(static::exactly(4))
             ->method('info')
             ->willReturn(false);
-        $logger->expects(self::never())
+        $logger->expects(static::never())
             ->method('error')
             ->willReturn(false);
 
-        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
+        /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(self::any())
+        $cache->expects(static::any())
             ->method('setItem')
             ->willReturn(true);
 
@@ -39,16 +39,6 @@ final class ConverterConvertStringTest extends \PHPUnit\Framework\TestCase
 
     public function testConvertString() : void
     {
-        $file = $this->getMockBuilder(Filesystem::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['exists'])
-            ->getMock();
-        $file->expects(self::never())
-            ->method('exists')
-            ->willReturn(false);
-
-        $this->object->setFilesystem($file);
-
         $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]
@@ -159,17 +149,6 @@ AolVersion=0
 
     public function testConvertStringWithoutPatternFound() : void
     {
-        /** @var Filesystem|\PHPUnit_Framework_MockObject_MockObject $file */
-        $file = $this->getMockBuilder(Filesystem::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['exists'])
-            ->getMock();
-        $file->expects(self::never())
-            ->method('exists')
-            ->willReturn(false);
-
-        $this->object->setFilesystem($file);
-
         $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]

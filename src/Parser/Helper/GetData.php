@@ -8,6 +8,7 @@ use BrowscapPHP\Data\PropertyFormatter;
 use BrowscapPHP\Data\PropertyHolder;
 use BrowscapPHP\Helper\QuoterInterface;
 use ExceptionalJSON\DecodeErrorException;
+use JsonClass\Json;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 
@@ -53,10 +54,11 @@ final class GetData implements GetDataInterface
      * Gets the settings for a given pattern (method calls itself to
      * get the data from the parent patterns)
      *
-     * @param  string $pattern
-     * @param  array  $settings
+     * @param string $pattern
+     * @param array  $settings
      *
      * @throws \UnexpectedValueException
+     * @throws \InvalidArgumentException
      *
      * @return array
      */
@@ -106,13 +108,15 @@ final class GetData implements GetDataInterface
     /**
      * Gets the relevant part (array of settings) of the ini file for a given pattern.
      *
-     * @param  string $pattern
+     * @param string $pattern
+     *
+     * @throws \InvalidArgumentException
      *
      * @return array
      */
     private function getIniPart(string $pattern) : array
     {
-        $pattern = strtolower($pattern);
+        $pattern = mb_strtolower($pattern);
         $patternhash = Pattern::getHashForParts($pattern);
         $subkey = SubKey::getIniPartCacheSubKey($patternhash);
 
@@ -158,7 +162,7 @@ final class GetData implements GetDataInterface
 
             if ($tmpBuffer === $patternhash) {
                 try {
-                    $return = \ExceptionalJSON\decode($patterns, true);
+                    $return = (new Json())->decode($patterns, true);
                 } catch (DecodeErrorException $e) {
                     $this->logger->error('data for cache key "browscap.iniparts.' . $subkey . '" are not valid json');
 

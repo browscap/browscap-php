@@ -28,5 +28,5 @@ interface ParserInterface
      *
      * @return \Generator
      */
-    public function createPatterns($content) : \Generator;
+    public function createPatterns(string $content) : \Generator;
 }
