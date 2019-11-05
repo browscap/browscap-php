@@ -3,14 +3,8 @@ declare(strict_types = 1);
 
 namespace BrowscapPHP\Data;
 
-final class PropertyHolder
+final class PropertyHolder implements PropertyHolderInterface
 {
-    public const TYPE_STRING = 'string';
-    public const TYPE_GENERIC = 'generic';
-    public const TYPE_NUMBER = 'number';
-    public const TYPE_BOOLEAN = 'boolean';
-    public const TYPE_IN_ARRAY = 'in_array';
-
     /**
      * Get the type of a property.
      *
@@ -45,7 +39,7 @@ final class PropertyHolder
         ];
 
         if (array_key_exists($propertyName, $stringProperties)) {
-            return self::TYPE_STRING;
+            return PropertyHolderInterface::TYPE_STRING;
         }
 
         $arrayProperties = [
@@ -57,7 +51,7 @@ final class PropertyHolder
         ];
 
         if (array_key_exists($propertyName, $arrayProperties)) {
-            return self::TYPE_IN_ARRAY;
+            return PropertyHolderInterface::TYPE_IN_ARRAY;
         }
 
         $genericProperties = [
@@ -69,7 +63,7 @@ final class PropertyHolder
         ];
 
         if (array_key_exists($propertyName, $genericProperties)) {
-            return self::TYPE_GENERIC;
+            return PropertyHolderInterface::TYPE_GENERIC;
         }
 
         $numericProperties = [
@@ -82,7 +76,7 @@ final class PropertyHolder
         ];
 
         if (array_key_exists($propertyName, $numericProperties)) {
-            return self::TYPE_NUMBER;
+            return PropertyHolderInterface::TYPE_NUMBER;
         }
 
         $booleanProperties = [
@@ -115,9 +109,9 @@ final class PropertyHolder
         ];
 
         if (array_key_exists($propertyName, $booleanProperties)) {
-            return self::TYPE_BOOLEAN;
+            return PropertyHolderInterface::TYPE_BOOLEAN;
         }
 
-        throw new \InvalidArgumentException("Property {$propertyName} did not have a defined property type");
+        throw new \InvalidArgumentException(sprintf('Property %s did not have a defined property type', $propertyName));
     }
 }

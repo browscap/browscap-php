@@ -23,8 +23,34 @@ final class QuoterTest extends \PHPUnit\Framework\TestCase
      */
     public function testPregQuote() : void
     {
+        $pattern = 'Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)';
         $expected = 'Mozilla\/.\.0 \(compatible; Ask Jeeves\/Teoma.*\)';
 
-        static::assertSame($expected, $this->quoter->pregQuote('Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)'));
+        static::assertSame($expected, $this->quoter->pregQuote($pattern));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \UnexpectedValueException
+     */
+    public function testPregUnQuoteNoChange() : void
+    {
+        $pattern = 'DefaultProperties';
+
+        static::assertSame($pattern, $this->quoter->pregUnQuote($pattern));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws \UnexpectedValueException
+     */
+    public function testPregUnQuoteChange() : void
+    {
+        $pattern = '\\x';
+        $expected = '\x';
+
+        static::assertSame($expected, $this->quoter->pregUnQuote($pattern));
     }
 }

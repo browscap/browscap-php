@@ -6,16 +6,16 @@ namespace BrowscapPHP\Data;
 final class PropertyFormatter
 {
     /**
-     * @var PropertyHolder
+     * @var PropertyHolderInterface
      */
     private $propertyHolder;
 
     /**
      * class constructor
      *
-     * @param PropertyHolder $propertyHolder
+     * @param PropertyHolderInterface $propertyHolder
      */
-    public function __construct(PropertyHolder $propertyHolder)
+    public function __construct(PropertyHolderInterface $propertyHolder)
     {
         $this->propertyHolder = $propertyHolder;
     }
