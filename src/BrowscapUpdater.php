@@ -64,7 +64,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
     public function __construct(
         CacheInterface $cache,
         LoggerInterface $logger,
-        ClientInterface $client = null,
+        ?ClientInterface $client = null,
         int $connectTimeout = self::DEFAULT_TIMEOUT
     ) {
         $this->cache = new BrowscapCache($cache, $logger);
@@ -186,7 +186,14 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
         if (empty($content)) {
             $error = error_get_last();
 
-            throw FetcherException::httpError($uri, $error['message']);
+            if (is_array($error)) {
+                throw FetcherException::httpError($uri, $error['message']);
+            }
+
+            throw FetcherException::httpError(
+                $uri,
+                'an error occured while fetching remote data, but no error was raised'
+            );
         }
 
         $this->logger->debug('finished fetching remote file');

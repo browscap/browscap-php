@@ -17,7 +17,7 @@ final class GetPatternTest extends \PHPUnit\Framework\TestCase
      */
     private $object;
 
-    public function setUp() : void
+    protected function setUp() : void
     {
         $map = [
             [

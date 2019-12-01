@@ -15,7 +15,7 @@ final class PhpGetBrowserTest extends \PHPUnit\Framework\TestCase
      */
     private $object;
 
-    public function setUp() : void
+    protected function setUp() : void
     {
         $this->object = new PhpGetBrowser();
     }

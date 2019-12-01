@@ -57,7 +57,7 @@ final class Quoter implements QuoterInterface
         }
 
         // Undo preg_quote
-        $pattern = str_replace(
+        return str_replace(
             [
                 '\\\\', '\\+', '\\*', '\\?', '\\[', '\\^', '\\]', '\\$', '\\(', '\\)', '\\{', '\\}', '\\=',
                 '\\!', '\\<', '\\>', '\\|', '\\:', '\\-', '\\.', '\\/',
@@ -68,7 +68,5 @@ final class Quoter implements QuoterInterface
             ],
             $pattern
         );
-
-        return $pattern;
     }
 }

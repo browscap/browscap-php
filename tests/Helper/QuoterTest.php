@@ -15,7 +15,7 @@ final class QuoterTest extends \PHPUnit\Framework\TestCase
      */
     private $quoter;
 
-    public function setUp() : void
+    protected function setUp() : void
     {
         $this->quoter = new Quoter();
     }

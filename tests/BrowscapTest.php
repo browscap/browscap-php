@@ -22,7 +22,7 @@ final class BrowscapTest extends \PHPUnit\Framework\TestCase
      */
     private $object;
 
-    public function setUp() : void
+    protected function setUp() : void
     {
         /** @var CacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
         $cache = $this->createMock(CacheInterface::class);
