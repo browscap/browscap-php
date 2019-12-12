@@ -27,7 +27,7 @@ final class ConverterTest extends \PHPUnit\Framework\TestCase
      */
     private $root;
 
-    public function setUp() : void
+    protected function setUp() : void
     {
         /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);

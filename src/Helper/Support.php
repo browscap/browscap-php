@@ -31,7 +31,7 @@ final class Support implements SupportInterface
     /**
      * @param array|null $source
      */
-    public function __construct(array $source = null)
+    public function __construct(?array $source = null)
     {
         if (null === $source) {
             $source = [];
