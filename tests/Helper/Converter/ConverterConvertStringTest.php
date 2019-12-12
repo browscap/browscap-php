@@ -18,7 +18,7 @@ final class ConverterConvertStringTest extends \PHPUnit\Framework\TestCase
      */
     private $object;
 
-    public function setUp() : void
+    protected function setUp() : void
     {
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects(self::exactly(4))

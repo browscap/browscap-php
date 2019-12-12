@@ -18,7 +18,7 @@ final class SubKeyTest extends \PHPUnit\Framework\TestCase
     public function testGetAllPatternCacheSubkeys() : void
     {
         $result = SubKey::getAllPatternCacheSubkeys();
-        self::assertInternalType('array', $result);
+        self::assertIsArray($result);
         self::assertCount(256, $result);
     }
 }

@@ -102,7 +102,7 @@ final class Browscap implements BrowscapInterface
      *
      * @return \stdClass              the object containing the browsers details.
      */
-    public function getBrowser(string $userAgent = null) : \stdClass
+    public function getBrowser(?string $userAgent = null) : \stdClass
     {
         if (null === $this->cache->getVersion()) {
             // there is no active/warm cache available

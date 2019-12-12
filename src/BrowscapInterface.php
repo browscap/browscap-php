@@ -42,5 +42,5 @@ interface BrowscapInterface
      *
      * @return \stdClass              the object containing the browsers details.
      */
-    public function getBrowser(string $userAgent = null) : \stdClass;
+    public function getBrowser(?string $userAgent = null) : \stdClass;
 }
