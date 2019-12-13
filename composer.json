@@ -40,7 +40,7 @@
         "mikey179/vfsstream": "^1.6.8",
         "pepakriz/phpstan-exception-rules": "^0.9.0",
         "phpstan/phpstan": "^0.11.19",
-        "phpstan/phpstan-beberlei-assert": "^0.11.1",
+        "phpstan/phpstan-beberlei-assert": "^0.11.2",
         "phpstan/phpstan-deprecation-rules": "^0.11.2",
         "phpstan/phpstan-phpunit": "^0.11.2",
         "phpstan/phpstan-strict-rules": "^0.11.1",
