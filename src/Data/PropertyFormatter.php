@@ -37,15 +37,14 @@ final class PropertyFormatter
                 }
 
                 return false;
-                break;
             case PropertyHolder::TYPE_IN_ARRAY:
                 try {
                     return $this->propertyHolder->checkValueInArray($property, (string) $value);
                 } catch (\InvalidArgumentException $ex) {
-                    return '';
+                    // nothing to do here
                 }
 
-                break;
+                return '';
         }
 
         return $value;

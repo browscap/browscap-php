@@ -21,3 +21,7 @@ update_configs:
           dependency_name: "symfony/cache"
       - match:
           dependency_name: "symfony/finder"
+      - match:
+          dependency_name: "roave/doctrine-simplecache"
+      - match:
+          dependency_name: "monolog/monolog"
