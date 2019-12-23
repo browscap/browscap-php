@@ -28,7 +28,7 @@
         "php": ">=7.1.0,<7.5.0",
         "ext-json": "*",
         "daverandom/exceptional-json": "^1.0.4",
-        "guzzlehttp/guzzle": "^6.5.0",
+        "guzzlehttp/guzzle": "^6.5.1",
         "monolog/monolog": "^1.25.2 || ^2.0.1",
         "psr/simple-cache": "^1.0.1",
         "roave/doctrine-simplecache": "^1.1.0 || ^2.3.0",
