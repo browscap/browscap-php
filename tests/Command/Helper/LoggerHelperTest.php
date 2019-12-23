@@ -36,7 +36,7 @@ final class LoggerHelperTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreate() : void
     {
-        /** @var OutputInterface|\PHPUnit\Framework\MockObject\MockObject $logger */
+        /** @var OutputInterface|\PHPUnit\Framework\MockObject\MockObject $output */
         $output = $this->createMock(OutputInterface::class);
 
         self::assertInstanceOf(Logger::class, $this->helper->build($output));
