@@ -40,7 +40,7 @@ final class GetPatternTest extends \PHPUnit\Framework\TestCase
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
         $cache
-            ->expects(static::never())
+            ->expects(self::never())
             ->method('getItem')
             ->willReturnMap($map);
 
@@ -58,6 +58,6 @@ final class GetPatternTest extends \PHPUnit\Framework\TestCase
     {
         $result = $this->object->getPatterns('Mozilla/5.0 (compatible; Ask Jeeves/Teoma*)');
 
-        static::assertInstanceOf(\Generator::class, $result);
+        self::assertInstanceOf(\Generator::class, $result);
     }
 }

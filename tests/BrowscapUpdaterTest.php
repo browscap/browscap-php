@@ -201,7 +201,7 @@ AolVersion=0
 
         $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . \DIRECTORY_SEPARATOR . 'test.ini'));
 
-        static::assertSame(5031, $cache->getVersion());
+        self::assertSame(5031, $cache->getVersion());
     }
 
     /**
@@ -332,7 +332,7 @@ AolVersion=0
 
         $this->object->convertString($content);
 
-        static::assertSame(5031, $cache->getVersion());
+        self::assertSame(5031, $cache->getVersion());
     }
 
     /**
@@ -346,11 +346,11 @@ AolVersion=0
     public function testFetchFail() : void
     {
         $response = $this->createMock(Response::class);
-        $response->expects(static::exactly(2))->method('getStatusCode')->willReturn(500);
+        $response->expects(self::exactly(2))->method('getStatusCode')->willReturn(500);
 
         /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(static::once())->method('request')->willReturn($response);
+        $client->expects(self::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -374,8 +374,8 @@ AolVersion=0
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::once())->method('getItem')->willReturnMap($map);
-        $cache->expects(static::never())->method('setItem');
+        $cache->expects(self::once())->method('getItem')->willReturnMap($map);
+        $cache->expects(self::never())->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -507,15 +507,15 @@ AolVersion=0
 ';
 
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(static::once())->method('getContents')->willReturn($content);
+        $body->expects(self::once())->method('getContents')->willReturn($content);
 
         $response = $this->createMock(Response::class);
-        $response->expects(static::once())->method('getStatusCode')->willReturn(200);
-        $response->expects(static::once())->method('getBody')->willReturn($body);
+        $response->expects(self::once())->method('getStatusCode')->willReturn(200);
+        $response->expects(self::once())->method('getBody')->willReturn($body);
 
         /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(static::once())->method('request')->willReturn($response);
+        $client->expects(self::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -539,8 +539,8 @@ AolVersion=0
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::once())->method('getItem')->willReturnMap($map);
-        $cache->expects(static::never())->method('setItem');
+        $cache->expects(self::once())->method('getItem')->willReturnMap($map);
+        $cache->expects(self::never())->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -551,7 +551,7 @@ AolVersion=0
 
         $this->object->fetch($file);
 
-        static::assertStringEqualsFile($file, $content);
+        self::assertStringEqualsFile($file, $content);
     }
 
     /**
@@ -777,15 +777,15 @@ AolVersion=0
 ';
 
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(static::once())->method('getContents')->willReturn($content);
+        $body->expects(self::once())->method('getContents')->willReturn($content);
 
         $response = $this->createMock(Response::class);
-        $response->expects(static::once())->method('getStatusCode')->willReturn(200);
-        $response->expects(static::once())->method('getBody')->willReturn($body);
+        $response->expects(self::once())->method('getStatusCode')->willReturn(200);
+        $response->expects(self::once())->method('getBody')->willReturn($body);
 
         /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(static::once())->method('request')->willReturn($response);
+        $client->expects(self::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -809,8 +809,8 @@ AolVersion=0
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::once())->method('getItem')->willReturnMap($map);
-        $cache->expects(static::never())->method('setItem');
+        $cache->expects(self::once())->method('getItem')->willReturnMap($map);
+        $cache->expects(self::never())->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -819,7 +819,7 @@ AolVersion=0
 
         $this->object->fetch(IniLoaderInterface::PHP_INI);
 
-        static::assertStringEqualsFile(IniLoaderInterface::PHP_INI, $expected);
+        self::assertStringEqualsFile(IniLoaderInterface::PHP_INI, $expected);
     }
 
     /**
@@ -833,15 +833,15 @@ AolVersion=0
     public function testUpdateFailException() : void
     {
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(static::once())->method('getContents')->willReturn(false);
+        $body->expects(self::once())->method('getContents')->willReturn(false);
 
         $response = $this->createMock(Response::class);
-        $response->expects(static::once())->method('getStatusCode')->willReturn(200);
-        $response->expects(static::once())->method('getBody')->willReturn($body);
+        $response->expects(self::once())->method('getStatusCode')->willReturn(200);
+        $response->expects(self::once())->method('getBody')->willReturn($body);
 
         /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(static::once())->method('request')->willReturn($response);
+        $client->expects(self::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -865,8 +865,8 @@ AolVersion=0
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::once())->method('getItem')->willReturnMap($map);
-        $cache->expects(static::never())->method('setItem');
+        $cache->expects(self::once())->method('getItem')->willReturnMap($map);
+        $cache->expects(self::never())->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -994,15 +994,15 @@ AolVersion=0
 ';
 
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(static::once())->method('getContents')->willReturn($content);
+        $body->expects(self::once())->method('getContents')->willReturn($content);
 
         $response = $this->createMock(Response::class);
-        $response->expects(static::once())->method('getStatusCode')->willReturn(200);
-        $response->expects(static::once())->method('getBody')->willReturn($body);
+        $response->expects(self::once())->method('getStatusCode')->willReturn(200);
+        $response->expects(self::once())->method('getBody')->willReturn($body);
 
         /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(static::once())->method('request')->willReturn($response);
+        $client->expects(self::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -1026,8 +1026,8 @@ AolVersion=0
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::once())->method('getItem')->willReturnMap($map);
-        $cache->expects(static::exactly(4355))->method('setItem');
+        $cache->expects(self::once())->method('getItem')->willReturnMap($map);
+        $cache->expects(self::exactly(4355))->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -1049,15 +1049,15 @@ AolVersion=0
     public function testCheckUpdateWithCacheFail() : void
     {
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(static::never())->method('getContents');
+        $body->expects(self::never())->method('getContents');
 
         $response = $this->createMock(Response::class);
-        $response->expects(static::never())->method('getStatusCode');
-        $response->expects(static::never())->method('getBody');
+        $response->expects(self::never())->method('getStatusCode');
+        $response->expects(self::never())->method('getBody');
 
         /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(static::never())->method('request');
+        $client->expects(self::never())->method('request');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -1081,8 +1081,8 @@ AolVersion=0
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::once())->method('getItem')->willReturnMap($map);
-        $cache->expects(static::never())->method('setItem');
+        $cache->expects(self::once())->method('getItem')->willReturnMap($map);
+        $cache->expects(self::never())->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -1109,15 +1109,15 @@ AolVersion=0
     public function testCheckUpdateWithException() : void
     {
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(static::once())->method('getContents')->willThrowException(new \Exception());
+        $body->expects(self::once())->method('getContents')->willThrowException(new \Exception());
 
         $response = $this->createMock(Response::class);
-        $response->expects(static::exactly(2))->method('getStatusCode')->willReturn(200);
-        $response->expects(static::once())->method('getBody')->willReturn($body);
+        $response->expects(self::exactly(2))->method('getStatusCode')->willReturn(200);
+        $response->expects(self::once())->method('getBody')->willReturn($body);
 
         /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(static::once())->method('request')->willReturn($response);
+        $client->expects(self::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -1141,8 +1141,8 @@ AolVersion=0
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::once())->method('getItem')->willReturnMap($map);
-        $cache->expects(static::never())->method('setItem');
+        $cache->expects(self::once())->method('getItem')->willReturnMap($map);
+        $cache->expects(self::never())->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -1170,15 +1170,15 @@ AolVersion=0
         $version = 6000;
 
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(static::once())->method('getContents')->willReturn($version);
+        $body->expects(self::once())->method('getContents')->willReturn($version);
 
         $response = $this->createMock(Response::class);
-        $response->expects(static::once())->method('getStatusCode')->willReturn(200);
-        $response->expects(static::once())->method('getBody')->willReturn($body);
+        $response->expects(self::once())->method('getStatusCode')->willReturn(200);
+        $response->expects(self::once())->method('getBody')->willReturn($body);
 
         /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(static::once())->method('request')->willReturn($response);
+        $client->expects(self::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -1202,8 +1202,8 @@ AolVersion=0
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::once())->method('getItem')->willReturnMap($map);
-        $cache->expects(static::never())->method('setItem');
+        $cache->expects(self::once())->method('getItem')->willReturnMap($map);
+        $cache->expects(self::never())->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
@@ -1232,15 +1232,15 @@ AolVersion=0
     public function testCheckUpdateWithNewerVersion() : void
     {
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(static::once())->method('getContents')->willReturn(6001);
+        $body->expects(self::once())->method('getContents')->willReturn(6001);
 
         $response = $this->createMock(Response::class);
-        $response->expects(static::once())->method('getStatusCode')->willReturn(200);
-        $response->expects(static::once())->method('getBody')->willReturn($body);
+        $response->expects(self::once())->method('getStatusCode')->willReturn(200);
+        $response->expects(self::once())->method('getBody')->willReturn($body);
 
         /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject $client */
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(static::once())->method('request')->willReturn($response);
+        $client->expects(self::once())->method('request')->willReturn($response);
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
@@ -1264,15 +1264,15 @@ AolVersion=0
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::any())->method('getItem')->willReturnMap($map);
-        $cache->expects(static::any())->method('hasItem')->willReturn(true);
-        $cache->expects(static::never())->method('setItem');
+        $cache->expects(self::any())->method('getItem')->willReturnMap($map);
+        $cache->expects(self::any())->method('hasItem')->willReturn(true);
+        $cache->expects(self::never())->method('setItem');
 
         $reflection = new \ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
         $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
-        static::assertSame(6000, $this->object->checkUpdate());
+        self::assertSame(6000, $this->object->checkUpdate());
     }
 }

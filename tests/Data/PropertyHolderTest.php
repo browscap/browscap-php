@@ -30,7 +30,7 @@ final class PropertyHolderTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetPropertyType(string $propertyName, string $expected) : void
     {
-        static::assertSame($expected, $this->object->getPropertyType($propertyName));
+        self::assertSame($expected, $this->object->getPropertyType($propertyName));
     }
 
     public function providerGetPropertyType() : array

@@ -26,7 +26,7 @@ final class QuoterTest extends \PHPUnit\Framework\TestCase
         $pattern = 'Mozilla/?.0 (compatible; Ask Jeeves/Teoma*)';
         $expected = 'Mozilla\/.\.0 \(compatible; Ask Jeeves\/Teoma.*\)';
 
-        static::assertSame($expected, $this->quoter->pregQuote($pattern));
+        self::assertSame($expected, $this->quoter->pregQuote($pattern));
     }
 
     /**
@@ -38,7 +38,7 @@ final class QuoterTest extends \PHPUnit\Framework\TestCase
     {
         $pattern = 'DefaultProperties';
 
-        static::assertSame($pattern, $this->quoter->pregUnQuote($pattern));
+        self::assertSame($pattern, $this->quoter->pregUnQuote($pattern));
     }
 
     /**
@@ -51,6 +51,6 @@ final class QuoterTest extends \PHPUnit\Framework\TestCase
         $pattern = '\\x';
         $expected = '\x';
 
-        static::assertSame($expected, $this->quoter->pregUnQuote($pattern));
+        self::assertSame($expected, $this->quoter->pregUnQuote($pattern));
     }
 }

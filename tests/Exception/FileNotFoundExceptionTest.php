@@ -16,8 +16,8 @@ final class FileNotFoundExceptionTest extends \PHPUnit\Framework\TestCase
     {
         $exception = FileNotFoundException::fileNotFound('test.txt');
 
-        static::assertInstanceOf(FileNotFoundException::class, $exception);
-        static::assertSame(
+        self::assertInstanceOf(FileNotFoundException::class, $exception);
+        self::assertSame(
             'File "test.txt" does not exist',
             $exception->getMessage()
         );

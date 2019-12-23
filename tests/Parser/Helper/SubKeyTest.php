@@ -13,7 +13,7 @@ final class SubKeyTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetPatternCacheSubkey() : void
     {
-        static::assertSame('ab', SubKey::getPatternCacheSubkey('abcd'));
+        self::assertSame('ab', SubKey::getPatternCacheSubkey('abcd'));
     }
 
     /**
@@ -24,7 +24,7 @@ final class SubKeyTest extends \PHPUnit\Framework\TestCase
     public function testGetAllPatternCacheSubkeys() : void
     {
         $result = SubKey::getAllPatternCacheSubkeys();
-        static::assertIsArray($result);
-        static::assertCount(256, $result);
+        self::assertIsArray($result);
+        self::assertCount(256, $result);
     }
 }

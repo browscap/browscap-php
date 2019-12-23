@@ -31,10 +31,10 @@ final class PhpGetBrowserTest extends \PHPUnit\Framework\TestCase
 
         $this->object->setData($data);
         $return = $this->object->getData();
-        static::assertInstanceOf(\stdClass::class, $return);
-        static::assertSame('test', $return->browser);
-        static::assertSame('TestComment', $return->comment);
-        static::assertObjectHasAttribute('browser_type', $return);
+        self::assertInstanceOf(\stdClass::class, $return);
+        self::assertSame('test', $return->browser);
+        self::assertSame('TestComment', $return->comment);
+        self::assertObjectHasAttribute('browser_type', $return);
     }
 
     /**
@@ -52,8 +52,8 @@ final class PhpGetBrowserTest extends \PHPUnit\Framework\TestCase
         $this->object->setData($data);
         $return = $this->object->getData();
 
-        static::assertObjectHasAttribute('patternid', $return);
-        static::assertSame('test.json::u0::c1', $return->patternid);
+        self::assertObjectHasAttribute('patternid', $return);
+        self::assertSame('test.json::u0::c1', $return->patternid);
     }
 
     /**
@@ -70,6 +70,6 @@ final class PhpGetBrowserTest extends \PHPUnit\Framework\TestCase
         $this->object->setData($data);
         $return = $this->object->getData();
 
-        static::assertObjectNotHasAttribute('patternid', $return);
+        self::assertObjectNotHasAttribute('patternid', $return);
     }
 }

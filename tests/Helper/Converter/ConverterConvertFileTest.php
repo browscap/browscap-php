@@ -23,13 +23,13 @@ final class ConverterConvertFileTest extends \PHPUnit\Framework\TestCase
     {
         /** @var LoggerInterface|\PHPUnit\Framework\MockObject\MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects(static::never())
+        $logger->expects(self::never())
             ->method('info')
             ->willReturn(false);
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::any())
+        $cache->expects(self::any())
             ->method('setItem')
             ->willReturn(true);
 
@@ -51,13 +51,13 @@ final class ConverterConvertFileTest extends \PHPUnit\Framework\TestCase
     {
         /** @var LoggerInterface|\PHPUnit\Framework\MockObject\MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects(static::never())
+        $logger->expects(self::never())
             ->method('info')
             ->willReturn(false);
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::any())
+        $cache->expects(self::any())
             ->method('setItem')
             ->willReturn(true);
 
@@ -191,13 +191,13 @@ AolVersion=0
     {
         /** @var LoggerInterface|\PHPUnit\Framework\MockObject\MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects(static::exactly(6))
+        $logger->expects(self::exactly(6))
             ->method('info')
             ->willReturn(false);
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::any())
+        $cache->expects(self::any())
             ->method('setItem')
             ->willReturn(true);
 
@@ -326,13 +326,13 @@ AolVersion=0
     {
         /** @var LoggerInterface|\PHPUnit\Framework\MockObject\MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects(static::never())
+        $logger->expects(self::never())
             ->method('info')
             ->willReturn(false);
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::any())
+        $cache->expects(self::any())
             ->method('setItem')
             ->willReturn(true);
 
@@ -346,6 +346,6 @@ Released=Mon, 30 Jun 2014 17:55:58 +0200
 Format=ASP
 Type=';
 
-        static::assertSame(5031, $object->getIniVersion($content));
+        self::assertSame(5031, $object->getIniVersion($content));
     }
 }

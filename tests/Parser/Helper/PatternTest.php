@@ -16,7 +16,7 @@ final class PatternTest extends \PHPUnit\Framework\TestCase
     public function testGetPatternStartWithoutVariants() : void
     {
         $pattern = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.68 Safari/537.36';
-        static::assertSame('aaa556aeec36ac3edfe2f5deea5f1d28', Pattern::getHashForPattern(mb_strtolower($pattern), false)[0]);
+        self::assertSame('aaa556aeec36ac3edfe2f5deea5f1d28', Pattern::getHashForPattern(mb_strtolower($pattern), false)[0]);
     }
 
     /**
@@ -41,7 +41,7 @@ final class PatternTest extends \PHPUnit\Framework\TestCase
             9 => 'd41d8cd98f00b204e9800998ecf8427e',
         ];
 
-        static::assertSame($expected, Pattern::getHashForPattern(mb_strtolower($pattern), true));
+        self::assertSame($expected, Pattern::getHashForPattern(mb_strtolower($pattern), true));
     }
 
     /**
@@ -52,7 +52,7 @@ final class PatternTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetPatternLength() : void
     {
-        static::assertSame(4, Pattern::getPatternLength('abcd'));
+        self::assertSame(4, Pattern::getPatternLength('abcd'));
     }
 
     /**
@@ -63,7 +63,7 @@ final class PatternTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetHashForParts() : void
     {
-        static::assertSame(
+        self::assertSame(
             '529f1ddb64ea27d5cc6fc8ce8048d9e7',
             Pattern::getHashForParts('mozilla/5.0 (*linux i686*rv:0.9*) gecko*')
         );

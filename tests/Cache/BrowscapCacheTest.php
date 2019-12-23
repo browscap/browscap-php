@@ -25,7 +25,7 @@ final class BrowscapCacheTest extends \PHPUnit\Framework\TestCase
         $adapter = new SimpleCacheAdapter($memoryCache);
         $cache = new BrowscapCache($adapter, $logger);
 
-        static::assertInstanceOf(BrowscapCache::class, $cache);
+        self::assertInstanceOf(BrowscapCache::class, $cache);
     }
 
     /**
@@ -45,10 +45,10 @@ final class BrowscapCacheTest extends \PHPUnit\Framework\TestCase
         $adapter = new SimpleCacheAdapter($memoryCache);
         $cache = new BrowscapCache($adapter, $logger);
 
-        static::assertNull($cache->getVersion());
+        self::assertNull($cache->getVersion());
 
         $cache->setItem('browscap.version', 6012, false);
-        static::assertSame(6012, $cache->getVersion());
+        self::assertSame(6012, $cache->getVersion());
     }
 
     /**
@@ -68,10 +68,10 @@ final class BrowscapCacheTest extends \PHPUnit\Framework\TestCase
         $adapter = new SimpleCacheAdapter($memoryCache);
         $cache = new BrowscapCache($adapter, $logger);
 
-        static::assertNull($cache->getVersion());
+        self::assertNull($cache->getVersion());
 
         $cache->setItem('browscap.releaseDate', 'Thu, 04 Feb 2016 12:59:23 +0000', false);
-        static::assertSame('Thu, 04 Feb 2016 12:59:23 +0000', $cache->getReleaseDate());
+        self::assertSame('Thu, 04 Feb 2016 12:59:23 +0000', $cache->getReleaseDate());
     }
 
     /**
@@ -91,9 +91,9 @@ final class BrowscapCacheTest extends \PHPUnit\Framework\TestCase
         $adapter = new SimpleCacheAdapter($memoryCache);
         $cache = new BrowscapCache($adapter, $logger);
 
-        static::assertNull($cache->getType());
+        self::assertNull($cache->getType());
 
         $cache->setItem('browscap.type', 'LITE', false);
-        static::assertSame('LITE', $cache->getType());
+        self::assertSame('LITE', $cache->getType());
     }
 }

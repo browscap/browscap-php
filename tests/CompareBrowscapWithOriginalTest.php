@@ -91,7 +91,7 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
         $objectIniPath = ini_get('browscap');
 
         if (false === $objectIniPath || ! is_file($objectIniPath)) {
-            static::markTestSkipped('browscap not defined in php.ini');
+            self::markTestSkipped('browscap not defined in php.ini');
         }
 
         $memoryCache = new ArrayCache();
@@ -129,7 +129,7 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
         $diff = array_diff($libPropertyKeys, $bcPropertyKeys);
 
         if ($diff !== []) {
-            static::fail(
+            self::fail(
                 'the properties found by "get_browser()" differ from found by "\BrowscapPHP\Browscap::getBrowser()" : '
                 . serialize($diff)
             );
@@ -144,7 +144,7 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
                 continue;
             }
 
-            static::assertArrayHasKey(
+            self::assertArrayHasKey(
                 $bcProp,
                 $libProperties,
                 'Property `' . $bcProp . '` from Browscap doesn\'t match anything in get_browser. '
@@ -154,7 +154,7 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
             unset($libProperties[$bcProp]);
         }
 
-        static::assertCount(
+        self::assertCount(
             0,
             $libProperties,
             'There are ' . count($libProperties) . '(' . implode(
@@ -192,13 +192,13 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
 
             $bcProp = mb_strtolower((string) $bcProp);
 
-            static::assertObjectHasAttribute(
+            self::assertObjectHasAttribute(
                 $bcProp,
                 $libResult,
                 'Actual library result does not have "' . $bcProp . '" property'
             );
 
-            static::assertObjectHasAttribute(
+            self::assertObjectHasAttribute(
                 $bcProp,
                 $bcResult,
                 'Actual browscap result does not have "' . $bcProp . '" property'
@@ -207,7 +207,7 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
             $libValue = mb_strtolower((string) $libResult->{$bcProp});
             $bcValue = mb_strtolower((string) $bcResult->{$bcProp});
 
-            static::assertSame(
+            self::assertSame(
                 $libValue,
                 $bcValue,
                 'Expected actual "' . $bcProp . '" to be "' . $libValue . '" '

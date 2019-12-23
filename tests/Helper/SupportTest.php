@@ -16,7 +16,7 @@ final class SupportTest extends \PHPUnit\Framework\TestCase
         $source = ['HTTP_USER_AGENT' => 'testUA'];
         $object = new Support($source);
 
-        static::assertSame('testUA', $object->getUserAgent());
+        self::assertSame('testUA', $object->getUserAgent());
     }
 
     /**
@@ -27,6 +27,6 @@ final class SupportTest extends \PHPUnit\Framework\TestCase
     {
         $object = new Support();
 
-        static::assertSame('', $object->getUserAgent());
+        self::assertSame('', $object->getUserAgent());
     }
 }

@@ -16,8 +16,8 @@ final class FetcherExceptionTest extends \PHPUnit\Framework\TestCase
     {
         $exception = FetcherException::httpError('http://example.org', 'Uri not reachable');
 
-        static::assertInstanceOf(FetcherException::class, $exception);
-        static::assertSame(
+        self::assertInstanceOf(FetcherException::class, $exception);
+        self::assertSame(
             'Could not fetch HTTP resource "http://example.org": Uri not reachable',
             $exception->getMessage()
         );

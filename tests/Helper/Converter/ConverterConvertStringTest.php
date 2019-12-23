@@ -21,16 +21,16 @@ final class ConverterConvertStringTest extends \PHPUnit\Framework\TestCase
     protected function setUp() : void
     {
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects(static::exactly(4))
+        $logger->expects(self::exactly(4))
             ->method('info')
             ->willReturn(false);
-        $logger->expects(static::never())
+        $logger->expects(self::never())
             ->method('error')
             ->willReturn(false);
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::any())
+        $cache->expects(self::any())
             ->method('setItem')
             ->willReturn(true);
 

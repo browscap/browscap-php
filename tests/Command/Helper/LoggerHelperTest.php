@@ -25,7 +25,7 @@ final class LoggerHelperTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetName() : void
     {
-        static::assertSame('logger', $this->helper->getName());
+        self::assertSame('logger', $this->helper->getName());
     }
 
     /**
@@ -39,6 +39,6 @@ final class LoggerHelperTest extends \PHPUnit\Framework\TestCase
         /** @var OutputInterface|\PHPUnit\Framework\MockObject\MockObject $logger */
         $output = $this->createMock(OutputInterface::class);
 
-        static::assertInstanceOf(Logger::class, $this->helper->build($output));
+        self::assertInstanceOf(Logger::class, $this->helper->build($output));
     }
 }

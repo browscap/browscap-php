@@ -16,8 +16,8 @@ final class InvalidArgumentExceptionTest extends \PHPUnit\Framework\TestCase
     {
         $exception = InvalidArgumentException::oneOfCommandArguments('http://example.org', 'Uri not reachable');
 
-        static::assertInstanceOf(InvalidArgumentException::class, $exception);
-        static::assertSame(
+        self::assertInstanceOf(InvalidArgumentException::class, $exception);
+        self::assertSame(
             'One of the command arguments "http://example.org", "Uri not reachable" is required',
             $exception->getMessage()
         );

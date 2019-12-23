@@ -22,7 +22,7 @@ final class PropertyFormatterTest extends \PHPUnit\Framework\TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $propertyHolder
-            ->expects(static::once())
+            ->expects(self::once())
             ->method('getPropertyType')
             ->with($property)
             ->willReturn(PropertyHolderInterface::TYPE_STRING);
@@ -30,7 +30,7 @@ final class PropertyFormatterTest extends \PHPUnit\Framework\TestCase
         /** @var PropertyHolderInterface $propertyHolder */
         $object = new PropertyFormatter($propertyHolder);
 
-        static::assertSame($value, $object->formatPropertyValue($value, $property));
+        self::assertSame($value, $object->formatPropertyValue($value, $property));
     }
 
     /**
@@ -47,7 +47,7 @@ final class PropertyFormatterTest extends \PHPUnit\Framework\TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $propertyHolder
-            ->expects(static::once())
+            ->expects(self::once())
             ->method('getPropertyType')
             ->with($property)
             ->willReturn(PropertyHolderInterface::TYPE_BOOLEAN);
@@ -55,7 +55,7 @@ final class PropertyFormatterTest extends \PHPUnit\Framework\TestCase
         /** @var PropertyHolderInterface $propertyHolder */
         $object = new PropertyFormatter($propertyHolder);
 
-        static::assertTrue($object->formatPropertyValue($value, $property));
+        self::assertTrue($object->formatPropertyValue($value, $property));
     }
 
     /**
@@ -72,7 +72,7 @@ final class PropertyFormatterTest extends \PHPUnit\Framework\TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $propertyHolder
-            ->expects(static::once())
+            ->expects(self::once())
             ->method('getPropertyType')
             ->with($property)
             ->willReturn(PropertyHolderInterface::TYPE_BOOLEAN);
@@ -80,6 +80,6 @@ final class PropertyFormatterTest extends \PHPUnit\Framework\TestCase
         /** @var PropertyHolderInterface $propertyHolder */
         $object = new PropertyFormatter($propertyHolder);
 
-        static::assertFalse($object->formatPropertyValue($value, $property));
+        self::assertFalse($object->formatPropertyValue($value, $property));
     }
 }

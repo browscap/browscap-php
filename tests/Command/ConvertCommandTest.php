@@ -19,19 +19,19 @@ final class ConvertCommandTest extends \PHPUnit\Framework\TestCase
             ->setMethods(['setName', 'setDescription', 'addArgument', 'addOption'])
             ->getMock();
         $object
-            ->expects(static::once())
+            ->expects(self::once())
             ->method('setName')
             ->willReturnSelf();
         $object
-            ->expects(static::once())
+            ->expects(self::once())
             ->method('setDescription')
             ->willReturnSelf();
         $object
-            ->expects(static::once())
+            ->expects(self::once())
             ->method('addArgument')
             ->willReturnSelf();
         $object
-            ->expects(static::once())
+            ->expects(self::once())
             ->method('addOption')
             ->willReturnSelf();
 
@@ -39,6 +39,6 @@ final class ConvertCommandTest extends \PHPUnit\Framework\TestCase
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 
-        static::assertNull($method->invoke($object));
+        self::assertNull($method->invoke($object));
     }
 }

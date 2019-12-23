@@ -38,13 +38,13 @@ final class IniLoaderTest extends \PHPUnit\Framework\TestCase
     public function testGetRemoteIniUrl() : void
     {
         $this->object->setRemoteFilename(IniLoaderInterface::PHP_INI_LITE);
-        static::assertSame('http://browscap.org/stream?q=Lite_PHP_BrowscapINI', $this->object->getRemoteIniUrl());
+        self::assertSame('http://browscap.org/stream?q=Lite_PHP_BrowscapINI', $this->object->getRemoteIniUrl());
 
         $this->object->setRemoteFilename(IniLoaderInterface::PHP_INI);
-        static::assertSame('http://browscap.org/stream?q=PHP_BrowscapINI', $this->object->getRemoteIniUrl());
+        self::assertSame('http://browscap.org/stream?q=PHP_BrowscapINI', $this->object->getRemoteIniUrl());
 
         $this->object->setRemoteFilename(IniLoaderInterface::PHP_INI_FULL);
-        static::assertSame('http://browscap.org/stream?q=Full_PHP_BrowscapINI', $this->object->getRemoteIniUrl());
+        self::assertSame('http://browscap.org/stream?q=Full_PHP_BrowscapINI', $this->object->getRemoteIniUrl());
     }
 
     /**
@@ -53,6 +53,6 @@ final class IniLoaderTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetRemoteVerUrl() : void
     {
-        static::assertSame('http://browscap.org/version', $this->object->getRemoteTimeUrl());
+        self::assertSame('http://browscap.org/version', $this->object->getRemoteTimeUrl());
     }
 }

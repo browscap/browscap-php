@@ -51,7 +51,7 @@ final class BrowscapTest extends \PHPUnit\Framework\TestCase
         $property = new \ReflectionProperty($this->object, 'formatter');
         $property->setAccessible(true);
 
-        static::assertSame($formatter, $property->getValue($this->object));
+        self::assertSame($formatter, $property->getValue($this->object));
     }
 
     /**
@@ -60,7 +60,7 @@ final class BrowscapTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetParser() : void
     {
-        static::assertInstanceOf(Ini::class, $this->object->getParser());
+        self::assertInstanceOf(Ini::class, $this->object->getParser());
     }
 
     /**
@@ -75,7 +75,7 @@ final class BrowscapTest extends \PHPUnit\Framework\TestCase
         $parser = $this->createMock(ParserInterface::class);
 
         $this->object->setParser($parser);
-        static::assertSame($parser, $this->object->getParser());
+        self::assertSame($parser, $this->object->getParser());
     }
 
     /**
@@ -104,15 +104,15 @@ final class BrowscapTest extends \PHPUnit\Framework\TestCase
 
         /** @var FormatterInterface|\PHPUnit\Framework\MockObject\MockObject $formatter */
         $formatter = $this->createMock(FormatterInterface::class);
-        $formatter->expects(static::once())->method('getData')->willReturn($expectedResult);
+        $formatter->expects(self::once())->method('getData')->willReturn($expectedResult);
 
         /** @var ParserInterface|\PHPUnit\Framework\MockObject\MockObject $parser */
         $parser = $this->createMock(ParserInterface::class);
-        $parser->expects(static::once())->method('getBrowser')->willReturn($formatter);
+        $parser->expects(self::once())->method('getBrowser')->willReturn($formatter);
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::once())->method('getVersion')->willReturn(1);
+        $cache->expects(self::once())->method('getVersion')->willReturn(1);
 
         $this->object->setFormatter($formatter);
         $this->object->setParser($parser);
@@ -124,7 +124,7 @@ final class BrowscapTest extends \PHPUnit\Framework\TestCase
 
         $result = $this->object->getBrowser();
 
-        static::assertSame($expectedResult, $result);
+        self::assertSame($expectedResult, $result);
     }
 
     /**
@@ -143,15 +143,15 @@ final class BrowscapTest extends \PHPUnit\Framework\TestCase
 
         /** @var FormatterInterface|\PHPUnit\Framework\MockObject\MockObject $formatter */
         $formatter = $this->createMock(FormatterInterface::class);
-        $formatter->expects(static::once())->method('getData')->willReturn($expectedResult);
+        $formatter->expects(self::once())->method('getData')->willReturn($expectedResult);
 
         /** @var ParserInterface|\PHPUnit\Framework\MockObject\MockObject $parser */
         $parser = $this->createMock(ParserInterface::class);
-        $parser->expects(static::once())->method('getBrowser')->willReturn($formatter);
+        $parser->expects(self::once())->method('getBrowser')->willReturn($formatter);
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::once())->method('getVersion')->willReturn(1);
+        $cache->expects(self::once())->method('getVersion')->willReturn(1);
 
         $this->object->setFormatter($formatter);
         $this->object->setParser($parser);
@@ -163,7 +163,7 @@ final class BrowscapTest extends \PHPUnit\Framework\TestCase
 
         $result = $this->object->getBrowser('Mozilla/5.0 (compatible; Ask Jeeves/Teoma)');
 
-        static::assertSame($expectedResult, $result);
+        self::assertSame($expectedResult, $result);
     }
 
     /**
@@ -180,15 +180,15 @@ final class BrowscapTest extends \PHPUnit\Framework\TestCase
 
         /** @var FormatterInterface|\PHPUnit\Framework\MockObject\MockObject $formatter */
         $formatter = $this->createMock(FormatterInterface::class);
-        $formatter->expects(static::once())->method('getData')->willReturn($expectedResult);
+        $formatter->expects(self::once())->method('getData')->willReturn($expectedResult);
 
         /** @var ParserInterface|\PHPUnit\Framework\MockObject\MockObject $parser */
         $parser = $this->createMock(ParserInterface::class);
-        $parser->expects(static::once())->method('getBrowser')->willReturn(null);
+        $parser->expects(self::once())->method('getBrowser')->willReturn(null);
 
         /** @var BrowscapCacheInterface|\PHPUnit\Framework\MockObject\MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
-        $cache->expects(static::once())->method('getVersion')->willReturn(1);
+        $cache->expects(self::once())->method('getVersion')->willReturn(1);
 
         $this->object->setFormatter($formatter);
         $this->object->setParser($parser);
@@ -200,6 +200,6 @@ final class BrowscapTest extends \PHPUnit\Framework\TestCase
 
         $result = $this->object->getBrowser('Mozilla/5.0 (compatible; Ask Jeeves/Teoma)');
 
-        static::assertSame($expectedResult, $result);
+        self::assertSame($expectedResult, $result);
     }
 }
