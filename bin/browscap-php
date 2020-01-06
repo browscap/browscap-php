@@ -1,10 +1,29 @@
 #!/usr/bin/env php
 <?php
 
+if (version_compare('7.1.0', PHP_VERSION, '>')) {
+  fwrite(
+    STDERR,
+    sprintf(
+      'This version of BrowscapPHP is supported on PHP 7.1, PHP 7.2, PHP 7.3 and PHP 7.4.' . PHP_EOL .
+      'You are using PHP %s (%s).' . PHP_EOL,
+      PHP_VERSION,
+      PHP_BINARY
+    )
+  );
+
+  die(1);
+}
+
+if (!ini_get('date.timezone')) {
+  ini_set('date.timezone', 'UTC');
+}
+
 $baseDir = dirname(__DIR__);
 
 $autoloadPaths = array(
     $baseDir . '/vendor/autoload.php',
+    $baseDir . '/../vendor/autoload.php',
     $baseDir . '/../../autoload.php',
 );
 
@@ -18,7 +37,14 @@ foreach ($autoloadPaths as $path) {
 }
 
 if (!$foundVendorAutoload) {
-    throw new \Exception('Could not find autoload path in any of the searched locations');
+  fwrite(
+    STDERR,
+    'You need to set up the project dependencies using Composer:' . PHP_EOL . PHP_EOL .
+    '    composer install' . PHP_EOL . PHP_EOL .
+    'You can learn all about Composer on https://getcomposer.org/.' . PHP_EOL
+  );
+
+  die(1);
 }
 
 // Ensure symfony packages installed
@@ -27,7 +53,6 @@ if (!class_exists(\Symfony\Component\Console\Application::class)) {
   exit(1);
 }
 
-use BrowscapPHP\Exception;
 use Symfony\Component\Console\Application;
 use BrowscapPHP\Command;
 
