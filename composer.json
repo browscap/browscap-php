@@ -36,7 +36,7 @@
         "symfony/filesystem": "^3.4.36 || ^4.4.2 || ^5.0.2"
     },
     "require-dev": {
-        "ergebnis/composer-normalize": "^2.2.2",
+        "ergebnis/composer-normalize": "^2.2.3",
         "friendsofphp/php-cs-fixer": "^2.16.1",
         "mikey179/vfsstream": "^1.6.8",
         "pepakriz/phpstan-exception-rules": "^0.10.1",
