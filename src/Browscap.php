@@ -44,14 +44,14 @@ final class Browscap implements BrowscapInterface
      * Browscap constructor.
      *
      * @param \Psr\SimpleCache\CacheInterface $cache
-     * @param LoggerInterface                 $logger
+     * @param \Psr\Log\LoggerInterface        $logger
      */
     public function __construct(CacheInterface $cache, LoggerInterface $logger)
     {
         $this->cache = new BrowscapCache($cache, $logger);
         $this->logger = $logger;
 
-        $this->formatter = new Formatter\PhpGetBrowser();
+        $this->formatter = new Formatter\LegacyFormatter();
     }
 
     /**

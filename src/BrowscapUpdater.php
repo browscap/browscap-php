@@ -55,10 +55,10 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
     /**
      * Browscap constructor.
      *
-     * @param \Psr\SimpleCache\CacheInterface $cache
-     * @param LoggerInterface                 $logger
-     * @param ClientInterface|null            $client
-     * @param int                             $connectTimeout
+     * @param \Psr\SimpleCache\CacheInterface  $cache
+     * @param \Psr\Log\LoggerInterface         $logger
+     * @param \GuzzleHttp\ClientInterface|null $client
+     * @param int                              $connectTimeout
      */
     public function __construct(
         CacheInterface $cache,
