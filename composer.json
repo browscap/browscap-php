@@ -39,7 +39,7 @@
         "ergebnis/composer-normalize": "^2.2.2",
         "friendsofphp/php-cs-fixer": "^2.16.1",
         "mikey179/vfsstream": "^1.6.8",
-        "pepakriz/phpstan-exception-rules": "^0.10.1",
+        "pepakriz/phpstan-exception-rules": "^0.11.0",
         "phpstan/phpstan": "^0.12.9",
         "phpstan/phpstan-beberlei-assert": "^0.12.2",
         "phpstan/phpstan-deprecation-rules": "^0.12.2",
