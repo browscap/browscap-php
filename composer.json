@@ -34,7 +34,6 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.17.2",
-        "infection/infection": "^0.18.2 || ^0.20.2",
         "mikey179/vfsstream": "^1.6.8",
         "monolog/monolog": "^2.2.0",
         "pepakriz/phpstan-exception-rules": "^0.11.2",
