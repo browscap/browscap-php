@@ -76,7 +76,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          ini-values: browscap=${{ env.GITHUB_WORKSPACE }}/resources/browscap.ini
+          ini-values: browscap=/tmp/browscap.ini
 
       - name: Cache dependencies
         uses: actions/cache@v1
@@ -86,8 +86,9 @@ jobs:
 
       - name: "Download browscap.ini"
         run: |
-          mkdir -p $GITHUB_WORKSPACE/resources
-          wget http://browscap.org/stream?q=Full_PHP_BrowsCapINI -O $GITHUB_WORKSPACE/resources/browscap.ini
+          wget -q http://browscap.org/stream?q=Full_PHP_BrowsCapINI -O /tmp/browscap.ini
+          mkdir -p resources
+          cp /tmp/browscap.ini resources/browscap.ini
 
       - name: "Install lowest dependencies"
         if: ${{ matrix.dependencies == 'lowest' }}
