@@ -62,8 +62,8 @@ jobs:
   comparison-checks:
     env:
       BROWSCAP_URL: http://browscap.org/stream?q=Full_PHP_BrowsCapINI
-      BROWSCAP_PHP_PATH: $GITHUB_WORKSPACE/resources
-      BROWSCAP_PHP_FILE: $BROWSCAP_PHP_PATH/browscap.ini
+      BROWSCAP_PHP_PATH: ${{ env.GITHUB_WORKSPACE }}/resources
+      BROWSCAP_PHP_FILE: ${{ env.BROWSCAP_PHP_PATH }}/browscap.ini
     strategy:
       matrix:
         dependencies: ["lowest", "locked", "highest"]
