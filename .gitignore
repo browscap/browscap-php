@@ -11,3 +11,4 @@ ergebnis.txt
 tests/data/*
 !tests/data/.gitkeep
 .php_cs.cache
+.phpunit.result.cache
