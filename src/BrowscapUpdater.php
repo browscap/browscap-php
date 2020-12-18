@@ -357,7 +357,7 @@ final class BrowscapUpdater implements BrowscapUpdaterInterface
             );
         }
 
-        if ($cachedVersion && $remoteVersion && $remoteVersion <= $cachedVersion) {
+        if ($remoteVersion <= $cachedVersion) {
             throw new NoNewVersionException('there is no newer version available');
         }
 

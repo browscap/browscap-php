@@ -1,0 +1,138 @@
+name: CI
+on: [push, pull_request]
+jobs:
+
+  composer-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.0
+
+      - name: Composer validate
+        run: |
+          composer install
+          composer validate --strict
+          composer normalize --dry-run
+
+  unit-tests:
+    strategy:
+      matrix:
+        dependencies: ["lowest", "locked", "highest"]
+        php-versions:
+          - 7.3
+          - 7.4
+          - 8.0
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          coverage: pcov
+
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache/files
+          key: dependencies-composer-${{ hashFiles('composer.json') }}
+
+      - name: "Install lowest dependencies"
+        if: ${{ matrix.dependencies == 'lowest' }}
+        run: "composer update --prefer-lowest --prefer-dist --no-interaction --no-progress"
+      - name: "Install highest dependencies"
+        if: ${{ matrix.dependencies == 'highest' }}
+        run: "composer update --prefer-dist --no-interaction --no-progress"
+      - name: "Install locked dependencies"
+        if: ${{ matrix.dependencies == 'locked' }}
+        run: "composer install --no-interaction --no-progress"
+
+      - name: Test with coverage
+        run: vendor/bin/phpunit --colors --verbose --exclude-group compare --coverage-text
+
+  comparison-checks:
+    strategy:
+      matrix:
+        dependencies: ["lowest", "locked", "highest"]
+        php-versions:
+          - 7.3
+          - 7.4
+          - 8.0
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          ini-values: browscap=/tmp/browscap.ini
+
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache/files
+          key: dependencies-composer-${{ hashFiles('composer.json') }}
+
+      - name: "Download browscap.ini"
+        run: |
+          wget -q http://browscap.org/stream?q=Full_PHP_BrowsCapINI -O /tmp/browscap.ini
+          mkdir -p resources
+          cp /tmp/browscap.ini resources/browscap.ini
+
+      - name: "Install lowest dependencies"
+        if: ${{ matrix.dependencies == 'lowest' }}
+        run: "composer update --prefer-lowest --prefer-dist --no-interaction --no-progress"
+      - name: "Install highest dependencies"
+        if: ${{ matrix.dependencies == 'highest' }}
+        run: "composer update --prefer-dist --no-interaction --no-progress"
+      - name: "Install locked dependencies"
+        if: ${{ matrix.dependencies == 'locked' }}
+        run: "composer install --no-interaction --no-progress"
+
+      - name: Compare get_browser to browscap-php results
+        run: vendor/bin/phpunit --colors --verbose --no-coverage --group compare
+
+  coding-standards:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.3
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Run php-cs-fixer
+        run: vendor/bin/php-cs-fixer fix --dry-run -vv
+
+  static-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.0
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Run phpstan
+        run: vendor/bin/phpstan analyse -l max -c phpstan.neon --autoload-file=vendor/autoload.php --memory-limit=768M --no-progress src tests

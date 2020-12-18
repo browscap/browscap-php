@@ -4,7 +4,6 @@ vendor/
 .settings
 .project
 composer.phar
-composer.lock
 resources/*
 !resources/.gitkeep
 PHP_BrowscapINI
@@ -12,3 +11,4 @@ ergebnis.txt
 tests/data/*
 !tests/data/.gitkeep
 .php_cs.cache
+.phpunit.result.cache
