@@ -54,16 +54,56 @@ jobs:
         if: ${{ matrix.dependencies == 'locked' }}
         run: "composer install --no-interaction --no-progress"
 
-      - name: "Download browscap.ini"
-        run: |
-          mkdir -p $GITHUB_WORKSPACE/resources
-          wget http://browscap.org/stream?q=Full_PHP_BrowsCapINI -O $GITHUB_WORKSPACE/resources/browscap.ini
-
       - name: Test with coverage
         run: vendor/bin/phpunit --colors --verbose --exclude-group compare --coverage-text
 
+  comparison-checks:
+    env:
+      BROWSCAP_URL: http://browscap.org/stream?q=Full_PHP_BrowsCapINI
+      BROWSCAP_PHP_PATH: $GITHUB_WORKSPACE/resources
+      BROWSCAP_PHP_FILE: $BROWSCAP_PHP_PATH/browscap.ini
+    strategy:
+      matrix:
+        dependencies: ["lowest", "locked", "highest"]
+        php-versions:
+          - 7.3
+          - 7.4
+          - 8.0
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          ini-values: browscap=${{ env.BROWSCAP_PHP_FILE }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache/files
+          key: dependencies-composer-${{ hashFiles('composer.json') }}
+
+      - name: "Install lowest dependencies"
+        if: ${{ matrix.dependencies == 'lowest' }}
+        run: "composer update --prefer-lowest --prefer-dist --no-interaction --no-progress"
+      - name: "Install highest dependencies"
+        if: ${{ matrix.dependencies == 'highest' }}
+        run: "composer update --prefer-dist --no-interaction --no-progress"
+      - name: "Install locked dependencies"
+        if: ${{ matrix.dependencies == 'locked' }}
+        run: "composer install --no-interaction --no-progress"
+
+      - name: "Download browscap.ini"
+        run: |
+          mkdir -p ${{ env.BROWSCAP_PHP_PATH }}
+          wget ${{ env.BROWSCAP_URL }} -O ${{ env.BROWSCAP_PHP_FILE }}
+
       - name: Compare get_browser to browscap-php results
-        run: php -d browscap=$GITHUB_WORKSPACE/resources/browscap.ini vendor/bin/phpunit --colors --verbose --no-coverage --group compare
+        run: vendor/bin/phpunit --colors --verbose --no-coverage --group compare
 
   coding-standards:
     runs-on: ubuntu-latest
