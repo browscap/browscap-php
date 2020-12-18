@@ -15,8 +15,7 @@ jobs:
 
       - name: Composer validate
         run: |
-          composer --version
-          composer list
+          composer install
           composer validate --strict
           composer normalize --dry-run
 
