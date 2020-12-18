@@ -111,7 +111,9 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
      */
     public function testCheckProperties() : void
     {
-        $libProperties = get_object_vars(get_browser('x'));
+        /** @var object $libBrowserObject */
+        $libBrowserObject = get_browser('x', false);
+        $libProperties = get_object_vars($libBrowserObject);
         $bcProperties = get_object_vars(self::$object->getBrowser('x'));
 
         unset($libProperties['parent'], $bcProperties['parent']);
@@ -168,7 +170,11 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
      */
     public function testCompare(string $userAgent) : void
     {
-        $libResult = get_browser($userAgent);
+        /** @var object $libResult */
+        $libResult = get_browser($userAgent, false);
+        // Mainly for static analysis:
+        assert(property_exists($libResult, 'browser_name_pattern'));
+
         $bcResult = self::$object->getBrowser($userAgent);
 
         foreach (array_keys($this->properties) as $bcProp) {

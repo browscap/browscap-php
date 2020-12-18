@@ -81,7 +81,7 @@ final class Ini implements ParserInterface
                     if (1 < count($matches)) {
                         array_shift($matches);
                         foreach ($matches as $oneMatch) {
-                            $numPos = strpos($pattern, '(\d)');
+                            $numPos = (int) strpos($pattern, '(\d)');
                             $pattern = substr_replace($pattern, $oneMatch, $numPos, 4);
                         }
                     }
