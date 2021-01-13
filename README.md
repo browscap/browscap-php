@@ -19,6 +19,7 @@ composer require browscap/browscap-php
 Then you may identify the current user agent this way:
 
 ```php
+$doctrineFileCache = new \Doctrine\Common\Cache\FilesystemCache($cacheDir);
 $cache = new \Roave\DoctrineSimpleCache\SimpleCacheAdapter($doctrineFileCache); // or maybe any other PSR-16 compatible caches
 $logger = new \Monolog\Logger('name'); // or maybe any other PSR-3 compatible logger
 
@@ -47,6 +48,9 @@ vendor/bin/browscap-php browscap:update
 ```
     
 If you want to autoupdate the used cache, we recommend a separate cron job that calls the command listed above.
+
+Please note that `$cacheDir` must point to the directory that got created by `browsercap:convert`. If you are using the command and not a custom call to `BrowserCapUpdater` you will need to use the `\Doctrine\Common\Cache\FilesystemCache` as that is the format that  `browsecap:convert` stores the cache in.
+        
 
 What's changed in version 4.x
 -----------------------------
