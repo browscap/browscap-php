@@ -2497,16 +2497,16 @@
         },
         {
             "name": "pepakriz/phpstan-exception-rules",
-            "version": "v0.11.3",
+            "version": "v0.11.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pepakriz/phpstan-exception-rules.git",
-                "reference": "5c9012d0717d1beea32309abd404478ae384916c"
+                "reference": "8fda6d38d8b7d3eae04104342ae8293c4ec85924"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pepakriz/phpstan-exception-rules/zipball/5c9012d0717d1beea32309abd404478ae384916c",
-                "reference": "5c9012d0717d1beea32309abd404478ae384916c",
+                "url": "https://api.github.com/repos/pepakriz/phpstan-exception-rules/zipball/8fda6d38d8b7d3eae04104342ae8293c4ec85924",
+                "reference": "8fda6d38d8b7d3eae04104342ae8293c4ec85924",
                 "shasum": ""
             },
             "require": {
@@ -2546,7 +2546,7 @@
                 "MIT"
             ],
             "description": "Exception rules for PHPStan",
-            "time": "2020-12-23T23:36:37+00:00"
+            "time": "2021-01-19T14:03:46+00:00"
         },
         {
             "name": "phar-io/manifest",
