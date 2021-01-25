@@ -2969,16 +2969,16 @@
         },
         {
             "name": "phpstan/phpstan-beberlei-assert",
-            "version": "0.12.4",
+            "version": "0.12.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan-beberlei-assert.git",
-                "reference": "c714b071e856200e60ba586a942bdd590c60da4b"
+                "reference": "a2940e58dc7a59252b10b0d94cd9d44c248fbeb1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan-beberlei-assert/zipball/c714b071e856200e60ba586a942bdd590c60da4b",
-                "reference": "c714b071e856200e60ba586a942bdd590c60da4b",
+                "url": "https://api.github.com/repos/phpstan/phpstan-beberlei-assert/zipball/a2940e58dc7a59252b10b0d94cd9d44c248fbeb1",
+                "reference": "a2940e58dc7a59252b10b0d94cd9d44c248fbeb1",
                 "shasum": ""
             },
             "require": {
@@ -2986,7 +2986,7 @@
                 "phpstan/phpstan": "^0.12.40"
             },
             "require-dev": {
-                "beberlei/assert": "^2.9.5",
+                "beberlei/assert": "^3.3.0",
                 "phing/phing": "^2.16.3",
                 "php-parallel-lint/php-parallel-lint": "^1.2",
                 "phpstan/phpstan-phpunit": "^0.12.16",
@@ -3014,7 +3014,7 @@
                 "MIT"
             ],
             "description": "PHPStan beberlei/assert extension",
-            "time": "2020-12-12T16:05:56+00:00"
+            "time": "2021-01-24T16:17:24+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",
@@ -5157,12 +5157,12 @@
             "version": "1.9.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webmozart/assert.git",
+                "url": "https://github.com/webmozarts/assert.git",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "shasum": ""
             },
