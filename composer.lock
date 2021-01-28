@@ -2913,16 +2913,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "0.12.67",
+            "version": "0.12.70",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "ced7a5d9c5dba908c1c00cea3f1d4ad74da71b86"
+                "reference": "07f0ef37f5f876e8cee44cc8ea0ec3fe80d499ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/ced7a5d9c5dba908c1c00cea3f1d4ad74da71b86",
-                "reference": "ced7a5d9c5dba908c1c00cea3f1d4ad74da71b86",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/07f0ef37f5f876e8cee44cc8ea0ec3fe80d499ee",
+                "reference": "07f0ef37f5f876e8cee44cc8ea0ec3fe80d499ee",
                 "shasum": ""
             },
             "require": {
@@ -2965,7 +2965,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-14T14:16:19+00:00"
+            "time": "2021-01-27T17:06:47+00:00"
         },
         {
             "name": "phpstan/phpstan-beberlei-assert",
@@ -5157,12 +5157,12 @@
             "version": "1.9.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webmozart/assert.git",
+                "url": "https://github.com/webmozarts/assert.git",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "shasum": ""
             },
