@@ -2497,16 +2497,16 @@
         },
         {
             "name": "pepakriz/phpstan-exception-rules",
-            "version": "v0.11.3",
+            "version": "v0.11.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pepakriz/phpstan-exception-rules.git",
-                "reference": "5c9012d0717d1beea32309abd404478ae384916c"
+                "reference": "52a922396b448c8cbc78e4f2fc460d2f8958c99b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pepakriz/phpstan-exception-rules/zipball/5c9012d0717d1beea32309abd404478ae384916c",
-                "reference": "5c9012d0717d1beea32309abd404478ae384916c",
+                "url": "https://api.github.com/repos/pepakriz/phpstan-exception-rules/zipball/52a922396b448c8cbc78e4f2fc460d2f8958c99b",
+                "reference": "52a922396b448c8cbc78e4f2fc460d2f8958c99b",
                 "shasum": ""
             },
             "require": {
@@ -2546,7 +2546,7 @@
                 "MIT"
             ],
             "description": "Exception rules for PHPStan",
-            "time": "2020-12-23T23:36:37+00:00"
+            "time": "2021-01-27T17:23:33+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -5157,12 +5157,12 @@
             "version": "1.9.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webmozart/assert.git",
+                "url": "https://github.com/webmozarts/assert.git",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "shasum": ""
             },
