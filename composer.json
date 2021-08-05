@@ -37,7 +37,7 @@
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.2.2",
-        "friendsofphp/php-cs-fixer": "^2.16.1",
+        "friendsofphp/php-cs-fixer": "^3.0.2",
         "mikey179/vfsstream": "^1.6.8",
         "pepakriz/phpstan-exception-rules": "^0.11.1",
         "phpstan/phpstan": "^0.12.9",
