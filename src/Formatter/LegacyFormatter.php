@@ -1,7 +1,14 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHP\Formatter;
+
+use stdClass;
+
+use function array_key_exists;
+use function array_merge;
+use function strtolower;
 
 /**
  * formatter for backwards compatibility with 2.x
@@ -11,30 +18,31 @@ final class LegacyFormatter implements FormatterInterface
     /**
      * Options for the formatter
      *
-     * @var array
+     * @var bool[]
+     * @phpstan-var array{lowercase?: bool}
      */
-    private $options = [];
+    private array $options = [];
 
     /**
      * Default formatter options
      *
-     * @var array
+     * @var bool[]
+     * @phpstanvar array{lowercase: bool}
      */
-    private $defaultOptions = [
-        'lowercase' => false,
-    ];
+    private array $defaultOptions = ['lowercase' => false];
 
     /**
      * Variable to save the settings in, type depends on implementation
      *
-     * @var array
+     * @var string[]|bool[]|null[]
      */
-    private $data = [];
+    private array $data = [];
 
     /**
-     * LegacyFormatter constructor.
+     * @param bool[] $options Formatter options
+     * @phpstan-param array{lowercase?: bool} $options
      *
-     * @param array $options Formatter optioms
+     * @throws void
      */
     public function __construct(array $options = [])
     {
@@ -44,9 +52,11 @@ final class LegacyFormatter implements FormatterInterface
     /**
      * Sets the data (done by the parser)
      *
-     * @param array $settings
+     * @param string[]|bool[]|null[] $settings
+     *
+     * @throws void
      */
-    public function setData(array $settings) : void
+    public function setData(array $settings): void
     {
         $this->data = $settings;
     }
@@ -54,14 +64,14 @@ final class LegacyFormatter implements FormatterInterface
     /**
      * Gets the data (in the preferred format)
      *
-     * @return \stdClass
+     * @throws void
      */
-    public function getData() : \stdClass
+    public function getData(): stdClass
     {
-        $output = new \stdClass();
+        $output = new stdClass();
 
         foreach ($this->data as $key => $property) {
-            if ($this->options['lowercase']) {
+            if (array_key_exists('lowercase', $this->options) && $this->options['lowercase']) {
                 $key = strtolower($key);
             }
 

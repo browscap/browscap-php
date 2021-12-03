@@ -1,16 +1,18 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHPTest\Exception;
 
 use BrowscapPHP\Exception\FetcherException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \BrowscapPHP\Exception\FetcherException
  */
-final class FetcherExceptionTest extends \PHPUnit\Framework\TestCase
+final class FetcherExceptionTest extends TestCase
 {
-    public function testHttpError() : void
+    public function testHttpError(): void
     {
         $exception = FetcherException::httpError('http://example.org', 'Uri not reachable');
 

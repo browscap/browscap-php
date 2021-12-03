@@ -1,43 +1,57 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHP\Command;
 
 use BrowscapPHP\BrowscapUpdater;
 use BrowscapPHP\Exception;
 use BrowscapPHP\Helper\LoggerHelper;
-use Doctrine\Common\Cache\FilesystemCache;
-use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
+use League\Flysystem\Filesystem;
+use League\Flysystem\Local\LocalFilesystemAdapter;
+use MatthiasMullie\Scrapbook\Adapters\Flysystem;
+use MatthiasMullie\Scrapbook\Psr16\SimpleCache;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
+
+use function assert;
+use function is_string;
+use function sprintf;
 
 /**
  * Command to convert a downloaded Browscap ini file and write it to the cache
  */
 class ConvertCommand extends Command
 {
-    /**
-     * @var string
-     */
-    private $defaultIniFile;
+    public const FILENAME_MISSING   = 6;
+    public const FILE_NOT_FOUND     = 7;
+    public const ERROR_READING_FILE = 8;
+
+    private ?string $defaultIniFile = null;
+
+    private ?string $defaultCacheFolder = null;
 
     /**
-     * @var string
+     * @throws LogicException
      */
-    private $defaultCacheFolder;
-
     public function __construct(string $defaultCacheFolder, string $defaultIniFile)
     {
         $this->defaultCacheFolder = $defaultCacheFolder;
-        $this->defaultIniFile = $defaultIniFile;
+        $this->defaultIniFile     = $defaultIniFile;
 
         parent::__construct();
     }
 
-    protected function configure() : void
+    /**
+     * @throws InvalidArgumentException
+     */
+    protected function configure(): void
     {
         $this
             ->setName('browscap:convert')
@@ -58,19 +72,21 @@ class ConvertCommand extends Command
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface   $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     *
-     * @return int
+     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
-    protected function execute(InputInterface $input, OutputInterface $output) : int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $logger = LoggerHelper::createDefaultLogger($output);
 
-        /** @var string $cacheOption */
         $cacheOption = $input->getOption('cache');
-        $fileCache = new FilesystemCache($cacheOption);
-        $cache = new SimpleCacheAdapter($fileCache);
+        assert(is_string($cacheOption));
+
+        $adapter    = new LocalFilesystemAdapter($cacheOption);
+        $filesystem = new Filesystem($adapter);
+        $cache      = new SimpleCache(
+            new Flysystem($filesystem)
+        );
 
         $logger->info('initializing converting process');
 
@@ -78,10 +94,14 @@ class ConvertCommand extends Command
 
         $logger->info('started converting local file');
 
-        /** @var string $file */
         $file = $input->getArgument('file');
+        assert(is_string($file));
         if (! $file) {
             $file = $this->defaultIniFile;
+        }
+
+        if ($file === null) {
+            return self::FILENAME_MISSING;
         }
 
         $output->writeln(sprintf('converting file %s', $file));
@@ -91,19 +111,23 @@ class ConvertCommand extends Command
         } catch (Exception\FileNameMissingException $e) {
             $logger->debug($e);
 
-            return 6;
+            return self::FILENAME_MISSING;
         } catch (Exception\FileNotFoundException $e) {
             $logger->debug($e);
 
-            return 7;
+            return self::FILE_NOT_FOUND;
         } catch (Exception\ErrorReadingFileException $e) {
             $logger->debug($e);
 
-            return 8;
+            return self::ERROR_READING_FILE;
+        } catch (Throwable $e) {
+            $logger->info($e);
+
+            return CheckUpdateCommand::GENERIC_ERROR;
         }
 
         $logger->info('finished converting local file');
 
-        return 0;
+        return self::SUCCESS;
     }
 }

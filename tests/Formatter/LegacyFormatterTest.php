@@ -1,16 +1,23 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHPTest\Formatter;
 
 use BrowscapPHP\Formatter\LegacyFormatter;
+use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * @covers \BrowscapPHP\Formatter\LegacyFormatter
  */
-final class LegacyFormatterTest extends \PHPUnit\Framework\TestCase
+final class LegacyFormatterTest extends TestCase
 {
-    public function formatterOptionsProvider() : array
+    /**
+     * @return array[][]|stdClass[][]
+     * @phpstan-return array<array{0: array{lowercase?: bool}, 1: stdClass}>
+     */
+    public function formatterOptionsProvider(): array
     {
         return [
             [
@@ -31,12 +38,12 @@ final class LegacyFormatterTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider formatterOptionsProvider
+     * @param bool[] $options
+     * @phpstan-param array{lowercase?: bool} $options
      *
-     * @param array $options
-     * @param \stdClass $expectedResult
+     * @dataProvider formatterOptionsProvider
      */
-    public function testSetGetData(array $options, \stdClass $expectedResult) : void
+    public function testSetGetData(array $options, stdClass $expectedResult): void
     {
         $data = [
             'Browser' => 'test',

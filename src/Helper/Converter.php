@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHP\Helper;
 
@@ -7,8 +8,16 @@ use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Exception\ErrorReadingFileException;
 use BrowscapPHP\Exception\FileNotFoundException;
 use BrowscapPHP\IniParser\IniParser;
+use JsonException;
+use OutOfRangeException;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\InvalidArgumentException;
+use UnexpectedValueException;
+
+use function file_get_contents;
+use function is_string;
+use function preg_match;
+use function sprintf;
 
 /**
  * patternHelper to convert the ini data, parses the data and stores them into the cache
@@ -20,51 +29,39 @@ final class Converter implements ConverterInterface
      */
     private const BROWSCAP_VERSION_KEY = 'GJK_Browscap_Version';
 
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * The cache instance
-     *
-     * @var \BrowscapPHP\Cache\BrowscapCacheInterface
      */
-    private $cache;
+    private BrowscapCacheInterface $cache;
 
     /**
      * a filesystem patternHelper instance
-     *
-     * @var Filesystem
      */
-    private $filessystem;
+    private Filesystem $filessystem;
 
     /**
      * version of the ini file
-     *
-     * @var int
      */
-    private $iniVersion = 0;
+    private int $iniVersion = 0;
 
     /**
-     * Converter constructor.
-     *
-     * @param LoggerInterface        $logger
-     * @param BrowscapCacheInterface $cache
+     * @throws void
      */
     public function __construct(LoggerInterface $logger, BrowscapCacheInterface $cache)
     {
-        $this->logger = $logger;
-        $this->cache = $cache;
+        $this->logger      = $logger;
+        $this->cache       = $cache;
         $this->filessystem = new Filesystem();
     }
 
     /**
      * Sets a filesystem instance
      *
-     * @param Filesystem $file
+     * @throws void
      */
-    public function setFilesystem(Filesystem $file) : void
+    public function setFilesystem(Filesystem $file): void
     {
         $this->filessystem = $file;
     }
@@ -72,12 +69,10 @@ final class Converter implements ConverterInterface
     /**
      * converts a file
      *
-     * @param string $iniFile
-     *
      * @throws FileNotFoundException
      * @throws ErrorReadingFileException
      */
-    public function convertFile(string $iniFile) : void
+    public function convertFile(string $iniFile): void
     {
         if (! $this->filessystem->exists($iniFile)) {
             throw FileNotFoundException::fileNotFound($iniFile);
@@ -89,7 +84,7 @@ final class Converter implements ConverterInterface
 
         $this->logger->info('finished reading file');
 
-        if (!is_string($iniString)) {
+        if (! is_string($iniString)) {
             throw new ErrorReadingFileException(sprintf('could not read file %s', $iniFile));
         }
 
@@ -99,16 +94,16 @@ final class Converter implements ConverterInterface
     /**
      * converts the string content
      *
-     * @param string $iniString
+     * @throws void
      */
-    public function convertString(string $iniString) : void
+    public function convertString(string $iniString): void
     {
         $iniParser = new IniParser();
 
         $this->logger->info('start creating patterns from the ini data');
 
         foreach ($iniParser->createPatterns($iniString) as $subkey => $content) {
-            if ('' === $subkey) {
+            if ($subkey === '') {
                 continue;
             }
 
@@ -127,7 +122,7 @@ final class Converter implements ConverterInterface
 
         try {
             foreach ($iniParser->createIniParts($iniString) as $subkey => $content) {
-                if ('' === $subkey) {
+                if ($subkey === '') {
                     continue;
                 }
 
@@ -139,7 +134,7 @@ final class Converter implements ConverterInterface
                     $this->logger->error(new \InvalidArgumentException('an error occured while writing property data into the cache', 0, $e));
                 }
             }
-        } catch (\OutOfRangeException | \UnexpectedValueException $e) {
+        } catch (OutOfRangeException | UnexpectedValueException | JsonException | \InvalidArgumentException $e) {
             $this->logger->error(new \InvalidArgumentException('an error occured while writing property data into the cache', 0, $e));
         }
 
@@ -163,12 +158,12 @@ final class Converter implements ConverterInterface
      *
      * @param string $iniString The loaded ini data
      *
-     * @return int
+     * @throws void
      */
-    public function getIniVersion(string $iniString) : int
+    public function getIniVersion(string $iniString): int
     {
         $quoterHelper = new Quoter();
-        $key = $quoterHelper->pregQuote(self::BROWSCAP_VERSION_KEY);
+        $key          = $quoterHelper->pregQuote(self::BROWSCAP_VERSION_KEY);
 
         if (preg_match('/\.*\[' . $key . '\][^\[]*Version=(\d+)\D.*/', $iniString, $matches)) {
             if (isset($matches[1])) {
@@ -182,17 +177,19 @@ final class Converter implements ConverterInterface
     /**
      * sets the version
      *
-     * @param int $version
+     * @throws void
      */
-    public function setVersion(int $version) : void
+    public function setVersion(int $version): void
     {
         $this->iniVersion = $version;
     }
 
     /**
      * stores the version of the ini file into cache
+     *
+     * @throws void
      */
-    public function storeVersion() : void
+    public function storeVersion(): void
     {
         try {
             $this->cache->setItem('browscap.version', $this->iniVersion, false);
@@ -206,9 +203,9 @@ final class Converter implements ConverterInterface
      *
      * @param string $iniString The loaded ini data
      *
-     * @return string|null
+     * @throws void
      */
-    private function getIniReleaseDate(string $iniString) : ?string
+    private function getIniReleaseDate(string $iniString): ?string
     {
         if (preg_match('/Released=(.*)/', $iniString, $matches)) {
             if (isset($matches[1])) {
@@ -224,9 +221,9 @@ final class Converter implements ConverterInterface
      *
      * @param string $iniString The loaded ini data
      *
-     * @return string|null
+     * @throws void
      */
-    private function getIniType(string $iniString) : ?string
+    private function getIniType(string $iniString): ?string
     {
         if (preg_match('/Type=(.*)/', $iniString, $matches)) {
             if (isset($matches[1])) {

@@ -1,0 +1,496 @@
+name: "Continuous Integration"
+
+on:
+  - pull_request
+  - push
+
+env:
+  PHP_EXTENSIONS: "json, curl, opcache, mbstring"
+  PHP_INI_VALUES: "opcache.enable=1, opcache.enable_cli=1, opcache.fast_shutdown=0, zend.assertions=1, assert.exception=On"
+
+jobs:
+  validate:
+    name: "Validate composer"
+
+    runs-on: "${{ matrix.operating-system }}"
+
+    continue-on-error: false
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        operating-system:
+          - "ubuntu-20.04"
+
+        php-version:
+          - "7.4"
+
+        dependencies:
+          - ""
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2.4.0"
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@2.16.0"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.PHP_EXTENSIONS }}"
+          ini-values: "${{ env.PHP_INI_VALUES }}"
+          coverage: "none"
+          tools: "composer:v2, composer-normalize"
+
+      - name: "Validate composer.json"
+        run: "composer validate --strict"
+
+      - name: "Run composer-normalize"
+        run: "composer-normalize --dry-run"
+
+  install:
+    name: "Install dependencies"
+
+    needs: "validate"
+
+    runs-on: "${{ matrix.operating-system }}"
+
+    continue-on-error: ${{ matrix.experimental }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        operating-system:
+          - "ubuntu-18.04"
+          - "ubuntu-20.04"
+
+        php-version:
+          - "7.4"
+          - "8.0"
+          - "8.1"
+
+        dependencies:
+          - "lowest"
+          - "highest"
+
+        experimental: [false]
+
+        include:
+          - operating-system: "ubuntu-20.04"
+            php-version: "8.0"
+            dependencies: "locked"
+            experimental: false
+          - operating-system: "ubuntu-20.04"
+            php-version: "8.1"
+            dependencies: "locked"
+            experimental: false
+          - operating-system: "ubuntu-20.04"
+            php-version: "8.2"
+            dependencies: "highest"
+            experimental: true
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2.4.0"
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@2.16.0"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.PHP_EXTENSIONS }}"
+          ini-values: "${{ env.PHP_INI_VALUES }}"
+          coverage: "none"
+          tools: "composer:v2"
+
+      - name: "Determine composer cache directory"
+        id: "determine-composer-cache-directory"
+        run: "echo \"::set-output name=directory::$(composer config cache-dir)\""
+
+      - name: "Cache dependencies installed with composer"
+        uses: "actions/cache@v2.1.7"
+        with:
+          path: "${{ steps.determine-composer-cache-directory.outputs.directory }}"
+          key: "php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('composer.lock') }}"
+          restore-keys: "php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-"
+
+      - name: "Install lowest dependencies"
+        if: "${{ matrix.dependencies == 'lowest' }}"
+        run: "composer update --optimize-autoloader --prefer-dist --prefer-stable --no-progress --no-interaction -v --ansi --prefer-lowest"
+
+      - name: "Install highest dependencies"
+        if: "${{ matrix.dependencies == 'highest' && matrix.experimental == false }}"
+        run: "composer update --optimize-autoloader --prefer-dist --prefer-stable --no-progress --no-interaction -v --ansi"
+
+      - name: "Install highest dependencies (Experimental)"
+        if: "${{ matrix.dependencies == 'highest' && matrix.experimental == true }}"
+        run: "composer update --optimize-autoloader --prefer-dist --prefer-stable --no-progress --no-interaction -v --ansi --ignore-platform-reqs"
+
+      - name: "Install locked dependencies"
+        if: "${{ matrix.dependencies == 'locked' }}"
+        run: "composer install --no-interaction --no-progress"
+
+      - name: "Check dependencies with composer"
+        if: "matrix.php-version == '7.4'"
+        run: "composer outdated --direct --strict"
+
+      - name: "Check dependencies with composer"
+        if: "matrix.php-version != '7.4'"
+        run: "composer outdated --direct"
+
+  coding-standards:
+    name: "Check Coding Standards with PHPCS"
+
+    needs: "validate"
+
+    runs-on: "${{ matrix.operating-system }}"
+
+    continue-on-error: false
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        operating-system:
+          - "ubuntu-20.04"
+
+        php-version:
+          - "7.4"
+
+        dependencies:
+          - ""
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2.4.0"
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@2.16.0"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.PHP_EXTENSIONS }}"
+          ini-values: "${{ env.PHP_INI_VALUES }}"
+          coverage: "none"
+          tools: "composer:v2, cs2pr"
+
+      - name: "Determine composer cache directory"
+        id: "determine-composer-cache-directory"
+        run: "echo \"::set-output name=directory::$(composer config cache-dir)\""
+
+      - name: "Cache dependencies installed with composer"
+        uses: "actions/cache@v2.1.7"
+        with:
+          path: "${{ steps.determine-composer-cache-directory.outputs.directory }}"
+          key: "php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('composer.lock') }}"
+          restore-keys: "php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-"
+
+      - name: "Update dependencies with composer"
+        run: "composer update --optimize-autoloader --prefer-dist --prefer-stable --no-progress --no-interaction -v --ansi ${{ matrix.dependencies }}"
+
+      - name: "Run squizlabs/php_codesniffer"
+        run: "vendor/bin/phpcs --report=checkstyle -q | cs2pr"
+
+  static-code-analysis:
+    name: "Static Code Analysis with PHPStan"
+
+    needs: "validate"
+
+    runs-on: "${{ matrix.operating-system }}"
+
+    continue-on-error: false
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        operating-system:
+          - "ubuntu-20.04"
+
+        php-version:
+          - "7.4"
+
+        dependencies:
+          - ""
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2.4.0"
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@2.16.0"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.PHP_EXTENSIONS }}"
+          ini-values: "${{ env.PHP_INI_VALUES }}"
+          coverage: "none"
+          tools: "composer:v2"
+
+      - name: "Determine composer cache directory"
+        id: "determine-composer-cache-directory"
+        run: "echo \"::set-output name=directory::$(composer config cache-dir)\""
+
+      - name: "Cache dependencies installed with composer"
+        uses: "actions/cache@v2.1.7"
+        with:
+          path: "${{ steps.determine-composer-cache-directory.outputs.directory }}"
+          key: "php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('composer.lock') }}"
+          restore-keys: "php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-"
+
+      - name: "Update dependencies with composer"
+        run: "composer update --optimize-autoloader --prefer-dist --prefer-stable --no-progress --no-interaction -v --ansi ${{ matrix.dependencies }}"
+
+      - name: "Run phpstan/phpstan"
+        run: "vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=768M --no-progress"
+
+  unit-tests:
+    name: "UnitTests with PHPUnit"
+
+    needs: "validate"
+
+    runs-on: "${{ matrix.operating-system }}"
+
+    continue-on-error: false
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        operating-system:
+          - "ubuntu-20.04"
+
+        php-version:
+          - "7.4"
+          - "8.0"
+          - "8.1"
+
+        dependencies:
+          - ""
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2.4.0"
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@2.16.0"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.PHP_EXTENSIONS }}"
+          ini-values: "${{ env.PHP_INI_VALUES }}"
+          coverage: "none"
+          tools: "composer:v2"
+
+      - name: "Determine composer cache directory"
+        id: "determine-composer-cache-directory"
+        run: "echo \"::set-output name=directory::$(composer config cache-dir)\""
+
+      - name: "Cache dependencies installed with composer"
+        uses: "actions/cache@v2.1.7"
+        with:
+          path: "${{ steps.determine-composer-cache-directory.outputs.directory }}"
+          key: "php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('composer.lock') }}"
+          restore-keys: "php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-"
+
+      - name: "Update dependencies with composer"
+        run: "composer update --optimize-autoloader --prefer-dist --prefer-stable --no-progress --no-interaction -v --ansi ${{ matrix.dependencies }}"
+
+      - name: "Run unit tests with phpunit/phpunit"
+        run: "vendor/bin/phpunit -c phpunit.xml.dist --verbose --exclude-group compare --no-coverage --colors"
+
+  code-coverage:
+    name: "Code Coverage with PHPUnit"
+
+    needs: "unit-tests"
+
+    runs-on: "${{ matrix.operating-system }}"
+
+    continue-on-error: false
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        operating-system:
+          - "ubuntu-20.04"
+
+        php-version:
+          - "7.4"
+
+        dependencies:
+          - ""
+
+        coverage-drivers:
+          - "xdebug"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2.4.0"
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@2.16.0"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.PHP_EXTENSIONS }}"
+          ini-values: "${{ env.PHP_INI_VALUES }}"
+          coverage: "${{ matrix.coverage-drivers }}"
+          tools: "composer:v2, infection"
+
+      - name: "Determine composer cache directory"
+        id: "determine-composer-cache-directory"
+        run: "echo \"::set-output name=directory::$(composer config cache-dir)\""
+
+      - name: "Cache dependencies installed with composer"
+        uses: "actions/cache@v2.1.7"
+        with:
+          path: "${{ steps.determine-composer-cache-directory.outputs.directory }}"
+          key: "php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('composer.lock') }}"
+          restore-keys: "php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-"
+
+      - name: "Update dependencies with composer"
+        run: "composer update --optimize-autoloader --prefer-dist --prefer-stable --no-progress --no-interaction -v --ansi ${{ matrix.dependencies }}"
+
+      - name: "Create cache directory for phpunit/phpunit"
+        run: "mkdir -p .build/coverage"
+
+      - name: "Collect code coverage with Xdebug and phpunit/phpunit"
+        run: "vendor/bin/phpunit -c phpunit.xml.dist --verbose --exclude-group compare --coverage-clover=.build/coverage/clover.xml --coverage-text --colors"
+
+      - name: "Upload coverage to Codecov"
+        uses: "codecov/codecov-action@v2.1.0"
+        with:
+          file: ".build/coverage/clover.xml"
+          flags: "phpunit,php-${{ matrix.php-version }},${{ matrix.coverage-drivers }},${{ matrix.php-version }},${{ matrix.operating-system }}"
+          verbose: false
+
+  comparison-checks:
+    name: "Compare results with PHPUnit"
+
+    needs: "unit-tests"
+
+    runs-on: "${{ matrix.operating-system }}"
+
+    continue-on-error: false
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        operating-system:
+          - "ubuntu-20.04"
+
+        php-version:
+          - "7.4"
+
+        dependencies:
+          - ""
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2.4.0"
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@2.16.0"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.PHP_EXTENSIONS }}"
+          ini-values: "${{ env.PHP_INI_VALUES }}"
+          coverage: "none"
+          tools: "composer:v2"
+
+      - name: "Determine composer cache directory"
+        id: "determine-composer-cache-directory"
+        run: "echo \"::set-output name=directory::$(composer config cache-dir)\""
+
+      - name: "Cache dependencies installed with composer"
+        uses: "actions/cache@v2.1.7"
+        with:
+          path: "${{ steps.determine-composer-cache-directory.outputs.directory }}"
+          key: "php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('composer.lock') }}"
+          restore-keys: "php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-"
+
+      - name: "Update dependencies with composer"
+        run: "composer update --optimize-autoloader --prefer-dist --prefer-stable --no-progress --no-interaction -v --ansi ${{ matrix.dependencies }}"
+
+      - name: "Download browscap.ini"
+        run: |
+          wget -q http://browscap.org/stream?q=Full_PHP_BrowsCapINI -O /tmp/browscap.ini
+          mkdir -p resources
+          cp /tmp/browscap.ini resources/browscap.ini
+
+      - name: "Compare get_browser to browscap-php results"
+        run: "vendor/bin/phpunit -c phpunit.xml.dist --verbose --no-coverage --group compare --colors"
+
+  roave-backwards-compatibility-check:
+    name: "Check for Backward Compatibility breaks"
+
+    needs: "validate"
+
+    runs-on: "${{ matrix.operating-system }}"
+
+    continue-on-error: false
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        operating-system:
+          - "ubuntu-20.04"
+
+        php-version:
+          - "7.4" # https://github.com/Roave/BackwardCompatibilityCheck/issues/283
+
+        dependencies:
+          - ""
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2.4.0"
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@2.16.0"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.PHP_EXTENSIONS }}"
+          ini-values: "${{ env.PHP_INI_VALUES }}"
+          coverage: "none"
+          tools: "composer:v2"
+
+      - name: "Determine composer cache directory"
+        id: "determine-composer-cache-directory"
+        run: "echo \"::set-output name=directory::$(composer config cache-dir)\""
+
+      - name: "Cache dependencies installed with composer"
+        uses: "actions/cache@v2.1.7"
+        with:
+          path: "${{ steps.determine-composer-cache-directory.outputs.directory }}"
+          key: "php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('composer.lock') }}"
+          restore-keys: "php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-"
+
+      - name: "Require Roave/BackwardCompatibilityCheck"
+        run: "composer require --no-update --no-interaction --prefer-dist --prefer-stable --dev \"roave/backward-compatibility-check:6.0.x-dev\""
+
+      - name: "Composer update with new requirements"
+        run: "composer update --no-interaction --prefer-dist --prefer-stable"
+
+      - name: "Check for BC breaks"
+        run: "vendor/bin/roave-backward-compatibility-check --format=markdown"

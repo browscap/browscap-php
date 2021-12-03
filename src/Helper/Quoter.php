@@ -1,7 +1,16 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHP\Helper;
+
+use UnexpectedValueException;
+
+use function preg_match;
+use function preg_quote;
+use function preg_replace;
+use function sprintf;
+use function str_replace;
 
 /**
  * class to help quoting strings for using a regex
@@ -11,14 +20,11 @@ final class Quoter implements QuoterInterface
     /**
      * Converts browscap match patterns into preg match patterns.
      *
-     * @param string $user_agent
-     * @param string $delimiter
-     *
-     * @return string
+     * @throws void
      */
-    public function pregQuote(string $user_agent, string $delimiter = '/') : string
+    public function pregQuote(string $useragent, string $delimiter = '/'): string
     {
-        $pattern = preg_quote($user_agent, $delimiter);
+        $pattern = preg_quote($useragent, $delimiter);
 
         // the \\x replacement is a fix for "Der gro\xdfe BilderSauger 2.00u" user agent match
         return str_replace(['\*', '\?', '\\x'], ['.*', '.', '\\\\x'], $pattern);
@@ -27,16 +33,12 @@ final class Quoter implements QuoterInterface
     /**
      * Reverts the quoting of a pattern.
      *
-     * @param  string $pattern
-     *
-     * @throws \UnexpectedValueException
-     *
-     * @return string
+     * @throws UnexpectedValueException
      */
-    public function pregUnQuote(string $pattern) : string
+    public function pregUnQuote(string $pattern): string
     {
         // Fast check, because most parent pattern like 'DefaultProperties' don't need a replacement
-        if (!preg_match('/[^a-z\s]/i', $pattern)) {
+        if (! preg_match('/[^a-z\s]/i', $pattern)) {
             return $pattern;
         }
 
@@ -50,8 +52,8 @@ final class Quoter implements QuoterInterface
             $pattern
         );
 
-        if (null === $pattern) {
-            throw new \UnexpectedValueException(
+        if ($pattern === null) {
+            throw new UnexpectedValueException(
                 sprintf('an error occured while handling pattern %s', $origPattern)
             );
         }
@@ -59,12 +61,52 @@ final class Quoter implements QuoterInterface
         // Undo preg_quote
         return str_replace(
             [
-                '\\\\', '\\+', '\\*', '\\?', '\\[', '\\^', '\\]', '\\$', '\\(', '\\)', '\\{', '\\}', '\\=',
-                '\\!', '\\<', '\\>', '\\|', '\\:', '\\-', '\\.', '\\/', '\\#',
+                '\\\\',
+                '\\+',
+                '\\*',
+                '\\?',
+                '\\[',
+                '\\^',
+                '\\]',
+                '\\$',
+                '\\(',
+                '\\)',
+                '\\{',
+                '\\}',
+                '\\=',
+                '\\!',
+                '\\<',
+                '\\>',
+                '\\|',
+                '\\:',
+                '\\-',
+                '\\.',
+                '\\/',
+                '\\#',
             ],
             [
-                '\\', '+', '*', '?', '[', '^', ']', '$', '(', ')', '{', '}', '=',
-                '!', '<', '>', '|', ':', '-', '.', '/', '#',
+                '\\',
+                '+',
+                '*',
+                '?',
+                '[',
+                '^',
+                ']',
+                '$',
+                '(',
+                ')',
+                '{',
+                '}',
+                '=',
+                '!',
+                '<',
+                '>',
+                '|',
+                ':',
+                '-',
+                '.',
+                '/',
+                '#',
             ],
             $pattern
         );

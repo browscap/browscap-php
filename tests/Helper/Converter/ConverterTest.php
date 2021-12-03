@@ -1,41 +1,43 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHPTest\Helper\Converter;
 
 use BrowscapPHP\Cache\BrowscapCacheInterface;
+use BrowscapPHP\Exception\ErrorReadingFileException;
 use BrowscapPHP\Exception\FileNotFoundException;
 use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\Filesystem;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use ReflectionException;
+use ReflectionProperty;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
+
+use const DIRECTORY_SEPARATOR;
 
 /**
  * @covers \BrowscapPHP\Helper\Converter
  */
-final class ConverterTest extends \PHPUnit\Framework\TestCase
+final class ConverterTest extends TestCase
 {
     private const STORAGE_DIR = 'storage';
 
-    /**
-     * @var \BrowscapPHP\Helper\Converter
-     */
-    private $object;
+    private Converter $object;
 
     /**
-     * @var \org\bovigo\vfs\vfsStreamDirectory
+     * @throws Exception
      */
-    private $root;
-
-    protected function setUp() : void
+    protected function setUp(): void
     {
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects(self::never())
             ->method('info')
             ->willReturn(false);
 
-        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
         $cache->expects(self::any())
             ->method('setItem')
@@ -44,22 +46,30 @@ final class ConverterTest extends \PHPUnit\Framework\TestCase
         $this->object = new Converter($logger, $cache);
     }
 
-    public function testSetGetFilesystem() : void
+    /**
+     * @throws ReflectionException
+     * @throws InvalidArgumentException
+     * @throws Exception
+     */
+    public function testSetGetFilesystem(): void
     {
-        /** @var Filesystem|\PHPUnit_Framework_MockObject_MockObject $file */
         $file = $this->createMock(Filesystem::class);
 
         $this->object->setFilesystem($file);
 
-        $property = new \ReflectionProperty($this->object, 'filessystem');
+        $property = new ReflectionProperty($this->object, 'filessystem');
         $property->setAccessible(true);
 
         self::assertSame($file, $property->getValue($this->object));
     }
 
-    public function testConvertMissingFile() : void
+    /**
+     * @throws FileNotFoundException
+     * @throws Exception
+     * @throws ErrorReadingFileException
+     */
+    public function testConvertMissingFile(): void
     {
-        /** @var Filesystem|\PHPUnit_Framework_MockObject_MockObject $file */
         $file = $this->createMock(Filesystem::class);
         $file->expects(self::once())
             ->method('exists')
@@ -72,9 +82,14 @@ final class ConverterTest extends \PHPUnit\Framework\TestCase
         $this->object->convertFile('testFile');
     }
 
-    public function testConvertFile() : void
+    /**
+     * @throws FileNotFoundException
+     * @throws Exception
+     * @throws ErrorReadingFileException
+     */
+    public function testConvertFile(): void
     {
-        $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
+        $content   = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
 
 [GJK_Browscap_Version]
 Version=5031
@@ -179,14 +194,11 @@ CssVersion=0
 AolVersion=0
 ';
         $structure = [
-            self::STORAGE_DIR => [
-                'test.ini' => $content,
-            ],
+            self::STORAGE_DIR => ['test.ini' => $content],
         ];
 
-        $this->root = vfsStream::setup(self::STORAGE_DIR, null, $structure);
+        vfsStream::setup(self::STORAGE_DIR, null, $structure);
 
-        /** @var Filesystem|\PHPUnit_Framework_MockObject_MockObject $file */
         $file = $this->createMock(Filesystem::class);
         $file->expects(self::once())
             ->method('exists')
@@ -196,12 +208,15 @@ AolVersion=0
 
         $this->expectException(FileNotFoundException::class);
         $this->expectExceptionMessage('File "vfs://storage/test.ini" does not exist');
-        $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . \DIRECTORY_SEPARATOR . 'test.ini'));
+        $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.ini'));
     }
 
-    public function testGetIniVersion() : void
+    /**
+     * @throws InvalidArgumentException
+     * @throws Exception
+     */
+    public function testGetIniVersion(): void
     {
-        /** @var Filesystem|\PHPUnit_Framework_MockObject_MockObject $file */
         $file = $this->createMock(Filesystem::class);
         $file->expects(self::never())
             ->method('exists')

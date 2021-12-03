@@ -1,11 +1,21 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHP\Parser\Helper;
 
 use BrowscapPHP\Cache\BrowscapCacheInterface;
+use Generator;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\InvalidArgumentException;
+
+use function count;
+use function explode;
+use function is_array;
+use function sprintf;
+use function str_repeat;
+use function strlen;
+use function trim;
 
 /**
  * extracts the pattern and the data for theses pattern from the ini content, optimized for PHP 5.5+
@@ -14,27 +24,20 @@ class GetPattern implements GetPatternInterface
 {
     /**
      * The cache instance
-     *
-     * @var \BrowscapPHP\Cache\BrowscapCacheInterface
      */
-    private $cache;
+    private BrowscapCacheInterface $cache;
 
     /**
      * a logger instance
-     *
-     * @var \Psr\Log\LoggerInterface
      */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
-     * class contructor
-     *
-     * @param \BrowscapPHP\Cache\BrowscapCacheInterface $cache
-     * @param \Psr\Log\LoggerInterface                  $logger
+     * @throws void
      */
     public function __construct(BrowscapCacheInterface $cache, LoggerInterface $logger)
     {
-        $this->cache = $cache;
+        $this->cache  = $cache;
         $this->logger = $logger;
     }
 
@@ -45,11 +48,9 @@ class GetPattern implements GetPatternInterface
      * - We compare the length of the pattern with the length of the user agent
      *   (the pattern cannot be longer than the user agent!)
      *
-     * @param string $userAgent
-     *
-     * @return \Generator
+     * @throws void
      */
-    public function getPatterns(string $userAgent) : \Generator
+    public function getPatterns(string $userAgent): Generator
     {
         $starts = Pattern::getHashForPattern($userAgent, true);
         $length = strlen($userAgent);
@@ -64,12 +65,27 @@ class GetPattern implements GetPatternInterface
 
             try {
                 if (! $this->cache->hasItem('browscap.patterns.' . $tmpSubkey, true)) {
-                    $this->logger->debug('cache key "browscap.patterns.' . $tmpSubkey . '" not found');
+                    $this->logger->debug(
+                        sprintf(
+                            'cache key "browscap.patterns.%s" for useragent "%s" not found',
+                            $tmpSubkey,
+                            $userAgent
+                        )
+                    );
 
                     continue;
                 }
             } catch (InvalidArgumentException $e) {
-                $this->logger->error(new \InvalidArgumentException('an error occured while checking a pattern in the cache', 0, $e));
+                $this->logger->error(
+                    new \InvalidArgumentException(
+                        sprintf(
+                            'an error occured while checking pattern "browscap.patterns.%s" in the cache',
+                            $tmpSubkey
+                        ),
+                        0,
+                        $e
+                    )
+                );
 
                 continue;
             }
@@ -79,19 +95,40 @@ class GetPattern implements GetPatternInterface
             try {
                 $file = $this->cache->getItem('browscap.patterns.' . $tmpSubkey, true, $success);
             } catch (InvalidArgumentException $e) {
-                $this->logger->error(new \InvalidArgumentException('an error occured while reading the pattern data data from the cache', 0, $e));
+                $this->logger->error(
+                    new \InvalidArgumentException(
+                        sprintf(
+                            'an error occured while reading pattern "browscap.patterns.%s" from the cache',
+                            $tmpSubkey
+                        ),
+                        0,
+                        $e
+                    )
+                );
 
                 continue;
             }
 
             if (! $success) {
-                $this->logger->debug('cache key "browscap.patterns.' . $tmpSubkey . '" not found');
+                $this->logger->debug(
+                    sprintf(
+                        'cache key "browscap.patterns.%s" for useragent "%s" not found',
+                        $tmpSubkey,
+                        $userAgent
+                    )
+                );
 
                 continue;
             }
 
             if (! is_array($file) || ! count($file)) {
-                $this->logger->debug('cache key "browscap.patterns.' . $tmpSubkey . '" was empty');
+                $this->logger->debug(
+                    sprintf(
+                        'cache key "browscap.patterns.%s" for useragent "%s" was empty',
+                        $tmpSubkey,
+                        $userAgent
+                    )
+                );
 
                 continue;
             }
@@ -107,7 +144,7 @@ class GetPattern implements GetPatternInterface
                     }
 
                     $found = true;
-                } elseif (true === $found) {
+                } elseif ($found === true) {
                     break;
                 }
             }

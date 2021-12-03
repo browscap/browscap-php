@@ -19,7 +19,7 @@ composer require browscap/browscap-php
 Then you may identify the current user agent this way:
 
 ```php
-$cache = new \Roave\DoctrineSimpleCache\SimpleCacheAdapter($doctrineFileCache); // or maybe any other PSR-16 compatible caches
+$cache = new \MatthiasMullie\Scrapbook\Psr16\SimpleCache($doctrineFileCache); // or maybe any other PSR-16 compatible caches
 $logger = new \Monolog\Logger('name'); // or maybe any other PSR-3 compatible logger
 
 $browscap = new \BrowscapPHP\Browscap($cache, $logger);
@@ -110,8 +110,11 @@ $result = $bc->getBrowser();
 
 Change this to the base setup for version 4.x. to use the current cache directory
 ```php
-$fileCache = new \Doctrine\Common\Cache\FilesystemCache($cacheDir);
-$cache = new \Roave\DoctrineSimpleCache\SimpleCacheAdapter($fileCache);
+$fileCache = new \League\Flysystem\Local\LocalFilesystemAdapter($cacheDir);
+$filesystem = new \League\Flysystem\Filesystem($fileCache);
+$cache = new \MatthiasMullie\Scrapbook\Psr16\SimpleCache(
+    new \MatthiasMullie\Scrapbook\Adapters\Flysystem($filesystem)
+);
 
 $logger = new \Monolog\Logger('name');
 

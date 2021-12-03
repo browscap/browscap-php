@@ -1,26 +1,34 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHPTest\Helper;
 
 use BrowscapPHP\Helper\Quoter;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\TestCase;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 /**
  * @covers \BrowscapPHP\Helper\Quoter
  */
-final class QuoterTest extends \PHPUnit\Framework\TestCase
+final class QuoterTest extends TestCase
 {
-    /**
-     * @var \BrowscapPHP\Helper\Quoter
-     */
-    private $quoter;
+    private Quoter $quoter;
 
-    protected function setUp() : void
+    /**
+     * @throws void
+     */
+    protected function setUp(): void
     {
         $this->quoter = new Quoter();
     }
 
-    public function testPregQuote() : void
+    /**
+     * @throws InvalidArgumentException
+     * @throws Exception
+     */
+    public function testPregQuote(): void
     {
         $expected = 'Mozilla\/.\.0 \(compatible; Ask Jeeves\/Teoma.*\)';
 

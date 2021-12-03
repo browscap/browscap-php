@@ -1,16 +1,18 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHPTest\Exception;
 
 use BrowscapPHP\Exception\FileNotFoundException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \BrowscapPHP\Exception\FileNotFoundException
  */
-final class FileNotFoundExceptionTest extends \PHPUnit\Framework\TestCase
+final class FileNotFoundExceptionTest extends TestCase
 {
-    public function testFileNotFound() : void
+    public function testFileNotFound(): void
     {
         $exception = FileNotFoundException::fileNotFound('test.txt');
 

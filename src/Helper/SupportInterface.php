@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHP\Helper;
 
@@ -11,7 +12,7 @@ interface SupportInterface
     /**
      * detect the useragent
      *
-     * @return string
+     * @throws void
      */
-    public function getUserAgent() : string;
+    public function getUserAgent(): string;
 }
