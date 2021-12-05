@@ -66,6 +66,8 @@ final class GetData implements GetDataInterface
         // but for this check we need the unquoted version
         $unquotedPattern = $this->quoter->pregUnQuote($pattern);
 
+        var_dump($pattern, $unquotedPattern);
+
         // Try to get settings for the pattern
         $addedSettings = $this->getIniPart($unquotedPattern);
 
@@ -118,7 +120,7 @@ final class GetData implements GetDataInterface
 
         try {
             if (! $this->cache->hasItem('browscap.iniparts.' . $subkey, true)) {
-                $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" not found');
+                $this->logger->error('cache key "browscap.iniparts.' . $subkey . '" not found');
 
                 return [];
             }
@@ -139,13 +141,13 @@ final class GetData implements GetDataInterface
         }
 
         if (! $success) {
-            $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" not found');
+            $this->logger->error('cache key "browscap.iniparts.' . $subkey . '" not found');
 
             return [];
         }
 
         if (! is_array($file) || ! count($file)) {
-            $this->logger->debug('cache key "browscap.iniparts.' . $subkey . '" was empty');
+            $this->logger->error('cache key "browscap.iniparts.' . $subkey . '" was empty');
 
             return [];
         }
