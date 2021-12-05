@@ -464,6 +464,8 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
             ['Mozilla/5.0 (Linux; U; Android 5.0; en-us; Lenovo A7000-a Build/LRX21M) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 UCBrowser/9.9.2.467 U3/0.8.0 Mobile Safari/534.30'],
             ['Mozilla/5.0 (Linux; U; Android 5.1; en-us; Lenovo A2010-a Build/LMY47D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 UCBrowser/9.9.2.467 U3/0.8.0 Mobile Safari/534.30'],
             ['nokia6120c/UC Browser8.0.3.107/69/444 UNTRUSTED/1.0'],
+            ['Dalvik/1.6.0 (Linux## U## Android 4.4.2## PO#9259 TAQ-10123 Build/KVT49L)'],
+            ['greasemonkey &#8211; google images relinker (v 2.0)'],
         ];
     }
 }
