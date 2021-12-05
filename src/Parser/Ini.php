@@ -91,6 +91,8 @@ final class Ini implements ParserInterface
                     // search for the next pattern.
                     $settings = $this->dataHelper->getSettings($pattern);
 
+                    var_dump($userAgent, $pattern, $settings);
+
                     if (0 < count($settings)) {
                         $formatter = $this->formatter;
                         $formatter->setData($settings);

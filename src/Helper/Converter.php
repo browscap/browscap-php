@@ -112,6 +112,8 @@ final class Converter implements ConverterInterface
                 continue;
             }
 
+            $this->logger->error('writing pattern data "' . $subkey . '" to the cache');
+
             try {
                 if (! $this->cache->setItem('browscap.patterns.' . $subkey, $content, true)) {
                     $this->logger->error('could not write pattern data "' . $subkey . '" to the cache');
@@ -130,6 +132,8 @@ final class Converter implements ConverterInterface
                 if ('' === $subkey) {
                     continue;
                 }
+
+                $this->logger->error('writing property data "' . $subkey . '" to the cache');
 
                 try {
                     if (! $this->cache->setItem('browscap.iniparts.' . $subkey, $content, true)) {
