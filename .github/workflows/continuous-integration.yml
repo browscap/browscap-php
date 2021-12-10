@@ -136,14 +136,6 @@ jobs:
         if: "${{ matrix.dependencies == 'locked' }}"
         run: "composer install --no-interaction --no-progress"
 
-      - name: "Check dependencies with composer"
-        if: "matrix.php-version == '7.4'"
-        run: "composer outdated --direct --strict"
-
-      - name: "Check dependencies with composer"
-        if: "matrix.php-version != '7.4'"
-        run: "composer outdated --direct"
-
   coding-standards:
     name: "Check Coding Standards with PHPCS"
 
