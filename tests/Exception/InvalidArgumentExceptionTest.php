@@ -1,16 +1,18 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHPTest\Exception;
 
 use BrowscapPHP\Exception\InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \BrowscapPHP\Exception\InvalidArgumentException
  */
-final class InvalidArgumentExceptionTest extends \PHPUnit\Framework\TestCase
+final class InvalidArgumentExceptionTest extends TestCase
 {
-    public function testOneOfCommandArguments() : void
+    public function testOneOfCommandArguments(): void
     {
         $exception = InvalidArgumentException::oneOfCommandArguments('http://example.org', 'Uri not reachable');
 

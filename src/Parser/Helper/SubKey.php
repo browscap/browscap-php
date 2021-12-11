@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHP\Parser\Helper;
 
@@ -8,6 +9,9 @@ namespace BrowscapPHP\Parser\Helper;
  */
 final class SubKey
 {
+    /**
+     * @throws void
+     */
     private function __construct()
     {
     }
@@ -15,11 +19,9 @@ final class SubKey
     /**
      * Gets the subkey for the pattern cache file, generated from the given string
      *
-     * @param  string $string
-     *
-     * @return string
+     * @throws void
      */
-    public static function getPatternCacheSubkey(string $string) : string
+    public static function getPatternCacheSubkey(string $string): string
     {
         return $string[0] . $string[1];
     }
@@ -28,11 +30,13 @@ final class SubKey
      * Gets all subkeys for the pattern cache files
      *
      * @return string[]
+     *
+     * @throws void
      */
-    public static function getAllPatternCacheSubkeys() : array
+    public static function getAllPatternCacheSubkeys(): array
     {
         $subkeys = [];
-        $chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+        $chars   = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
 
         foreach ($chars as $charOne) {
             foreach ($chars as $charTwo) {
@@ -46,11 +50,9 @@ final class SubKey
     /**
      * Gets the sub key for the ini parts cache file, generated from the given string
      *
-     * @param  string $string
-     *
-     * @return string
+     * @throws void
      */
-    public static function getIniPartCacheSubKey(string $string) : string
+    public static function getIniPartCacheSubKey(string $string): string
     {
         return $string[0] . $string[1] . $string[2];
     }
@@ -59,11 +61,13 @@ final class SubKey
      * Gets all sub keys for the inipart cache files
      *
      * @return string[]
+     *
+     * @throws void
      */
-    public static function getAllIniPartCacheSubKeys() : array
+    public static function getAllIniPartCacheSubKeys(): array
     {
         $subKeys = [];
-        $chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+        $chars   = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
 
         foreach ($chars as $charOne) {
             foreach ($chars as $charTwo) {

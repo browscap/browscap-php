@@ -1,25 +1,29 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHP\Helper;
+
+use function array_key_exists;
+use function strip_tags;
+use function trim;
+use function urldecode;
 
 /**
  * class to help getting the user agent
  */
 final class Support implements SupportInterface
 {
-    /**
-     * @var array
-     */
-    private $source = [];
+    /** @var string[] */
+    private array $source = [];
 
     /**
      * The HTTP Headers that this application will look through to find the best
      * User Agent, if one is not specified
      *
-     * @var array
+     * @var string[]
      */
-    private $userAgentHeaders = [
+    private array $userAgentHeaders = [
         'HTTP_X_DEVICE_USER_AGENT',
         'HTTP_X_ORIGINAL_USER_AGENT',
         'HTTP_X_OPERAMINI_PHONE_UA',
@@ -29,11 +33,13 @@ final class Support implements SupportInterface
     ];
 
     /**
-     * @param array|null $source
+     * @param string[]|null $source
+     *
+     * @throws void
      */
     public function __construct(?array $source = null)
     {
-        if (null === $source) {
+        if ($source === null) {
             $source = [];
         }
 
@@ -43,14 +49,15 @@ final class Support implements SupportInterface
     /**
      * detect the useragent
      *
-     * @return string
+     * @throws void
      */
-    public function getUserAgent() : string
+    public function getUserAgent(): string
     {
         $userAgent = '';
 
         foreach ($this->userAgentHeaders as $header) {
-            if (array_key_exists($header, $this->source)
+            if (
+                array_key_exists($header, $this->source)
                 && $this->source[$header]
             ) {
                 $userAgent = $this->cleanParam($this->source[$header]);
@@ -67,9 +74,9 @@ final class Support implements SupportInterface
      *
      * @param string $param the value to be cleaned
      *
-     * @return string
+     * @throws void
      */
-    private function cleanParam(string $param) : string
+    private function cleanParam(string $param): string
     {
         return strip_tags(trim(urldecode($param)));
     }

@@ -1,17 +1,24 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Command\CheckUpdateCommand;
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionException;
 
-final class CheckUpdateCommandTest extends \PHPUnit\Framework\TestCase
+final class CheckUpdateCommandTest extends TestCase
 {
-    public function testConfigure() : void
+    /**
+     * @throws ReflectionException
+     */
+    public function testConfigure(): void
     {
         $object = $this->getMockBuilder(CheckUpdateCommand::class)
             ->disableOriginalConstructor()
-            ->setMethods(['setName', 'setDescription', 'addArgument', 'addOption'])
+            ->onlyMethods(['setName', 'setDescription', 'addArgument', 'addOption'])
             ->getMock();
         $object
             ->expects(self::once())
@@ -30,7 +37,7 @@ final class CheckUpdateCommandTest extends \PHPUnit\Framework\TestCase
             ->method('addOption')
             ->willReturnSelf();
 
-        $class = new \ReflectionClass(CheckUpdateCommand::class);
+        $class  = new ReflectionClass(CheckUpdateCommand::class);
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 

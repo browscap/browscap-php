@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHP\Command;
 
@@ -9,12 +10,20 @@ use BrowscapPHP\Exception\FetcherException;
 use BrowscapPHP\Exception\NoCachedVersionException;
 use BrowscapPHP\Exception\NoNewVersionException;
 use BrowscapPHP\Helper\LoggerHelper;
-use Doctrine\Common\Cache\FilesystemCache;
-use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
+use League\Flysystem\Filesystem;
+use League\Flysystem\Local\LocalFilesystemAdapter;
+use MatthiasMullie\Scrapbook\Adapters\Flysystem;
+use MatthiasMullie\Scrapbook\Psr16\SimpleCache;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
+
+use function assert;
+use function is_string;
 
 /**
  * Command to fetch a browscap ini file from the remote host, convert it into an array and store the content in a local
@@ -22,11 +31,17 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CheckUpdateCommand extends Command
 {
-    /**
-     * @var string
-     */
-    private $defaultCacheFolder;
+    public const NO_CACHED_VERSION         = 1;
+    public const NO_NEWER_VERSION          = 2;
+    public const ERROR_READING_CACHE       = 3;
+    public const ERROR_READING_REMOTE_FILE = 4;
+    public const GENERIC_ERROR             = 5;
 
+    private ?string $defaultCacheFolder = null;
+
+    /**
+     * @throws LogicException
+     */
     public function __construct(string $defaultCacheFolder)
     {
         $this->defaultCacheFolder = $defaultCacheFolder;
@@ -34,7 +49,10 @@ class CheckUpdateCommand extends Command
         parent::__construct();
     }
 
-    protected function configure() : void
+    /**
+     * @throws InvalidArgumentException
+     */
+    protected function configure(): void
     {
         $this
             ->setName('browscap:check-update')
@@ -49,19 +67,21 @@ class CheckUpdateCommand extends Command
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface   $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     *
-     * @return int
+     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
-    protected function execute(InputInterface $input, OutputInterface $output) : int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $logger = LoggerHelper::createDefaultLogger($output);
 
-        /** @var string $cacheOption */
         $cacheOption = $input->getOption('cache');
-        $fileCache = new FilesystemCache($cacheOption);
-        $cache = new SimpleCacheAdapter($fileCache);
+        assert(is_string($cacheOption));
+
+        $adapter    = new LocalFilesystemAdapter($cacheOption);
+        $filesystem = new Filesystem($adapter);
+        $cache      = new SimpleCache(
+            new Flysystem($filesystem)
+        );
 
         $logger->debug('started checking for new version of remote file');
 
@@ -70,28 +90,28 @@ class CheckUpdateCommand extends Command
         try {
             $browscap->checkUpdate();
         } catch (NoCachedVersionException $e) {
-            return 1;
+            return self::NO_CACHED_VERSION;
         } catch (NoNewVersionException $e) {
             // no newer version available
             $logger->info('there is no newer version available');
 
-            return 2;
+            return self::NO_NEWER_VERSION;
         } catch (ErrorCachedVersionException $e) {
             $logger->info($e);
 
-            return 3;
+            return self::ERROR_READING_CACHE;
         } catch (FetcherException $e) {
             $logger->info($e);
 
-            return 4;
-        } catch (\Throwable $e) {
+            return self::ERROR_READING_REMOTE_FILE;
+        } catch (Throwable $e) {
             $logger->info($e);
 
-            return 5;
+            return self::GENERIC_ERROR;
         }
 
         $logger->debug('finished checking for new version of remote file');
 
-        return 0;
+        return self::SUCCESS;
     }
 }

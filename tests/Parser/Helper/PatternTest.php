@@ -1,30 +1,42 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHPTest\Parser\Helper;
 
 use BrowscapPHP\Parser\Helper\Pattern;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\TestCase;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
+
+use function strtolower;
 
 /**
  * @covers \BrowscapPHP\Parser\Helper\Pattern
  */
-final class PatternTest extends \PHPUnit\Framework\TestCase
+final class PatternTest extends TestCase
 {
     /**
+     * @throws InvalidArgumentException
+     * @throws Exception
+     *
      * @group pattern
      */
-    public function testGetPatternStartWithoutVariants() : void
+    public function testGetPatternStartWithoutVariants(): void
     {
         $pattern = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.68 Safari/537.36';
         self::assertSame('aaa556aeec36ac3edfe2f5deea5f1d28', Pattern::getHashForPattern(strtolower($pattern), false)[0]);
     }
 
     /**
+     * @throws InvalidArgumentException
+     * @throws Exception
+     *
      * @group pattern
      */
-    public function testGetPatternStartWithVariants() : void
+    public function testGetPatternStartWithVariants(): void
     {
-        $pattern = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.68 Safari/537.36';
+        $pattern  = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.68 Safari/537.36';
         $expected = [
             0 => 'aaa556aeec36ac3edfe2f5deea5f1d28',
             1 => '31d050fd7a4ea6c972063ef30d18991a',
@@ -42,17 +54,23 @@ final class PatternTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @throws InvalidArgumentException
+     * @throws Exception
+     *
      * @group pattern
      */
-    public function testGetPatternLength() : void
+    public function testGetPatternLength(): void
     {
         self::assertSame(4, Pattern::getPatternLength('abcd'));
     }
 
     /**
+     * @throws InvalidArgumentException
+     * @throws Exception
+     *
      * @group pattern
      */
-    public function testGetHashForParts() : void
+    public function testGetHashForParts(): void
     {
         self::assertSame(
             '529f1ddb64ea27d5cc6fc8ce8048d9e7',

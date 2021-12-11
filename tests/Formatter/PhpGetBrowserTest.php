@@ -1,26 +1,26 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHPTest\Formatter;
 
 use BrowscapPHP\Formatter\PhpGetBrowser;
+use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * @covers \BrowscapPHP\Formatter\PhpGetBrowser
  */
-final class PhpGetBrowserTest extends \PHPUnit\Framework\TestCase
+final class PhpGetBrowserTest extends TestCase
 {
-    /**
-     * @var PhpGetBrowser
-     */
-    private $object;
+    private PhpGetBrowser $object;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->object = new PhpGetBrowser();
     }
 
-    public function testSetGetData() : void
+    public function testSetGetData(): void
     {
         $data = [
             'Browser' => 'test',
@@ -29,13 +29,13 @@ final class PhpGetBrowserTest extends \PHPUnit\Framework\TestCase
 
         $this->object->setData($data);
         $return = $this->object->getData();
-        self::assertInstanceOf(\stdClass::class, $return);
+        self::assertInstanceOf(stdClass::class, $return);
         self::assertSame('test', $return->browser);
         self::assertSame('TestComment', $return->comment);
         self::assertObjectHasAttribute('browser_type', $return);
     }
 
-    public function testPatternIdIsReturned() : void
+    public function testPatternIdIsReturned(): void
     {
         $data = [
             'Browser' => 'test',
@@ -49,11 +49,9 @@ final class PhpGetBrowserTest extends \PHPUnit\Framework\TestCase
         self::assertSame('test.json::u0::c1', $return->patternid);
     }
 
-    public function testPatternIdIsNotReturned() : void
+    public function testPatternIdIsNotReturned(): void
     {
-        $data = [
-            'Browser' => 'test',
-        ];
+        $data = ['Browser' => 'test'];
 
         $this->object->setData($data);
         $return = $this->object->getData();

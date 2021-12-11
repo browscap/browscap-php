@@ -3,9 +3,7 @@ Browser Capabilities PHP Project
 
 This is a userland replacement for PHP's native `get_browser()` function, which is _officially supported_ by the Browser Capabilities Project.
 
-**Note that you are currently viewing the 4.x series. If you're looking for the unsupported 2.x version, please read the documentation for that branch [here](https://github.com/browscap/browscap-php/tree/2.x).**
-
-[![Build Status](https://secure.travis-ci.org/browscap/browscap-php.png?branch=master)](http://travis-ci.org/browscap/browscap-php) [![codecov](https://codecov.io/gh/browscap/browscap-php/branch/master/graph/badge.svg)](https://codecov.io/gh/browscap/browscap-php)
+[![CI](https://github.com/browscap/browscap-php/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/browscap/browscap-php/actions/workflows/continuous-integration.yml)
 
 Installation
 ------------
@@ -19,7 +17,7 @@ composer require browscap/browscap-php
 Then you may identify the current user agent this way:
 
 ```php
-$cache = new \Roave\DoctrineSimpleCache\SimpleCacheAdapter($doctrineFileCache); // or maybe any other PSR-16 compatible caches
+$cache = new \MatthiasMullie\Scrapbook\Psr16\SimpleCache($doctrineFileCache); // or maybe any other PSR-16 compatible caches
 $logger = new \Monolog\Logger('name'); // or maybe any other PSR-3 compatible logger
 
 $browscap = new \BrowscapPHP\Browscap($cache, $logger);
@@ -29,7 +27,8 @@ $info = $browscap->getBrowser();
 Recommended Setup
 -----------------
 
-Before you can start, you have to download the browscap.ini file and convert it into a cache. There are two ways.
+Before you can start, you have to run the `browscap:fetch` command to download the `browscap.ini` file, and use the
+`browscap:convert` command to convert it into a cache. There are two ways.
 
 a. Download the file and convert it in two steps. The downloaded file will be stored in a local file, but there is no check
    if the remote file has changed. If your cache gets corrupted you only need to rerun the `convert` command.
@@ -45,73 +44,74 @@ b. Download the file and convert it in one step. The downloaded file will not be
 ```php
 vendor/bin/browscap-php browscap:update
 ```
-    
+
 If you want to autoupdate the used cache, we recommend a separate cron job that calls the command listed above.
 
-What's changed in version 4.x
+BC breaks in version 6.0.x
 -----------------------------
 
-## BC breaks listed
+# Added
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapInterface#setFormatter()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapInterface#setParser()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapInterface#getParser()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapInterface#getBrowser()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Formatter\FormatterInterface#setData()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Formatter\FormatterInterface#getData()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\IniParser\ParserInterface#createIniParts()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\IniParser\ParserInterface#createPatterns()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Parser\ParserInterface#getBrowser()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Parser\Helper\GetDataInterface#getSettings()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Parser\Helper\GetPatternInterface#getPatterns()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapUpdaterInterface#convertFile()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapUpdaterInterface#convertString()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapUpdaterInterface#fetch()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapUpdaterInterface#update()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapUpdaterInterface#checkUpdate()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Cache\BrowscapCacheInterface#getVersion()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Cache\BrowscapCacheInterface#getReleaseDate()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Cache\BrowscapCacheInterface#getType()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Cache\BrowscapCacheInterface#getItem()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Cache\BrowscapCacheInterface#setItem()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Cache\BrowscapCacheInterface#hasItem()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Cache\BrowscapCacheInterface#removeItem()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Cache\BrowscapCacheInterface#flush()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\IniLoaderInterface#setRemoteFilename()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\IniLoaderInterface#getRemoteIniUrl()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\IniLoaderInterface#getRemoteTimeUrl()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\IniLoaderInterface#getRemoteVersionUrl()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\ConverterInterface#setFilesystem()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\ConverterInterface#convertFile()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\ConverterInterface#convertString()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\ConverterInterface#getIniVersion()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\ConverterInterface#setVersion()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\ConverterInterface#storeVersion()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\SupportInterface#getUserAgent()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\QuoterInterface#pregQuote()
+- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\QuoterInterface#pregUnQuote()
 
- * Strict type hints have been added throughout. This may break some type assumptions made in earlier versions.
- * `CheckUpdateCommand`, `ConvertCommand`, `LogfileCommand`, `ParserCommand`, `UpdateCommand` removed `setCache` methods
-   so that caches must now be constructor-injected
- * Many classes are now `final` - use composition instead of inheritance
- * `PropertyFormatter` now assumes any non-truthy values are `false`
- * `checkUpdate` method now throws an exception if we could not determine the "remote" version, or if there is no
-   version in cache already.
- * `log` method was removed
-   
-## Changes
+# Changed
+- [BC] The parameter $content of BrowscapPHP\IniParser\ParserInterface#createPatterns() changed from no type to a non-contravariant string
+- [BC] The parameter $content of BrowscapPHP\IniParser\ParserInterface#createPatterns() changed from no type to string
+- [BC] The parameter $content of BrowscapPHP\IniParser\IniParser#createPatterns() changed from no type to a non-contravariant string
+- [BC] The parameter $filename of BrowscapPHP\Helper\Filesystem#dumpFile() changed from no type to a non-contravariant string
+- [BC] The parameter $filename of BrowscapPHP\Helper\Filesystem#dumpFile() changed from no type to string
 
-* for caching the [Doctrine Cache](https://github.com/doctrine/cache) package is used
-  * Any other Cache compatible with [PSR-16](https://github.com/php-fig/simple-cache) could be used
-* instead of the `debug` flag for the CLI commands the verbose flag has to be used
-
-
-What's changed in version 3.x
------------------------------
-
-## Changes
-
-* the namespace was changed to `BrowscapPHP` 
-* the `Browscap` class was split into pieces
-  * for caching the [WurflCache](https://github.com/mimmi20/WurflCache) package is used
-  * for downloading the browscap.ini the [Guzzle HTTP](https://github.com/guzzle/guzzle) package is used
-
-## Removed features
-
-* the autoupdate function was removed
-* all public properties were removed
-
-## New features
-
-* now it is possible to use other caches than the file cache (see the [WurflCache](https://github.com/mimmi20/WurflCache) package formore information)
-* now it is possible to write your own formatter to change the output format 
-* now it is possbile to set a PSR-3 compatible logger
+# Removed
+- [BC] Constant BrowscapPHP\Data\PropertyHolder::TYPE_IN_ARRAY was removed
+- [BC] Method BrowscapPHP\Data\PropertyHolder#checkValueInArray() was removed
+- [BC] Method BrowscapPHP\Parser\Helper\GetDataInterface#__construct() was removed
+- [BC] Method BrowscapPHP\Parser\Helper\GetPatternInterface#__construct() was removed
+- [BC] Method BrowscapPHP\Cache\BrowscapCacheInterface#__construct() was removed
 
 Setup Examples
 --------------
 
-## Update your setup to version 4.x
-
-This is the base setup in version 3.x.
 ```php
-$bc = new \BrowscapPHP\Browscap();
-
-$adapter = new \WurflCache\Adapter\File([\WurflCache\Adapter\File::DIR => $cacheDir]);
-$bc->setCache($adapter);
-
-$logger = new \Monolog\Logger('name');
-$bc->setLogger($logger);
-
-$result = $bc->getBrowser();
-```
-
-Change this to the base setup for version 4.x. to use the current cache directory
-```php
-$fileCache = new \Doctrine\Common\Cache\FilesystemCache($cacheDir);
-$cache = new \Roave\DoctrineSimpleCache\SimpleCacheAdapter($fileCache);
+$fileCache = new \League\Flysystem\Local\LocalFilesystemAdapter($cacheDir);
+$filesystem = new \League\Flysystem\Filesystem($fileCache);
+$cache = new \MatthiasMullie\Scrapbook\Psr16\SimpleCache(
+    new \MatthiasMullie\Scrapbook\Adapters\Flysystem($filesystem)
+);
 
 $logger = new \Monolog\Logger('name');
 

@@ -1,15 +1,14 @@
 {
     "name": "browscap/browscap-php",
-    "type": "library",
     "description": "Standalone replacement for php's native get_browser() function",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "get_browser",
         "browser",
         "capabilities",
         "user agent"
     ],
-    "homepage": "https://github.com/browscap/browscap-php",
-    "license": "MIT",
     "authors": [
         {
             "name": "Jonathan Stoppani",
@@ -24,39 +23,39 @@
             "email": "mimmi20@live.de"
         }
     ],
+    "homepage": "https://github.com/browscap/browscap-php",
+    "support": {
+        "issues": "https://github.com/browscap/browscap-php/issues",
+        "source": "https://github.com/browscap/browscap-php"
+    },
     "require": {
-        "php": ">=7.3.0,<8.1.0",
+        "php": ">=7.4.3,<8.2.0",
         "ext-json": "*",
-        "daverandom/exceptional-json": "^1.0.4",
-        "guzzlehttp/guzzle": "^6.5.2 || ^7.0",
-        "monolog/monolog": "^1.25.3 || ^2.0.2",
+        "guzzlehttp/guzzle": "^7.4.1",
+        "league/flysystem": "^2.3.2",
+        "matthiasmullie/scrapbook": "^1.4.8",
+        "monolog/monolog": "^2.3.5",
+        "psr/log": "^1.1.4 || ^2.0.0 || ^3.0.0",
         "psr/simple-cache": "^1.0.1",
-        "roave/doctrine-simplecache": "^2.2.0",
-        "symfony/console": "^3.4.36 || ^4.4.2 || ^5.0.2",
-        "symfony/filesystem": "^3.4.36 || ^4.4.2 || ^5.0.2"
+        "symfony/console": "^5.4.0",
+        "symfony/filesystem": "^5.4.0"
     },
     "require-dev": {
-        "ergebnis/composer-normalize": "^2.2.2",
-        "friendsofphp/php-cs-fixer": "^2.16.1",
-        "mikey179/vfsstream": "^1.6.8",
-        "pepakriz/phpstan-exception-rules": "^0.11.1",
-        "phpstan/phpstan": "^0.12.9",
-        "phpstan/phpstan-beberlei-assert": "^0.12.2",
-        "phpstan/phpstan-deprecation-rules": "^0.12.2",
-        "phpstan/phpstan-phpunit": "^0.12.6",
-        "phpstan/phpstan-strict-rules": "^0.12.2",
-        "phpunit/phpunit": "^9.5.0"
+        "doctrine/coding-standard": "^9.0.0",
+        "ergebnis/composer-normalize": "^2.18.0",
+        "mikey179/vfsstream": "^v1.6.10",
+        "phpstan/extension-installer": "^1.1.0",
+        "phpstan/phpstan": "^1.2.0",
+        "phpstan/phpstan-beberlei-assert": "^1.0.0",
+        "phpstan/phpstan-deprecation-rules": "^1.0.0",
+        "phpstan/phpstan-phpunit": "^1.0.0",
+        "phpunit/phpunit": "^9.5.10"
     },
     "suggest": {
         "ext-curl": "to use curl requests to get the ini file"
     },
-    "config": {
-        "platform": {
-            "php": "7.4.0"
-        },
-        "preferred-install": "dist",
-        "sort-packages": true
-    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "BrowscapPHP\\": "src/"
@@ -67,13 +66,11 @@
             "BrowscapPHPTest\\": "tests/"
         }
     },
-    "minimum-stability": "stable",
-    "prefer-stable": true,
     "bin": [
         "bin/browscap-php"
     ],
-    "support": {
-        "issues": "https://github.com/browscap/browscap-php/issues",
-        "source": "https://github.com/browscap/browscap-php"
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
     }
 }

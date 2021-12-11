@@ -9,9 +9,9 @@
     beStrictAboutTestsThatDoNotTestAnything="true"
     beStrictAboutTodoAnnotatedTests="true"
     verbose="false"
-    colors="true"
-    failOnWarning="true"
     bootstrap="vendor/autoload.php"
+    failOnWarning="true"
+    failOnRisky="true"
     >
     <php>
         <ini name="error_reporting" value="-1"/>
@@ -23,9 +23,12 @@
         <directory>tests/</directory>
     </testsuite>
 
-    <filter>
-        <whitelist addUncoveredFilesFromWhitelist="true" processUncoveredFilesFromWhitelist="true">
+    <coverage includeUncoveredFiles="true" processUncoveredFiles="true">
+        <include>
             <directory suffix=".php">src/</directory>
-        </whitelist>
-    </filter>
+        </include>
+        <report>
+            <text outputFile="php://stdout" showUncoveredFiles="true" showOnlySummary="false"/>
+        </report>
+    </coverage>
 </phpunit>

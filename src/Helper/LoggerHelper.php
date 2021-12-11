@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHP\Helper;
 
@@ -12,9 +13,9 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Class LoggerHelper
- */
+use function assert;
+use function is_callable;
+
 final class LoggerHelper
 {
     private function __construct()
@@ -24,24 +25,22 @@ final class LoggerHelper
     /**
      * creates a \Monolog\Logger instance
      *
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     *
-     * @return LoggerInterface
+     * @throws void
      */
-    public static function createDefaultLogger(OutputInterface $output) : LoggerInterface
+    public static function createDefaultLogger(OutputInterface $output): LoggerInterface
     {
-        $logger = new Logger('browscap');
+        $logger        = new Logger('browscap');
         $consoleLogger = new ConsoleLogger($output);
-        $psrHandler = new PsrHandler($consoleLogger);
+        $psrHandler    = new PsrHandler($consoleLogger);
 
         $logger->pushHandler($psrHandler);
 
-        /** @var callable $memoryProcessor */
         $memoryProcessor = new MemoryUsageProcessor(true);
+        assert(is_callable($memoryProcessor));
         $logger->pushProcessor($memoryProcessor);
 
-        /** @var callable $peakMemoryProcessor */
         $peakMemoryProcessor = new MemoryPeakUsageProcessor(true);
+        assert(is_callable($peakMemoryProcessor));
         $logger->pushProcessor($peakMemoryProcessor);
 
         ErrorHandler::register($logger);

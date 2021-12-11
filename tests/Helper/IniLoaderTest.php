@@ -1,35 +1,44 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHPTest\Helper;
 
 use BrowscapPHP\Helper\Exception;
 use BrowscapPHP\Helper\IniLoader;
 use BrowscapPHP\Helper\IniLoaderInterface;
+use PHPUnit\Framework\TestCase;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 /**
  * @covers \BrowscapPHP\Helper\IniLoader
  */
-final class IniLoaderTest extends \PHPUnit\Framework\TestCase
+final class IniLoaderTest extends TestCase
 {
-    /**
-     * @var IniLoader
-     */
-    private $object;
+    private IniLoader $object;
 
-    protected function setUp() : void
+    /**
+     * @throws void
+     */
+    protected function setUp(): void
     {
         $this->object = new IniLoader();
     }
 
-    public function testSetMissingRemoteFilename() : void
+    /**
+     * @throws Exception
+     */
+    public function testSetMissingRemoteFilename(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('the filename can not be empty');
         $this->object->setRemoteFilename('');
     }
 
-    public function testGetRemoteIniUrl() : void
+    /**
+     * @throws Exception
+     */
+    public function testGetRemoteIniUrl(): void
     {
         $this->object->setRemoteFilename(IniLoaderInterface::PHP_INI_LITE);
         self::assertSame('http://browscap.org/stream?q=Lite_PHP_BrowscapINI', $this->object->getRemoteIniUrl());
@@ -41,7 +50,11 @@ final class IniLoaderTest extends \PHPUnit\Framework\TestCase
         self::assertSame('http://browscap.org/stream?q=Full_PHP_BrowscapINI', $this->object->getRemoteIniUrl());
     }
 
-    public function testGetRemoteVerUrl() : void
+    /**
+     * @throws InvalidArgumentException
+     * @throws \PHPUnit\Framework\Exception
+     */
+    public function testGetRemoteVerUrl(): void
     {
         self::assertSame('http://browscap.org/version', $this->object->getRemoteTimeUrl());
     }

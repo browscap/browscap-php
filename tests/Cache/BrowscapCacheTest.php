@@ -1,38 +1,49 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHPTest\Cache;
 
 use BrowscapPHP\Cache\BrowscapCache;
-use Doctrine\Common\Cache\ArrayCache;
+use MatthiasMullie\Scrapbook\Adapters\MemoryStore;
+use MatthiasMullie\Scrapbook\Psr16\SimpleCache;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
-use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 /**
  * @covers \BrowscapPHP\Cache\BrowscapCache
  */
-final class BrowscapCacheTest extends \PHPUnit\Framework\TestCase
+final class BrowscapCacheTest extends TestCase
 {
-    public function testConstruct() : void
+    /**
+     * @throws InvalidArgumentException
+     * @throws Exception
+     */
+    public function testConstruct(): void
     {
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
 
-        $memoryCache = new ArrayCache();
-        $adapter = new SimpleCacheAdapter($memoryCache);
-        $cache = new BrowscapCache($adapter, $logger);
+        $adapter = new SimpleCache(
+            new MemoryStore()
+        );
+        $cache   = new BrowscapCache($adapter, $logger);
 
         self::assertInstanceOf(BrowscapCache::class, $cache);
     }
 
-    public function testVersion() : void
+    /**
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
+    public function testVersion(): void
     {
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
 
-        $memoryCache = new ArrayCache();
-        $adapter = new SimpleCacheAdapter($memoryCache);
-        $cache = new BrowscapCache($adapter, $logger);
+        $adapter = new SimpleCache(
+            new MemoryStore()
+        );
+        $cache   = new BrowscapCache($adapter, $logger);
 
         self::assertNull($cache->getVersion());
 
@@ -40,14 +51,17 @@ final class BrowscapCacheTest extends \PHPUnit\Framework\TestCase
         self::assertSame(6012, $cache->getVersion());
     }
 
-    public function testReleaseDate() : void
+    /**
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
+    public function testReleaseDate(): void
     {
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
 
-        $memoryCache = new ArrayCache();
-        $adapter = new SimpleCacheAdapter($memoryCache);
-        $cache = new BrowscapCache($adapter, $logger);
+        $adapter = new SimpleCache(
+            new MemoryStore()
+        );
+        $cache   = new BrowscapCache($adapter, $logger);
 
         self::assertNull($cache->getVersion());
 
@@ -55,14 +69,17 @@ final class BrowscapCacheTest extends \PHPUnit\Framework\TestCase
         self::assertSame('Thu, 04 Feb 2016 12:59:23 +0000', $cache->getReleaseDate());
     }
 
-    public function testType() : void
+    /**
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
+    public function testType(): void
     {
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
 
-        $memoryCache = new ArrayCache();
-        $adapter = new SimpleCacheAdapter($memoryCache);
-        $cache = new BrowscapCache($adapter, $logger);
+        $adapter = new SimpleCache(
+            new MemoryStore()
+        );
+        $cache   = new BrowscapCache($adapter, $logger);
 
         self::assertNull($cache->getType());
 

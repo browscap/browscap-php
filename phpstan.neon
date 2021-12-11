@@ -1,23 +1,27 @@
 parameters:
-  excludes_analyse:
-    - */tests/*/data/*
-    - */tests/*/Full2Test.php
+  level: max
+  parallel:
+    maximumNumberOfProcesses: 1
+    processTimeout: 200.0
+  paths:
+    - src
+    - tests
+  scanFiles:
+    - %currentWorkingDirectory%/vendor/autoload.php
+    - %currentWorkingDirectory%/vendor/squizlabs/php_codesniffer/autoload.php
+    - %currentWorkingDirectory%/vendor/squizlabs/php_codesniffer/src/Util/Tokens.php
+  checkGenericClassInNonGenericObjectType: false
   checkMissingIterableValueType: false
-#  exceptionRules:
-#    reportUnusedCatchesOfUncheckedExceptions: false
-#    uncheckedExceptions: []
+  treatPhpDocTypesAsCertain: false
+  exceptions:
+    implicitThrows: false
+    checkedExceptionRegexes:
+      - '#Exception#'
+      - '#Throwable#'
+    check:
+      missingCheckedExceptionInThrows: true
+      tooWideThrowType: true
   ignoreErrors:
-    - '~MockObject~'
     - '~expects string, .*Exception given~'
     - '~expects string, Throwable given~'
     - '~Exception is not subtype of Throwable~'
-    - '~does not match assigned variable~'
-
-
-#includes:
-#  - vendor/phpstan/phpstan-strict-rules/rules.neon
-#  - vendor/phpstan/phpstan-phpunit/extension.neon
-#  - vendor/phpstan/phpstan-phpunit/rules.neon
-#  - vendor/pepakriz/phpstan-exception-rules/extension.neon
-#  - vendor/phpstan/phpstan-deprecation-rules/rules.neon
-#  - vendor/phpstan/phpstan-beberlei-assert/extension.neon

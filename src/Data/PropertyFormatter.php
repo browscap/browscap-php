@@ -1,19 +1,15 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHP\Data;
 
 final class PropertyFormatter
 {
-    /**
-     * @var PropertyHolder
-     */
-    private $propertyHolder;
+    private PropertyHolder $propertyHolder;
 
     /**
-     * class constructor
-     *
-     * @param PropertyHolder $propertyHolder
+     * @throws void
      */
     public function __construct(PropertyHolder $propertyHolder)
     {
@@ -24,27 +20,15 @@ final class PropertyFormatter
      * formats the name of a property
      *
      * @param bool|string $value
-     * @param string $property
      *
      * @return bool|string
+     *
+     * @throws void
      */
     public function formatPropertyValue($value, string $property)
     {
-        switch ($this->propertyHolder->getPropertyType($property)) {
-            case PropertyHolder::TYPE_BOOLEAN:
-                if (true === $value || 'true' === $value || '1' === $value) {
-                    return true;
-                }
-
-                return false;
-            case PropertyHolder::TYPE_IN_ARRAY:
-                try {
-                    return $this->propertyHolder->checkValueInArray($property, (string) $value);
-                } catch (\InvalidArgumentException $ex) {
-                    // nothing to do here
-                }
-
-                return '';
+        if ($this->propertyHolder->getPropertyType($property) === PropertyHolder::TYPE_BOOLEAN) {
+            return $value === true || $value === 'true' || $value === '1';
         }
 
         return $value;

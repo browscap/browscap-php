@@ -1,20 +1,27 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHPTest\Command;
 
 use BrowscapPHP\Command\ConvertCommand;
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionException;
 
 /**
  * @covers \BrowscapPHP\Command\ConvertCommand
  */
-final class ConvertCommandTest extends \PHPUnit\Framework\TestCase
+final class ConvertCommandTest extends TestCase
 {
-    public function testConfigure() : void
+    /**
+     * @throws ReflectionException
+     */
+    public function testConfigure(): void
     {
         $object = $this->getMockBuilder(ConvertCommand::class)
             ->disableOriginalConstructor()
-            ->setMethods(['setName', 'setDescription', 'addArgument', 'addOption'])
+            ->onlyMethods(['setName', 'setDescription', 'addArgument', 'addOption'])
             ->getMock();
         $object
             ->expects(self::once())
@@ -33,7 +40,7 @@ final class ConvertCommandTest extends \PHPUnit\Framework\TestCase
             ->method('addOption')
             ->willReturnSelf();
 
-        $class = new \ReflectionClass(ConvertCommand::class);
+        $class  = new ReflectionClass(ConvertCommand::class);
         $method = $class->getMethod('configure');
         $method->setAccessible(true);
 

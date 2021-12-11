@@ -1,24 +1,27 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHPTest\Helper\Converter;
 
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Helper\Converter;
 use BrowscapPHP\Helper\Filesystem;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
  * @covers \BrowscapPHP\Helper\Converter
  */
-final class ConverterConvertStringTest extends \PHPUnit\Framework\TestCase
+final class ConverterConvertStringTest extends TestCase
 {
-    /**
-     * @var \BrowscapPHP\Helper\Converter
-     */
-    private $object;
+    private Converter $object;
 
-    protected function setUp() : void
+    /**
+     * @throws Exception
+     */
+    protected function setUp(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects(self::exactly(4))
@@ -28,7 +31,6 @@ final class ConverterConvertStringTest extends \PHPUnit\Framework\TestCase
             ->method('error')
             ->willReturn(false);
 
-        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
         $cache->expects(self::any())
             ->method('setItem')
@@ -37,11 +39,14 @@ final class ConverterConvertStringTest extends \PHPUnit\Framework\TestCase
         $this->object = new Converter($logger, $cache);
     }
 
-    public function testConvertString() : void
+    /**
+     * @throws Exception
+     */
+    public function testConvertString(): void
     {
         $file = $this->getMockBuilder(Filesystem::class)
             ->disableOriginalConstructor()
-            ->setMethods(['exists'])
+            ->onlyMethods(['exists'])
             ->getMock();
         $file->expects(self::never())
             ->method('exists')
@@ -157,12 +162,14 @@ AolVersion=0
         $this->object->convertString($content);
     }
 
-    public function testConvertStringWithoutPatternFound() : void
+    /**
+     * @throws Exception
+     */
+    public function testConvertStringWithoutPatternFound(): void
     {
-        /** @var Filesystem|\PHPUnit_Framework_MockObject_MockObject $file */
         $file = $this->getMockBuilder(Filesystem::class)
             ->disableOriginalConstructor()
-            ->setMethods(['exists'])
+            ->onlyMethods(['exists'])
             ->getMock();
         $file->expects(self::never())
             ->method('exists')

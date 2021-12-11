@@ -1,13 +1,38 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHPTest;
 
 use BrowscapPHP\Browscap;
 use BrowscapPHP\BrowscapUpdater;
-use Doctrine\Common\Cache\ArrayCache;
+use BrowscapPHP\Exception;
+use BrowscapPHP\Exception\ErrorReadingFileException;
+use BrowscapPHP\Exception\FileNameMissingException;
+use BrowscapPHP\Exception\FileNotFoundException;
+use MatthiasMullie\Scrapbook\Adapters\MemoryStore;
+use MatthiasMullie\Scrapbook\Psr16\SimpleCache;
+use PHPUnit\Framework\SkippedTestError;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
-use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
+
+use function array_diff;
+use function array_keys;
+use function assert;
+use function count;
+use function get_browser;
+use function get_object_vars;
+use function implode;
+use function in_array;
+use function ini_get;
+use function is_file;
+use function is_object;
+use function property_exists;
+use function serialize;
+use function sprintf;
+use function strtolower;
+
+use const PHP_EOL;
 
 /**
  * Compares get_browser results for all matches in browscap.ini with results from Browscap class.
@@ -16,17 +41,12 @@ use Roave\DoctrineSimpleCache\SimpleCacheAdapter;
  * @group compare
  * @coversNothing
  */
-final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
+final class CompareBrowscapWithOriginalTest extends TestCase
 {
-    /**
-     * @var \BrowscapPHP\Browscap
-     */
-    private static $object = null;
+    private static ?Browscap $object = null;
 
-    /**
-     * @var array
-     */
-    private $properties = [
+    /** @var string[]|null[] */
+    private array $properties = [
         'browser_name_regex' => null,
         'browser_name_pattern' => null,
         'Parent' => null,
@@ -80,20 +100,22 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
     ];
 
     /**
-     * @throws \BrowscapPHP\Exception\FileNameMissingException
-     * @throws \BrowscapPHP\Exception\FileNotFoundException
-     * @throws \PHPUnit\Framework\SkippedTestError
+     * @throws FileNameMissingException
+     * @throws FileNotFoundException
+     * @throws SkippedTestError
+     * @throws ErrorReadingFileException
      */
-    public static function setUpBeforeClass() : void
+    public static function setUpBeforeClass(): void
     {
         $objectIniPath = ini_get('browscap');
 
-        if (false === $objectIniPath || ! is_file($objectIniPath)) {
+        if ($objectIniPath === false || ! is_file($objectIniPath)) {
             self::markTestSkipped('browscap not defined in php.ini');
         }
 
-        $memoryCache = new ArrayCache();
-        $cache = new SimpleCacheAdapter($memoryCache);
+        $cache = new SimpleCache(
+            new MemoryStore()
+        );
 
         $logger = new NullLogger();
 
@@ -105,21 +127,28 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @group compare
+     * @throws Exception
      *
-     * @throws \BrowscapPHP\Exception
+     * @group compare
      */
-    public function testCheckProperties() : void
+    public function testCheckProperties(): void
     {
-        /** @var object $libBrowserObject */
         $libBrowserObject = get_browser('x', false);
+        assert(is_object($libBrowserObject));
         $libProperties = get_object_vars($libBrowserObject);
+
+        if (self::$object === null) {
+            self::fail(
+                'the Browscap Lib ist not set properly'
+            );
+        }
+
         $bcProperties = get_object_vars(self::$object->getBrowser('x'));
 
         unset($libProperties['parent'], $bcProperties['parent']);
 
         $libPropertyKeys = array_keys($libProperties);
-        $bcPropertyKeys = array_keys($bcProperties);
+        $bcPropertyKeys  = array_keys($bcProperties);
 
         $diff = array_diff($libPropertyKeys, $bcPropertyKeys);
 
@@ -142,8 +171,10 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
             self::assertArrayHasKey(
                 $bcProp,
                 $libProperties,
-                'Property `' . $bcProp . '` from Browscap doesn\'t match anything in get_browser. '
-                . 'You may have an outdated browscap.ini file for your tests'
+                sprintf(
+                    'Property `%s` from Browscap doesn\'t match anything in get_browser. You may have an outdated browscap.ini file for your tests',
+                    $bcProp
+                )
             );
 
             unset($libProperties[$bcProp]);
@@ -152,28 +183,33 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
         self::assertCount(
             0,
             $libProperties,
-            'There are ' . count($libProperties) . '(' . implode(
-                ', ',
-                array_keys($libProperties)
-            ) . ') properties in get_browser that do not match those in Browscap.'
+            sprintf(
+                'There are %d(%s) properties in get_browser that do not match those in Browscap.',
+                count($libProperties),
+                implode(', ', array_keys($libProperties))
+            )
         );
     }
 
     /**
+     * @throws Exception
+     *
      * @dataProvider providerUserAgent
      * @depends      testCheckProperties
      * @group        compare
-     *
-     * @param string $userAgent
-     *
-     * @throws \BrowscapPHP\Exception
      */
-    public function testCompare(string $userAgent) : void
+    public function testCompare(string $userAgent): void
     {
-        /** @var object $libResult */
         $libResult = get_browser($userAgent, false);
+        assert(is_object($libResult));
         // Mainly for static analysis:
         assert(property_exists($libResult, 'browser_name_pattern'));
+
+        if (self::$object === null) {
+            self::fail(
+                'the Browscap Lib ist not set properly'
+            );
+        }
 
         $bcResult = self::$object->getBrowser($userAgent);
 
@@ -187,33 +223,40 @@ final class CompareBrowscapWithOriginalTest extends \PHPUnit\Framework\TestCase
             self::assertObjectHasAttribute(
                 $bcProp,
                 $libResult,
-                'Actual library result does not have "' . $bcProp . '" property'
+                sprintf('Actual library result does not have "%s" property', $bcProp)
             );
 
             self::assertObjectHasAttribute(
                 $bcProp,
                 $bcResult,
-                'Actual browscap result does not have "' . $bcProp . '" property'
+                sprintf('Actual browscap result does not have "%s" property', $bcProp)
             );
 
             $libValue = strtolower((string) $libResult->{$bcProp});
-            $bcValue = strtolower((string) $bcResult->{$bcProp});
+            $bcValue  = strtolower((string) $bcResult->{$bcProp});
 
             self::assertSame(
                 $libValue,
                 $bcValue,
-                'Expected actual "' . $bcProp . '" to be "' . $libValue . '" '
-                . '(was "' . $bcValue . '"); ' . PHP_EOL
-                . 'used pattern [\BrowscapPHP\Browscap::getBrowser()]:' . strtolower($bcResult->browser_name_pattern) . PHP_EOL
-                . 'expected pattern [get_browser]:                    ' . strtolower($libResult->browser_name_pattern)
+                sprintf(
+                    'Expected actual "%s" to be "%s" (was "%s");%sused pattern [\BrowscapPHP\Browscap::getBrowser()]:%sexpected pattern [get_browser]:                    %s',
+                    $bcProp,
+                    $libValue,
+                    $bcValue,
+                    PHP_EOL,
+                    strtolower($bcResult->browser_name_pattern) . PHP_EOL,
+                    strtolower($libResult->browser_name_pattern)
+                )
             );
         }
     }
 
     /**
-     * @return array[]
+     * @return string[][]
+     *
+     * @throws void
      */
-    public function providerUserAgent() : array
+    public function providerUserAgent(): array
     {
         return [
             ['BlackBerry7100i/4.1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/103'],

@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHP\IniParser;
 
@@ -8,7 +9,39 @@ use BrowscapPHP\Data\PropertyHolder;
 use BrowscapPHP\Helper\Quoter;
 use BrowscapPHP\Parser\Helper\Pattern;
 use BrowscapPHP\Parser\Helper\SubKey;
-use ExceptionalJSON\EncodeErrorException;
+use Generator;
+use JsonException;
+use OutOfRangeException;
+use UnexpectedValueException;
+
+use function array_chunk;
+use function array_flip;
+use function array_key_exists;
+use function array_keys;
+use function implode;
+use function in_array;
+use function is_array;
+use function json_encode;
+use function krsort;
+use function ksort;
+use function parse_ini_string;
+use function preg_match_all;
+use function preg_replace;
+use function preg_split;
+use function sprintf;
+use function str_repeat;
+use function str_replace;
+use function strlen;
+use function strpbrk;
+use function strtolower;
+use function usort;
+
+use const INI_SCANNER_RAW;
+use const JSON_HEX_AMP;
+use const JSON_HEX_APOS;
+use const JSON_HEX_QUOT;
+use const JSON_HEX_TAG;
+use const JSON_THROW_ON_ERROR;
 
 /**
  * Ini parser class (compatible with PHP 5.3+)
@@ -20,22 +53,16 @@ final class IniParser implements ParserInterface
      *
      * @important The number of patterns that can be processed in one step
      *            is limited by the internal regular expression limits.
-     *
-     * @var int
      */
     private const COUNT_PATTERN = 50;
 
     /**
      * Creates new ini part cache files
      *
-     * @param string $content
-     *
-     * @throws \OutOfRangeException
-     * @throws \UnexpectedValueException
-     *
-     * @return \Generator
+     * @throws OutOfRangeException
+     * @throws UnexpectedValueException
      */
-    public function createIniParts(string $content) : \Generator
+    public function createIniParts(string $content): Generator
     {
         // get all patterns from the ini file in the correct order,
         // so that we can calculate with index number of the resulting array,
@@ -46,8 +73,8 @@ final class IniParser implements ParserInterface
         // split the ini file into sections and save the data in one line with a hash of the beloging
         // pattern (filtered in the previous step)
         $iniParts = preg_split('/\[[^\r\n]+\]/', $content);
-        if (false === $iniParts) {
-            throw new \UnexpectedValueException('an error occured while splitting content into parts');
+        if ($iniParts === false) {
+            throw new UnexpectedValueException('an error occured while splitting content into parts');
         }
 
         $contents = [];
@@ -55,22 +82,22 @@ final class IniParser implements ParserInterface
         $propertyFormatter = new PropertyFormatter(new PropertyHolder());
 
         foreach ($patternPositions as $position => $pattern) {
-            $pattern = strtolower($pattern);
+            $pattern     = strtolower($pattern);
             $patternhash = Pattern::getHashForParts($pattern);
-            $subkey = SubKey::getIniPartCacheSubKey($patternhash);
+            $subkey      = SubKey::getIniPartCacheSubKey($patternhash);
 
             if (! isset($contents[$subkey])) {
                 $contents[$subkey] = [];
             }
 
-            if (!array_key_exists($position + 1, $iniParts)) {
-                throw new \OutOfRangeException(sprintf('could not find position %d inside iniparts', $position + 1));
+            if (! array_key_exists($position + 1, $iniParts)) {
+                throw new OutOfRangeException(sprintf('could not find position %d inside iniparts', $position + 1));
             }
 
-            $browserProperties = parse_ini_string($iniParts[($position + 1)], false, INI_SCANNER_RAW);
+            $browserProperties = parse_ini_string($iniParts[$position + 1], false, INI_SCANNER_RAW);
 
-            if (false === $browserProperties) {
-                throw new \UnexpectedValueException(sprintf('could ini parse position %d inside iniparts', $position + 1));
+            if ($browserProperties === false) {
+                throw new UnexpectedValueException(sprintf('could ini parse position %d inside iniparts', $position + 1));
             }
 
             foreach (array_keys($browserProperties) as $property) {
@@ -83,12 +110,12 @@ final class IniParser implements ParserInterface
             try {
                 // the position has to be moved by one, because the header of the ini file
                 // is also returned as a part
-                $contents[$subkey][] = $patternhash . "\t" . \ExceptionalJSON\encode(
+                $contents[$subkey][] = $patternhash . "\t" . json_encode(
                     $browserProperties,
-                    JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
+                    JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_THROW_ON_ERROR
                 );
-            } catch (EncodeErrorException $e) {
-                throw new \UnexpectedValueException('json encoding content failed', 0, $e);
+            } catch (JsonException $e) {
+                throw new UnexpectedValueException('json encoding content failed', 0, $e);
             }
         }
 
@@ -111,11 +138,9 @@ final class IniParser implements ParserInterface
     /**
      * Creates new pattern cache files
      *
-     * @param string $content
-     *
-     * @return \Generator
+     * @throws void
      */
-    public function createPatterns($content) : \Generator
+    public function createPatterns(string $content): Generator
     {
         // get all relevant patterns from the INI file
         // - containing "*" or "?"
@@ -133,7 +158,7 @@ final class IniParser implements ParserInterface
         }
 
         $quoterHelper = new Quoter();
-        $matches = $matches[0];
+        $matches      = $matches[0];
         usort($matches, [$this, 'compareBcStrings']);
 
         // build an array to structure the data. this requires some memory, but we need this step to be able to
@@ -141,16 +166,16 @@ final class IniParser implements ParserInterface
         $data = [];
 
         foreach ($matches as $pattern) {
-            if ('GJK_Browscap_Version' === $pattern) {
+            if ($pattern === 'GJK_Browscap_Version') {
                 continue;
             }
 
-            $pattern = strtolower($pattern);
+            $pattern     = strtolower($pattern);
             $patternhash = Pattern::getHashForPattern($pattern, false)[0];
-            $tmpLength = Pattern::getPatternLength($pattern);
+            $tmpLength   = Pattern::getPatternLength($pattern);
 
             // special handling of default entry
-            if (0 === $tmpLength) {
+            if ($tmpLength === 0) {
                 $patternhash = str_repeat('z', 32);
             }
 
@@ -167,7 +192,7 @@ final class IniParser implements ParserInterface
             // Check if the pattern contains digits - in this case we replace them with a digit regular expression,
             // so that very similar patterns (e.g. only with different browser version numbers) can be compressed.
             // This helps to speed up the first (and most expensive) part of the pattern search a lot.
-            if (false !== strpbrk($pattern, '0123456789')) {
+            if (strpbrk($pattern, '0123456789') !== false) {
                 $compressedPattern = preg_replace('/\d/', '[\d]', $pattern);
 
                 if (! in_array($compressedPattern, $data[$patternhash][$tmpLength])) {
@@ -238,32 +263,29 @@ final class IniParser implements ParserInterface
     }
 
     /**
-     * @param string $a
-     * @param string $b
-     *
-     * @return int
+     * @throws void
      */
-    private function compareBcStrings(string $a, string $b) : int
+    private function compareBcStrings(string $a, string $b): int
     {
-        $a_len = strlen($a);
-        $b_len = strlen($b);
+        $aLength = strlen($a);
+        $bLength = strlen($b);
 
-        if ($a_len > $b_len) {
+        if ($aLength > $bLength) {
             return -1;
         }
 
-        if ($a_len < $b_len) {
+        if ($aLength < $bLength) {
             return 1;
         }
 
-        $a_len = strlen(str_replace(['*', '?'], '', $a));
-        $b_len = strlen(str_replace(['*', '?'], '', $b));
+        $aLength = strlen(str_replace(['*', '?'], '', $a));
+        $bLength = strlen(str_replace(['*', '?'], '', $b));
 
-        if ($a_len > $b_len) {
+        if ($aLength > $bLength) {
             return -1;
         }
 
-        if ($a_len < $b_len) {
+        if ($aLength < $bLength) {
             return 1;
         }
 

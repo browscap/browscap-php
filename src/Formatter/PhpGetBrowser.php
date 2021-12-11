@@ -1,7 +1,14 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHP\Formatter;
+
+use stdClass;
+
+use function array_key_exists;
+use function array_keys;
+use function strtolower;
 
 /**
  * Formatter to output the data like the native get_browser function
@@ -11,16 +18,16 @@ final class PhpGetBrowser implements FormatterInterface
     /**
      * Variable to save the settings in, type depends on implementation
      *
-     * @var array
+     * @var string[]|bool[]|null[]
      */
-    private $data = [];
+    private array $data = [];
 
     /**
      * a list of possible properties
      *
-     * @var array
+     * @var string[]|bool[]|null[]
      */
-    private $defaultProperties = [
+    private array $defaultProperties = [
         'browser_name_regex' => null,
         'browser_name_pattern' => null,
         'Parent' => null,
@@ -76,9 +83,11 @@ final class PhpGetBrowser implements FormatterInterface
     /**
      * Sets the data (done by the parser)
      *
-     * @param array $settings
+     * @param string[]|bool[]|null[] $settings
+     *
+     * @throws void
      */
-    public function setData(array $settings) : void
+    public function setData(array $settings): void
     {
         foreach ($settings as $key => $value) {
             $this->data[strtolower($key)] = $value;
@@ -88,11 +97,11 @@ final class PhpGetBrowser implements FormatterInterface
     /**
      * Gets the data (in the preferred format)
      *
-     * @return \stdClass
+     * @throws void
      */
-    public function getData() : \stdClass
+    public function getData(): stdClass
     {
-        $output = new \stdClass();
+        $output = new stdClass();
 
         $propertyNames = array_keys($this->defaultProperties);
         foreach ($propertyNames as $property) {
@@ -100,7 +109,7 @@ final class PhpGetBrowser implements FormatterInterface
 
             if (array_key_exists($key, $this->data)) {
                 $output->{$key} = $this->data[$key];
-            } elseif ('parent' !== $key) {
+            } elseif ($key !== 'parent') {
                 $output->{$key} = $this->defaultProperties[$property];
             }
         }

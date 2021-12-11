@@ -1,23 +1,30 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHPTest\Parser\Helper;
 
 use BrowscapPHP\Cache\BrowscapCacheInterface;
 use BrowscapPHP\Parser\Helper\GetPattern;
+use Generator;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
+
+use function serialize;
 
 /**
  * @covers \BrowscapPHP\Parser\Helper\GetPattern
  */
-final class GetPatternTest extends \PHPUnit\Framework\TestCase
+final class GetPatternTest extends TestCase
 {
-    /**
-     * @var GetPattern
-     */
-    private $object;
+    private GetPattern $object;
 
-    protected function setUp() : void
+    /**
+     * @throws Exception
+     */
+    protected function setUp(): void
     {
         $map = [
             [
@@ -36,23 +43,25 @@ final class GetPatternTest extends \PHPUnit\Framework\TestCase
             ],
         ];
 
-        /** @var BrowscapCacheInterface|\PHPUnit_Framework_MockObject_MockObject $cache */
         $cache = $this->createMock(BrowscapCacheInterface::class);
         $cache
             ->expects(self::never())
             ->method('getItem')
             ->willReturnMap($map);
 
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
 
         $this->object = new GetPattern($cache, $logger);
     }
 
-    public function testGetPatterns() : void
+    /**
+     * @throws InvalidArgumentException
+     * @throws Exception
+     */
+    public function testGetPatterns(): void
     {
         $result = $this->object->getPatterns('Mozilla/5.0 (compatible; Ask Jeeves/Teoma*)');
 
-        self::assertInstanceOf(\Generator::class, $result);
+        self::assertInstanceOf(Generator::class, $result);
     }
 }

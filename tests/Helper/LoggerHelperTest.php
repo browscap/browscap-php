@@ -1,20 +1,27 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHPTest\Helper;
 
 use BrowscapPHP\Helper\LoggerHelper;
 use Monolog\Logger;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\TestCase;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @covers \BrowscapPHP\Helper\LoggerHelper
  */
-class LoggerHelperTest extends \PHPUnit\Framework\TestCase
+class LoggerHelperTest extends TestCase
 {
-    public function testCreate() : void
+    /**
+     * @throws InvalidArgumentException
+     * @throws Exception
+     */
+    public function testCreate(): void
     {
-        /** @var OutputInterface|\PHPUnit\Framework\MockObject\MockObject $logger */
         $output = $this->createMock(OutputInterface::class);
 
         self::assertInstanceOf(Logger::class, LoggerHelper::createDefaultLogger($output));

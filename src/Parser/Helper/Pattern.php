@@ -1,13 +1,23 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BrowscapPHP\Parser\Helper;
+
+use function md5;
+use function preg_match;
+use function str_replace;
+use function strlen;
+use function substr;
 
 /**
  * includes general functions for the work with patterns
  */
 final class Pattern
 {
+    /**
+     * @throws void
+     */
     private function __construct()
     {
     }
@@ -31,14 +41,13 @@ final class Pattern
      * results in an array with hashes for "Mozilla/5.0", "Mozilla/5.", "Mozilla/5",
      * "Mozilla/" ... "M", so that the pattern hash is included.
      *
-     * @param  string       $pattern
-     * @param  bool         $variants
-     *
      * @return string[]
+     *
+     * @throws void
      */
-    public static function getHashForPattern(string $pattern, bool $variants = false) : array
+    public static function getHashForPattern(string $pattern, bool $variants = false): array
     {
-        $regex = '/^([^\.\*\?\s\r\n\\\\]+).*$/';
+        $regex   = '/^([^\.\*\?\s\r\n\\\\]+).*$/';
         $pattern = substr($pattern, 0, 32);
         $matches = [];
 
@@ -52,11 +61,11 @@ final class Pattern
 
         $string = $matches[1];
 
-        if (true === $variants) {
+        if ($variants === true) {
             $patternStarts = [];
 
             for ($i = strlen($string); 1 <= $i; --$i) {
-                $string = substr($string, 0, $i);
+                $string          = substr($string, 0, $i);
                 $patternStarts[] = md5($string);
             }
 
@@ -73,11 +82,9 @@ final class Pattern
     /**
      * returns a hash for one pattern
      *
-     * @param string $pattern
-     *
-     * @return string
+     * @throws void
      */
-    public static function getHashForParts(string $pattern) : string
+    public static function getHashForParts(string $pattern): string
     {
         return md5($pattern);
     }
@@ -86,11 +93,9 @@ final class Pattern
      * Gets the minimum length of the patern (used in the getPatterns() method to
      * check against the user agent length)
      *
-     * @param  string $pattern
-     *
-     * @return int
+     * @throws void
      */
-    public static function getPatternLength(string $pattern) : int
+    public static function getPatternLength(string $pattern): int
     {
         return strlen(str_replace('*', '', $pattern));
     }
