@@ -19,6 +19,8 @@ interface GetPatternInterface
      *   (the pattern cannot be longer than the user agent!)
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function getPatterns(string $userAgent): Generator;
 }

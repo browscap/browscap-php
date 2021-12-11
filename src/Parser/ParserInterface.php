@@ -17,6 +17,8 @@ interface ParserInterface
      * (or null if no data available, no even the default browser)
      *
      * @throws UnexpectedValueException
+     *
+     * @no-named-arguments
      */
     public function getBrowser(string $userAgent): ?FormatterInterface;
 }

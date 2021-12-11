@@ -19,6 +19,8 @@ interface IniLoaderInterface
      * @param string $name the file name
      *
      * @throws Exception
+     *
+     * @no-named-arguments
      */
     public function setRemoteFilename(string $name): void;
 
@@ -26,6 +28,8 @@ interface IniLoaderInterface
      * returns the of the remote location for updating the ini file
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function getRemoteIniUrl(): string;
 
@@ -33,6 +37,8 @@ interface IniLoaderInterface
      * returns the of the remote location for checking the version of the ini file
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function getRemoteTimeUrl(): string;
 
@@ -40,6 +46,8 @@ interface IniLoaderInterface
      * returns the of the remote location for checking the version of the ini file
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function getRemoteVersionUrl(): string;
 }

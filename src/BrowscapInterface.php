@@ -16,6 +16,8 @@ interface BrowscapInterface
      * Set theformatter instance to use for the getBrowser() result
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function setFormatter(Formatter\FormatterInterface $formatter): void;
 
@@ -23,6 +25,8 @@ interface BrowscapInterface
      * Sets the parser instance to use
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function setParser(ParserInterface $parser): void;
 
@@ -30,6 +34,8 @@ interface BrowscapInterface
      * returns an instance of the used parser class
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function getParser(): ParserInterface;
 
@@ -43,6 +49,8 @@ interface BrowscapInterface
      * @return stdClass the object containing the browsers details.
      *
      * @throws Exception
+     *
+     * @no-named-arguments
      */
     public function getBrowser(?string $userAgent = null): stdClass;
 }

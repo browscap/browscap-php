@@ -20,6 +20,8 @@ interface GetDataInterface
      * @return string[]
      *
      * @throws UnexpectedValueException
+     *
+     * @no-named-arguments
      */
     public function getSettings(string $pattern, array $settings = []): array;
 }

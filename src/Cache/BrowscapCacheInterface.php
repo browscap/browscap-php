@@ -15,6 +15,8 @@ interface BrowscapCacheInterface
      * Gets the version of the Browscap data
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function getVersion(): ?int;
 
@@ -22,6 +24,8 @@ interface BrowscapCacheInterface
      * Gets the release date of the Browscap data
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function getReleaseDate(): ?string;
 
@@ -29,6 +33,8 @@ interface BrowscapCacheInterface
      * Gets the type of the Browscap data
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function getType(): ?string;
 
@@ -38,6 +44,8 @@ interface BrowscapCacheInterface
      * @return mixed Data on success, null on failure
      *
      * @throws InvalidArgumentException
+     *
+     * @no-named-arguments
      */
     public function getItem(string $cacheId, bool $withVersion = true, ?bool &$success = null);
 
@@ -50,6 +58,8 @@ interface BrowscapCacheInterface
      * @return bool whether the file was correctly written to the disk
      *
      * @throws InvalidArgumentException
+     *
+     * @no-named-arguments
      */
     public function setItem(string $cacheId, $content, bool $withVersion = true): bool;
 
@@ -57,6 +67,8 @@ interface BrowscapCacheInterface
      * Test if an item exists.
      *
      * @throws InvalidArgumentException
+     *
+     * @no-named-arguments
      */
     public function hasItem(string $cacheId, bool $withVersion = true): bool;
 
@@ -64,6 +76,8 @@ interface BrowscapCacheInterface
      * Remove an item.
      *
      * @throws InvalidArgumentException
+     *
+     * @no-named-arguments
      */
     public function removeItem(string $cacheId, bool $withVersion = true): bool;
 
@@ -71,6 +85,8 @@ interface BrowscapCacheInterface
      * Flush the whole storage
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function flush(): bool;
 }

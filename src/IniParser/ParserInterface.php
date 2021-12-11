@@ -22,6 +22,8 @@ interface ParserInterface
      * @throws UnexpectedValueException
      * @throws InvalidArgumentException
      * @throws JsonException
+     *
+     * @no-named-arguments
      */
     public function createIniParts(string $content): Generator;
 
@@ -29,6 +31,8 @@ interface ParserInterface
      * Creates new pattern cache files
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function createPatterns(string $content): Generator;
 }

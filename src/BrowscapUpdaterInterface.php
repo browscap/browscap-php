@@ -27,6 +27,8 @@ interface BrowscapUpdaterInterface
      * @throws FileNotFoundException
      * @throws ErrorReadingFileException
      * @throws UnexpectedValueException
+     *
+     * @no-named-arguments
      */
     public function convertFile(string $iniFile): void;
 
@@ -34,6 +36,8 @@ interface BrowscapUpdaterInterface
      * reads and parses an ini string and writes the results into the cache
      *
      * @throws UnexpectedValueException
+     *
+     * @no-named-arguments
      */
     public function convertString(string $iniString): void;
 
@@ -46,6 +50,8 @@ interface BrowscapUpdaterInterface
      * @throws FetcherException
      * @throws Exception
      * @throws ErrorCachedVersionException
+     *
+     * @no-named-arguments
      */
     public function fetch(string $file, string $remoteFile = IniLoaderInterface::PHP_INI): void;
 
@@ -61,6 +67,8 @@ interface BrowscapUpdaterInterface
      * @throws Exception
      * @throws ErrorCachedVersionException
      * @throws UnexpectedValueException
+     *
+     * @no-named-arguments
      */
     public function update(string $remoteFile = IniLoaderInterface::PHP_INI): void;
 
@@ -73,6 +81,8 @@ interface BrowscapUpdaterInterface
      * @throws NoCachedVersionException
      * @throws ErrorCachedVersionException
      * @throws NoNewVersionException
+     *
+     * @no-named-arguments
      */
     public function checkUpdate(): ?int;
 }

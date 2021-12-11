@@ -17,6 +17,8 @@ interface FormatterInterface
      * @param string[]|bool[] $settings
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function setData(array $settings): void;
 
@@ -24,6 +26,8 @@ interface FormatterInterface
      * Gets the data (in the preferred format)
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function getData(): stdClass;
 }

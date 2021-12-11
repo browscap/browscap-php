@@ -15,6 +15,8 @@ interface QuoterInterface
      * Converts browscap match patterns into preg match patterns.
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function pregQuote(string $useragent, string $delimiter = '/'): string;
 
@@ -22,6 +24,8 @@ interface QuoterInterface
      * Reverts the quoting of a pattern.
      *
      * @throws UnexpectedValueException
+     *
+     * @no-named-arguments
      */
     public function pregUnQuote(string $pattern): string;
 }

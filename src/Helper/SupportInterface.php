@@ -13,6 +13,8 @@ interface SupportInterface
      * detect the useragent
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function getUserAgent(): string;
 }

@@ -16,6 +16,8 @@ interface ConverterInterface
      * Sets a filesystem instance
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function setFilesystem(Filesystem $file): void;
 
@@ -24,6 +26,8 @@ interface ConverterInterface
      *
      * @throws FileNotFoundException
      * @throws ErrorReadingFileException
+     *
+     * @no-named-arguments
      */
     public function convertFile(string $iniFile): void;
 
@@ -31,6 +35,8 @@ interface ConverterInterface
      * converts the string content
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function convertString(string $iniString): void;
 
@@ -40,6 +46,8 @@ interface ConverterInterface
      * @param string $iniString The loaded ini data
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function getIniVersion(string $iniString): int;
 
@@ -47,6 +55,8 @@ interface ConverterInterface
      * sets the version
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function setVersion(int $version): void;
 
@@ -54,6 +64,8 @@ interface ConverterInterface
      * stores the version of the ini file into cache
      *
      * @throws void
+     *
+     * @no-named-arguments
      */
     public function storeVersion(): void;
 }
