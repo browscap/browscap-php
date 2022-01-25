@@ -32,7 +32,7 @@
         "php": ">=7.4.3,<8.2.0",
         "ext-json": "*",
         "guzzlehttp/guzzle": "^7.4.1",
-        "league/flysystem": "^2.3.2",
+        "league/flysystem": "^2.3.2 || ^3.0.0",
         "matthiasmullie/scrapbook": "^1.4.8",
         "monolog/monolog": "^2.3.5",
         "psr/log": "^1.1.4 || ^2.0.0 || ^3.0.0",
@@ -70,6 +70,11 @@
         "bin/browscap-php"
     ],
     "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "ergebnis/composer-normalize": true,
+            "phpstan/extension-installer": true
+        },
         "preferred-install": "dist",
         "sort-packages": true
     }
