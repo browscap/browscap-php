@@ -35,8 +35,7 @@ final class ConverterTest extends TestCase
     {
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects(self::never())
-            ->method('info')
-            ->willReturn(false);
+            ->method('info');
 
         $cache = $this->createMock(BrowscapCacheInterface::class);
         $cache->expects(self::any())

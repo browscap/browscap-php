@@ -25,11 +25,9 @@ final class ConverterConvertStringTest extends TestCase
     {
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects(self::exactly(4))
-            ->method('info')
-            ->willReturn(false);
+            ->method('info');
         $logger->expects(self::never())
-            ->method('error')
-            ->willReturn(false);
+            ->method('error');
 
         $cache = $this->createMock(BrowscapCacheInterface::class);
         $cache->expects(self::any())
