@@ -26,6 +26,8 @@ use function sprintf;
 
 /**
  * Command to convert a downloaded Browscap ini file and write it to the cache
+ *
+ * @internal This extends Symfony API, and we do not want to expose upstream BC breaks, so we DO NOT promise BC on this
  */
 class ConvertCommand extends Command
 {
