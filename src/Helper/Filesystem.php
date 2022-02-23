@@ -19,6 +19,8 @@ use function unlink;
 
 /**
  * Provides basic utility to manipulate the file system.
+ *
+ * @internal This extends Symfony API, and we do not want to expose upstream BC breaks, so we DO NOT promise BC on this
  */
 class Filesystem extends BaseFilesystem
 {

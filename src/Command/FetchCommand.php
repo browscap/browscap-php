@@ -28,6 +28,8 @@ use function sprintf;
 
 /**
  * Command to fetch a browscap ini file from the remote host and store the content in a local file
+ *
+ * @internal This extends Symfony API, and we do not want to expose upstream BC breaks, so we DO NOT promise BC on this
  */
 class FetchCommand extends Command
 {

@@ -479,7 +479,7 @@ jobs:
           restore-keys: "php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-"
 
       - name: "Require Roave/BackwardCompatibilityCheck"
-        run: "composer require --no-update --no-interaction --prefer-dist --prefer-stable --dev \"roave/backward-compatibility-check:6.0.x-dev\" \"roave/better-reflection:5.0.x-dev\""
+        run: "composer require --no-update --no-interaction --prefer-dist --prefer-stable \"roave/backward-compatibility-check:^6.1.1\""
 
       - name: "Composer update with new requirements"
         run: "composer update --no-interaction --prefer-dist --prefer-stable"

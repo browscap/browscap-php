@@ -29,6 +29,8 @@ use const JSON_THROW_ON_ERROR;
 
 /**
  * commands to parse a given useragent
+ *
+ * @internal This extends Symfony API, and we do not want to expose upstream BC breaks, so we DO NOT promise BC on this
  */
 class ParserCommand extends Command
 {
