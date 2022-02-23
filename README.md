@@ -47,61 +47,17 @@ vendor/bin/browscap-php browscap:update
 
 If you want to autoupdate the used cache, we recommend a separate cron job that calls the command listed above.
 
-BC breaks in version 6.0.x
+BC breaks in version 7.0.x
 -----------------------------
 
-# Added
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapInterface#setFormatter()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapInterface#setParser()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapInterface#getParser()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapInterface#getBrowser()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Formatter\FormatterInterface#setData()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Formatter\FormatterInterface#getData()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\IniParser\ParserInterface#createIniParts()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\IniParser\ParserInterface#createPatterns()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Parser\ParserInterface#getBrowser()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Parser\Helper\GetDataInterface#getSettings()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Parser\Helper\GetPatternInterface#getPatterns()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapUpdaterInterface#convertFile()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapUpdaterInterface#convertString()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapUpdaterInterface#fetch()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapUpdaterInterface#update()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\BrowscapUpdaterInterface#checkUpdate()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Cache\BrowscapCacheInterface#getVersion()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Cache\BrowscapCacheInterface#getReleaseDate()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Cache\BrowscapCacheInterface#getType()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Cache\BrowscapCacheInterface#getItem()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Cache\BrowscapCacheInterface#setItem()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Cache\BrowscapCacheInterface#hasItem()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Cache\BrowscapCacheInterface#removeItem()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Cache\BrowscapCacheInterface#flush()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\IniLoaderInterface#setRemoteFilename()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\IniLoaderInterface#getRemoteIniUrl()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\IniLoaderInterface#getRemoteTimeUrl()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\IniLoaderInterface#getRemoteVersionUrl()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\ConverterInterface#setFilesystem()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\ConverterInterface#convertFile()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\ConverterInterface#convertString()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\ConverterInterface#getIniVersion()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\ConverterInterface#setVersion()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\ConverterInterface#storeVersion()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\SupportInterface#getUserAgent()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\QuoterInterface#pregQuote()
-- [BC] The @no-named-arguments annotation was added from BrowscapPHP\Helper\QuoterInterface#pregUnQuote()
-
-# Changed
-- [BC] The parameter $content of BrowscapPHP\IniParser\ParserInterface#createPatterns() changed from no type to a non-contravariant string
-- [BC] The parameter $content of BrowscapPHP\IniParser\ParserInterface#createPatterns() changed from no type to string
-- [BC] The parameter $content of BrowscapPHP\IniParser\IniParser#createPatterns() changed from no type to a non-contravariant string
-- [BC] The parameter $filename of BrowscapPHP\Helper\Filesystem#dumpFile() changed from no type to a non-contravariant string
-- [BC] The parameter $filename of BrowscapPHP\Helper\Filesystem#dumpFile() changed from no type to string
-
-# Removed
-- [BC] Constant BrowscapPHP\Data\PropertyHolder::TYPE_IN_ARRAY was removed
-- [BC] Method BrowscapPHP\Data\PropertyHolder#checkValueInArray() was removed
-- [BC] Method BrowscapPHP\Parser\Helper\GetDataInterface#__construct() was removed
-- [BC] Method BrowscapPHP\Parser\Helper\GetPatternInterface#__construct() was removed
-- [BC] Method BrowscapPHP\Cache\BrowscapCacheInterface#__construct() was removed
+```
+ - [BC] BrowscapPHP\Command\UpdateCommand was marked "@internal"
+ - [BC] BrowscapPHP\Command\FetchCommand was marked "@internal"
+ - [BC] BrowscapPHP\Command\ConvertCommand was marked "@internal"
+ - [BC] BrowscapPHP\Command\CheckUpdateCommand was marked "@internal"
+ - [BC] BrowscapPHP\Command\ParserCommand was marked "@internal"
+ - [BC] BrowscapPHP\Helper\Filesystem was marked "@internal"
+```
 
 Setup Examples
 --------------
