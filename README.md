@@ -1,4 +1,4 @@
-Browser Capabilities PHP Project
+testBrowser Capabilities PHP Project
 ================================
 
 This is a userland replacement for PHP's native `get_browser()` function, which is _officially supported_ by the Browser Capabilities Project.
