@@ -14,22 +14,13 @@ updates:
       - "dependencies"
     versioning-strategy: "increase-if-necessary"
     ignore:
-      - dependency-name: "monolog/monolog"
-        versions:
-          - ">= 0"
-      - dependency-name: "phpunit/phpunit"
-        versions:
-          - ">= 0"
-      - dependency-name: "roave/doctrine-simplecache"
-        versions:
-          - ">= 0"
-      - dependency-name: "symfony/cache"
-        versions:
-          - ">= 0"
       - dependency-name: "symfony/console"
         versions:
           - ">= 0"
       - dependency-name: "symfony/finder"
+        versions:
+          - ">= 0"
+      - dependency-name: "league/flysystem"
         versions:
           - ">= 0"
     commit-message:
