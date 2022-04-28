@@ -201,7 +201,7 @@ jobs:
           - "ubuntu-20.04"
 
         php-version:
-          - "8.1"
+          - "7.4"
 
         dependencies:
           - "highest"
@@ -248,7 +248,7 @@ jobs:
           - "ubuntu-20.04"
 
         php-version:
-          - "8.1"
+          - "7.4"
 
         dependencies:
           - "locked"
@@ -344,7 +344,7 @@ jobs:
           - "ubuntu-20.04"
 
         php-version:
-          - "8.1"
+          - "7.4"
 
         dependencies:
           - "highest"
