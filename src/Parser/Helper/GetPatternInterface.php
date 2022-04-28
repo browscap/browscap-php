@@ -24,5 +24,5 @@ interface GetPatternInterface
      *
      * @no-named-arguments
      */
-    public function getPatterns(string $userAgent): iterable;
+    public function getPatterns(string $userAgent): Generator;
 }

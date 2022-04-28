@@ -52,7 +52,7 @@ class GetPattern implements GetPatternInterface
      *
      * @throws void
      */
-    public function getPatterns(string $userAgent): iterable
+    public function getPatterns(string $userAgent): Generator
     {
         $starts = Pattern::getHashForPattern($userAgent, true);
         $length = strlen($userAgent);
