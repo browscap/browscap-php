@@ -384,7 +384,7 @@ jobs:
   comparison-checks:
     name: "Compare results with PHPUnit"
 
-    needs: "unit-tests"
+    needs: "tests"
 
     runs-on: "${{ matrix.operating-system }}"
 
