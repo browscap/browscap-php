@@ -24,9 +24,6 @@ final class PropertyFormatter
      * @return bool|string
      *
      * @throws void
-     *
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function formatPropertyValue($value, string $property)
     {
