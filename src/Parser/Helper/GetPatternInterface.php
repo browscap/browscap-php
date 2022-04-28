@@ -18,9 +18,11 @@ interface GetPatternInterface
      * - We compare the length of the pattern with the length of the user agent
      *   (the pattern cannot be longer than the user agent!)
      *
+     * @return Generator|string[]
+     *
      * @throws void
      *
      * @no-named-arguments
      */
-    public function getPatterns(string $userAgent): Generator;
+    public function getPatterns(string $userAgent): iterable;
 }
