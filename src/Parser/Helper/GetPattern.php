@@ -48,6 +48,8 @@ class GetPattern implements GetPatternInterface
      * - We compare the length of the pattern with the length of the user agent
      *   (the pattern cannot be longer than the user agent!)
      *
+     * @return Generator|string[]
+     *
      * @throws void
      */
     public function getPatterns(string $userAgent): Generator

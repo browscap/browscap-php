@@ -31,25 +31,24 @@
     "require": {
         "php": ">=7.4.3,<8.2.0",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "^7.4.1",
-        "league/flysystem": "^2.3.2 || ^3.0.0",
+        "guzzlehttp/guzzle": "^7.4.2",
+        "league/flysystem": "^2.4.5 || ^3.0.18",
         "matthiasmullie/scrapbook": "^1.4.8",
-        "monolog/monolog": "^2.3.5",
+        "monolog/monolog": "^2.5.0",
         "psr/log": "^1.1.4 || ^2.0.0 || ^3.0.0",
-        "psr/simple-cache": "^1.0.1",
-        "symfony/console": "^5.4.0 || ^6.0.0",
-        "symfony/filesystem": "^5.4.0 || ^6.0.0"
+        "psr/simple-cache": "^1.0.1 || ^2.0.0 || ^3.0.0",
+        "symfony/console": "^v5.4.8 || ^v6.0.8",
+        "symfony/filesystem": "^v5.4.7 || ^v6.0.7"
     },
     "require-dev": {
         "doctrine/coding-standard": "^9.0.0",
-        "ergebnis/composer-normalize": "^2.18.0",
         "mikey179/vfsstream": "^v1.6.10",
         "phpstan/extension-installer": "^1.1.0",
-        "phpstan/phpstan": "^1.2.0",
-        "phpstan/phpstan-beberlei-assert": "^1.0.0",
+        "phpstan/phpstan": "^1.6.3",
+        "phpstan/phpstan-beberlei-assert": "^1.0.1",
         "phpstan/phpstan-deprecation-rules": "^1.0.0",
-        "phpstan/phpstan-phpunit": "^1.0.0",
-        "phpunit/phpunit": "^9.5.10"
+        "phpstan/phpstan-phpunit": "^1.1.1",
+        "phpunit/phpunit": "^9.5.20"
     },
     "suggest": {
         "ext-curl": "to use curl requests to get the ini file"
