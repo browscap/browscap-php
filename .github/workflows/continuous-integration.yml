@@ -39,7 +39,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Install PHP"
-        uses: "shivammathur/setup-php@2.19.1"
+        uses: "shivammathur/setup-php@2.20.0"
         with:
           php-version: "${{ matrix.php-version }}"
           extensions: "${{ env.PHP_EXTENSIONS }}"
@@ -79,7 +79,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Install PHP"
-        uses: "shivammathur/setup-php@2.19.1"
+        uses: "shivammathur/setup-php@2.20.0"
         with:
           php-version: "${{ matrix.php-version }}"
           extensions: "${{ env.PHP_EXTENSIONS }}"
@@ -145,7 +145,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Install PHP"
-        uses: "shivammathur/setup-php@2.19.1"
+        uses: "shivammathur/setup-php@2.20.0"
         with:
           php-version: "${{ matrix.php-version }}"
           extensions: "${{ env.PHP_EXTENSIONS }}"
@@ -214,7 +214,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Install PHP"
-        uses: "shivammathur/setup-php@2.19.1"
+        uses: "shivammathur/setup-php@2.20.0"
         with:
           php-version: "${{ matrix.php-version }}"
           extensions: "${{ env.PHP_EXTENSIONS }}"
@@ -261,7 +261,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Install PHP"
-        uses: "shivammathur/setup-php@2.19.1"
+        uses: "shivammathur/setup-php@2.20.0"
         with:
           php-version: "${{ matrix.php-version }}"
           extensions: "${{ env.PHP_EXTENSIONS }}"
@@ -310,7 +310,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Install PHP"
-        uses: "shivammathur/setup-php@2.19.1"
+        uses: "shivammathur/setup-php@2.20.0"
         with:
           php-version: "${{ matrix.php-version }}"
           extensions: "${{ env.PHP_EXTENSIONS }}"
@@ -357,7 +357,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Install PHP"
-        uses: "shivammathur/setup-php@2.19.1"
+        uses: "shivammathur/setup-php@2.20.0"
         with:
           php-version: "${{ matrix.php-version }}"
           extensions: "${{ env.PHP_EXTENSIONS }}"
@@ -411,7 +411,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Install PHP"
-        uses: "shivammathur/setup-php@2.19.1"
+        uses: "shivammathur/setup-php@2.20.0"
         with:
           php-version: "${{ matrix.php-version }}"
           extensions: "${{ env.PHP_EXTENSIONS }}"
@@ -464,7 +464,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Install PHP"
-        uses: "shivammathur/setup-php@2.19.1"
+        uses: "shivammathur/setup-php@2.20.0"
         with:
           php-version: "${{ matrix.php-version }}"
           extensions: "${{ env.PHP_EXTENSIONS }}"
