@@ -31,7 +31,7 @@
     "require": {
         "php": ">=7.4.3,<8.2.0",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "^7.4.2",
+        "guzzlehttp/guzzle": "^7.4.5",
         "league/flysystem": "^2.4.5 || ^3.0.18",
         "matthiasmullie/scrapbook": "^1.4.8",
         "monolog/monolog": "^2.5.0",
