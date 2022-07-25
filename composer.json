@@ -34,7 +34,7 @@
         "guzzlehttp/guzzle": "^7.4.5",
         "league/flysystem": "^2.4.5 || ^3.0.18",
         "matthiasmullie/scrapbook": "^1.4.8",
-        "monolog/monolog": "^2.5.0",
+        "monolog/monolog": "^2.5.0 || ^3.0.0",
         "psr/log": "^1.1.4 || ^2.0.0 || ^3.0.0",
         "psr/simple-cache": "^1.0.1 || ^2.0.0 || ^3.0.0",
         "symfony/console": "^v5.4.8 || ^v6.0.8",
