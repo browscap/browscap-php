@@ -89,11 +89,11 @@ jobs:
 
       - name: "Lint PHP"
         if: "${{ matrix.php-version == '7.4' }}"
-        uses: "overtrue/phplint@7.4"
+        uses: "overtrue/phplint@8.2"
 
       - name: "Lint PHP"
         if: "${{ matrix.php-version != '7.4' }}"
-        uses: "overtrue/phplint@8.0"
+        uses: "overtrue/phplint@8.2"
 
   install:
     name: "Install dependencies"
