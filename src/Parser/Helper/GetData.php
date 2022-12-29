@@ -42,9 +42,7 @@ final class GetData implements GetDataInterface
 
     private QuoterInterface $quoter;
 
-    /**
-     * @throws void
-     */
+    /** @throws void */
     public function __construct(BrowscapCacheInterface $cache, LoggerInterface $logger, QuoterInterface $quoter)
     {
         $this->cache  = $cache;
@@ -124,8 +122,8 @@ final class GetData implements GetDataInterface
                     sprintf(
                         'cache key "browscap.iniparts.%s" for pattern "%s" not found',
                         $subkey,
-                        $pattern
-                    )
+                        $pattern,
+                    ),
                 );
 
                 return [];
@@ -135,11 +133,11 @@ final class GetData implements GetDataInterface
                 new \InvalidArgumentException(
                     sprintf(
                         'an error occured while checking inipart "browscap.iniparts.%s" in the cache',
-                        $subkey
+                        $subkey,
                     ),
                     0,
-                    $e
-                )
+                    $e,
+                ),
             );
 
             return [];
@@ -154,11 +152,11 @@ final class GetData implements GetDataInterface
                 new \InvalidArgumentException(
                     sprintf(
                         'an error occured while reading inipart "browscap.iniparts.%s" from the cache',
-                        $subkey
+                        $subkey,
                     ),
                     0,
-                    $e
-                )
+                    $e,
+                ),
             );
 
             return [];
@@ -169,8 +167,8 @@ final class GetData implements GetDataInterface
                 sprintf(
                     'cache key "browscap.iniparts.%s" for pattern "%s" not found',
                     $subkey,
-                    $pattern
-                )
+                    $pattern,
+                ),
             );
 
             return [];
@@ -181,8 +179,8 @@ final class GetData implements GetDataInterface
                 sprintf(
                     'cache key "browscap.iniparts.%s" for pattern "%s" was empty',
                     $subkey,
-                    $pattern
-                )
+                    $pattern,
+                ),
             );
 
             return [];
@@ -202,8 +200,8 @@ final class GetData implements GetDataInterface
                         sprintf(
                             'data for cache key "browscap.iniparts.%s" for pattern "%s" are not valid json',
                             $subkey,
-                            $pattern
-                        )
+                            $pattern,
+                        ),
                     );
 
                     return [];
@@ -214,7 +212,7 @@ final class GetData implements GetDataInterface
                 foreach (array_keys($return) as $property) {
                     $return[$property] = $propertyFormatter->formatPropertyValue(
                         $return[$property],
-                        (string) $property
+                        (string) $property,
                     );
                 }
 

@@ -17,7 +17,7 @@ final class InvalidArgumentException extends BaseInvalidArgumentException
     public static function oneOfCommandArguments(string ...$requiredArguments): self
     {
         return new self(
-            sprintf('One of the command arguments "%s" is required', implode('", "', $requiredArguments))
+            sprintf('One of the command arguments "%s" is required', implode('", "', $requiredArguments)),
         );
     }
 }

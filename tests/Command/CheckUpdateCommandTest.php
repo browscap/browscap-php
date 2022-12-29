@@ -11,9 +11,7 @@ use ReflectionException;
 
 final class CheckUpdateCommandTest extends TestCase
 {
-    /**
-     * @throws ReflectionException
-     */
+    /** @throws ReflectionException */
     public function testConfigure(): void
     {
         $object = $this->getMockBuilder(CheckUpdateCommand::class)

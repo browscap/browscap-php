@@ -1,8 +1,11 @@
 name: "Continuous Integration"
 
 on:
-  - pull_request
-  - push
+  pull_request:
+    types:
+      - opened
+  push:
+    branches:
 
 env:
   PHP_EXTENSIONS: "json, curl, opcache, mbstring"
@@ -26,7 +29,7 @@ jobs:
           - "ubuntu-20.04"
 
         php-version:
-          - "7.4"
+          - "8.1"
 
         dependencies:
           - "highest"
@@ -89,17 +92,12 @@ jobs:
           tools: "${{ env.TOOLS }}"
 
       - name: "Lint PHP"
-        if: "${{ matrix.php-version == '7.4' }}"
-        uses: "overtrue/phplint@8.2"
-
-      - name: "Lint PHP"
-        if: "${{ matrix.php-version != '7.4' }}"
         uses: "overtrue/phplint@8.2"
 
   install:
     name: "Install dependencies"
 
-    needs: "validate"
+    needs: "lint"
 
     runs-on: "${{ matrix.operating-system }}"
 
@@ -110,7 +108,6 @@ jobs:
 
       matrix:
         operating-system:
-          - "ubuntu-18.04"
           - "ubuntu-20.04"
 
         php-version:
@@ -136,6 +133,10 @@ jobs:
             experimental: false
           - operating-system: "ubuntu-20.04"
             php-version: "8.2"
+            dependencies: "locked"
+            experimental: false
+          - operating-system: "ubuntu-20.04"
+            php-version: "8.3"
             dependencies: "highest"
             experimental: true
 
@@ -189,7 +190,7 @@ jobs:
   coding-standards:
     name: "Check Coding Standards with PHPCS"
 
-    needs: "validate"
+    needs: "lint"
 
     runs-on: "${{ matrix.operating-system }}"
 
@@ -203,7 +204,7 @@ jobs:
           - "ubuntu-20.04"
 
         php-version:
-          - "7.4"
+          - "8.1"
 
         dependencies:
           - "highest"
@@ -236,7 +237,7 @@ jobs:
   static-code-analysis:
     name: "Static Code Analysis with PHPStan"
 
-    needs: "validate"
+    needs: "lint"
 
     runs-on: "${{ matrix.operating-system }}"
 
@@ -251,6 +252,9 @@ jobs:
 
         php-version:
           - "7.4"
+          - "8.0"
+          - "8.1"
+          - "8.2"
 
         dependencies:
           - "locked"
@@ -283,7 +287,7 @@ jobs:
   tests:
     name: "UnitTests with PHPUnit"
 
-    needs: "validate"
+    needs: "lint"
 
     runs-on: "${{ matrix.operating-system }}"
 
@@ -348,6 +352,9 @@ jobs:
 
         php-version:
           - "7.4"
+          - "8.0"
+          - "8.1"
+          - "8.2"
 
         dependencies:
           - "highest"
@@ -402,6 +409,9 @@ jobs:
 
         php-version:
           - "7.4"
+          - "8.0"
+          - "8.1"
+          - "8.2"
 
         dependencies:
           - "highest"
@@ -440,7 +450,7 @@ jobs:
   roave-backwards-compatibility-check:
     name: "Check for Backward Compatibility breaks"
 
-    needs: "validate"
+    needs: "lint"
 
     runs-on: "${{ matrix.operating-system }}"
 

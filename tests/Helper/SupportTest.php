@@ -9,9 +9,7 @@ use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
-/**
- * @covers \BrowscapPHP\Helper\Support
- */
+/** @covers \BrowscapPHP\Helper\Support */
 final class SupportTest extends TestCase
 {
     /**

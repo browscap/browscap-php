@@ -7,9 +7,7 @@ namespace BrowscapPHPTest\Exception;
 use BrowscapPHP\Exception\FileNotFoundException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \BrowscapPHP\Exception\FileNotFoundException
- */
+/** @covers \BrowscapPHP\Exception\FileNotFoundException */
 final class FileNotFoundExceptionTest extends TestCase
 {
     public function testFileNotFound(): void
@@ -19,7 +17,7 @@ final class FileNotFoundExceptionTest extends TestCase
         self::assertInstanceOf(FileNotFoundException::class, $exception);
         self::assertSame(
             'File "test.txt" does not exist',
-            $exception->getMessage()
+            $exception->getMessage(),
         );
     }
 }

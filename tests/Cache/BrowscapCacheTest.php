@@ -12,9 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
-/**
- * @covers \BrowscapPHP\Cache\BrowscapCache
- */
+/** @covers \BrowscapPHP\Cache\BrowscapCache */
 final class BrowscapCacheTest extends TestCase
 {
     /**
@@ -26,22 +24,20 @@ final class BrowscapCacheTest extends TestCase
         $logger = $this->createMock(LoggerInterface::class);
 
         $adapter = new SimpleCache(
-            new MemoryStore()
+            new MemoryStore(),
         );
         $cache   = new BrowscapCache($adapter, $logger);
 
         self::assertInstanceOf(BrowscapCache::class, $cache);
     }
 
-    /**
-     * @throws \Psr\SimpleCache\InvalidArgumentException
-     */
+    /** @throws \Psr\SimpleCache\InvalidArgumentException */
     public function testVersion(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
 
         $adapter = new SimpleCache(
-            new MemoryStore()
+            new MemoryStore(),
         );
         $cache   = new BrowscapCache($adapter, $logger);
 
@@ -51,15 +47,13 @@ final class BrowscapCacheTest extends TestCase
         self::assertSame(6012, $cache->getVersion());
     }
 
-    /**
-     * @throws \Psr\SimpleCache\InvalidArgumentException
-     */
+    /** @throws \Psr\SimpleCache\InvalidArgumentException */
     public function testReleaseDate(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
 
         $adapter = new SimpleCache(
-            new MemoryStore()
+            new MemoryStore(),
         );
         $cache   = new BrowscapCache($adapter, $logger);
 
@@ -69,15 +63,13 @@ final class BrowscapCacheTest extends TestCase
         self::assertSame('Thu, 04 Feb 2016 12:59:23 +0000', $cache->getReleaseDate());
     }
 
-    /**
-     * @throws \Psr\SimpleCache\InvalidArgumentException
-     */
+    /** @throws \Psr\SimpleCache\InvalidArgumentException */
     public function testType(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
 
         $adapter = new SimpleCache(
-            new MemoryStore()
+            new MemoryStore(),
         );
         $cache   = new BrowscapCache($adapter, $logger);
 

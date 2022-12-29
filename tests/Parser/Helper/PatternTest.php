@@ -11,9 +11,7 @@ use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 use function strtolower;
 
-/**
- * @covers \BrowscapPHP\Parser\Helper\Pattern
- */
+/** @covers \BrowscapPHP\Parser\Helper\Pattern */
 final class PatternTest extends TestCase
 {
     /**
@@ -74,7 +72,7 @@ final class PatternTest extends TestCase
     {
         self::assertSame(
             '529f1ddb64ea27d5cc6fc8ce8048d9e7',
-            Pattern::getHashForParts('mozilla/5.0 (*linux i686*rv:0.9*) gecko*')
+            Pattern::getHashForParts('mozilla/5.0 (*linux i686*rv:0.9*) gecko*'),
         );
     }
 }

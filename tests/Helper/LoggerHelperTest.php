@@ -11,9 +11,7 @@ use PHPUnit\Framework\TestCase;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * @covers \BrowscapPHP\Helper\LoggerHelper
- */
+/** @covers \BrowscapPHP\Helper\LoggerHelper */
 class LoggerHelperTest extends TestCase
 {
     /**

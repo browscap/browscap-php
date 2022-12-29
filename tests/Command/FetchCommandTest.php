@@ -9,14 +9,10 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
 
-/**
- * @covers \BrowscapPHP\Command\FetchCommand
- */
+/** @covers \BrowscapPHP\Command\FetchCommand */
 final class FetchCommandTest extends TestCase
 {
-    /**
-     * @throws ReflectionException
-     */
+    /** @throws ReflectionException */
     public function testConfigure(): void
     {
         $object = $this->getMockBuilder(FetchCommand::class)

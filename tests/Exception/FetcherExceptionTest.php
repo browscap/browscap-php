@@ -7,9 +7,7 @@ namespace BrowscapPHPTest\Exception;
 use BrowscapPHP\Exception\FetcherException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \BrowscapPHP\Exception\FetcherException
- */
+/** @covers \BrowscapPHP\Exception\FetcherException */
 final class FetcherExceptionTest extends TestCase
 {
     public function testHttpError(): void
@@ -19,7 +17,7 @@ final class FetcherExceptionTest extends TestCase
         self::assertInstanceOf(FetcherException::class, $exception);
         self::assertSame(
             'Could not fetch HTTP resource "http://example.org": Uri not reachable',
-            $exception->getMessage()
+            $exception->getMessage(),
         );
     }
 }
