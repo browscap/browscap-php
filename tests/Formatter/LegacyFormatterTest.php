@@ -8,9 +8,7 @@ use BrowscapPHP\Formatter\LegacyFormatter;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-/**
- * @covers \BrowscapPHP\Formatter\LegacyFormatter
- */
+/** @covers \BrowscapPHP\Formatter\LegacyFormatter */
 final class LegacyFormatterTest extends TestCase
 {
     /**

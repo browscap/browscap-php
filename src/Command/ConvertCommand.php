@@ -39,9 +39,7 @@ class ConvertCommand extends Command
 
     private ?string $defaultCacheFolder = null;
 
-    /**
-     * @throws LogicException
-     */
+    /** @throws LogicException */
     public function __construct(string $defaultCacheFolder, string $defaultIniFile)
     {
         $this->defaultCacheFolder = $defaultCacheFolder;
@@ -50,9 +48,7 @@ class ConvertCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
+    /** @throws InvalidArgumentException */
     protected function configure(): void
     {
         $this
@@ -62,14 +58,14 @@ class ConvertCommand extends Command
                 'file',
                 InputArgument::OPTIONAL,
                 'Path to the browscap.ini file',
-                $this->defaultIniFile
+                $this->defaultIniFile,
             )
             ->addOption(
                 'cache',
                 'c',
                 InputOption::VALUE_OPTIONAL,
                 'Where the cache files are located',
-                $this->defaultCacheFolder
+                $this->defaultCacheFolder,
             );
     }
 
@@ -87,7 +83,7 @@ class ConvertCommand extends Command
         $adapter    = new LocalFilesystemAdapter($cacheOption);
         $filesystem = new Filesystem($adapter);
         $cache      = new SimpleCache(
-            new Flysystem($filesystem)
+            new Flysystem($filesystem),
         );
 
         $logger->info('initializing converting process');

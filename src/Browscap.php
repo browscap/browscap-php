@@ -39,9 +39,7 @@ final class Browscap implements BrowscapInterface
 
     private LoggerInterface $logger;
 
-    /**
-     * @throws void
-     */
+    /** @throws void */
     public function __construct(CacheInterface $cache, LoggerInterface $logger)
     {
         $this->cache  = new BrowscapCache($cache, $logger);

@@ -11,16 +11,12 @@ use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \BrowscapPHP\Helper\Converter
- */
+/** @covers \BrowscapPHP\Helper\Converter */
 final class ConverterConvertStringTest extends TestCase
 {
     private Converter $object;
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     protected function setUp(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
@@ -37,9 +33,7 @@ final class ConverterConvertStringTest extends TestCase
         $this->object = new Converter($logger, $cache);
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     public function testConvertString(): void
     {
         $file = $this->getMockBuilder(Filesystem::class)
@@ -160,9 +154,7 @@ AolVersion=0
         $this->object->convertString($content);
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     public function testConvertStringWithoutPatternFound(): void
     {
         $file = $this->getMockBuilder(Filesystem::class)

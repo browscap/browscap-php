@@ -9,9 +9,7 @@ use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
-/**
- * @covers \BrowscapPHP\Parser\Helper\SubKey
- */
+/** @covers \BrowscapPHP\Parser\Helper\SubKey */
 final class SubKeyTest extends TestCase
 {
     /**

@@ -9,14 +9,10 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
 
-/**
- * @covers \BrowscapPHP\Command\ConvertCommand
- */
+/** @covers \BrowscapPHP\Command\ConvertCommand */
 final class ConvertCommandTest extends TestCase
 {
-    /**
-     * @throws ReflectionException
-     */
+    /** @throws ReflectionException */
     public function testConfigure(): void
     {
         $object = $this->getMockBuilder(ConvertCommand::class)

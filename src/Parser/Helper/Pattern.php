@@ -15,9 +15,7 @@ use function substr;
  */
 final class Pattern
 {
-    /**
-     * @throws void
-     */
+    /** @throws void */
     private function __construct()
     {
     }

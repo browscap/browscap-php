@@ -46,6 +46,8 @@ interface BrowscapCacheInterface
      * @throws InvalidArgumentException
      *
      * @no-named-arguments
+     *
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function getItem(string $cacheId, bool $withVersion = true, ?bool &$success = null);
 
@@ -60,6 +62,8 @@ interface BrowscapCacheInterface
      * @throws InvalidArgumentException
      *
      * @no-named-arguments
+     *
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      */
     public function setItem(string $cacheId, $content, bool $withVersion = true): bool;
 

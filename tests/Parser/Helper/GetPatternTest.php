@@ -14,16 +14,12 @@ use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 use function serialize;
 
-/**
- * @covers \BrowscapPHP\Parser\Helper\GetPattern
- */
+/** @covers \BrowscapPHP\Parser\Helper\GetPattern */
 final class GetPatternTest extends TestCase
 {
     private GetPattern $object;
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     protected function setUp(): void
     {
         $map = [

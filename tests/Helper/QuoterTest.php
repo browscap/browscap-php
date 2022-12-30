@@ -9,16 +9,12 @@ use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
-/**
- * @covers \BrowscapPHP\Helper\Quoter
- */
+/** @covers \BrowscapPHP\Helper\Quoter */
 final class QuoterTest extends TestCase
 {
     private Quoter $quoter;
 
-    /**
-     * @throws void
-     */
+    /** @throws void */
     protected function setUp(): void
     {
         $this->quoter = new Quoter();

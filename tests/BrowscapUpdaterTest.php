@@ -32,18 +32,14 @@ use ReflectionException;
 
 use const DIRECTORY_SEPARATOR;
 
-/**
- * @covers \BrowscapPHP\BrowscapUpdater
- */
+/** @covers \BrowscapPHP\BrowscapUpdater */
 final class BrowscapUpdaterTest extends TestCase
 {
     private const STORAGE_DIR = 'storage';
 
     private BrowscapUpdater $object;
 
-    /**
-     * @throws void
-     */
+    /** @throws void */
     protected function setUp(): void
     {
         $cache = $this->createMock(CacheInterface::class);
@@ -196,7 +192,7 @@ AolVersion=0
         $logger = $this->createMock(LoggerInterface::class);
 
         $adapter = new SimpleCache(
-            new MemoryStore()
+            new MemoryStore(),
         );
         $cache   = new BrowscapCache($adapter, $logger);
 
@@ -210,9 +206,7 @@ AolVersion=0
         self::assertSame(5031, $cache->getVersion());
     }
 
-    /**
-     * @throws ReflectionException
-     */
+    /** @throws ReflectionException */
     public function testConvertString(): void
     {
         $content = ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Browscap Version
@@ -323,7 +317,7 @@ AolVersion=0
         $logger = $this->createMock(LoggerInterface::class);
 
         $adapter = new SimpleCache(
-            new MemoryStore()
+            new MemoryStore(),
         );
         $cache   = new BrowscapCache($adapter, $logger);
 
@@ -382,7 +376,7 @@ AolVersion=0
 
         $this->expectException(BrowscapException\FetcherException::class);
         $this->expectExceptionMessage(
-            'an error occured while fetching version data from URI http://browscap.org/version-number: StatusCode was 500'
+            'an error occured while fetching version data from URI http://browscap.org/version-number: StatusCode was 500',
         );
         $this->object->fetch(IniLoaderInterface::PHP_INI);
     }
@@ -1065,7 +1059,7 @@ AolVersion=0
 
         $this->expectException(BrowscapException\NoCachedVersionException::class);
         $this->expectExceptionMessage(
-            'there is no cached version available, please update from remote'
+            'there is no cached version available, please update from remote',
         );
 
         $this->object->checkUpdate();
@@ -1121,7 +1115,7 @@ AolVersion=0
 
         $this->expectException(BrowscapException\FetcherException::class);
         $this->expectExceptionMessage(
-            'an error occured while fetching version data from URI http://browscap.org/version-number: StatusCode was 200'
+            'an error occured while fetching version data from URI http://browscap.org/version-number: StatusCode was 200',
         );
         $this->object->checkUpdate();
     }
@@ -1179,7 +1173,7 @@ AolVersion=0
 
         $this->expectException(BrowscapException\NoNewVersionException::class);
         $this->expectExceptionMessage(
-            'there is no newer version available'
+            'there is no newer version available',
         );
 
         $this->object->checkUpdate();

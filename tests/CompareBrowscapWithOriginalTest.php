@@ -114,7 +114,7 @@ final class CompareBrowscapWithOriginalTest extends TestCase
         }
 
         $cache = new SimpleCache(
-            new MemoryStore()
+            new MemoryStore(),
         );
 
         $logger = new NullLogger();
@@ -139,7 +139,7 @@ final class CompareBrowscapWithOriginalTest extends TestCase
 
         if (self::$object === null) {
             self::fail(
-                'the Browscap Lib ist not set properly'
+                'the Browscap Lib ist not set properly',
             );
         }
 
@@ -155,7 +155,7 @@ final class CompareBrowscapWithOriginalTest extends TestCase
         if (! empty($diff)) {
             self::fail(
                 'the properties found by "get_browser()" differ from found by "\BrowscapPHP\Browscap::getBrowser()" : '
-                . serialize($diff)
+                . serialize($diff),
             );
         }
 
@@ -173,8 +173,8 @@ final class CompareBrowscapWithOriginalTest extends TestCase
                 $libProperties,
                 sprintf(
                     'Property `%s` from Browscap doesn\'t match anything in get_browser. You may have an outdated browscap.ini file for your tests',
-                    $bcProp
-                )
+                    $bcProp,
+                ),
             );
 
             unset($libProperties[$bcProp]);
@@ -186,8 +186,8 @@ final class CompareBrowscapWithOriginalTest extends TestCase
             sprintf(
                 'There are %d(%s) properties in get_browser that do not match those in Browscap.',
                 count($libProperties),
-                implode(', ', array_keys($libProperties))
-            )
+                implode(', ', array_keys($libProperties)),
+            ),
         );
     }
 
@@ -207,7 +207,7 @@ final class CompareBrowscapWithOriginalTest extends TestCase
 
         if (self::$object === null) {
             self::fail(
-                'the Browscap Lib ist not set properly'
+                'the Browscap Lib ist not set properly',
             );
         }
 
@@ -223,13 +223,13 @@ final class CompareBrowscapWithOriginalTest extends TestCase
             self::assertObjectHasAttribute(
                 $bcProp,
                 $libResult,
-                sprintf('Actual library result does not have "%s" property', $bcProp)
+                sprintf('Actual library result does not have "%s" property', $bcProp),
             );
 
             self::assertObjectHasAttribute(
                 $bcProp,
                 $bcResult,
-                sprintf('Actual browscap result does not have "%s" property', $bcProp)
+                sprintf('Actual browscap result does not have "%s" property', $bcProp),
             );
 
             $libValue = strtolower((string) $libResult->{$bcProp});
@@ -245,8 +245,8 @@ final class CompareBrowscapWithOriginalTest extends TestCase
                     $bcValue,
                     PHP_EOL,
                     strtolower($bcResult->browser_name_pattern) . PHP_EOL,
-                    strtolower($libResult->browser_name_pattern)
-                )
+                    strtolower($libResult->browser_name_pattern),
+                ),
             );
         }
     }

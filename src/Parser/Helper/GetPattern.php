@@ -32,9 +32,7 @@ class GetPattern implements GetPatternInterface
      */
     private LoggerInterface $logger;
 
-    /**
-     * @throws void
-     */
+    /** @throws void */
     public function __construct(BrowscapCacheInterface $cache, LoggerInterface $logger)
     {
         $this->cache  = $cache;
@@ -71,8 +69,8 @@ class GetPattern implements GetPatternInterface
                         sprintf(
                             'cache key "browscap.patterns.%s" for useragent "%s" not found',
                             $tmpSubkey,
-                            $userAgent
-                        )
+                            $userAgent,
+                        ),
                     );
 
                     continue;
@@ -82,11 +80,11 @@ class GetPattern implements GetPatternInterface
                     new \InvalidArgumentException(
                         sprintf(
                             'an error occured while checking pattern "browscap.patterns.%s" in the cache',
-                            $tmpSubkey
+                            $tmpSubkey,
                         ),
                         0,
-                        $e
-                    )
+                        $e,
+                    ),
                 );
 
                 continue;
@@ -101,11 +99,11 @@ class GetPattern implements GetPatternInterface
                     new \InvalidArgumentException(
                         sprintf(
                             'an error occured while reading pattern "browscap.patterns.%s" from the cache',
-                            $tmpSubkey
+                            $tmpSubkey,
                         ),
                         0,
-                        $e
-                    )
+                        $e,
+                    ),
                 );
 
                 continue;
@@ -116,8 +114,8 @@ class GetPattern implements GetPatternInterface
                     sprintf(
                         'cache key "browscap.patterns.%s" for useragent "%s" not found',
                         $tmpSubkey,
-                        $userAgent
-                    )
+                        $userAgent,
+                    ),
                 );
 
                 continue;
@@ -128,8 +126,8 @@ class GetPattern implements GetPatternInterface
                     sprintf(
                         'cache key "browscap.patterns.%s" for useragent "%s" was empty',
                         $tmpSubkey,
-                        $userAgent
-                    )
+                        $userAgent,
+                    ),
                 );
 
                 continue;

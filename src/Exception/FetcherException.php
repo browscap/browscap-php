@@ -11,13 +11,11 @@ use function sprintf;
  */
 final class FetcherException extends DomainException
 {
-    /**
-     * @return FetcherException
-     */
+    /** @return FetcherException */
     public static function httpError(string $resource, string $error): self
     {
         return new self(
-            sprintf('Could not fetch HTTP resource "%s": %s', $resource, $error)
+            sprintf('Could not fetch HTTP resource "%s": %s', $resource, $error),
         );
     }
 }

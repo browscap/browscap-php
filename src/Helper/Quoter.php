@@ -49,12 +49,12 @@ final class Quoter implements QuoterInterface
         $pattern = preg_replace(
             ['/(?<!\\\\)\\.\\*/', '/(?<!\\\\)\\./', '/(?<!\\\\)\\\\x/'],
             ['\\*', '\\?', '\\x'],
-            $pattern
+            $pattern,
         );
 
         if ($pattern === null) {
             throw new UnexpectedValueException(
-                sprintf('an error occured while handling pattern %s', $origPattern)
+                sprintf('an error occured while handling pattern %s', $origPattern),
             );
         }
 
@@ -108,7 +108,7 @@ final class Quoter implements QuoterInterface
                 '/',
                 '#',
             ],
-            $pattern
+            $pattern,
         );
     }
 }

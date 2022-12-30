@@ -41,9 +41,7 @@ class CheckUpdateCommand extends Command
 
     private ?string $defaultCacheFolder = null;
 
-    /**
-     * @throws LogicException
-     */
+    /** @throws LogicException */
     public function __construct(string $defaultCacheFolder)
     {
         $this->defaultCacheFolder = $defaultCacheFolder;
@@ -51,9 +49,7 @@ class CheckUpdateCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
+    /** @throws InvalidArgumentException */
     protected function configure(): void
     {
         $this
@@ -64,7 +60,7 @@ class CheckUpdateCommand extends Command
                 'c',
                 InputOption::VALUE_OPTIONAL,
                 'Where the cache files are located',
-                $this->defaultCacheFolder
+                $this->defaultCacheFolder,
             );
     }
 
@@ -82,7 +78,7 @@ class CheckUpdateCommand extends Command
         $adapter    = new LocalFilesystemAdapter($cacheOption);
         $filesystem = new Filesystem($adapter);
         $cache      = new SimpleCache(
-            new Flysystem($filesystem)
+            new Flysystem($filesystem),
         );
 
         $logger->debug('started checking for new version of remote file');
