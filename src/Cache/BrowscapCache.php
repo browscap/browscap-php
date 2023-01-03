@@ -142,6 +142,8 @@ final class BrowscapCache implements BrowscapCacheInterface
      * @return mixed Data on success, null on failure
      *
      * @throws InvalidArgumentException
+     *
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
     public function getItem(string $cacheId, bool $withVersion = true, ?bool &$success = null)
     {
@@ -177,6 +179,8 @@ final class BrowscapCache implements BrowscapCacheInterface
      * @return bool whether the file was correctly written to the disk
      *
      * @throws InvalidArgumentException
+     *
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      */
     public function setItem(string $cacheId, $content, bool $withVersion = true): bool
     {

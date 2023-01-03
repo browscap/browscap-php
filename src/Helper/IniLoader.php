@@ -37,7 +37,7 @@ final class IniLoader implements IniLoaderInterface
         if (empty($name)) {
             throw new Exception(
                 'the filename can not be empty',
-                Exception::INI_FILE_MISSING
+                Exception::INI_FILE_MISSING,
             );
         }
 

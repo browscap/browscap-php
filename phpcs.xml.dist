@@ -18,7 +18,10 @@
     <rule ref="Doctrine">
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming.SuperfluousSuffix"/>
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming.SuperfluousSuffix"/>
-        <exclude name="SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity"/>
         <exclude name="Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.UnionTypeHintFormat"/>
+        <exclude name="SlevomatCodingStandard.Exceptions.RequireNonCapturingCatch"/>
+        <exclude name="SlevomatCodingStandard.Classes.RequireConstructorPropertyPromotion"/>
+        <exclude name="SlevomatCodingStandard.Functions.RequireTrailingCommaInDeclaration"/>
     </rule>
 </ruleset>

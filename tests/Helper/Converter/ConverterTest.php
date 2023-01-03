@@ -19,18 +19,14 @@ use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 use const DIRECTORY_SEPARATOR;
 
-/**
- * @covers \BrowscapPHP\Helper\Converter
- */
+/** @covers \BrowscapPHP\Helper\Converter */
 final class ConverterTest extends TestCase
 {
     private const STORAGE_DIR = 'storage';
 
     private Converter $object;
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     protected function setUp(): void
     {
         $logger = $this->createMock(LoggerInterface::class);

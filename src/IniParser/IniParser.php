@@ -103,7 +103,7 @@ final class IniParser implements ParserInterface
             foreach (array_keys($browserProperties) as $property) {
                 $browserProperties[$property] = $propertyFormatter->formatPropertyValue(
                     $browserProperties[$property],
-                    $property
+                    $property,
                 );
             }
 
@@ -112,7 +112,7 @@ final class IniParser implements ParserInterface
                 // is also returned as a part
                 $contents[$subkey][] = $patternhash . "\t" . json_encode(
                     $browserProperties,
-                    JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_THROW_ON_ERROR
+                    JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_THROW_ON_ERROR,
                 );
             } catch (JsonException $e) {
                 throw new UnexpectedValueException('json encoding content failed', 0, $e);
@@ -148,7 +148,7 @@ final class IniParser implements ParserInterface
         preg_match_all(
             '/(?<=\[)(?:[^\r\n]*[?*][^\r\n]*)(?=\])|(?<=\[)(?:[^\r\n*?]+)(?=\])(?![^\[]*Comment=)/m',
             $content,
-            $matches
+            $matches,
         );
 
         if (empty($matches[0]) || ! is_array($matches[0])) {
@@ -262,9 +262,7 @@ final class IniParser implements ParserInterface
         }
     }
 
-    /**
-     * @throws void
-     */
+    /** @throws void */
     private function compareBcStrings(string $a, string $b): int
     {
         $aLength = strlen($a);

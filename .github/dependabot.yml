@@ -14,13 +14,22 @@ updates:
       - "dependencies"
     versioning-strategy: "increase-if-necessary"
     ignore:
+      - dependency-name: "league/flysystem"
+        versions:
+          - ">= 0"
+      - dependency-name: "monolog/monolog"
+        versions:
+          - ">= 0"
+      - dependency-name: "psr/log"
+        versions:
+          - ">= 0"
+      - dependency-name: "psr/simple-cache"
+        versions:
+          - ">= 0"
       - dependency-name: "symfony/console"
         versions:
           - ">= 0"
-      - dependency-name: "symfony/finder"
-        versions:
-          - ">= 0"
-      - dependency-name: "league/flysystem"
+      - dependency-name: "symfony/filesystem"
         versions:
           - ">= 0"
     commit-message:

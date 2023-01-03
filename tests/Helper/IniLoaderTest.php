@@ -10,24 +10,18 @@ use BrowscapPHP\Helper\IniLoaderInterface;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
-/**
- * @covers \BrowscapPHP\Helper\IniLoader
- */
+/** @covers \BrowscapPHP\Helper\IniLoader */
 final class IniLoaderTest extends TestCase
 {
     private IniLoader $object;
 
-    /**
-     * @throws void
-     */
+    /** @throws void */
     protected function setUp(): void
     {
         $this->object = new IniLoader();
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     public function testSetMissingRemoteFilename(): void
     {
         $this->expectException(Exception::class);
@@ -35,9 +29,7 @@ final class IniLoaderTest extends TestCase
         $this->object->setRemoteFilename('');
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     public function testGetRemoteIniUrl(): void
     {
         $this->object->setRemoteFilename(IniLoaderInterface::PHP_INI_LITE);

@@ -8,9 +8,7 @@ use BrowscapPHP\Formatter\PhpGetBrowser;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-/**
- * @covers \BrowscapPHP\Formatter\PhpGetBrowser
- */
+/** @covers \BrowscapPHP\Formatter\PhpGetBrowser */
 final class PhpGetBrowserTest extends TestCase
 {
     private PhpGetBrowser $object;

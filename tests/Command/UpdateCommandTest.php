@@ -9,14 +9,10 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
 
-/**
- * @covers \BrowscapPHP\Command\UpdateCommand
- */
+/** @covers \BrowscapPHP\Command\UpdateCommand */
 final class UpdateCommandTest extends TestCase
 {
-    /**
-     * @throws ReflectionException
-     */
+    /** @throws ReflectionException */
     public function testConfigure(): void
     {
         $object = $this->getMockBuilder(UpdateCommand::class)

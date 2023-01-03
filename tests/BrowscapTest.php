@@ -20,16 +20,12 @@ use ReflectionProperty;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
 use stdClass;
 
-/**
- * @covers \BrowscapPHP\Browscap
- */
+/** @covers \BrowscapPHP\Browscap */
 final class BrowscapTest extends TestCase
 {
     private Browscap $object;
 
-    /**
-     * @throws void
-     */
+    /** @throws void */
     protected function setUp(): void
     {
         $cache = $this->createMock(CacheInterface::class);
@@ -39,9 +35,7 @@ final class BrowscapTest extends TestCase
         $this->object = new Browscap($cache, $logger);
     }
 
-    /**
-     * @throws ReflectionException
-     */
+    /** @throws ReflectionException */
     public function testSetGetFormatter(): void
     {
         $formatter = $this->createMock(FormatterInterface::class);
@@ -75,9 +69,7 @@ final class BrowscapTest extends TestCase
         self::assertSame($parser, $this->object->getParser());
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     public function testGetBrowserWithoutCache(): void
     {
         $this->expectException(Exception::class);
