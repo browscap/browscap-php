@@ -220,15 +220,13 @@ final class CompareBrowscapWithOriginalTest extends TestCase
 
             $bcProp = strtolower($bcProp);
 
-            self::assertObjectHasAttribute(
-                $bcProp,
-                $libResult,
+            self::assertTrue(
+                property_exists($libResult, $bcProp),
                 sprintf('Actual library result does not have "%s" property', $bcProp),
             );
 
-            self::assertObjectHasAttribute(
-                $bcProp,
-                $bcResult,
+            self::assertTrue(
+                property_exists($bcResult, $bcProp),
                 sprintf('Actual browscap result does not have "%s" property', $bcProp),
             );
 
