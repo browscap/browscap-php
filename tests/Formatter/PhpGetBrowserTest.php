@@ -8,6 +8,8 @@ use BrowscapPHP\Formatter\PhpGetBrowser;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+use function property_exists;
+
 /** @covers \BrowscapPHP\Formatter\PhpGetBrowser */
 final class PhpGetBrowserTest extends TestCase
 {
@@ -30,7 +32,7 @@ final class PhpGetBrowserTest extends TestCase
         self::assertInstanceOf(stdClass::class, $return);
         self::assertSame('test', $return->browser);
         self::assertSame('TestComment', $return->comment);
-        self::assertObjectHasAttribute('browser_type', $return);
+        self::assertTrue(property_exists($return, 'browser_type'));
     }
 
     public function testPatternIdIsReturned(): void
@@ -43,7 +45,7 @@ final class PhpGetBrowserTest extends TestCase
         $this->object->setData($data);
         $return = $this->object->getData();
 
-        self::assertObjectHasAttribute('patternid', $return);
+        self::assertTrue(property_exists($return, 'patternid'));
         self::assertSame('test.json::u0::c1', $return->patternid);
     }
 
@@ -54,6 +56,6 @@ final class PhpGetBrowserTest extends TestCase
         $this->object->setData($data);
         $return = $this->object->getData();
 
-        self::assertObjectNotHasAttribute('patternid', $return);
+        self::assertFalse(property_exists($return, 'patternid'));
     }
 }
