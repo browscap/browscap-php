@@ -56,6 +56,6 @@ final class PhpGetBrowserTest extends TestCase
         $this->object->setData($data);
         $return = $this->object->getData();
 
-        self::assertObjectNotHasAttribute('patternid', $return);
+        self::assertFalse(property_exists($return, 'patternid'));
     }
 }
