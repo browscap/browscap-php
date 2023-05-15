@@ -41,7 +41,7 @@
         "symfony/filesystem": "^v5.4.13 || ^v6.2.0"
     },
     "require-dev": {
-        "doctrine/coding-standard": "^11.0.0",
+        "doctrine/coding-standard": "^12.0.0",
         "mikey179/vfsstream": "^v1.6.11",
         "phpstan/extension-installer": "^1.2.0",
         "phpstan/phpstan": "^1.9.4",
