@@ -811,7 +811,7 @@ AolVersion=0
     public function testUpdateFailException(): void
     {
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(self::once())->method('getContents')->willReturn(false);
+        $body->expects(self::once())->method('getContents')->willReturn('');
 
         $response = $this->createMock(Response::class);
         $response->expects(self::once())->method('getStatusCode')->willReturn(200);
@@ -1133,7 +1133,7 @@ AolVersion=0
         $version = 6000;
 
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(self::once())->method('getContents')->willReturn($version);
+        $body->expects(self::once())->method('getContents')->willReturn((string) $version);
 
         $response = $this->createMock(Response::class);
         $response->expects(self::once())->method('getStatusCode')->willReturn(200);
@@ -1189,7 +1189,7 @@ AolVersion=0
     public function testCheckUpdateWithNewerVersion(): void
     {
         $body = $this->createMock(StreamInterface::class);
-        $body->expects(self::once())->method('getContents')->willReturn(6001);
+        $body->expects(self::once())->method('getContents')->willReturn('6001');
 
         $response = $this->createMock(Response::class);
         $response->expects(self::once())->method('getStatusCode')->willReturn(200);
