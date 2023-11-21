@@ -14,7 +14,7 @@ jobs:
   validate:
     name: "Validate composer"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "ubuntu-latest"
 
     continue-on-error: false
 
@@ -22,9 +22,6 @@ jobs:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
           - "8.1"
 
@@ -55,7 +52,7 @@ jobs:
 
     needs: "validate"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "ubuntu-latest"
 
     continue-on-error: false
 
@@ -63,9 +60,6 @@ jobs:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
           - "8.1"
           - "8.2"
@@ -95,7 +89,7 @@ jobs:
 
     needs: "lint"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "ubuntu-latest"
 
     continue-on-error: ${{ matrix.experimental }}
 
@@ -103,9 +97,6 @@ jobs:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
           - "8.1"
           - "8.2"
@@ -118,20 +109,16 @@ jobs:
         experimental: [false]
 
         include:
-          - operating-system: "ubuntu-20.04"
-            php-version: "8.1"
+          - php-version: "8.1"
             dependencies: "locked"
             experimental: false
-          - operating-system: "ubuntu-20.04"
-            php-version: "8.2"
+          - php-version: "8.2"
             dependencies: "locked"
             experimental: false
-          - operating-system: "ubuntu-20.04"
-            php-version: "8.3"
+          - php-version: "8.3"
             dependencies: "locked"
             experimental: false
-          - operating-system: "ubuntu-20.04"
-            php-version: "8.4"
+          - php-version: "8.4"
             dependencies: "highest"
             experimental: true
 
@@ -187,7 +174,7 @@ jobs:
 
     needs: "lint"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "ubuntu-latest"
 
     continue-on-error: false
 
@@ -195,9 +182,6 @@ jobs:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
           - "8.1"
 
@@ -234,7 +218,7 @@ jobs:
 
     needs: "lint"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "ubuntu-latest"
 
     continue-on-error: false
 
@@ -242,9 +226,6 @@ jobs:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
           - "8.1"
           - "8.2"
@@ -282,18 +263,15 @@ jobs:
     name: "UnitTests with PHPUnit"
 
     needs: "lint"
-
-    runs-on: "${{ matrix.operating-system }}"
-
+      
+    runs-on: "ubuntu-latest"
+    
     continue-on-error: false
 
     strategy:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
           - "8.1"
           - "8.2"
@@ -332,7 +310,7 @@ jobs:
 
     needs: "tests"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "ubuntu-latest"
 
     continue-on-error: false
 
@@ -340,9 +318,6 @@ jobs:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
           - "8.1"
           - "8.2"
@@ -388,7 +363,7 @@ jobs:
 
     needs: "tests"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "ubuntu-latest"
 
     continue-on-error: false
 
@@ -396,9 +371,6 @@ jobs:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
           - "8.1"
           - "8.2"
@@ -443,7 +415,7 @@ jobs:
 
     needs: "lint"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "ubuntu-latest"
 
     continue-on-error: false
 
@@ -451,9 +423,6 @@ jobs:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
           - "8.1"
 
