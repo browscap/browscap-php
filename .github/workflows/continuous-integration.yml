@@ -71,6 +71,7 @@ jobs:
           - "8.0"
           - "8.1"
           - "8.2"
+          - "8.3"
 
     steps:
       - name: "Checkout"
@@ -112,6 +113,7 @@ jobs:
           - "8.0"
           - "8.1"
           - "8.2"
+          - "8.3"
 
         dependencies:
           - "lowest"
@@ -134,6 +136,10 @@ jobs:
             experimental: false
           - operating-system: "ubuntu-20.04"
             php-version: "8.3"
+            dependencies: "locked"
+            experimental: false
+          - operating-system: "ubuntu-20.04"
+            php-version: "8.4"
             dependencies: "highest"
             experimental: true
 
@@ -252,6 +258,7 @@ jobs:
           - "8.0"
           - "8.1"
           - "8.2"
+          - "8.3"
 
         dependencies:
           - "locked"
@@ -302,6 +309,7 @@ jobs:
           - "8.0"
           - "8.1"
           - "8.2"
+          - "8.3"
 
         dependencies:
           - "highest"
@@ -352,6 +360,7 @@ jobs:
           - "8.0"
           - "8.1"
           - "8.2"
+          - "8.3"
 
         dependencies:
           - "highest"
@@ -409,6 +418,7 @@ jobs:
           - "8.0"
           - "8.1"
           - "8.2"
+          - "8.3"
 
         dependencies:
           - "highest"
