@@ -349,7 +349,7 @@ jobs:
           composer-options: "${{ env.COMPOSER_OPTIONS }} --prefer-stable"
 
       - name: "Collect code coverage with Xdebug and phpunit/phpunit"
-        run: "vendor/bin/phpunit -c phpunit.xml.dist --verbose --exclude-group compare --coverage-clover=coverage.clover --coverage-text --colors"
+        run: "vendor/bin/phpunit -c phpunit.xml.dist --exclude-group compare --coverage-clover=coverage.clover --coverage-text --colors"
 
       - name: "Upload coverage to Codecov"
         uses: "codecov/codecov-action@v3.1.4"
@@ -408,7 +408,7 @@ jobs:
           cp /tmp/browscap.ini resources/browscap.ini
 
       - name: "Compare get_browser to browscap-php results"
-        run: "vendor/bin/phpunit -c phpunit.xml.dist --verbose --no-coverage --group compare --colors"
+        run: "vendor/bin/phpunit -c phpunit.xml.dist --no-coverage --group compare --colors"
 
   roave-backwards-compatibility-check:
     name: "Check for Backward Compatibility breaks"
