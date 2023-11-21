@@ -14,7 +14,7 @@ jobs:
   validate:
     name: "Validate composer"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "ubuntu-latest"
 
     continue-on-error: false
 
@@ -22,9 +22,6 @@ jobs:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
           - "8.1"
 
@@ -55,7 +52,7 @@ jobs:
 
     needs: "validate"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "ubuntu-latest"
 
     continue-on-error: false
 
@@ -63,12 +60,7 @@ jobs:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
-          - "7.4"
-          - "8.0"
           - "8.1"
           - "8.2"
           - "8.3"
@@ -97,7 +89,7 @@ jobs:
 
     needs: "lint"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "ubuntu-latest"
 
     continue-on-error: ${{ matrix.experimental }}
 
@@ -105,12 +97,7 @@ jobs:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
-          - "7.4"
-          - "8.0"
           - "8.1"
           - "8.2"
           - "8.3"
@@ -122,24 +109,16 @@ jobs:
         experimental: [false]
 
         include:
-          - operating-system: "ubuntu-20.04"
-            php-version: "8.0"
+          - php-version: "8.1"
             dependencies: "locked"
             experimental: false
-          - operating-system: "ubuntu-20.04"
-            php-version: "8.1"
+          - php-version: "8.2"
             dependencies: "locked"
             experimental: false
-          - operating-system: "ubuntu-20.04"
-            php-version: "8.2"
+          - php-version: "8.3"
             dependencies: "locked"
             experimental: false
-          - operating-system: "ubuntu-20.04"
-            php-version: "8.3"
-            dependencies: "locked"
-            experimental: false
-          - operating-system: "ubuntu-20.04"
-            php-version: "8.4"
+          - php-version: "8.4"
             dependencies: "highest"
             experimental: true
 
@@ -195,7 +174,7 @@ jobs:
 
     needs: "lint"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "ubuntu-latest"
 
     continue-on-error: false
 
@@ -203,9 +182,6 @@ jobs:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
           - "8.1"
 
@@ -242,7 +218,7 @@ jobs:
 
     needs: "lint"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "ubuntu-latest"
 
     continue-on-error: false
 
@@ -250,12 +226,7 @@ jobs:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
-          - "7.4"
-          - "8.0"
           - "8.1"
           - "8.2"
           - "8.3"
@@ -292,21 +263,16 @@ jobs:
     name: "UnitTests with PHPUnit"
 
     needs: "lint"
-
-    runs-on: "${{ matrix.operating-system }}"
-
+      
+    runs-on: "ubuntu-latest"
+    
     continue-on-error: false
 
     strategy:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
-          - "7.4"
-          - "8.0"
           - "8.1"
           - "8.2"
           - "8.3"
@@ -344,7 +310,7 @@ jobs:
 
     needs: "tests"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "ubuntu-latest"
 
     continue-on-error: false
 
@@ -352,12 +318,7 @@ jobs:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
-          - "7.4"
-          - "8.0"
           - "8.1"
           - "8.2"
           - "8.3"
@@ -388,7 +349,7 @@ jobs:
           composer-options: "${{ env.COMPOSER_OPTIONS }} --prefer-stable"
 
       - name: "Collect code coverage with Xdebug and phpunit/phpunit"
-        run: "vendor/bin/phpunit -c phpunit.xml.dist --verbose --exclude-group compare --coverage-clover=coverage.clover --coverage-text --colors"
+        run: "vendor/bin/phpunit -c phpunit.xml.dist --exclude-group compare --coverage-clover=coverage.clover --coverage-text --colors"
 
       - name: "Upload coverage to Codecov"
         uses: "codecov/codecov-action@v3.1.4"
@@ -402,7 +363,7 @@ jobs:
 
     needs: "tests"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "ubuntu-latest"
 
     continue-on-error: false
 
@@ -410,12 +371,7 @@ jobs:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
-          - "7.4"
-          - "8.0"
           - "8.1"
           - "8.2"
           - "8.3"
@@ -452,14 +408,14 @@ jobs:
           cp /tmp/browscap.ini resources/browscap.ini
 
       - name: "Compare get_browser to browscap-php results"
-        run: "vendor/bin/phpunit -c phpunit.xml.dist --verbose --no-coverage --group compare --colors"
+        run: "vendor/bin/phpunit -c phpunit.xml.dist --no-coverage --group compare --colors"
 
   roave-backwards-compatibility-check:
     name: "Check for Backward Compatibility breaks"
 
     needs: "lint"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "ubuntu-latest"
 
     continue-on-error: false
 
@@ -467,9 +423,6 @@ jobs:
       fail-fast: false
 
       matrix:
-        operating-system:
-          - "ubuntu-20.04"
-
         php-version:
           - "8.1"
 
@@ -493,7 +446,7 @@ jobs:
           tools: "${{ env.TOOLS }}"
 
       - name: "Require Roave/BackwardCompatibilityCheck"
-        run: "composer require --no-update --no-interaction --prefer-dist --prefer-stable \"roave/backward-compatibility-check:^6.1.1\""
+        run: "composer require --no-update --no-interaction --prefer-dist --prefer-stable \"roave/backward-compatibility-check:^8\""
 
       - name: "Update dependencies with composer"
         uses: "ramsey/composer-install@v2"

@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-    backupGlobals="false"
-    backupStaticAttributes="false"
     beStrictAboutOutputDuringTests="true"
-    beStrictAboutTestsThatDoNotTestAnything="true"
-    beStrictAboutTodoAnnotatedTests="true"
-    verbose="false"
-    bootstrap="vendor/autoload.php"
+    displayDetailsOnTestsThatTriggerDeprecations="true"
+    displayDetailsOnTestsThatTriggerErrors="true"
+    displayDetailsOnTestsThatTriggerNotices="true"
+    displayDetailsOnTestsThatTriggerWarnings="true"
+    colors="true"
     failOnWarning="true"
     failOnRisky="true"
-    >
-    <php>
-        <ini name="error_reporting" value="-1"/>
-        <ini name="memory_limit" value="-1"/>
-        <ini name="date.timezone" value="UTC"/>
-    </php>
-
-    <testsuite name="BrowscapPHP Test Suite">
-        <directory>tests/</directory>
-    </testsuite>
-
-    <coverage includeUncoveredFiles="true" processUncoveredFiles="true">
-        <include>
-            <directory suffix=".php">src/</directory>
-        </include>
-        <report>
-            <text outputFile="php://stdout" showUncoveredFiles="true" showOnlySummary="false"/>
-        </report>
-    </coverage>
+    cacheDirectory=".phpunit.cache"
+>
+  <php>
+    <ini name="error_reporting" value="-1"/>
+    <ini name="memory_limit" value="-1"/>
+    <ini name="date.timezone" value="UTC"/>
+  </php>
+  <testsuite name="BrowscapPHP Test Suite">
+    <directory>tests/</directory>
+  </testsuite>
+  <coverage>
+    <report>
+      <text outputFile="php://stdout" showUncoveredFiles="true"/>
+    </report>
+  </coverage>
+  <source>
+    <include>
+      <directory>src/</directory>
+    </include>
+  </source>
 </phpunit>

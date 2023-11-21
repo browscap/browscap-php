@@ -22,6 +22,4 @@ parameters:
       missingCheckedExceptionInThrows: true
       tooWideThrowType: true
   ignoreErrors:
-    - '~expects string, .*Exception given~'
-    - '~expects string, Throwable given~'
     - '~Exception is not subtype of Throwable~'

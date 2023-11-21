@@ -12,7 +12,6 @@ use BrowscapPHP\Exception\FileNameMissingException;
 use BrowscapPHP\Exception\FileNotFoundException;
 use MatthiasMullie\Scrapbook\Adapters\MemoryStore;
 use MatthiasMullie\Scrapbook\Psr16\SimpleCache;
-use PHPUnit\Framework\SkippedTestError;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 
@@ -102,7 +101,6 @@ final class CompareBrowscapWithOriginalTest extends TestCase
     /**
      * @throws FileNameMissingException
      * @throws FileNotFoundException
-     * @throws SkippedTestError
      * @throws ErrorReadingFileException
      */
     public static function setUpBeforeClass(): void
@@ -254,7 +252,7 @@ final class CompareBrowscapWithOriginalTest extends TestCase
      *
      * @throws void
      */
-    public function providerUserAgent(): array
+    public static function providerUserAgent(): array
     {
         return [
             ['BlackBerry7100i/4.1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/103'],

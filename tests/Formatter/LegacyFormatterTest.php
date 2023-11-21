@@ -15,7 +15,7 @@ final class LegacyFormatterTest extends TestCase
      * @return array[][]|stdClass[][]
      * @phpstan-return array<array{0: array{lowercase?: bool}, 1: stdClass}>
      */
-    public function formatterOptionsProvider(): array
+    public static function formatterOptionsProvider(): array
     {
         return [
             [
