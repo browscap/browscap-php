@@ -446,7 +446,7 @@ jobs:
           tools: "${{ env.TOOLS }}"
 
       - name: "Require Roave/BackwardCompatibilityCheck"
-        run: "composer require --no-update --no-interaction --prefer-dist --prefer-stable \"roave/backward-compatibility-check:^6.1.1\""
+        run: "composer require --no-update --no-interaction --prefer-dist --prefer-stable \"roave/backward-compatibility-check:^8\""
 
       - name: "Update dependencies with composer"
         uses: "ramsey/composer-install@v2"
