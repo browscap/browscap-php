@@ -1,11 +1,8 @@
 name: "Continuous Integration"
 
 on:
-  pull_request:
-    types:
-      - opened
-  push:
-    branches:
+  - pull_request
+  - push
 
 env:
   PHP_EXTENSIONS: "json, curl, opcache, mbstring"
