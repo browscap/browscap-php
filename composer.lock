@@ -539,16 +539,16 @@
         },
         {
             "name": "matthiasmullie/scrapbook",
-            "version": "1.5.1",
+            "version": "1.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/matthiasmullie/scrapbook.git",
-                "reference": "d49068fab714b0056c0a82ff055882e0de4e3620"
+                "reference": "5176fc8d3d5f9d640f64ed47d2301921c1ae183f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/matthiasmullie/scrapbook/zipball/d49068fab714b0056c0a82ff055882e0de4e3620",
-                "reference": "d49068fab714b0056c0a82ff055882e0de4e3620",
+                "url": "https://api.github.com/repos/matthiasmullie/scrapbook/zipball/5176fc8d3d5f9d640f64ed47d2301921c1ae183f",
+                "reference": "5176fc8d3d5f9d640f64ed47d2301921c1ae183f",
                 "shasum": ""
             },
             "require": {
@@ -627,7 +627,7 @@
             ],
             "support": {
                 "issues": "https://github.com/matthiasmullie/scrapbook/issues",
-                "source": "https://github.com/matthiasmullie/scrapbook/tree/1.5.1"
+                "source": "https://github.com/matthiasmullie/scrapbook/tree/1.5.2"
             },
             "funding": [
                 {
@@ -635,7 +635,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-01-26T11:04:25+00:00"
+            "time": "2024-01-10T09:32:25+00:00"
         },
         {
             "name": "monolog/monolog",
