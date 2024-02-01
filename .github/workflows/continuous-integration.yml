@@ -352,7 +352,7 @@ jobs:
         run: "vendor/bin/phpunit -c phpunit.xml.dist --exclude-group compare --coverage-clover=coverage.clover --coverage-text --colors"
 
       - name: "Upload coverage to Codecov"
-        uses: "codecov/codecov-action@v3.1.6"
+        uses: "codecov/codecov-action@v4.0.0"
         with:
           file: "coverage.clover"
           flags: "phpunit"
