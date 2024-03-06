@@ -9,9 +9,9 @@ namespace BrowscapPHP\Helper;
  */
 interface IniLoaderInterface
 {
-    public const PHP_INI_LITE = 'Lite_PHP_BrowscapINI';
-    public const PHP_INI_FULL = 'Full_PHP_BrowscapINI';
-    public const PHP_INI      = 'PHP_BrowscapINI';
+    public const PHP_INI_LITE = 'Lite_PHP_BrowsCapINI';
+    public const PHP_INI_FULL = 'Full_PHP_BrowsCapINI';
+    public const PHP_INI      = 'PHP_BrowsCapINI';
 
     /**
      * sets the name of the local ini file
