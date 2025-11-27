@@ -23,4 +23,3 @@ parameters:
       tooWideThrowType: true
   ignoreErrors:
     - '~Exception is not subtype of Throwable~'
-    - missingType.generics
