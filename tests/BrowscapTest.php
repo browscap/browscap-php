@@ -43,7 +43,6 @@ final class BrowscapTest extends TestCase
         $this->object->setFormatter($formatter);
 
         $property = new ReflectionProperty($this->object, 'formatter');
-        $property->setAccessible(true);
 
         self::assertSame($formatter, $property->getValue($this->object));
     }
@@ -101,7 +100,6 @@ final class BrowscapTest extends TestCase
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
         $result = $this->object->getBrowser();
@@ -133,7 +131,6 @@ final class BrowscapTest extends TestCase
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
         $result = $this->object->getBrowser('Mozilla/5.0 (compatible; Ask Jeeves/Teoma)');
@@ -163,7 +160,6 @@ final class BrowscapTest extends TestCase
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
         $result = $this->object->getBrowser('Mozilla/5.0 (compatible; Ask Jeeves/Teoma)');

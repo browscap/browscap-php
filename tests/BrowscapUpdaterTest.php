@@ -198,7 +198,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->object->convertFile(vfsStream::url(self::STORAGE_DIR . DIRECTORY_SEPARATOR . 'test.ini'));
@@ -323,7 +322,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->object->convertString($content);
@@ -347,7 +345,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
@@ -371,7 +368,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->expectException(BrowscapException\FetcherException::class);
@@ -506,7 +502,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
@@ -530,7 +525,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
         $file = 'resources/test.ini';
@@ -770,7 +764,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
@@ -794,7 +787,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->object->fetch(IniLoaderInterface::PHP_INI);
@@ -822,7 +814,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
@@ -846,7 +837,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->expectException(BrowscapException\FetcherException::class);
@@ -979,7 +969,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
@@ -1003,7 +992,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->object->update();
@@ -1030,7 +1018,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
@@ -1054,7 +1041,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->expectException(BrowscapException\NoCachedVersionException::class);
@@ -1086,7 +1072,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
@@ -1110,7 +1095,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->expectException(BrowscapException\FetcherException::class);
@@ -1144,7 +1128,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
@@ -1168,7 +1151,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
         $this->expectException(BrowscapException\NoNewVersionException::class);
@@ -1200,7 +1182,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('client');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $client);
 
         $map = [
@@ -1225,7 +1206,6 @@ AolVersion=0
 
         $reflection         = new ReflectionClass($this->object);
         $reflectionAttrbute = $reflection->getProperty('cache');
-        $reflectionAttrbute->setAccessible(true);
         $reflectionAttrbute->setValue($this->object, $cache);
 
         self::assertSame(6000, $this->object->checkUpdate());

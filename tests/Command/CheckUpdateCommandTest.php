@@ -37,7 +37,6 @@ final class CheckUpdateCommandTest extends TestCase
 
         $class  = new ReflectionClass(CheckUpdateCommand::class);
         $method = $class->getMethod('configure');
-        $method->setAccessible(true);
 
         self::assertNull($method->invoke($object));
     }

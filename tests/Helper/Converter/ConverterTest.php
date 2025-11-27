@@ -53,7 +53,6 @@ final class ConverterTest extends TestCase
         $this->object->setFilesystem($file);
 
         $property = new ReflectionProperty($this->object, 'filessystem');
-        $property->setAccessible(true);
 
         self::assertSame($file, $property->getValue($this->object));
     }
