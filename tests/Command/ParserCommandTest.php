@@ -37,7 +37,6 @@ final class ParserCommandTest extends TestCase
 
         $class  = new ReflectionClass(ParserCommand::class);
         $method = $class->getMethod('configure');
-        $method->setAccessible(true);
 
         self::assertNull($method->invoke($object));
     }

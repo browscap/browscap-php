@@ -206,9 +206,7 @@ final class Converter implements ConverterInterface
     private function getIniReleaseDate(string $iniString): ?string
     {
         if (preg_match('/Released=(.*)/', $iniString, $matches)) {
-            if (isset($matches[1])) {
-                return $matches[1];
-            }
+            return $matches[1];
         }
 
         return null;
@@ -224,9 +222,7 @@ final class Converter implements ConverterInterface
     private function getIniType(string $iniString): ?string
     {
         if (preg_match('/Type=(.*)/', $iniString, $matches)) {
-            if (isset($matches[1])) {
-                return $matches[1];
-            }
+            return $matches[1];
         }
 
         return null;

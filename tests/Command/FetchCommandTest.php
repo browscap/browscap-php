@@ -38,7 +38,6 @@ final class FetchCommandTest extends TestCase
 
         $class  = new ReflectionClass(FetchCommand::class);
         $method = $class->getMethod('configure');
-        $method->setAccessible(true);
 
         self::assertNull($method->invoke($object));
     }

@@ -53,10 +53,6 @@ final class Pattern
             return [md5('')];
         }
 
-        if (! isset($matches[1])) {
-            return [md5('')];
-        }
-
         $string = $matches[1];
 
         if ($variants === true) {
