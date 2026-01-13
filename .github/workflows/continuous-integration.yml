@@ -23,7 +23,7 @@ jobs:
 
       matrix:
         php-version:
-          - "8.1"
+          - "8.5"
 
         dependencies:
           - "highest"
@@ -61,10 +61,6 @@ jobs:
 
       matrix:
         php-version:
-          - "8.1"
-          - "8.2"
-          - "8.3"
-          - "8.4"
           - "8.5"
 
     steps:
@@ -84,97 +80,7 @@ jobs:
           tools: "${{ env.TOOLS }}"
 
       - name: "Lint PHP"
-        uses: "overtrue/phplint@9.6"
-
-  install:
-    name: "Install dependencies"
-
-    needs: "lint"
-
-    runs-on: "ubuntu-latest"
-
-    continue-on-error: ${{ matrix.experimental }}
-
-    strategy:
-      fail-fast: false
-
-      matrix:
-        php-version:
-          - "8.1"
-          - "8.2"
-          - "8.3"
-          - "8.4"
-          - "8.5"
-
-        dependencies:
-          - "lowest"
-          - "highest"
-
-        experimental: [false]
-
-        include:
-          - php-version: "8.1"
-            dependencies: "locked"
-            experimental: false
-          - php-version: "8.2"
-            dependencies: "locked"
-            experimental: false
-          - php-version: "8.3"
-            dependencies: "locked"
-            experimental: false
-          - php-version: "8.4"
-            dependencies: "highest"
-            experimental: false
-          - php-version: "8.5"
-            dependencies: "highest"
-            experimental: false
-
-    steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v6"
-        with:
-          # Disabling shallow clone is recommended for improving relevancy of reporting
-          fetch-depth: 0
-
-      - name: "Install PHP"
-        uses: "shivammathur/setup-php@2.36.0"
-        with:
-          php-version: "${{ matrix.php-version }}"
-          extensions: "${{ env.PHP_EXTENSIONS }}"
-          ini-values: "${{ env.PHP_INI_VALUES }}"
-          coverage: "none"
-          tools: "${{ env.TOOLS }}"
-
-      - name: "Install lowest dependencies"
-        if: "${{ matrix.dependencies == 'lowest' }}"
-        uses: "ramsey/composer-install@v3"
-        with:
-          dependency-versions: "${{ matrix.dependencies }}"
-          composer-options: "${{ env.COMPOSER_OPTIONS }} --prefer-stable"
-
-      - name: "Install highest dependencies"
-        if: "${{ matrix.dependencies == 'highest' && matrix.experimental == false }}"
-        uses: "ramsey/composer-install@v3"
-        with:
-          dependency-versions: "${{ matrix.dependencies }}"
-          composer-options: "${{ env.COMPOSER_OPTIONS }} --prefer-stable"
-
-      - name: "Install highest dependencies (Experimental)"
-        if: "${{ matrix.dependencies == 'highest' && matrix.experimental == true }}"
-        uses: "ramsey/composer-install@v3"
-        with:
-          dependency-versions: "${{ matrix.dependencies }}"
-          composer-options: "${{ env.COMPOSER_OPTIONS }} --prefer-stable --ignore-platform-reqs"
-
-      - name: "Install locked dependencies"
-        if: "${{ matrix.dependencies == 'locked' }}"
-        uses: "ramsey/composer-install@v3"
-        with:
-          dependency-versions: "${{ matrix.dependencies }}"
-          composer-options: "${{ env.COMPOSER_OPTIONS }}"
-
-      - name: "Check dependencies with composer"
-        run: "composer outdated --direct"
+        uses: "overtrue/phplint@10.0"
 
   coding-standards:
     name: "Check Coding Standards with PHPCS"
@@ -190,10 +96,10 @@ jobs:
 
       matrix:
         php-version:
-          - "8.1"
+          - "8.5"
 
         dependencies:
-          - "highest"
+          - "locked"
 
     steps:
       - name: "Checkout"
@@ -215,7 +121,7 @@ jobs:
         uses: "ramsey/composer-install@v3"
         with:
           dependency-versions: "${{ matrix.dependencies }}"
-          composer-options: "${{ env.COMPOSER_OPTIONS }} --prefer-stable"
+          composer-options: "${{ env.COMPOSER_OPTIONS }}"
 
       - name: "Run squizlabs/php_codesniffer"
         run: "vendor/bin/phpcs --report=checkstyle -q | cs2pr"
@@ -234,10 +140,6 @@ jobs:
 
       matrix:
         php-version:
-          - "8.1"
-          - "8.2"
-          - "8.3"
-          - "8.4"
           - "8.5"
 
         dependencies:
@@ -272,54 +174,6 @@ jobs:
     name: "UnitTests with PHPUnit"
 
     needs: "lint"
-      
-    runs-on: "ubuntu-latest"
-    
-    continue-on-error: false
-
-    strategy:
-      fail-fast: false
-
-      matrix:
-        php-version:
-          - "8.1"
-          - "8.2"
-          - "8.3"
-          - "8.4"
-          - "8.5"
-
-        dependencies:
-          - "highest"
-
-    steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v6"
-        with:
-          # Disabling shallow clone is recommended for improving relevancy of reporting
-          fetch-depth: 0
-
-      - name: "Install PHP"
-        uses: "shivammathur/setup-php@2.36.0"
-        with:
-          php-version: "${{ matrix.php-version }}"
-          extensions: "${{ env.PHP_EXTENSIONS }}"
-          ini-values: "${{ env.PHP_INI_VALUES }}"
-          coverage: "none"
-          tools: "${{ env.TOOLS }}"
-
-      - name: "Update dependencies with composer"
-        uses: "ramsey/composer-install@v3"
-        with:
-          dependency-versions: "${{ matrix.dependencies }}"
-          composer-options: "${{ env.COMPOSER_OPTIONS }} --prefer-stable"
-
-      - name: "Run unit tests with phpunit/phpunit"
-        run: "vendor/bin/phpunit -c phpunit.xml.dist --no-coverage --colors"
-
-  code-coverage:
-    name: "Code Coverage with PHPUnit"
-
-    needs: "tests"
 
     runs-on: "ubuntu-latest"
 
@@ -329,15 +183,19 @@ jobs:
       fail-fast: false
 
       matrix:
-        php-version:
-          - "8.1"
-          - "8.2"
-          - "8.3"
-          - "8.4"
-          - "8.5"
-
-        dependencies:
-          - "highest"
+        include:
+          - php-version: "8.1"
+            dependencies: "lowest"
+          - php-version: "8.1"
+            dependencies: "highest"
+          - php-version: "8.2"
+            dependencies: "highest"
+          - php-version: "8.3"
+            dependencies: "highest"
+          - php-version: "8.4"
+            dependencies: "highest"
+          - php-version: "8.5"
+            dependencies: "highest"
 
     steps:
       - name: "Checkout"
@@ -355,62 +213,15 @@ jobs:
           coverage: "xdebug"
           tools: "${{ env.TOOLS }}"
 
-      - name: "Update dependencies with composer"
+      - name: "Install lowest dependencies"
+        if: "${{ matrix.dependencies == 'lowest' }}"
         uses: "ramsey/composer-install@v3"
         with:
           dependency-versions: "${{ matrix.dependencies }}"
           composer-options: "${{ env.COMPOSER_OPTIONS }} --prefer-stable"
 
-      - name: "Collect code coverage with Xdebug and phpunit/phpunit"
-        run: "vendor/bin/phpunit -c phpunit.xml.dist --exclude-group compare --coverage-clover=coverage.clover --coverage-text --colors"
-
-      - name: "Upload coverage to Codecov"
-        uses: "codecov/codecov-action@v5.5.2"
-        with:
-          file: "coverage.clover"
-          flags: "phpunit"
-          verbose: false
-
-  comparison-checks:
-    name: "Compare results with PHPUnit"
-
-    needs: "tests"
-
-    runs-on: "ubuntu-latest"
-
-    continue-on-error: false
-
-    strategy:
-      fail-fast: false
-
-      matrix:
-        php-version:
-          - "8.1"
-          - "8.2"
-          - "8.3"
-          - "8.4"
-          - "8.5"
-
-        dependencies:
-          - "highest"
-
-    steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v6"
-        with:
-          # Disabling shallow clone is recommended for improving relevancy of reporting
-          fetch-depth: 0
-
-      - name: "Install PHP"
-        uses: "shivammathur/setup-php@2.36.0"
-        with:
-          php-version: "${{ matrix.php-version }}"
-          extensions: "${{ env.PHP_EXTENSIONS }}"
-          ini-values: "${{ env.PHP_INI_VALUES }}"
-          coverage: "none"
-          tools: "${{ env.TOOLS }}"
-
-      - name: "Update dependencies with composer"
+      - name: "Install highest dependencies"
+        if: "${{ matrix.dependencies == 'highest' }}"
         uses: "ramsey/composer-install@v3"
         with:
           dependency-versions: "${{ matrix.dependencies }}"
@@ -422,8 +233,15 @@ jobs:
           mkdir -p resources
           cp /tmp/browscap.ini resources/browscap.ini
 
-      - name: "Compare get_browser to browscap-php results"
-        run: "vendor/bin/phpunit -c phpunit.xml.dist --no-coverage --group compare --colors"
+      - name: "Run unit tests with phpunit/phpunit"
+        run: "vendor/bin/phpunit -c phpunit.xml.dist --coverage-clover=coverage.clover --coverage-text --colors"
+
+      - name: "Upload coverage to Codecov"
+        uses: "codecov/codecov-action@v5.5.2"
+        with:
+          file: "coverage.clover"
+          flags: "phpunit"
+          verbose: false
 
   roave-backwards-compatibility-check:
     name: "Check for Backward Compatibility breaks"

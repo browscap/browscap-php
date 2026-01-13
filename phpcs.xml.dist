@@ -23,5 +23,7 @@
         <exclude name="SlevomatCodingStandard.Exceptions.RequireNonCapturingCatch"/>
         <exclude name="SlevomatCodingStandard.Classes.RequireConstructorPropertyPromotion"/>
         <exclude name="SlevomatCodingStandard.Functions.RequireTrailingCommaInDeclaration"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.ClassConstantTypeHint"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.DNFTypeHintFormat"/>
     </rule>
 </ruleset>
