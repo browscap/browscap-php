@@ -6,7 +6,8 @@ on:
 
 env:
   PHP_EXTENSIONS: "json, curl, opcache, mbstring"
-  PHP_INI_VALUES: "opcache.enable=1, opcache.enable_cli=1, opcache.fast_shutdown=0, zend.assertions=1, assert.exception=On"
+  # opcache.enable_cli=0 avoids PHP 8.5 CLI + Opcache segfaults (e.g. PHPUnit exit 139) in CI.
+  PHP_INI_VALUES: "opcache.enable=1, opcache.enable_cli=0, opcache.fast_shutdown=0, zend.assertions=1, assert.exception=On"
   COMPOSER_OPTIONS: "--optimize-autoloader --prefer-dist -v"
   TOOLS: "composer:v2"
 
