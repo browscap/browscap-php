@@ -22,8 +22,22 @@ if (!$foundVendorAutoload) {
 }
 
 use BrowscapPHP\Exception;
-use Symfony\Component\Console\Application;
 use BrowscapPHP\Command;
+use Symfony\Component\Console\Application as ConsoleApplication;
+use Symfony\Component\Console\Command\Command as ConsoleCommand;
+
+class Application extends ConsoleApplication {
+    public function add(callable|ConsoleCommand $command): ?ConsoleCommand
+    {
+        $symfonyConsoleVersion = Composer\InstalledVersions::getVersion('symfony/console');
+
+        if (version_compare($symfonyConsoleVersion, '7.4', '<')) {
+            return parent::add($command);
+        }
+
+        return parent::addCommand($command);
+    }
+}
 
 $cacheDirectory = $baseDir . '/resources/';
 $defaultIniFile = $baseDir . '/resources/browscap.ini';
