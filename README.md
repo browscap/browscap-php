@@ -142,7 +142,7 @@ vendor/bin/browscap-php browscap:check-update
 ### return codes
 
 - 1: no cached version found
-- 2: no new version availble
+- 2: no new version available
 - 3: an error occured while checking the cached version
 - 4: an error occured while fetching the remote version
 - 5: an other error occured 
