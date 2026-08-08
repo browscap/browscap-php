@@ -54,7 +54,7 @@ final class Quoter implements QuoterInterface
 
         if ($pattern === null) {
             throw new UnexpectedValueException(
-                sprintf('an error occured while handling pattern %s', $origPattern),
+                sprintf('an error occurred while handling pattern %s', $origPattern),
             );
         }
 

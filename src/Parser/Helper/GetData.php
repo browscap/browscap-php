@@ -132,7 +132,7 @@ final class GetData implements GetDataInterface
             $this->logger->error(
                 new \InvalidArgumentException(
                     sprintf(
-                        'an error occured while checking inipart "browscap.iniparts.%s" in the cache',
+                        'an error occurred while checking inipart "browscap.iniparts.%s" in the cache',
                         $subkey,
                     ),
                     0,
@@ -151,7 +151,7 @@ final class GetData implements GetDataInterface
             $this->logger->error(
                 new \InvalidArgumentException(
                     sprintf(
-                        'an error occured while reading inipart "browscap.iniparts.%s" from the cache',
+                        'an error occurred while reading inipart "browscap.iniparts.%s" from the cache',
                         $subkey,
                     ),
                     0,

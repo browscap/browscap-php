@@ -110,7 +110,7 @@ final class Converter implements ConverterInterface
                     $this->logger->error('could not write pattern data "' . $subkey . '" to the cache');
                 }
             } catch (InvalidArgumentException $e) {
-                $this->logger->error(new \InvalidArgumentException('an error occured while writing pattern data into the cache', 0, $e));
+                $this->logger->error(new \InvalidArgumentException('an error occurred while writing pattern data into the cache', 0, $e));
             }
         }
 
@@ -129,23 +129,23 @@ final class Converter implements ConverterInterface
                         $this->logger->error('could not write property data "' . $subkey . '" to the cache');
                     }
                 } catch (InvalidArgumentException $e) {
-                    $this->logger->error(new \InvalidArgumentException('an error occured while writing property data into the cache', 0, $e));
+                    $this->logger->error(new \InvalidArgumentException('an error occurred while writing property data into the cache', 0, $e));
                 }
             }
         } catch (OutOfRangeException | UnexpectedValueException | JsonException | \InvalidArgumentException $e) {
-            $this->logger->error(new \InvalidArgumentException('an error occured while writing property data into the cache', 0, $e));
+            $this->logger->error(new \InvalidArgumentException('an error occurred while writing property data into the cache', 0, $e));
         }
 
         try {
             $this->cache->setItem('browscap.releaseDate', $this->getIniReleaseDate($iniString), false);
         } catch (InvalidArgumentException $e) {
-            $this->logger->error(new \InvalidArgumentException('an error occured while writing data release date into the cache', 0, $e));
+            $this->logger->error(new \InvalidArgumentException('an error occurred while writing data release date into the cache', 0, $e));
         }
 
         try {
             $this->cache->setItem('browscap.type', $this->getIniType($iniString), false);
         } catch (InvalidArgumentException $e) {
-            $this->logger->error(new \InvalidArgumentException('an error occured while writing the data type into the cache', 0, $e));
+            $this->logger->error(new \InvalidArgumentException('an error occurred while writing the data type into the cache', 0, $e));
         }
 
         $this->logger->info('finished creating data from the ini data');
@@ -192,7 +192,7 @@ final class Converter implements ConverterInterface
         try {
             $this->cache->setItem('browscap.version', $this->iniVersion, false);
         } catch (InvalidArgumentException $e) {
-            $this->logger->error(new \InvalidArgumentException('an error occured while writing the data version into the cache', 0, $e));
+            $this->logger->error(new \InvalidArgumentException('an error occurred while writing the data version into the cache', 0, $e));
         }
     }
 

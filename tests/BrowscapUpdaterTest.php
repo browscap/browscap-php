@@ -372,7 +372,7 @@ AolVersion=0
 
         $this->expectException(BrowscapException\FetcherException::class);
         $this->expectExceptionMessage(
-            'an error occured while fetching version data from URI http://browscap.org/version-number: StatusCode was 500',
+            'an error occurred while fetching version data from URI http://browscap.org/version-number: StatusCode was 500',
         );
         $this->object->fetch(IniLoaderInterface::PHP_INI);
     }
@@ -1099,7 +1099,7 @@ AolVersion=0
 
         $this->expectException(BrowscapException\FetcherException::class);
         $this->expectExceptionMessage(
-            'an error occured while fetching version data from URI http://browscap.org/version-number: StatusCode was 200',
+            'an error occurred while fetching version data from URI http://browscap.org/version-number: StatusCode was 200',
         );
         $this->object->checkUpdate();
     }

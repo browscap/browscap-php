@@ -68,7 +68,7 @@ final class BrowscapCache implements BrowscapCacheInterface
             try {
                 $cachedVersion = $this->getItem('browscap.version', false, $success);
             } catch (InvalidArgumentException $e) {
-                $this->logger->error(new \InvalidArgumentException('an error occured while reading the data version from the cache', 0, $e));
+                $this->logger->error(new \InvalidArgumentException('an error occurred while reading the data version from the cache', 0, $e));
                 $cachedVersion = null;
             }
 
@@ -95,7 +95,7 @@ final class BrowscapCache implements BrowscapCacheInterface
             try {
                 $releaseDate = $this->getItem('browscap.releaseDate', false, $success);
             } catch (InvalidArgumentException $e) {
-                $this->logger->error(new \InvalidArgumentException('an error occured while reading the data release date from the cache', 0, $e));
+                $this->logger->error(new \InvalidArgumentException('an error occurred while reading the data release date from the cache', 0, $e));
                 $releaseDate = null;
             }
 
@@ -122,7 +122,7 @@ final class BrowscapCache implements BrowscapCacheInterface
             try {
                 $type = $this->getItem('browscap.type', false, $success);
             } catch (InvalidArgumentException $e) {
-                $this->logger->error(new \InvalidArgumentException('an error occured while reading the data type from the cache', 0, $e));
+                $this->logger->error(new \InvalidArgumentException('an error occurred while reading the data type from the cache', 0, $e));
                 $type = null;
             }
 
