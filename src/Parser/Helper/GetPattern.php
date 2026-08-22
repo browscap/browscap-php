@@ -79,7 +79,7 @@ class GetPattern implements GetPatternInterface
                 $this->logger->error(
                     new \InvalidArgumentException(
                         sprintf(
-                            'an error occured while checking pattern "browscap.patterns.%s" in the cache',
+                            'an error occurred while checking pattern "browscap.patterns.%s" in the cache',
                             $tmpSubkey,
                         ),
                         0,
@@ -98,7 +98,7 @@ class GetPattern implements GetPatternInterface
                 $this->logger->error(
                     new \InvalidArgumentException(
                         sprintf(
-                            'an error occured while reading pattern "browscap.patterns.%s" from the cache',
+                            'an error occurred while reading pattern "browscap.patterns.%s" from the cache',
                             $tmpSubkey,
                         ),
                         0,

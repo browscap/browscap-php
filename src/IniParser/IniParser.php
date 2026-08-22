@@ -74,7 +74,7 @@ final class IniParser implements ParserInterface
         // pattern (filtered in the previous step)
         $iniParts = preg_split('/\[[^\r\n]+\]/', $content);
         if ($iniParts === false) {
-            throw new UnexpectedValueException('an error occured while splitting content into parts');
+            throw new UnexpectedValueException('an error occurred while splitting content into parts');
         }
 
         $contents = [];
